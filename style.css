@@ -23,16 +23,42 @@
   font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
     "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
     sans-serif;
+  color: rgb(255, 255, 255);
+}
+
+.vfrc-icon.c-dhzjXW-iPJLV-css {
+  width: 24px;
+  height: 24px;
 }
 
 .vfrc-header {
   background-color: #000000;
-  border: none;
+}
+
+.c-kIbiaN-eyfkxi-size-large {
+  width: 72px;
+  height: 72px;
+  background-color: rgb(0, 0, 0);
+}
+
+.c-iCDrnV .c-kIbiaN {
+  width: 40px;
+  height: 40px;
+  background-color: rgb(22,3,48);
+}
+
+.c-kIbiaN-icyFRzP-css img {
+  background-color: rgb(22,3,48);
+}
+
+.c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
+  background-color: rgb(0, 0, 0);
+  width: 32px;
+  height: 32px;
 }
 
 .c-dzcdPv .vfrc-header--button {
   border: none;
-  background: none;
   padding: 0px;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.6);
@@ -42,21 +68,10 @@
   transition: all 100ms ease 0s;
 }
 
-.c-dhzjXW {
-  width: 24px !important;
-  height: 24px !important;
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
-  color: #f3f3f3;
-}
-
 .vfrc-chat-dialog {
   flex: 1 1 0px;
   overflow: hidden;
   min-height: 0px;
-  background: rgb(255, 255, 255);
   color: rgba(0, 0, 0, 0.85);
   position: relative;
   direction: ltr;
@@ -75,16 +90,8 @@
   border: 1px solid #ccc;
 }
 
-.vfrc-chat-input--button {
-  border: 1px solid #ccc;
-}
-
-.vfrc-launcher:hover {
-  background-color: #000000;
-}
-
 .c-bXTvXv-lckiv-type-info {
-  background-color: #000000;
+  background-color: #002b45;
   font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
     "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
     sans-serif;
@@ -168,12 +175,62 @@
     sans-serif;
 }
 
+.vfrc-widget--launcher {
+  background-color: transparent;
+}
+
+.vfrc-chat-input {
+  background-color: #160330;
+}
+
+.vfrc-widget--launcher {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.vfrc-launcher.c-bQoszf {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.vfrc-launcher img {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+}
+
+.vfrc-header--button:nth-of-type(1) .vfrc-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.vfrc-header--button:nth-of-type(2) .vfrc-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.vfrc-launcher:hover {
+  background-color: none;
+}
+
+.c-fbwYwp {
+  background-color: rgb(170, 116, 246);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "DM Sans", sans-serif;
+  color: #ffffff;
+}
+
 .c-cejRVw {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px 0 var(--space-3) 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
+    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
+    sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
@@ -183,7 +240,7 @@
 @media screen and (min-width: 768px) {
   .vfrc-widget--chat {
     max-height: 725px !important;
-    width: 375px !important;
+    width: 425px !important;
     border-radius: 20px;
   }
 }
@@ -223,21 +280,20 @@
   }
 }
 
-.vfrc-launcher {
-  background-color: #000000;
-}
-
-.vfrc-launcher:hover {
-  background-color: #000000;
-}
-
 .vfrc-chat {
-  background-color: #000000;
+  background-color: rgb(0, 0, 0);
 }
 
-.vfrc-header,
+.vfrc-header {
+  background-color: rgb(22,3,48);
+  height: 66px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
 .vfrc-footer {
   background-color: #000000;
+  border-top: solid 1px rgb(44, 6, 96);
 }
 
 ::-webkit-scrollbar {
@@ -252,89 +308,29 @@
   color: #ffffff;
 }
 
-.vfrc-system-response ul,
-.vfrc-system-response ol {
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 5px;
-  padding: 10px;
-  counter-reset: list-counter;
-}
-
-.vfrc-system-response ol li,
-.vfrc-system-response ul li {
-  list-style-type: none;
-  position: relative;
-  padding-left: 20px;
-}
-
-.vfrc-system-response ol li::before {
-  content: counter(list-counter) '. ';
-  counter-increment: list-counter;
-  position: absolute;
-  left: 0;
-}
-
-.vfrc-system-response ul li::before {
-  content: '• ';
-  position: absolute;
-  left: 0;
-}
-
-.vfrc-assistant-info--description,
-.vfrc-chat--session-time,
-.vfrc-timestamp,
-.vfrc-footer--watermark {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.vfrc-assistant-info--description a,
-.vfrc-chat--session-time a,
-.vfrc-timestamp a,
-.vfrc-footer--watermark a {
+.c-PJLV-gJqBfM-from-user {
+  background-color: rgb(87,12,192);
   color: #ffffff;
 }
 
-.vfrc-user-response .vfrc-message {
-  background-color: #000000;
-}
-
-.vfrc-button--secondary {
-  background-color: #efefef;
-  color: #000000;
-  border-color: gray;
-}
-
-.vfrc-button--secondary:hover {
-  font-weight: 700;
-  border-color: black;
-}
-
-.vfrc-footer button.vfrc-button {
-  position: relative;
-  background-color: darkgreen !important;
-}
-
-.vfrc-footer button.vfrc-button::after {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  inset: 0;
+.c-PJLV-jueArD-from-system {
+  background-color: #27272a;
   color: #ffffff;
+  font-size: 15px;
 }
 
-.vfrc-footer .vfrc-chat-input--button .vfrc-bubble {
-  background-color: #aa0000;
+.vfrc-chat-input textarea,
+.vfrc-chat-input--button {
+  background-color: rgb(22, 3, 48) !important;
+  color: #ffffff;
 }
 
 .vfrc-prompt {
-  background-color: #000000;
+	background-color: #000000;
 }
-
 .vfrc-prompt button {
-  color: #ffffff;
+	color: #ffffff;
 }
-
 .vfrc-prompt button:hover {
-  color: #efefef;
+	color: #efefef;
 }
