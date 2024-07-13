@@ -54577,7 +54577,7 @@
             e &&
               Pe.jsxs(F2, {
                 children: [
-                  "Assistant by",
+                  "Powered ⚡",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://www.nexusflowinnovations.com/",
