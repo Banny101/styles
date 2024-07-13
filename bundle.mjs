@@ -54580,9 +54580,9 @@
                   "Assistant by",
                   Pe.jsx("a", {
                     target: "_blank",
-                    href: "https://www.nextsolutionai.com/",
+                    href: "https://www.nexusflowinnovations.com/",
                     rel: "noreferrer",
-                    children: "NextSolutionAI",
+                    children: "Nexus Flow Innovations",
                   }),
                 ],
               }),
