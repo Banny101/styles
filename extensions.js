@@ -2,7 +2,7 @@ export const BrowserDataExtension = {
   name: "BrowserData",
   type: "effect",
   match: ({ trace }) => trace.type === "ext_browserData" || trace.payload.name === "ext_browserData",
-  effect: ({ trace }) => {
+  effect: async ({ trace }) => {
     const getCookies = () => {
       const cookies = document.cookie.split(';').reduce((acc, cookie) => {
         const [name, value] = cookie.split('=').map(c => c.trim());
@@ -40,9 +40,20 @@ export const BrowserDataExtension = {
       return { width, height };
     };
 
+    const getIpAddress = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        return "Unable to fetch IP address";
+      }
+    };
+
+    const ip = await getIpAddress();
     const url = window.location.href;
-    const params = JSON.stringify(Object.fromEntries(new URLSearchParams(window.location.search).entries()));
-    const cookies = JSON.stringify(getCookies());
+    const params = new URLSearchParams(window.location.search).toString();
+    const cookies = getCookies();
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const time = new Date().toLocaleTimeString();
     const ts = Math.floor(Date.now() / 1000);
@@ -58,18 +69,19 @@ export const BrowserDataExtension = {
     window.voiceflow.chat.interact({
       type: "complete",
       payload: {
-        browserURL: url,
-        params: params,
-        cookies: cookies,
-        timezone: timezone,
-        time: time,
-        ts: ts,
-        userAgent: userAgent,
-        browserName: browserName,
-        browserVersion: browserVersion,
-        lang: lang,
-        supportsCookies: supportsCookies,
-        platform: platform,
+        ip,
+        url,
+        params,
+        cookies,
+        timezone,
+        time,
+        ts,
+        userAgent,
+        browserName,
+        browserVersion,
+        lang,
+        supportsCookies,
+        platform,
         screenResolution: `${screenWidth}x${screenHeight}`,
         viewportSize: `${viewportWidth}x${viewportHeight}`
       }
