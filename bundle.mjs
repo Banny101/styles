@@ -54577,12 +54577,12 @@
             e &&
               Pe.jsxs(F2, {
                 children: [
-                  "Powered ⚡ by",
+                  "Powered ⚡ by ",
                   Pe.jsx("a", {
                     target: "_blank",
                     href: "https://www.nexusflowinnovations.com/",
                     rel: "noreferrer",
-                    children: "NFI",
+                    children: "Nexus Flow Innovations",
                   }),
                 ],
               }),
