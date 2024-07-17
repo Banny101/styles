@@ -114,6 +114,7 @@ export const RankOptionsExtension = {
             font-family: 'Arial', sans-serif;
             margin: 20px auto;
             width: 243px;
+            color: black;
           }
           .rank-options-list {
             list-style: none;
