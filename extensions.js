@@ -130,6 +130,7 @@ export const RankOptionsExtension = {
             border: 1px solid #ced4da;
             border-radius: 4px;
             cursor: grab;
+            color: black;
           }
           .submit-button {
             background-color: #007bff;
