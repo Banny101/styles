@@ -247,7 +247,7 @@
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
   background-color: rgb(240,252,255) !important;
-  color: #ffffff;
+  color: #000000;
 }
 
 .vfrc-prompt {
