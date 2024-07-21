@@ -1,5 +1,5 @@
 .voiceflow-chat {
-  box-shadow: ##FFFFFF;
+  box-shadow: #000000;
 }
 
 .vfrc-widget--chat {
@@ -180,13 +180,13 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
-  color: #ffffff;
+  color: #000000;
 }
 
 .c-cejRVw a {
   margin-left: 0.5ch;
   text-decoration: none;
-  color: #a972f6;
+  color: #000000;
 }
 
 @media screen and (min-width: 768px) {
@@ -224,7 +224,7 @@
 }
 
 .c-PJLV-gJqBfM-from-user {
-  background-color: rgb(87, 12, 192);
+  background-color: rgb(81,197,225);
   color: #ffffff;
 }
 
