@@ -386,7 +386,7 @@ export const DropdownExtension = {
           const textareas = shadowRoot.querySelectorAll("textarea");
           textareas.forEach((textarea) => {
             textarea.disabled = isDisabled;
-            textarea.style.backgroundColor = isDisabled ? "#d3d3d3" : "";
+            textarea.style.backgroundColor = isDisabled ? "#FFFFFF" : "";
             textarea.style.opacity = isDisabled ? "0.5" : "";
             textarea.style.pointerEvents = isDisabled ? "none" : "auto";
           });
