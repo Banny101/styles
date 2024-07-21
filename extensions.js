@@ -453,6 +453,7 @@ export const DropdownExtension = {
           border: 1px solid rgba(0, 0, 0, 0.1);
           z-index: 999;
           display: none;
+          color: black;
         }
         .dropdown-options div {
           padding: 10px;
