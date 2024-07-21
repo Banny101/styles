@@ -96,13 +96,14 @@
 }
 
 .c-PJLV-jueArD-from-system {
-  background-color: #f3f3f3;
-  color: #000000d9;
+  background-color: #27272a;
+  color: #ffffff;
+  font-size: 15px;
 }
 
 .c-PJLV-gJqBfM-from-user {
-  background-color: rgb(0, 0, 0);
-  color: rgb(255, 255, 255);
+  background-color: rgb(87, 12, 192);
+  color: #ffffff;
 }
 
 .vfrc-button--secondary {
