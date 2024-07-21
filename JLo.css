@@ -95,17 +95,6 @@
   font-weight: 400;
 }
 
-.c-PJLV-jueArD-from-system {
-  background-color: #27272a;
-  color: #ffffff;
-  font-size: 15px;
-}
-
-.c-PJLV-gJqBfM-from-user {
-  background-color: rgb(87, 12, 192);
-  color: #ffffff;
-}
-
 .vfrc-button--secondary {
   display: inline-block;
   border: 1px solid rgba(0, 43, 69, 0.45);
@@ -240,8 +229,8 @@
 }
 
 .c-PJLV-jueArD-from-system {
-  background-color: #27272a;
-  color: #ffffff;
+  background-color: #f3f3f3;
+  color: #000000;
   font-size: 15px;
 }
 
