@@ -419,6 +419,7 @@ export const DropdownExtension = {
           background: transparent;
           margin: 5px 0;
           outline: none;
+          color: black;
         }
         .invalid {
           border-color: red;
