@@ -147,7 +147,7 @@ export const RankOptionsExtension = {
             background-color: #0056b3;
           }
         </style>
-        <h3>Drag and drop to rank options</h3>
+        <h3>Drag and drop to rank options</h4>
         <ul class="rank-options-list">
           ${options.map(option => `
             <li data-value="${option}">
