@@ -89,123 +89,56 @@ export const BrowserDataExtension = {
   }
 };
 
-export const RankOptionsExtension = {
-  name: "RankOptions",
-  type: "response",
-  match: ({ trace }) => trace.type === "ext_rankoptions" || trace.payload.name === "ext_rankoptions",
-  render: ({ trace, element }) => {
-    const { options } = trace.payload;
-
-    const createForm = () => {
-      const formContainer = document.createElement("form");
-      formContainer.classList.add("rank-options-form");
-
-      element.innerHTML = "";
-
-      formContainer.innerHTML = `
-        <style>
-          .rank-options-form {
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-family: 'Arial', sans-serif;
-            margin: 20px auto;
-            width: 243px;
-            color: black;
-          }
-          .rank-options-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-          }
-          .rank-options-list li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #ffffff;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            cursor: grab;
-            color: black;
-          }
-          .submit-button {
-            background-color: #007bff;
-            border: none;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-          }
-          .submit-button:hover {
-            background-color: #0056b3;
-          }
-        </style>
-        <h3>Drag and drop to rank options</h4>
-        <ul class="rank-options-list">
-          ${options.map(option => `
-            <li data-value="${option}">
-              <span>${option}</span>
-            </li>
-          `).join('')}
-        </ul>
-        <button type="submit" class="submit-button">Submit</button>
-      `;
-
-      formContainer.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const rankedOptions = Array.from(formContainer.querySelectorAll('.rank-options-list li'))
-          .map(li => li.dataset.value);
-        window.voiceflow.chat.interact({
-          type: "complete",
-          payload: { rankedOptions },
-        });
-      });
-
-      element.appendChild(formContainer);
-
-      initializeSortable();
-    };
-
-    function initializeSortable() {
-      const rankOptionsList = element.querySelector('.rank-options-list');
-      if (rankOptionsList) {
-        new Sortable(rankOptionsList, {
-          animation: 150,
-          onEnd: () => {}
-        });
-      }
-    }
-
-    if (typeof Sortable === 'undefined') {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
-      script.onload = () => {
-        createForm();
-      };
-      script.onerror = () => {};
-      document.head.appendChild(script);
-    } else {
-      createForm();
-    }
-  },
-};
-
 export const MultiSelectExtension = {
   name: "MultiSelect",
   type: "response",
   match: ({ trace }) =>
-    trace.type === "ext_multiselect" || trace.payload.name === "ext_multiselect",
+    trace.type === "ext_multiselect" ||
+    trace.payload.name === "ext_multiselect",
   render: ({ trace, element }) => {
     const { options, maxSelections } = trace.payload;
     const multiSelectContainer = document.createElement("form");
     multiSelectContainer.classList.add("multi-select-form");
+
+    const applyGrayStyleToButton = (apply) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv) {
+        const shadowRoot = chatDiv.shadowRoot;
+        if (shadowRoot) {
+          const buttons = shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          );
+          buttons.forEach((button) => {
+            button.style.backgroundColor = apply ? "#d3d3d3" : "";
+            button.style.opacity = apply ? "0.5" : "";
+          });
+        }
+      }
+    };
+
+    const disableFooterInputs = (isDisabled) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv) {
+        const shadowRoot = chatDiv.shadowRoot;
+        if (shadowRoot) {
+          const textareas = shadowRoot.querySelectorAll("textarea");
+          textareas.forEach((textarea) => {
+            textarea.disabled = isDisabled;
+            textarea.style.backgroundColor = isDisabled ? "#d3d3d3" : "";
+            textarea.style.opacity = isDisabled ? "0.5" : "";
+            textarea.style.pointerEvents = isDisabled ? "none" : "auto";
+          });
+
+          const buttons = shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          );
+          buttons.forEach((button) => {
+            button.disabled = isDisabled;
+            button.style.pointerEvents = isDisabled ? "none" : "auto";
+          });
+        }
+      }
+    };
 
     element.innerHTML = "";
 
@@ -237,7 +170,6 @@ export const MultiSelectExtension = {
           border: 1px solid #ced4da;
           cursor: pointer;
           transition: background-color 0.3s, border-color 0.3s;
-          color: black;
         }
         .multi-select-options input[type="checkbox"] {
           margin-right: 10px;
@@ -305,13 +237,19 @@ export const MultiSelectExtension = {
       </div>
     `;
 
-    const optionsContainer = multiSelectContainer.querySelector(".multi-select-options");
+    const optionsContainer = multiSelectContainer.querySelector(
+      ".multi-select-options"
+    );
     const errorMessage = multiSelectContainer.querySelector(".error-message");
     const submitButton = multiSelectContainer.querySelector(".submit");
-    const checkboxes = optionsContainer.querySelectorAll('input[type="checkbox"]');
+    const checkboxes = optionsContainer.querySelectorAll(
+      'input[type="checkbox"]'
+    );
 
     const updateSubmitButtonState = () => {
-      const selected = optionsContainer.querySelectorAll('input[name="options"]:checked');
+      const selected = optionsContainer.querySelectorAll(
+        'input[name="options"]:checked'
+      );
       submitButton.disabled = selected.length === 0;
     };
 
@@ -327,7 +265,9 @@ export const MultiSelectExtension = {
 
     checkboxes.forEach((checkbox) => {
       checkbox.addEventListener("change", () => {
-        const selected = optionsContainer.querySelectorAll('input[name="options"]:checked');
+        const selected = optionsContainer.querySelectorAll(
+          'input[name="options"]:checked'
+        );
         if (selected.length > maxSelections) {
           checkbox.checked = false;
           errorMessage.style.display = "block";
@@ -345,8 +285,16 @@ export const MultiSelectExtension = {
 
     multiSelectContainer.addEventListener("submit", function (event) {
       event.preventDefault();
-      const selectedOptions = optionsContainer.querySelectorAll('input[name="options"]:checked');
-      const selectedOptionsValues = Array.from(selectedOptions).map((option) => option.value);
+      const selectedOptions = optionsContainer.querySelectorAll(
+        'input[name="options"]:checked'
+      );
+      const selectedOptionsValues = Array.from(selectedOptions).map(
+        (option) => option.value
+      );
+
+      disableFooterInputs(false);
+      applyGrayStyleToButton(false);
+
       window.voiceflow.chat.interact({
         type: "complete",
         payload: {
@@ -359,6 +307,10 @@ export const MultiSelectExtension = {
     const cancelButton = multiSelectContainer.querySelector(".cancel");
     cancelButton.addEventListener("click", (event) => {
       event.preventDefault();
+
+      disableFooterInputs(false);
+      applyGrayStyleToButton(false);
+
       resetForm();
       window.voiceflow.chat.interact({
         type: "cancel",
@@ -369,6 +321,165 @@ export const MultiSelectExtension = {
     });
 
     element.appendChild(multiSelectContainer);
+
+    disableFooterInputs(true);
+    applyGrayStyleToButton(true);
+  },
+};
+
+
+export const RankOptionsExtension = {
+  name: "RankOptions",
+  type: "response",
+  match: ({ trace }) => trace.type === "ext_rankoptions" || trace.payload.name === "ext_rankoptions",
+  render: ({ trace, element }) => {
+    const { options } = trace.payload;
+
+    const applyGrayStyleToButton = (apply) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv) {
+        const shadowRoot = chatDiv.shadowRoot;
+        if (shadowRoot) {
+          const buttons = shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          );
+          buttons.forEach((button) => {
+            button.style.backgroundColor = apply ? "#d3d3d3" : "";
+            button.style.opacity = apply ? "0.5" : "";
+          });
+        }
+      }
+    };
+
+    const disableFooterInputs = (isDisabled) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv) {
+        const shadowRoot = chatDiv.shadowRoot;
+        if (shadowRoot) {
+          const textareas = shadowRoot.querySelectorAll("textarea");
+          textareas.forEach((textarea) => {
+            textarea.disabled = isDisabled;
+            textarea.style.backgroundColor = isDisabled ? "#d3d3d3" : "";
+            textarea.style.opacity = isDisabled ? "0.5" : "";
+            textarea.style.pointerEvents = isDisabled ? "none" : "auto";
+          });
+
+          const buttons = shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          );
+          buttons.forEach((button) => {
+            button.disabled = isDisabled;
+            button.style.pointerEvents = isDisabled ? "none" : "auto";
+          });
+        }
+      }
+    };
+
+    const createForm = () => {
+      const formContainer = document.createElement("form");
+      formContainer.classList.add("rank-options-form");
+
+      element.innerHTML = "";
+
+      formContainer.innerHTML = `
+        <style>
+          .rank-options-form {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Arial', sans-serif;
+            margin: 20px auto;
+            width: 243px;
+            color: black;
+          }
+          .rank-options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+          .rank-options-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            cursor: grab;
+            color: black;
+          }
+          .submit-button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+          }
+          .submit-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+        <h3>Drag and drop to rank options</h4>
+        <ul class="rank-options-list">
+          ${options.map(option => `
+            <li data-value="${option}">
+              <span>${option}</span>
+            </li>
+          `).join('')}
+        </ul>
+        <button type="submit" class="submit-button">Submit</button>
+      `;
+
+      formContainer.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const rankedOptions = Array.from(formContainer.querySelectorAll('.rank-options-list li'))
+          .map(li => li.dataset.value);
+
+        disableFooterInputs(false);
+        applyGrayStyleToButton(false);
+
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { rankedOptions },
+        });
+      });
+
+      element.appendChild(formContainer);
+
+      initializeSortable();
+
+      disableFooterInputs(true);
+      applyGrayStyleToButton(true);
+    };
+
+    function initializeSortable() {
+      const rankOptionsList = element.querySelector('.rank-options-list');
+      if (rankOptionsList) {
+        new Sortable(rankOptionsList, {
+          animation: 150,
+          onEnd: () => {}
+        });
+      }
+    }
+
+    if (typeof Sortable === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
+      script.onload = () => {
+        createForm();
+      };
+      script.onerror = () => {};
+      document.head.appendChild(script);
+    } else {
+      createForm();
+    }
   },
 };
 
@@ -386,7 +497,7 @@ export const DropdownExtension = {
           const textareas = shadowRoot.querySelectorAll("textarea");
           textareas.forEach((textarea) => {
             textarea.disabled = isDisabled;
-            textarea.style.backgroundColor = isDisabled ? "#FFFFFF" : "";
+            textarea.style.backgroundColor = isDisabled ? "#d3d3d3" : "";
             textarea.style.opacity = isDisabled ? "0.5" : "";
             textarea.style.pointerEvents = isDisabled ? "none" : "auto";
           });
@@ -419,7 +530,6 @@ export const DropdownExtension = {
           background: transparent;
           margin: 5px 0;
           outline: none;
-          color: black;
         }
         .invalid {
           border-color: red;
@@ -453,7 +563,6 @@ export const DropdownExtension = {
           border: 1px solid rgba(0, 0, 0, 0.1);
           z-index: 999;
           display: none;
-          color: black;
         }
         .dropdown-options div {
           padding: 10px;
@@ -468,7 +577,9 @@ export const DropdownExtension = {
       <div class="dropdown-container">
         <input type="text" class="dropdown-search" placeholder="Search..." autocomplete="off">
         <div class="dropdown-options">
-          ${dropdownOptions.map(option => `<div data-value="${option}">${option}</div>`).join('')}
+          ${dropdownOptions
+            .map((option) => `<div data-value="${option}">${option}</div>`)
+            .join("")}
         </div>
         <input type="hidden" class="dropdown" name="dropdown" required>
       </div><br><br>
@@ -491,13 +602,14 @@ export const DropdownExtension = {
     };
 
     dropdownSearch.addEventListener("click", function () {
-      dropdownOptionsDiv.style.display = dropdownOptionsDiv.style.display === "block" ? "none" : "block";
+      dropdownOptionsDiv.style.display =
+        dropdownOptionsDiv.style.display === "block" ? "none" : "block";
     });
 
     dropdownSearch.addEventListener("input", function () {
       const filter = dropdownSearch.value.toLowerCase();
       const options = dropdownOptionsDiv.querySelectorAll("div");
-      options.forEach(option => {
+      options.forEach((option) => {
         const text = option.textContent.toLowerCase();
         option.style.display = text.includes(filter) ? "" : "none";
       });
