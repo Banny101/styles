@@ -327,7 +327,6 @@ export const MultiSelectExtension = {
   },
 };
 
-
 export const RankOptionsExtension = {
   name: "RankOptions",
   type: "response",
