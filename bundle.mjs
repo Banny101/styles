@@ -54358,8 +54358,13 @@
           }
         },
         q = function (V) {
-          C || H(), d(V);
+          if (V.target.value.length > 200) {
+            V.target.value = V.target.value.slice(0, 200); 
+          }
+          C || H();
+          d(V);
         };
+    
       return (
         $e.useLayoutEffect(H),
         CX(H),
