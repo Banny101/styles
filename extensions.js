@@ -304,20 +304,6 @@ export const MultiSelectExtension = {
       resetForm();
     });
 
-     
-export const DelayEffectExtension = {
-  name: "DelayEffect",
-  type: "effect",
-  match: ({ trace }) => trace.type === "ext_delay" || trace.payload.name === "ext_delay",
-  effect: async ({ trace }) => {
-    const { delay } = trace.payload;
-
-    await new Promise(resolve => setTimeout(resolve, delay));
-
-    window.voiceflow.chat.interact({ type: "complete" });
-  }
-};
-
     const cancelButton = multiSelectContainer.querySelector(".cancel");
     cancelButton.addEventListener("click", (event) => {
       event.preventDefault();
