@@ -723,3 +723,16 @@ export const FileUploadExtension = {
     element.appendChild(fileUploadContainer);
   },
 };
+ 
+export const DelayEffectExtension = {
+  name: "DelayEffect",
+  type: "effect",
+  match: ({ trace }) => trace.type === "ext_delay" || trace.payload.name === "ext_delay",
+  effect: async ({ trace }) => {
+    const { delay } = trace.payload;
+
+    await new Promise(resolve => setTimeout(resolve, delay));
+
+    window.voiceflow.chat.interact({ type: "complete" });
+  }
+};
