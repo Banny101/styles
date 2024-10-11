@@ -160,12 +160,17 @@
   height: 24px !important;
 }
 
+.vfrc-header--button:nth-of-type(3) .vfrc-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
 .vfrc-launcher:hover {
   background-color: none;
 }
 
 .c-fbwYwp {
-  background-color: rgb(170, 116, 246);
+  background-color: #51C5E1;
   font-size: 15px;
   font-weight: 700;
   font-family: "DM Sans", sans-serif;
@@ -256,3 +261,32 @@
 .vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
   color: #f4f4f5;
 }
+
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  background-image: url('https://framerusercontent.com/images/DP7HATaAgLiAGF8NsNcIWR4GNTQ.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top center;
+  width: 1000px;
+  height: auto;
+  box-shadow: none;
+}
+
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  height: 200px; 
+}
+
+@media (max-width: 768px) {
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 100%; 
+    height: 150px; 
+  }
+}
+
+@media (max-width: 480px) {
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 100%; 
+    height: 100px; 
+  }
+}
+
