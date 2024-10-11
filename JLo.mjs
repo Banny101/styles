@@ -49654,7 +49654,7 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
       ...bO(kA),
       ...EO,
     },
-    Mz = "'Open Sans', sans-serif",
+    Mz = "'Montserrat', sans-serif",
     TO = { 1: "13px", 2: "15px", 3: "18px" },
     AO = { 1: 400, 2: 600 },
     SO = { 1: "20px", 2: "22px", 3: "24px" },
