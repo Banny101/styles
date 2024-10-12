@@ -151,7 +151,7 @@ export const MultiSelectExtension = {
           background-color: #f8f9fa;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          font-family: 'Arial', sans-serif;
+          font-family: 'Montserrat', sans-serif;
           max-width: 400px;
           margin: 20px auto;
         }
@@ -389,7 +389,7 @@ export const RankOptionsExtension = {
             background-color: #f8f9fa;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-family: 'Arial', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             margin: 20px auto;
             width: 243px;
             color: black;
