@@ -130,8 +130,10 @@
 
 .vfrc-chat-input {
   background-color: #f0fcff;
-  border: 1px solid #72727a;
-  border-radius: inherit;
+}
+
+.vfrc-chat-input.c-jzUcYW  {
+  background-color: #72727a;
 }
 
 .vfrc-widget--launcher {
