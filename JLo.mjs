@@ -52609,7 +52609,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
               ? Me.jsx(hs, { onClick: i, children: "Start New Chat" })
               : Me.jsx(iG, {
                   value: d,
-                  placeholder: "Ask a question...",
+                  placeholder: "Enter your response here...",
                   autoFocus: !0,
                   onValueChange: m,
                   onSend: g,
