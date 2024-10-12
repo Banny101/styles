@@ -50198,7 +50198,7 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
         Ne.createElement("path", {
           id: "vf-close",
           d: "M13.41,12l6.3-6.29a1,1,0,1,0-1.42-1.42L12,10.59,5.71,4.29A1,1,0,0,0,4.29,5.71L10.59,12l-6.3,6.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L12,13.41l6.29,6.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z",
-          fill: "#666666",
+          fill: "#ffffff",
         })
       ),
     tY = (e) =>
@@ -50271,7 +50271,7 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
           { id: "vf-minus", fill: "none", fillRule: "evenodd" },
           Ne.createElement("path", {
             d: "M19,11H5a1,1,0,0,0,0,2H19a1,1,0,0,0,0-2Z",
-            fill: "#666666",
+            fill: "#ffffff",
           })
         )
       ),
