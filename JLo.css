@@ -293,12 +293,14 @@
   }
 }
 
-.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension)
-  .vfrc-timestamp {
-  display: none;
-}
-
+@media (max-width: 768px) {
 .vfrc-message--extension-DropdownExtension {
   max-width: 240px;
   width: 240px;
+}
+} 
+
+.vfrc-message--extension-DropdownExtension {
+  max-width: 300px;
+  width: 300px;
 }
