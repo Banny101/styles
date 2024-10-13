@@ -188,6 +188,23 @@
   color: #000000;
 }
 
+.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension)
+  .vfrc-timestamp {
+  display: none;
+}
+
+@media (max-width: 768px) {
+.vfrc-message--extension-DropdownExtension {
+  max-width: 240px;
+  width: 240px;
+}
+} 
+
+.vfrc-message--extension-DropdownExtension {
+  max-width: 300px;
+  width: 300px;
+}
+
 .c-cejRVw a {
   margin-left: 0.5ch;
   text-decoration: none;
@@ -257,11 +274,7 @@
   color: #efefef;
 }
 .vfrc-system-response--list .vfrc-message .c-kLDnXB a {
-  color: rgb(255, 255, 255);
   text-decoration: none;
-}
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
-  color: #f4f4f5;
 }
 
 .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
@@ -291,16 +304,4 @@
     width: 100%; 
     height: 100px; 
   }
-}
-
-@media (max-width: 768px) {
-.vfrc-message--extension-DropdownExtension {
-  max-width: 240px;
-  width: 240px;
-}
-} 
-
-.vfrc-message--extension-DropdownExtension {
-  max-width: 300px;
-  width: 300px;
 }
