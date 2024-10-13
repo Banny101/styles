@@ -292,3 +292,13 @@
     height: 100px; 
   }
 }
+
+.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension)
+  .vfrc-timestamp {
+  display: none;
+}
+
+.vfrc-message--extension-DropdownExtension {
+  max-width: 240px;
+  width: 240px;
+}
