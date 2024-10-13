@@ -193,16 +193,16 @@
   display: none;
 }
 
-@media (max-width: 768px) {
-.vfrc-message--extension-DropdownExtension {
-  max-width: 240px;
-  width: 240px;
-}
-} 
-
 .vfrc-message--extension-DropdownExtension {
   max-width: 280px;
-  width: 280px;
+  width: 100%; 
+}
+
+@media (max-width: 768px) {
+  .vfrc-message--extension-DropdownExtension {
+    max-width: 220px;
+    width: 100%; 
+  }
 }
 
 .c-cejRVw a {
