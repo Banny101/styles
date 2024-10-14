@@ -179,7 +179,7 @@ export const MultiSelectExtension = {
           border-color: #adb5bd;
         }
         .submit, .cancel {
-          background-color: #007bff;
+          background-color: #545857;
           border: none;
           color: white;
           padding: 10px;
@@ -193,7 +193,7 @@ export const MultiSelectExtension = {
           cursor: not-allowed;
         }
         .submit:hover:not(:disabled) {
-          background-color: #0056b3;
+          background-color: #545857;
         }
         .cancel {
           background-color: #dc3545;
@@ -412,7 +412,7 @@ export const RankOptionsExtension = {
             color: black;
           }
           .submit-button {
-            background-color: #007bff;
+            background-color: #545857;
             border: none;
             color: white;
             padding: 10px;
@@ -422,7 +422,7 @@ export const RankOptionsExtension = {
             margin-top: 10px;
           }
           .submit-button:hover {
-            background-color: #0056b3;
+            background-color: #545857;
           }
         </style>
         <h3>Drag and drop to rank options</h4>
