@@ -804,7 +804,7 @@ export const DisableInputExtension = {
     const disableInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       const shadowRoot = chatDiv?.shadowRoot;
-      
+
       shadowRoot?.querySelectorAll(".vfrc-chat-input")?.forEach((element) => {
         element.disabled = isDisabled;
         element.style.pointerEvents = isDisabled ? "none" : "auto";
@@ -815,6 +815,12 @@ export const DisableInputExtension = {
         ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
       )?.forEach((button) => {
         button.disabled = isDisabled;
+      });
+
+      shadowRoot?.querySelectorAll(".vfrc-chat-input--button.c-iSWgdS")?.forEach((button) => {
+        button.disabled = isDisabled;
+        button.style.pointerEvents = isDisabled ? "none" : "auto";
+        button.style.opacity = isDisabled ? "0.5" : "";
       });
     };
 
