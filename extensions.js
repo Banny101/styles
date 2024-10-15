@@ -424,7 +424,7 @@ export const RankOptionsExtension = {
             cursor: grab;
             color: black;
           }
-          .submit-button {
+          .rank-options-form .submit-button {
             background-color: #545857;
             border: none;
             color: white;
@@ -434,8 +434,9 @@ export const RankOptionsExtension = {
             transition: background-color 0.3s;
             margin-top: 10px;
             font-family: 'Montserrat', sans-serif; 
+            font-size: 16px; 
           }
-          .submit-button:hover {
+          .rank-options-form .submit-button:hover {
             background-color: #545857;
           }
         </style>
