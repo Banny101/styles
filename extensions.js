@@ -340,14 +340,29 @@ export const MultiSelectExtension = {
   },
 };
 
-https://www.nexusflowinnovations.com/~y
-
-export const DropdownExtension = {
-  name: "DropdownExtension",
+export const RankOptionsExtension = {
+  name: "RankOptions",
   type: "response",
-  match: ({ trace }) =>
-    trace.type === "ext_dropdown" || trace.payload.name === "ext_dropdown",
+  match: ({ trace }) => trace.type === "ext_rankoptions" || trace.payload.name === "ext_rankoptions",
   render: ({ trace, element }) => {
+    const { options } = trace.payload;
+
+    const applyGrayStyleToButton = (apply) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv) {
+        const shadowRoot = chatDiv.shadowRoot;
+        if (shadowRoot) {
+          const buttons = shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          );
+          buttons.forEach((button) => {
+            button.style.backgroundColor = apply ? "#d3d3d3" : "";
+            button.style.opacity = apply ? "0.5" : "";
+          });
+        }
+      }
+    };
+
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv) {
@@ -372,144 +387,113 @@ export const DropdownExtension = {
       }
     };
 
-    const formContainer = document.createElement("form");
+    const createForm = () => {
+      const formContainer = document.createElement("form");
+      formContainer.classList.add("rank-options-form");
 
-    const dropdownOptions = trace.payload.options || [];
+      element.innerHTML = "";
 
-    formContainer.innerHTML = `
-      <style>
-        label {
-          font-size: 0.8em;
-          color: #888;
-        }
-        input[type="text"], select {
-          width: 100%;
-          border: none;
-          border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
-          background: transparent;
-          margin: 5px 0;
-          outline: none;
-        }
-        .invalid {
-          border-color: red;
-        }
-        .submit {
-          background: linear-gradient(to right, #2e6ee1, #2e7ff1 );
-          border: none;
-          color: white;
-          padding: 10px;
-          border-radius: 5px;
-          width: 100%;
-          cursor: pointer;
-          opacity: 0.5;
-          pointer-events: none;
-        }
-        .submit.enabled {
-          opacity: 1;
-          pointer-events: auto;
-        }
-        .dropdown-container {
-          position: relative;
-        }
-        .dropdown-options {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          max-height: 150px;
-          overflow-y: auto;
-          background: white;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          z-index: 999;
-          display: none;
-        }
-        .dropdown-options div {
-          padding: 10px;
-          cursor: pointer;
-        }
-        .dropdown-options div:hover {
-          background-color: rgba(0, 0, 0, 0.1);
-        }
-      </style>
+      formContainer.innerHTML = `
+        <style>
+          .rank-options-form {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+            margin: 20px auto;
+            width: 243px;
+            color: black;
+          }
+          .rank-options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+          }
+          .rank-options-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ffffff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            cursor: grab;
+            color: black;
+          }
+          .rank-options-form .submit-button {
+            background-color: #545857;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 16px; 
+          }
+          .rank-options-form .submit-button:hover {
+            background-color: #545857;
+          }
+        </style>
+        <h3>Drag and drop to rank options</h4>
+        <ul class="rank-options-list">
+          ${options.map(option => `
+            <li data-value="${option}">
+              <span>${option}</span>
+            </li>
+          `).join('')}
+        </ul>
+        <button type="submit" class="submit-button">Submit</button>
+      `;
 
-      <label for="dropdown">Select an option</label>
-      <div class="dropdown-container">
-        <input type="text" class="dropdown-search" placeholder="Search..." autocomplete="off">
-        <div class="dropdown-options">
-          ${dropdownOptions
-            .map((option) => `<div data-value="${option}">${option}</div>`)
-            .join("")}
-        </div>
-        <input type="hidden" class="dropdown" name="dropdown" required>
-      </div><br><br>
+      formContainer.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const rankedOptions = Array.from(formContainer.querySelectorAll('.rank-options-list li'))
+          .map(li => li.dataset.value);
 
-      <input type="submit" class="submit" value="Submit">
-    `;
+        disableFooterInputs(false);
+        applyGrayStyleToButton(false);
 
-    const dropdownSearch = formContainer.querySelector(".dropdown-search");
-    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-options");
-    const hiddenDropdownInput = formContainer.querySelector(".dropdown");
-    const submitButton = formContainer.querySelector(".submit");
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { rankedOptions },
+        });
+      });
 
-    const enableSubmitButton = () => {
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      if (isValidOption) {
-        submitButton.classList.add("enabled");
-      } else {
-        submitButton.classList.remove("enabled");
-      }
+      element.appendChild(formContainer);
+
+      initializeSortable();
+
+      disableFooterInputs(true);
+      applyGrayStyleToButton(true);
     };
 
-    dropdownSearch.addEventListener("click", function () {
-      dropdownOptionsDiv.style.display =
-        dropdownOptionsDiv.style.display === "block" ? "none" : "block";
-    });
-
-    dropdownSearch.addEventListener("input", function () {
-      const filter = dropdownSearch.value.toLowerCase();
-      const options = dropdownOptionsDiv.querySelectorAll("div");
-      options.forEach((option) => {
-        const text = option.textContent.toLowerCase();
-        option.style.display = text.includes(filter) ? "" : "none";
-      });
-      dropdownOptionsDiv.style.display = "block";
-      hiddenDropdownInput.value = "";
-      enableSubmitButton();
-    });
-
-    dropdownOptionsDiv.addEventListener("click", function (event) {
-      if (event.target.tagName === "DIV") {
-        const selectedValue = event.target.getAttribute("data-value");
-        dropdownSearch.value = selectedValue;
-        hiddenDropdownInput.value = selectedValue;
-        dropdownOptionsDiv.style.display = "none";
-        enableSubmitButton();
+    function initializeSortable() {
+      const rankOptionsList = element.querySelector('.rank-options-list');
+      if (rankOptionsList) {
+        new Sortable(rankOptionsList, {
+          animation: 150,
+          onEnd: () => {}
+        });
       }
-    });
+    }
 
-    formContainer.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      const dropdown = formContainer.querySelector(".dropdown");
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-
-      if (!isValidOption) {
-        dropdownSearch.classList.add("invalid");
-        return;
-      }
-
-      formContainer.querySelector(".submit").remove();
-      disableFooterInputs(false);
-
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { dropdown: dropdown.value },
-      });
-    });
-
-    element.appendChild(formContainer);
-
-    disableFooterInputs(true);
+    if (typeof Sortable === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
+      script.onload = () => {
+        createForm();
+      };
+      script.onerror = () => {};
+      document.head.appendChild(script);
+    } else {
+      createForm();
+    }
   },
 };
 
