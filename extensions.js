@@ -151,7 +151,7 @@ export const MultiSelectExtension = {
           background-color: #f8f9fa;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          font-family: 'Montserrat', sans-serif;
+          font-family: 'Arial', sans-serif;
           max-width: 400px;
           margin: 20px auto;
         }
@@ -179,7 +179,7 @@ export const MultiSelectExtension = {
           border-color: #adb5bd;
         }
         .submit, .cancel {
-          background-color: #545857;
+          background-color: #007bff;
           border: none;
           color: white;
           padding: 10px;
@@ -187,14 +187,13 @@ export const MultiSelectExtension = {
           cursor: pointer;
           transition: background-color 0.3s;
           margin-top: 10px;
-          font-family: 'Montserrat', sans-serif; 
         }
         .submit:disabled {
           background-color: #6c757d;
           cursor: not-allowed;
         }
         .submit:hover:not(:disabled) {
-          background-color: #545857;
+          background-color: #0056b3;
         }
         .cancel {
           background-color: #dc3545;
@@ -217,18 +216,6 @@ export const MultiSelectExtension = {
           50% { transform: translateX(5px); }
           75% { transform: translateX(-5px); }
           100% { transform: translateX(0); }
-        }
-
-        @media (max-width: 600px) {
-          .multi-select-form {
-            padding: 15px;
-            max-width: 100%;
-            margin: 10px;
-          }
-          .submit, .cancel {
-            font-size: 14px;
-            padding: 8px;
-          }
         }
       </style>
       <div class="multi-select-options">
@@ -402,7 +389,7 @@ export const RankOptionsExtension = {
             background-color: #f8f9fa;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Arial', sans-serif;
             margin: 20px auto;
             width: 243px;
             color: black;
@@ -424,8 +411,8 @@ export const RankOptionsExtension = {
             cursor: grab;
             color: black;
           }
-          .rank-options-form .submit-button {
-            background-color: #545857;
+          .submit-button {
+            background-color: #007bff;
             border: none;
             color: white;
             padding: 10px;
@@ -433,11 +420,9 @@ export const RankOptionsExtension = {
             cursor: pointer;
             transition: background-color 0.3s;
             margin-top: 10px;
-            font-family: 'Montserrat', sans-serif; 
-            font-size: 16px; 
           }
-          .rank-options-form .submit-button:hover {
-            background-color: #545857;
+          .submit-button:hover {
+            background-color: #0056b3;
           }
         </style>
         <h3>Drag and drop to rank options</h4>
@@ -532,87 +517,74 @@ export const DropdownExtension = {
     const dropdownOptions = trace.payload.options || [];
 
     formContainer.innerHTML = `
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
-      
-      form {
-        width: 400px; 
-        max-width: 100%; 
-        margin: 0 auto; 
-      }
-      
-      label {
-        font-size: 0.8em;
-        color: #888;
-        font-family: 'Montserrat', sans-serif;
-      }
-      input[type="text"], select {
-        width: 100%;
-        border: none;
-        border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
-        background: transparent;
-        margin: 5px 0;
-        outline: none;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .invalid {
-        border-color: red;
-      }
-      .submit {
-        background-color: #545857;
-        border: none;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        width: 100%;
-        cursor: pointer;
-        opacity: 0.5;
-        pointer-events: none;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .submit.enabled {
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .dropdown-container {
-        position: relative;
-        width: 100%;
-      }
-      .dropdown-options {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        max-height: 150px;
-        overflow-y: auto;
-        background: white;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        z-index: 999;
-        display: none;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .dropdown-options div {
-        padding: 10px;
-        cursor: pointer;
-      }
-      .dropdown-options div:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-    </style>
-  
-    <label for="dropdown">Select an option</label>
-    <div class="dropdown-container">
-      <input type="text" class="dropdown-search" placeholder="Search..." autocomplete="off">
-      <div class="dropdown-options">
-        ${dropdownOptions
-          .map((option) => `<div data-value="${option}">${option}</div>`)
-          .join("")}
-      </div>
-      <input type="hidden" class="dropdown" name="dropdown" required>
-    </div><br><br>
-  
-    <input type="submit" class="submit" value="Submit">
-  `;  
+      <style>
+        label {
+          font-size: 0.8em;
+          color: #888;
+        }
+        input[type="text"], select {
+          width: 100%;
+          border: none;
+          border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+          background: transparent;
+          margin: 5px 0;
+          outline: none;
+        }
+        .invalid {
+          border-color: red;
+        }
+        .submit {
+          background: linear-gradient(to right, #2e6ee1, #2e7ff1 );
+          border: none;
+          color: white;
+          padding: 10px;
+          border-radius: 5px;
+          width: 100%;
+          cursor: pointer;
+          opacity: 0.5;
+          pointer-events: none;
+        }
+        .submit.enabled {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        .dropdown-container {
+          position: relative;
+        }
+        .dropdown-options {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          max-height: 150px;
+          overflow-y: auto;
+          background: white;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          z-index: 999;
+          display: none;
+        }
+        .dropdown-options div {
+          padding: 10px;
+          cursor: pointer;
+        }
+        .dropdown-options div:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      </style>
+
+      <label for="dropdown">Select an option</label>
+      <div class="dropdown-container">
+        <input type="text" class="dropdown-search" placeholder="Search..." autocomplete="off">
+        <div class="dropdown-options">
+          ${dropdownOptions
+            .map((option) => `<div data-value="${option}">${option}</div>`)
+            .join("")}
+        </div>
+        <input type="hidden" class="dropdown" name="dropdown" required>
+      </div><br><br>
+
+      <input type="submit" class="submit" value="Submit">
+    `;
 
     const dropdownSearch = formContainer.querySelector(".dropdown-search");
     const dropdownOptionsDiv = formContainer.querySelector(".dropdown-options");
@@ -678,131 +650,5 @@ export const DropdownExtension = {
     element.appendChild(formContainer);
 
     disableFooterInputs(true);
-  },
-};
-
-export const FileUploadExtension = {
-  name: "FileUpload",
-  type: "response",
-  match: ({ trace }) =>
-    trace.type === "ext_fileUpload" || trace.payload.name === "ext_fileUpload",
-  render: ({ trace, element }) => {
-    const fileUploadContainer = document.createElement("div");
-    fileUploadContainer.innerHTML = `
-      <style>
-        .my-file-upload {
-          border: 2px dashed rgba(46, 110, 225, 0.3);
-          padding: 20px;
-          text-align: center;
-          cursor: pointer;
-        }
-      </style>
-      <div class='my-file-upload'>Drag and drop a file here or click to upload</div>
-      <input type='file' style='display: none;'>
-    `;
-
-    const fileInput = fileUploadContainer.querySelector("input[type=file]");
-    const fileUploadBox = fileUploadContainer.querySelector(".my-file-upload");
-
-    fileUploadBox.addEventListener("click", function () {
-      fileInput.click();
-    });
-
-    fileInput.addEventListener("change", function () {
-      const file = fileInput.files[0];
-      console.log("File selected:", file);
-
-      fileUploadContainer.innerHTML = `<img src="https://s3.amazonaws.com/com.voiceflow.studio/share/upload/upload.gif" alt="Upload" width="50" height="50">`;
-
-      var data = new FormData();
-      data.append("file", file);
-
-      fetch("https://tmpfiles.org/api/v1/upload", {
-        method: "POST",
-        body: data,
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Upload failed: " + response.statusText);
-          }
-        })
-        .then((result) => {
-          fileUploadContainer.innerHTML =
-            '<img src="https://s3.amazonaws.com/com.voiceflow.studio/share/check/check.gif" alt="Done" width="50" height="50">';
-          console.log("File uploaded:", result.data.url);
-          window.voiceflow.chat.interact({
-            type: "complete",
-            payload: {
-              file: result.data.url.replace(
-                "https://tmpfiles.org/",
-                "https://tmpfiles.org/dl/"
-              ),
-            },
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-          fileUploadContainer.innerHTML = "<div>Error during upload</div>";
-        });
-    });
-
-    element.appendChild(fileUploadContainer);
-  },
-};
- 
-export const DelayEffectExtension = {
-  name: "DelayEffect",
-  type: "effect",
-  match: ({ trace }) => trace.type === "ext_delay" || trace.payload.name === "ext_delay",
-  effect: async ({ trace }) => {
-    const { delay } = trace.payload;
-
-    await new Promise(resolve => setTimeout(resolve, delay));
-
-    window.voiceflow.chat.interact({ type: "complete" });
-  }
-};
-
-export const CalendlyExtension = {
-  name: "Calendly",
-  type: "effect",
-  match: ({ trace }) => {
-    return (
-      trace.type === "ext_calendly" || trace.payload.name === "ext_calendly"
-    );
-  },
-  effect: ({ trace }) => {
-    const { url } = trace.payload;
-    if (url) {
-      Calendly.initPopupWidget({ url });
-    }
-  },
-};
-
-export const VideoExtension = {
-  name: "Video",
-  type: "response",
-  match: ({ trace }) =>
-    trace.type === "ext_video" || trace.payload.name === "ext_video",
-  render: ({ trace, element }) => {
-    const videoElement = document.createElement("video");
-    const { videoURL, autoplay, controls } = trace.payload;
-
-    videoElement.width = 240;
-    videoElement.src = videoURL;
-
-    if (autoplay) {
-      videoElement.setAttribute("autoplay", "");
-    }
-    if (controls) {
-      videoElement.setAttribute("controls", "");
-    }
-
-    videoElement.addEventListener("ended", function () {
-      window.voiceflow.chat.interact({ type: "complete" });
-    });
-    element.appendChild(videoElement);
   },
 };
