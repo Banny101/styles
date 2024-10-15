@@ -98,7 +98,7 @@ export const MultiSelectExtension = {
   render: ({ trace, element }) => {
     const { options, maxSelections } = trace.payload;
     const multiSelectContainer = document.createElement("form");
-    multiSelectContainer.classList.add("multi-select-form");
+    multiSelectContainer.classList.add("multi-select-form-unique");
 
     const applyGrayStyleToButton = (apply) => {
       const chatDiv = document.getElementById("voiceflow-chat");
@@ -144,23 +144,25 @@ export const MultiSelectExtension = {
 
     multiSelectContainer.innerHTML = `
       <style>
-        .multi-select-form {
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+        
+        .multi-select-form-unique {
           display: flex;
           flex-direction: column;
           padding: 20px;
           background-color: #f8f9fa;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          font-family: 'Arial', sans-serif;
+          font-family: 'Montserrat', sans-serif;
           max-width: 400px;
           margin: 20px auto;
         }
-        .multi-select-options {
+        .multi-select-options-unique {
           display: flex;
           flex-direction: column;
           margin-bottom: 20px;
         }
-        .multi-select-options label {
+        .multi-select-options-unique label {
           display: flex;
           align-items: center;
           margin-bottom: 10px;
@@ -170,15 +172,16 @@ export const MultiSelectExtension = {
           border: 1px solid #ced4da;
           cursor: pointer;
           transition: background-color 0.3s, border-color 0.3s;
+          font-family: 'Montserrat', sans-serif;
         }
-        .multi-select-options input[type="checkbox"] {
+        .multi-select-options-unique input[type="checkbox"] {
           margin-right: 10px;
         }
-        .multi-select-options label:hover {
+        .multi-select-options-unique label:hover {
           background-color: #e9ecef;
           border-color: #adb5bd;
         }
-        .submit, .cancel {
+        .submit-unique, .cancel-unique {
           background-color: #007bff;
           border: none;
           color: white;
@@ -187,28 +190,30 @@ export const MultiSelectExtension = {
           cursor: pointer;
           transition: background-color 0.3s;
           margin-top: 10px;
+          font-family: 'Montserrat', sans-serif;
         }
-        .submit:disabled {
+        .submit-unique:disabled {
           background-color: #6c757d;
           cursor: not-allowed;
         }
-        .submit:hover:not(:disabled) {
+        .submit-unique:hover:not(:disabled) {
           background-color: #0056b3;
         }
-        .cancel {
+        .cancel-unique {
           background-color: #dc3545;
         }
-        .cancel:hover {
+        .cancel-unique:hover {
           background-color: #c82333;
         }
-        .button-group {
+        .button-group-unique {
           display: flex;
           justify-content: space-between;
         }
-        .error-message {
+        .error-message-unique {
           color: #dc3545;
           font-size: 0.9em;
           margin-bottom: 10px;
+          font-family: 'Montserrat', sans-serif;
         }
         @keyframes shake {
           0% { transform: translateX(0); }
@@ -218,7 +223,7 @@ export const MultiSelectExtension = {
           100% { transform: translateX(0); }
         }
       </style>
-      <div class="multi-select-options">
+      <div class="multi-select-options-unique">
         ${options
           .map(
             (option) => `
@@ -230,18 +235,18 @@ export const MultiSelectExtension = {
           )
           .join("")}
       </div>
-      <div class="error-message" style="display: none;"></div>
-      <div class="button-group">
-        <button type="submit" class="submit" disabled>Select</button>
-        <button type="button" class="cancel">Cancel</button>
+      <div class="error-message-unique" style="display: none;"></div>
+      <div class="button-group-unique">
+        <button type="submit" class="submit-unique" disabled>Select</button>
+        <button type="button" class="cancel-unique">Cancel</button>
       </div>
     `;
 
     const optionsContainer = multiSelectContainer.querySelector(
-      ".multi-select-options"
+      ".multi-select-options-unique"
     );
-    const errorMessage = multiSelectContainer.querySelector(".error-message");
-    const submitButton = multiSelectContainer.querySelector(".submit");
+    const errorMessage = multiSelectContainer.querySelector(".error-message-unique");
+    const submitButton = multiSelectContainer.querySelector(".submit-unique");
     const checkboxes = optionsContainer.querySelectorAll(
       'input[type="checkbox"]'
     );
@@ -304,7 +309,7 @@ export const MultiSelectExtension = {
       resetForm();
     });
 
-    const cancelButton = multiSelectContainer.querySelector(".cancel");
+    const cancelButton = multiSelectContainer.querySelector(".cancel-unique");
     cancelButton.addEventListener("click", (event) => {
       event.preventDefault();
 
@@ -531,18 +536,18 @@ export const DropdownExtension = {
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
       
-      form {
+      .dropdown-extension-form {
         width: 400px; 
         max-width: 100%; 
         margin: 0 auto; 
       }
       
-      label {
+      .dropdown-extension-label {
         font-size: 0.8em;
         color: #888;
         font-family: 'Montserrat', sans-serif;
       }
-      input[type="text"], select {
+      .dropdown-extension-input[type="text"], .dropdown-extension-select {
         width: 100%;
         border: none;
         border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
@@ -551,10 +556,10 @@ export const DropdownExtension = {
         outline: none;
         font-family: 'Montserrat', sans-serif;
       }
-      .invalid {
+      .dropdown-extension-invalid {
         border-color: red;
       }
-      .submit {
+      .dropdown-extension-submit {
         background-color: #545857;
         border: none;
         color: white;
@@ -566,15 +571,15 @@ export const DropdownExtension = {
         pointer-events: none;
         font-family: 'Montserrat', sans-serif;
       }
-      .submit.enabled {
+      .dropdown-extension-submit.enabled {
         opacity: 1;
         pointer-events: auto;
       }
-      .dropdown-container {
+      .dropdown-extension-container {
         position: relative;
         width: 100%;
       }
-      .dropdown-options {
+      .dropdown-extension-options {
         position: absolute;
         top: 100%;
         left: 0;
@@ -587,33 +592,33 @@ export const DropdownExtension = {
         display: none;
         font-family: 'Montserrat', sans-serif;
       }
-      .dropdown-options div {
+      .dropdown-extension-options div {
         padding: 10px;
         cursor: pointer;
       }
-      .dropdown-options div:hover {
+      .dropdown-extension-options div:hover {
         background-color: rgba(0, 0, 0, 0.1);
       }
     </style>
   
-    <label for="dropdown">Select an option</label>
-    <div class="dropdown-container">
-      <input type="text" class="dropdown-search" placeholder="Search..." autocomplete="off">
-      <div class="dropdown-options">
+    <label class="dropdown-extension-label" for="dropdown">Select an option</label>
+    <div class="dropdown-extension-container">
+      <input type="text" class="dropdown-extension-input dropdown-extension-search" placeholder="Search..." autocomplete="off">
+      <div class="dropdown-extension-options">
         ${dropdownOptions
           .map((option) => `<div data-value="${option}">${option}</div>`)
           .join("")}
       </div>
-      <input type="hidden" class="dropdown" name="dropdown" required>
+      <input type="hidden" class="dropdown-extension-input dropdown-extension-hidden" name="dropdown" required>
     </div><br><br>
   
-    <input type="submit" class="submit" value="Submit">
+    <input type="submit" class="dropdown-extension-submit" value="Submit">
   `;  
 
-    const dropdownSearch = formContainer.querySelector(".dropdown-search");
-    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-options");
-    const hiddenDropdownInput = formContainer.querySelector(".dropdown");
-    const submitButton = formContainer.querySelector(".submit");
+    const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
+    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
+    const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
+    const submitButton = formContainer.querySelector(".dropdown-extension-submit");
 
     const enableSubmitButton = () => {
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
@@ -654,15 +659,15 @@ export const DropdownExtension = {
     formContainer.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      const dropdown = formContainer.querySelector(".dropdown");
+      const dropdown = formContainer.querySelector(".dropdown-extension-hidden");
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
 
       if (!isValidOption) {
-        dropdownSearch.classList.add("invalid");
+        dropdownSearch.classList.add("dropdown-extension-invalid");
         return;
       }
 
-      formContainer.querySelector(".submit").remove();
+      formContainer.querySelector(".dropdown-extension-submit").remove();
       disableFooterInputs(false);
 
       window.voiceflow.chat.interact({
