@@ -187,6 +187,7 @@ export const MultiSelectExtension = {
           cursor: pointer;
           transition: background-color 0.3s;
           margin-top: 10px;
+          font-family: 'Montserrat', sans-serif; 
         }
         .submit:disabled {
           background-color: #6c757d;
