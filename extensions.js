@@ -389,7 +389,7 @@ export const RankOptionsExtension = {
             background-color: #f8f9fa;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-family: 'Arial', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             margin: 20px auto;
             width: 243px;
             color: black;
@@ -411,8 +411,8 @@ export const RankOptionsExtension = {
             cursor: grab;
             color: black;
           }
-          .submit-button {
-            background-color: #007bff;
+          .rank-options-form .submit-button {
+            background-color: #545857;
             border: none;
             color: white;
             padding: 10px;
@@ -420,9 +420,11 @@ export const RankOptionsExtension = {
             cursor: pointer;
             transition: background-color 0.3s;
             margin-top: 10px;
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 16px; 
           }
-          .submit-button:hover {
-            background-color: #0056b3;
+          .rank-options-form .submit-button:hover {
+            background-color: #545857;
           }
         </style>
         <h3>Drag and drop to rank options</h4>
