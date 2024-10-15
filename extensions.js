@@ -217,6 +217,18 @@ export const MultiSelectExtension = {
           75% { transform: translateX(-5px); }
           100% { transform: translateX(0); }
         }
+
+        @media (max-width: 600px) {
+          .multi-select-form {
+            padding: 15px;
+            max-width: 100%;
+            margin: 10px;
+          }
+          .submit, .cancel {
+            font-size: 14px;
+            padding: 8px;
+          }
+        }
       </style>
       <div class="multi-select-options">
         ${options
