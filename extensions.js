@@ -508,6 +508,15 @@ export const DropdownExtension = {
             button.disabled = isDisabled;
             button.style.pointerEvents = isDisabled ? "none" : "auto";
           });
+
+          const additionalButtons = shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          );
+          additionalButtons.forEach((button) => {
+            button.disabled = isDisabled;
+            button.style.pointerEvents = isDisabled ? "none" : "auto";
+            button.style.opacity = isDisabled ? "0.5" : "";
+          });
         }
       }
     };
@@ -517,74 +526,87 @@ export const DropdownExtension = {
     const dropdownOptions = trace.payload.options || [];
 
     formContainer.innerHTML = `
-      <style>
-        label {
-          font-size: 0.8em;
-          color: #888;
-        }
-        input[type="text"], select {
-          width: 100%;
-          border: none;
-          border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
-          background: transparent;
-          margin: 5px 0;
-          outline: none;
-        }
-        .invalid {
-          border-color: red;
-        }
-        .submit {
-          background: linear-gradient(to right, #2e6ee1, #2e7ff1 );
-          border: none;
-          color: white;
-          padding: 10px;
-          border-radius: 5px;
-          width: 100%;
-          cursor: pointer;
-          opacity: 0.5;
-          pointer-events: none;
-        }
-        .submit.enabled {
-          opacity: 1;
-          pointer-events: auto;
-        }
-        .dropdown-container {
-          position: relative;
-        }
-        .dropdown-options {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          max-height: 150px;
-          overflow-y: auto;
-          background: white;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          z-index: 999;
-          display: none;
-        }
-        .dropdown-options div {
-          padding: 10px;
-          cursor: pointer;
-        }
-        .dropdown-options div:hover {
-          background-color: rgba(0, 0, 0, 0.1);
-        }
-      </style>
-
-      <label for="dropdown">Select an option</label>
-      <div class="dropdown-container">
-        <input type="text" class="dropdown-search" placeholder="Search..." autocomplete="off">
-        <div class="dropdown-options">
-          ${dropdownOptions
-            .map((option) => `<div data-value="${option}">${option}</div>`)
-            .join("")}
-        </div>
-        <input type="hidden" class="dropdown" name="dropdown" required>
-      </div><br><br>
-
-      <input type="submit" class="submit" value="Submit">
-    `;
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+      
+      form {
+        width: 400px; 
+        max-width: 100%; 
+        margin: 0 auto; 
+      }
+      
+      label {
+        font-size: 0.8em;
+        color: #888;
+        font-family: 'Montserrat', sans-serif;
+      }
+      input[type="text"], select {
+        width: 100%;
+        border: none;
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+        background: transparent;
+        margin: 5px 0;
+        outline: none;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .invalid {
+        border-color: red;
+      }
+      .submit {
+        background-color: #545857;
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+        opacity: 0.5;
+        pointer-events: none;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .submit.enabled {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .dropdown-container {
+        position: relative;
+        width: 100%;
+      }
+      .dropdown-options {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        max-height: 150px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        display: none;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .dropdown-options div {
+        padding: 10px;
+        cursor: pointer;
+      }
+      .dropdown-options div:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  
+    <label for="dropdown">Select an option</label>
+    <div class="dropdown-container">
+      <input type="text" class="dropdown-search" placeholder="Search..." autocomplete="off">
+      <div class="dropdown-options">
+        ${dropdownOptions
+          .map((option) => `<div data-value="${option}">${option}</div>`)
+          .join("")}
+      </div>
+      <input type="hidden" class="dropdown" name="dropdown" required>
+    </div><br><br>
+  
+    <input type="submit" class="submit" value="Submit">
+  `;  
 
     const dropdownSearch = formContainer.querySelector(".dropdown-search");
     const dropdownOptionsDiv = formContainer.querySelector(".dropdown-options");
@@ -652,7 +674,6 @@ export const DropdownExtension = {
     disableFooterInputs(true);
   },
 };
-
  
 export const DelayEffectExtension = {
   name: "DelayEffect",
