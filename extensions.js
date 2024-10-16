@@ -395,7 +395,6 @@ export const RankOptionsExtension = {
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-family: 'Montserrat', sans-serif;
-            margin: 20px auto;
             width: 243px;
             color: black;
           }
