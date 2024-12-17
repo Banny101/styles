@@ -51105,43 +51105,50 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
       "onChange",
       "onHeightChange",
     ],
-    FY = function (t, n) {
-      var i = t.cacheMeasurements,
-        l = t.maxRows,
-        c = t.minRows,
-        V = t.onChange,
-        d = V === void 0 ? sk : V,
-        m = t.onHeightChange,
-        g = m === void 0 ? sk : m,
-        T = SY(t, PY),
-        S = T.value !== void 0,
-        x = Ne.useRef(null),
-        w = RY(x, n),
-        N = Ne.useRef(0),
-        D = Ne.useRef(),
-        U = function () {
-          var z = x.current,
-            ie = i && D.current ? D.current : LY(z);
-          if (ie) {
-            D.current = ie;
-            var le = wY(ie, z.value || z.placeholder || "x", c, l),
-              B = le[0],
-              ce = le[1];
-            N.current !== B &&
-              ((N.current = B),
-              z.style.setProperty("height", B + "px", "important"),
-              g(B, { rowHeight: ce }));
-          }
-        },
-        Y = function (z) {
-          S || U(), d(z);
-        };
-      return (
-        Ne.useLayoutEffect(U),
-        IY(U),
-        MY(U),
-        Ne.createElement("textarea", YA({}, T, { onChange: Y, ref: w }))
-      );
+    xX = function (t, n) {
+  var i = t.cacheMeasurements,
+    l = t.maxRows,
+    c = t.minRows,
+    h = t.onChange,
+    d = h === void 0 ? O2 : h,
+    g = t.onHeightChange,
+    E = g === void 0 ? O2 : g,
+    S = pX(t, RX),
+    C = S.value !== void 0,
+    x = $e.useRef(null),
+    D = gX(x, n),
+    L = $e.useRef(0),
+    w = $e.useRef(),
+    H = function () {
+      var V = x.current,
+        oe = i && w.current ? w.current : AX(V);
+      if (oe) {
+        w.current = oe;
+        var re = EX(oe, V.value || V.placeholder || "x", c, l),
+          U = re[0],
+          te = re[1];
+        L.current !== U &&
+          ((L.current = U),
+          V.style.setProperty("height", U + "px", "important"),
+          E(U, { rowHeight: te }));
+      }
+    },
+    q = function (V) {
+      // Check if the input value exceeds 200 characters
+      if (V.target.value.length > 200) {
+        V.target.value = V.target.value.slice(0, 200); // Limit to 200 characters
+      }
+      C || H();
+      d(V);
+    };
+
+  return (
+    $e.useLayoutEffect(H),
+    CX(H),
+    OX(H),
+    $e.createElement("textarea", fA({}, S, { onChange: q, ref: D }))
+  );
+};
     },
     UY = Ne.forwardRef(FY);
   const ck = {
