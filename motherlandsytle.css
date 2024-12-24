@@ -1,17 +1,12 @@
 /* Main chat container and fonts */
 .voiceflow-chat {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
-  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
-    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* Widget styling */
 .vfrc-widget--chat {
   animation: fadeInChat 1s ease-out;
-  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
-    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
-    sans-serif;
 }
 
 /* Header section */
@@ -37,66 +32,9 @@
   color: #666666;
 }
 
-/* Icons */
-.vfrc-icon.c-dhzjXW-iPJLV-css {
-  width: 24px;
-  height: 24px;
-}
-
-/* Avatar styling */
-.c-kIbiaN-eyfkxi-size-large {
-  width: 72px;
-  height: 72px;
-  background-color: transparent !important;
-}
-
-.c-iCDrnV .c-kIbiaN {
-  width: 40px;
-  height: 40px;
-  background-color: transparent !important;
-}
-
-.c-kIbiaN-icyFRzP-css img {
-  background-color: transparent !important;
-}
-
-.c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
-  background-color: transparent !important;
-  width: 32px;
-  height: 32px;
-}
-
-/* Header buttons */
-.c-dzcdPv .vfrc-header--button {
-  border: none;
-  padding: 0px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.8);
-  border-radius: 8px;
-  height: 32px;
-  width: 32px;
-  transition: all 100ms ease 0s;
-}
-
-/* Chat dialog */
-.vfrc-chat-dialog {
-  flex: 1 1 0px;
-  overflow: hidden;
-  min-height: 0px;
-  color: #333333;
-  position: relative;
-  direction: ltr;
-  opacity: 0;
-  transform: translateY(16px);
-  animation: 400ms ease-out 150ms 1 normal forwards running cxARAE;
-}
-
 /* Message styling */
 .vfrc-message {
   font-weight: 400;
-  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
-    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
-    sans-serif;
 }
 
 .c-PJLV-jueArD-from-system {
@@ -110,52 +48,38 @@
   color: #ffffff;
 }
 
-/* Secondary buttons */
+/* Buttons */
 .vfrc-button--secondary {
-  display: inline-block;
   border: 1px solid #145c30;
   font-size: 16px;
   font-weight: 500;
   border-radius: 20px;
   padding: 9px 13px;
-  margin: 0px;
-  box-sizing: border-box;
   background-color: transparent;
   color: #145c30;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  white-space: normal;
-  text-align: left;
 }
 
 .vfrc-button--secondary:hover {
   background-color: rgba(20, 92, 48, 0.1);
-  border-color: #145c30;
 }
 
-/* Launcher styling */
-.vfrc-widget--launcher {
-  background-color: transparent !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-
+/* Launcher and avatar styling */
+.vfrc-widget--launcher,
 .vfrc-launcher.c-bQoszf {
   background: transparent !important;
-  border: none !important;
   box-shadow: none !important;
+  border: none !important;
 }
 
-.vfrc-launcher img {
-  width: 80px !important;
-  height: 80px !important;
-  border-radius: 40px !important;
+.vfrc-launcher img,
+.vfrc-message-avatar img,
+.c-kIbiaN img,
+.vfrc-assistant-info--avatar img {
+  background: transparent !important;
   object-fit: cover !important;
-}
-
-.vfrc-launcher:hover {
-  background-color: transparent !important;
+  border-radius: 50% !important;
 }
 
 /* Chat input */
@@ -170,12 +94,6 @@
   color: #333333;
 }
 
-/* Footer */
-.vfrc-footer {
-  background-color: #ffffff;
-  border-top: solid 1px #e0e0e0;
-}
-
 /* Proactive message */
 .vfrc-proactive-message {
   background-color: rgb(255, 252, 247) !important;
@@ -184,60 +102,9 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  border-left: 1px solid #e0e0e0;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(20, 92, 48, 0.3);
-}
-
 /* Main chat background */
 .vfrc-chat {
   background-color: #ffffff;
-}
-
-/* Prompt area */
-.vfrc-prompt {
-  background-color: #ffffff;
-}
-
-.vfrc-prompt button {
-  color: #145c30;
-}
-
-.vfrc-prompt button:hover {
-  color: #9b8841;
-}
-
-/* Links */
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
-  color: #145c30;
-  text-decoration: none;
-}
-
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
-  color: #9b8841;
-}
-
-/* Remove avatar backgrounds */
-.vfrc-message-avatar,
-.c-kIbiaN,
-.vfrc-assistant-info--avatar {
-    background: transparent !important;
-    background-color: transparent !important;
-    border: none !important;
-}
-
-/* Avatar image styling */
-.vfrc-message-avatar img,
-.c-kIbiaN img,
-.vfrc-assistant-info--avatar img {
-    background: transparent !important;
-    background-color: transparent !important;
-    object-fit: cover !important;
-    border-radius: 50% !important;
 }
 
 /* Responsive design */
@@ -249,22 +116,28 @@
   }
 }
 
-@media (max-width: 767.98px) and (min-width: 576px) {
+@media (max-width: 767.98px) {
   .vfrc-widget--chat {
     width: 100% !important;
     height: 100% !important;
     border-radius: 0px !important;
   }
-}
-
-@media (max-width: 575.98px) {
-  .vfrc-widget--chat {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0px !important;
-  }
+  
   .vfrc-prompt,
   .vfrc-footer {
     border-radius: 0 !important;
   }
+}
+
+/* Remove any potential overlays */
+.c-kIbiaN::before,
+.c-kIbiaN::after,
+.vfrc-message-avatar::before,
+.vfrc-message-avatar::after,
+.vfrc-assistant-info--avatar::before,
+.vfrc-assistant-info--avatar::after,
+.vfrc-launcher::before,
+.vfrc-launcher::after {
+  display: none !important;
+  content: none !important;
 }
