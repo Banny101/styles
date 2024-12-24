@@ -1,0 +1,30 @@
+.vfrc-widget--launcher {
+  background-color: transparent;
+}
+
+.vfrc-widget--launcher {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.vfrc-launcher.c-bQoszf {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.vfrc-launcher img {
+  width: 80px;
+  height: 72px;  /* 10 percent decrease in height */
+  border-radius: 40px;
+}
+
+.vfrc-launcher:hver {
+  background-color: none;
+}
+
+.vfrc-proactive-message {
+  background-color: rgb(60, 255, 0);
+  color: black;
+}
