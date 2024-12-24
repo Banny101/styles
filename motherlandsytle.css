@@ -1,17 +1,104 @@
-/* Main chat container */
-.vfrc-chat {
-  background-color: #ffffff;
+/* Main chat container and fonts */
+.voiceflow-chat {
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
+    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
+    sans-serif;
 }
 
-/* Header styling */
+/* Widget styling */
+.vfrc-widget--chat {
+  animation: fadeInChat 1s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
+    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+/* Header section */
 .vfrc-header {
-  background-color: #145c30; /* Dark green from the website */
+  background-color: #145c30;
   height: 66px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
 }
 
-/* Message bubbles */
+.vfrc-header--title {
+  color: #ffffff;
+  font-size: 16px;
+}
+
+/* Assistant info */
+.vfrc-assistant-info--title {
+  font-size: 20px;
+  color: #333333;
+}
+
+.vfrc-assistant-info--description {
+  color: #666666;
+}
+
+/* Icons */
+.vfrc-icon.c-dhzjXW-iPJLV-css {
+  width: 24px;
+  height: 24px;
+}
+
+/* Avatar styling */
+.c-kIbiaN-eyfkxi-size-large {
+  width: 72px;
+  height: 72px;
+  background-color: transparent !important;
+}
+
+.c-iCDrnV .c-kIbiaN {
+  width: 40px;
+  height: 40px;
+  background-color: transparent !important;
+}
+
+.c-kIbiaN-icyFRzP-css img {
+  background-color: transparent !important;
+}
+
+.c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
+  background-color: transparent !important;
+  width: 32px;
+  height: 32px;
+}
+
+/* Header buttons */
+.c-dzcdPv .vfrc-header--button {
+  border: none;
+  padding: 0px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  height: 32px;
+  width: 32px;
+  transition: all 100ms ease 0s;
+}
+
+/* Chat dialog */
+.vfrc-chat-dialog {
+  flex: 1 1 0px;
+  overflow: hidden;
+  min-height: 0px;
+  color: #333333;
+  position: relative;
+  direction: ltr;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: 400ms ease-out 150ms 1 normal forwards running cxARAE;
+}
+
+/* Message styling */
+.vfrc-message {
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
+    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
 .c-PJLV-jueArD-from-system {
   background-color: #f5f5f5;
   color: #333333;
@@ -19,11 +106,59 @@
 }
 
 .c-PJLV-gJqBfM-from-user {
-  background-color: #9b8841; /* Gold/olive color */
+  background-color: #9b8841;
   color: #ffffff;
 }
 
-/* Input area */
+/* Secondary buttons */
+.vfrc-button--secondary {
+  display: inline-block;
+  border: 1px solid #145c30;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 9px 13px;
+  margin: 0px;
+  box-sizing: border-box;
+  background-color: transparent;
+  color: #145c30;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  white-space: normal;
+  text-align: left;
+}
+
+.vfrc-button--secondary:hover {
+  background-color: rgba(20, 92, 48, 0.1);
+  border-color: #145c30;
+}
+
+/* Launcher styling */
+.vfrc-widget--launcher {
+  background-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.vfrc-launcher.c-bQoszf {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.vfrc-launcher img {
+  width: 80px !important;
+  height: 80px !important;
+  border-radius: 40px !important;
+  object-fit: cover !important;
+}
+
+.vfrc-launcher:hover {
+  background-color: transparent !important;
+}
+
+/* Chat input */
 .vfrc-chat-input {
   background-color: #ffffff;
   border-top: 1px solid #e0e0e0;
@@ -41,38 +176,12 @@
   border-top: solid 1px #e0e0e0;
 }
 
-/* Buttons */
-.vfrc-button--secondary {
-  border: 1px solid #145c30;
-  color: #145c30;
-}
-
-.vfrc-button--secondary:hover {
-  background-color: rgba(20, 92, 48, 0.1);
-  border-color: #145c30;
-}
-
-/* Title and text colors */
-.vfrc-header--title {
-  color: #ffffff;
-}
-
-.vfrc-assistant-info--title {
-  color: #333333;
-}
-
-.vfrc-assistant-info--description {
-  color: #666666;
-}
-
-/* Links */
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
-  color: #145c30;
-  text-decoration: none;
-}
-
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
-  color: #9b8841;
+/* Proactive message */
+.vfrc-proactive-message {
+  background-color: rgb(255, 252, 247) !important;
+  color: #333333 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
 }
 
 /* Scrollbar */
@@ -82,6 +191,11 @@
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(20, 92, 48, 0.3);
+}
+
+/* Main chat background */
+.vfrc-chat {
+  background-color: #ffffff;
 }
 
 /* Prompt area */
@@ -97,9 +211,60 @@
   color: #9b8841;
 }
 
-/* Widget chat container */
+/* Links */
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
+  color: #145c30;
+  text-decoration: none;
+}
+
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
+  color: #9b8841;
+}
+
+/* Remove avatar backgrounds */
+.vfrc-message-avatar,
+.c-kIbiaN,
+.vfrc-assistant-info--avatar {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* Avatar image styling */
+.vfrc-message-avatar img,
+.c-kIbiaN img,
+.vfrc-assistant-info--avatar img {
+    background: transparent !important;
+    background-color: transparent !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+/* Responsive design */
 @media screen and (min-width: 768px) {
   .vfrc-widget--chat {
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+    max-height: 725px !important;
+    width: 425px !important;
+    border-radius: 20px;
+  }
+}
+
+@media (max-width: 767.98px) and (min-width: 576px) {
+  .vfrc-widget--chat {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0px !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .vfrc-widget--chat {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0px !important;
+  }
+  .vfrc-prompt,
+  .vfrc-footer {
+    border-radius: 0 !important;
   }
 }
