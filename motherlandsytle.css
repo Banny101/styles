@@ -16,7 +16,7 @@
 
 .vfrc-launcher img {
   width: 80px;
-  height: 72px;  /* 10 percent decrease in height */
+  height: 80px;
   border-radius: 40px;
 }
 
@@ -25,6 +25,6 @@
 }
 
 .vfrc-proactive-message {
-  background-color: rgb(60, 255, 0);
+  background-color: rgb(255, 255, 255);
   color: black;
 }
