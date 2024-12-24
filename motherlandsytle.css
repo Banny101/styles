@@ -96,15 +96,36 @@
 
 /* Proactive message */
 .vfrc-proactive-message {
+  background: none !important;
+  box-shadow: none !important;
+  margin-bottom: 20px !important;
+}
+
+.vfrc-proactive-messages-container {
+  bottom: 120px !important;
+  background: transparent !important;
+}
+
+/* Message bubble styling */
+.vfrc-message-bubble {
   background-color: rgb(255, 252, 247) !important;
   color: #333333 !important;
   border-radius: 12px !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  padding: 10px 15px !important;
 }
 
 /* Main chat background */
 .vfrc-chat {
   background-color: #ffffff;
+}
+
+/* Remove all background containers and bubbles */
+.vfrc-message-container,
+.vfrc-message-wrapper,
+.vfrc-message-content {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* Responsive design */
@@ -129,7 +150,7 @@
   }
 }
 
-/* Remove any potential overlays */
+/* Remove any potential overlays and backgrounds */
 .c-kIbiaN::before,
 .c-kIbiaN::after,
 .vfrc-message-avatar::before,
@@ -137,7 +158,24 @@
 .vfrc-assistant-info--avatar::before,
 .vfrc-assistant-info--avatar::after,
 .vfrc-launcher::before,
-.vfrc-launcher::after {
+.vfrc-launcher::after,
+.vfrc-message-bubble::before,
+.vfrc-message-bubble::after {
   display: none !important;
   content: none !important;
+}
+
+/* Avatar container cleanup */
+.vfrc-message-avatar,
+.c-kIbiaN,
+.vfrc-assistant-info--avatar {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Launcher positioning */
+.vfrc-widget--launcher {
+  margin-bottom: 100px !important;
+  background: transparent !important;
 }
