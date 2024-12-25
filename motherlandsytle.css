@@ -17,6 +17,23 @@
   border-bottom-right-radius: 20px;
 }
 
+/* Header avatar */
+.vfrc-header .c-kIbiaN {
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vfrc-header .c-kIbiaN img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
 .vfrc-header--title {
   color: #ffffff;
   font-size: 16px;
@@ -32,35 +49,38 @@
   color: #666666;
 }
 
-/* Avatar base styles */
-.vfrc-assistant-info--avatar,
-.vfrc-message-avatar,
-.c-kIbiaN {
+/* Large avatar in assistant info */
+.vfrc-assistant-info--avatar {
+    width: 72px !important;
+    height: 72px !important;
+    margin-bottom: 16px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 40px !important;
-    height: 40px !important;
-    background: transparent !important;
-    border-radius: 50% !important;
-    overflow: hidden !important;
 }
 
-/* Large avatar in header */
-.c-kIbiaN-eyfkxi-size-large {
-    width: 72px !important;
-    height: 72px !important;
-}
-
-/* Avatar images */
-.vfrc-assistant-info--avatar img,
-.vfrc-message-avatar img,
-.c-kIbiaN img {
+.vfrc-assistant-info--avatar img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
     border-radius: 50% !important;
-    display: block !important;
+    object-fit: cover !important;
+}
+
+/* Message avatars */
+.vfrc-message-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vfrc-message-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
 }
 
 /* Message styling */
@@ -160,7 +180,7 @@
   background-color: #ffffff;
 }
 
-/* Message containers */
+/* Remove backgrounds from message containers */
 .vfrc-message-container,
 .vfrc-message-wrapper,
 .vfrc-message-content {
@@ -175,6 +195,36 @@
   border-radius: 12px !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
   padding: 10px 15px !important;
+}
+
+/* Remove any background colors or overlays */
+.c-kIbiaN,
+.vfrc-message-avatar,
+.vfrc-assistant-info--avatar {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+}
+
+/* Ensure images are visible */
+.c-kIbiaN img,
+.vfrc-message-avatar img,
+.vfrc-assistant-info--avatar img {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Additional avatar size variations */
+.c-iCDrnV .c-kIbiaN {
+    width: 40px !important;
+    height: 40px !important;
+}
+
+.c-kIbiaN-iiTsXc-size-small {
+    width: 32px !important;
+    height: 32px !important;
 }
 
 /* Responsive design */
@@ -205,20 +255,47 @@
   transition: transform 0.2s ease-in-out;
 }
 
-/* Fix for default avatar visibility */
-.vfrc-default-avatar {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+/* Footer styling */
+.vfrc-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
 }
 
-/* Additional avatar size variations */
-.c-iCDrnV .c-kIbiaN {
-    width: 40px !important;
-    height: 40px !important;
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  border-left: 1px solid #e0e0e0;
 }
 
-.c-kIbiaN-iiTsXc-size-small {
-    width: 32px !important;
-    height: 32px !important;
+::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 92, 48, 0.3);
+}
+
+/* Header buttons */
+.vfrc-header--button:nth-of-type(1) .vfrc-icon,
+.vfrc-header--button:nth-of-type(2) .vfrc-icon {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Prompt styling */
+.vfrc-prompt {
+    background-color: #ffffff;
+}
+
+.vfrc-prompt button {
+    color: #145c30;
+}
+
+.vfrc-prompt button:hover {
+    color: #9b8841;
+}
+
+/* Links */
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
+    color: #145c30;
+    text-decoration: none;
+}
+
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
+    color: #9b8841;
 }
