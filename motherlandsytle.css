@@ -32,6 +32,37 @@
   color: #666666;
 }
 
+/* Avatar styling */
+.c-kIbiaN, 
+.vfrc-message-avatar,
+.vfrc-assistant-info--avatar {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    overflow: visible !important;
+    width: 40px !important;
+    height: 40px !important;
+}
+
+/* Large avatar in header */
+.c-kIbiaN-eyfkxi-size-large {
+    width: 72px !important;
+    height: 72px !important;
+    background-color: transparent !important;
+}
+
+/* Avatar images */
+.c-kIbiaN img, 
+.vfrc-message-avatar img,
+.vfrc-assistant-info--avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    display: block !important;
+}
+
 /* Message styling */
 .vfrc-message {
   font-weight: 400;
@@ -65,34 +96,26 @@
   background-color: rgba(20, 92, 48, 0.1);
 }
 
-/* Launcher and avatar styling */
+/* Launcher styling */
 .vfrc-widget--launcher,
 .vfrc-launcher.c-bQoszf {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  width: 80px !important;
-  height: 80px !important;
-  position: fixed !important;
-  bottom: 20px !important;
-  right: 20px !important;
-  z-index: 9999 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: 80px !important;
+    height: 80px !important;
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
 }
 
 .vfrc-launcher img {
-  background: transparent !important;
-  object-fit: cover !important;
-  border-radius: 50% !important;
-  width: 80px !important;
-  height: 80px !important;
-}
-
-.vfrc-message-avatar img,
-.c-kIbiaN img,
-.vfrc-assistant-info--avatar img {
-  background: transparent !important;
-  object-fit: cover !important;
-  border-radius: 50% !important;
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 40px !important;
+    object-fit: cover !important;
+    background: transparent !important;
 }
 
 /* Chat input */
@@ -127,7 +150,15 @@
   background-color: #ffffff;
 }
 
-/* Remove any potential overlays */
+/* Remove backgrounds from message containers */
+.vfrc-message-container,
+.vfrc-message-wrapper,
+.vfrc-message-content {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Remove any overlays */
 .c-kIbiaN::before,
 .c-kIbiaN::after,
 .vfrc-message-avatar::before,
@@ -140,21 +171,44 @@
   content: none !important;
 }
 
-/* Avatar container cleanup */
-.vfrc-message-avatar,
-.c-kIbiaN,
-.vfrc-assistant-info--avatar {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
+/* Message bubble styling */
+.vfrc-message-bubble {
+  background-color: rgb(255, 252, 247) !important;
+  color: #333333 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  padding: 10px 15px !important;
 }
 
-/* Remove backgrounds from message containers */
-.vfrc-message-container,
-.vfrc-message-wrapper,
-.vfrc-message-content {
-  background: transparent !important;
-  box-shadow: none !important;
+/* Footer styling */
+.vfrc-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  border-left: 1px solid #e0e0e0;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 92, 48, 0.3);
+}
+
+/* Hover effects */
+.vfrc-launcher:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Links */
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
+  color: #145c30;
+  text-decoration: none;
+}
+
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
+  color: #9b8841;
 }
 
 /* Responsive design */
@@ -179,26 +233,35 @@
   }
 }
 
-/* Hover effect for launcher */
-.vfrc-launcher:hover {
-  transform: scale(1.05);
-  transition: transform 0.2s ease-in-out;
+/* Additional avatar size variations */
+.c-iCDrnV .c-kIbiaN {
+    width: 40px !important;
+    height: 40px !important;
+    background-color: transparent !important;
 }
 
-/* Additional fixes for any potential overlay issues */
-.vfrc-widget--launcher {
-  background: transparent !important;
+.c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
+    width: 32px !important;
+    height: 32px !important;
+    background-color: transparent !important;
 }
 
-.vfrc-launcher {
-  background: transparent !important;
+/* Header buttons */
+.vfrc-header--button:nth-of-type(1) .vfrc-icon,
+.vfrc-header--button:nth-of-type(2) .vfrc-icon {
+    width: 24px !important;
+    height: 24px !important;
 }
 
-/* Message bubble styling */
-.vfrc-message-bubble {
-  background-color: rgb(255, 252, 247) !important;
-  color: #333333 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
-  padding: 10px 15px !important;
+/* Prompt styling */
+.vfrc-prompt {
+    background-color: #ffffff;
+}
+
+.vfrc-prompt button {
+    color: #145c30;
+}
+
+.vfrc-prompt button:hover {
+    color: #9b8841;
 }
