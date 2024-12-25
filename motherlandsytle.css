@@ -83,8 +83,8 @@
   background: transparent !important;
   object-fit: cover !important;
   border-radius: 50% !important;
-  width: 100px !important;
-  height: 100px !important;
+  width: 80px !important;
+  height: 80px !important;
 }
 
 .vfrc-message-avatar img,
