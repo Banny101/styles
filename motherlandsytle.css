@@ -1,9 +1,7 @@
 /* Main chat container and fonts */
 .voiceflow-chat {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
-  font-family: -apple-system, BlinkMacSystemFont, "Apple Color Emoji",
-    "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", Roboto, Helvetica, Arial,
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* Widget styling */
@@ -11,16 +9,12 @@
   animation: fadeInChat 1s ease-out;
 }
 
-/* Avatar base styles - for all avatar instances */
-.c-kIbiaN, 
-.vfrc-message-avatar,
-.vfrc-assistant-info--avatar {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: transparent !important;
-    border: none !important;
-    overflow: visible !important;
+/* Header section */
+.vfrc-header {
+  background-color: #145c30;
+  height: 66px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 /* Header avatar */
@@ -28,46 +22,16 @@
     width: 32px !important;
     height: 32px !important;
     margin-right: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-/* Large avatar in assistant info */
-.c-kIbiaN-eyfkxi-size-large {
-    width: 72px !important;
-    height: 72px !important;
-    margin-bottom: 16px !important;
-}
-
-/* Message avatar */
-.c-iCDrnV .c-kIbiaN {
-    width: 40px !important;
-    height: 40px !important;
-}
-
-/* Small avatar */
-.c-kIbiaN-iiTsXc-size-small {
-    width: 32px !important;
-    height: 32px !important;
-}
-
-/* All avatar images */
-.c-kIbiaN img, 
-.vfrc-message-avatar img,
-.vfrc-assistant-info--avatar img {
+.vfrc-header .c-kIbiaN img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
     border-radius: 50% !important;
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Header section */
-.vfrc-header {
-  background-color: rgb(169,114,246);
-  height: 66px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+    object-fit: cover !important;
 }
 
 .vfrc-header--title {
@@ -78,11 +42,45 @@
 /* Assistant info */
 .vfrc-assistant-info--title {
   font-size: 20px;
-  color: #ffffff;
+  color: #333333;
 }
 
 .vfrc-assistant-info--description {
-  color: #ffffff;
+  color: #666666;
+}
+
+/* Large avatar in assistant info */
+.vfrc-assistant-info--avatar {
+    width: 72px !important;
+    height: 72px !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vfrc-assistant-info--avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Message avatars */
+.vfrc-message-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vfrc-message-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
 }
 
 /* Message styling */
@@ -91,35 +89,31 @@
 }
 
 .c-PJLV-jueArD-from-system {
-  background-color: #27272a;
-  color: #ffffff;
+  background-color: #f5f5f5;
+  color: #333333;
   font-size: 15px;
 }
 
 .c-PJLV-gJqBfM-from-user {
-  background-color: rgb(87,12,192);
+  background-color: #9b8841;
   color: #ffffff;
 }
 
 /* Buttons */
 .vfrc-button--secondary {
-  display: inline-block;
-  border: 1px solid rgba(0, 43, 69, 0.45);
+  border: 1px solid #145c30;
   font-size: 16px;
   font-weight: 500;
   border-radius: 20px;
   padding: 9px 13px;
-  margin: 0px;
-  box-sizing: border-box;
   background-color: transparent;
-  color: #002b45;
+  color: #145c30;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
 
 .vfrc-button--secondary:hover {
-  background-color: rgba(0, 43, 69, 0.1);
-  border-color: rgba(0, 43, 69, 0.7);
+  background-color: rgba(20, 92, 48, 0.1);
 }
 
 /* Launcher styling */
@@ -128,16 +122,19 @@
     bottom: 20px !important;
     right: 20px !important;
     z-index: 9999 !important;
-    width: 80px !important;
-    height: 80px !important;
+    width: 100px !important;
+    height: 100px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     background: transparent !important;
-    box-shadow: none !important;
     border: none !important;
+    box-shadow: none !important;
 }
 
 .vfrc-launcher {
-    width: 80px !important;
-    height: 80px !important;
+    width: 100px !important;
+    height: 100px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -153,14 +150,14 @@
 
 /* Chat input */
 .vfrc-chat-input {
-  background-color: #160330;
-  border-top: 1px solid rgb(44, 6, 96);
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
 }
 
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
-  background-color: rgb(22, 3, 48) !important;
-  color: #ffffff;
+  background-color: #ffffff !important;
+  color: #333333;
 }
 
 /* Proactive message */
@@ -180,63 +177,54 @@
 
 /* Main chat background */
 .vfrc-chat {
-  background-color: rgb(0, 0, 0);
+  background-color: #ffffff;
 }
 
-/* Remove any overlays or backgrounds */
-.c-kIbiaN::before,
-.c-kIbiaN::after,
-.vfrc-message-avatar::before,
-.vfrc-message-avatar::after,
-.vfrc-assistant-info--avatar::before,
-.vfrc-assistant-info--avatar::after {
-    display: none !important;
-    content: none !important;
+/* Remove backgrounds from message containers */
+.vfrc-message-container,
+.vfrc-message-wrapper,
+.vfrc-message-content {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-/* Footer */
-.vfrc-footer {
-  background-color: #000000;
-  border-top: solid 1px rgb(44, 6, 96);
+/* Message bubble styling */
+.vfrc-message-bubble {
+  background-color: rgb(255, 252, 247) !important;
+  color: #333333 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  padding: 10px 15px !important;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  border-left: 1px solid #000000;
+/* Remove any background colors or overlays */
+.c-kIbiaN,
+.vfrc-message-avatar,
+.vfrc-assistant-info--avatar {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
+/* Ensure images are visible */
+.c-kIbiaN img,
+.vfrc-message-avatar img,
+.vfrc-assistant-info--avatar img {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
 }
 
-/* Prompt */
-.vfrc-prompt {
-  background-color: #000000;
+/* Additional avatar size variations */
+.c-iCDrnV .c-kIbiaN {
+    width: 40px !important;
+    height: 40px !important;
 }
 
-.vfrc-prompt button {
-  color: #ffffff;
-}
-
-.vfrc-prompt button:hover {
-  color: #efefef;
-}
-
-/* Links */
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
-  color: rgb(0, 174, 255);
-  text-decoration: none;
-}
-
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
-  color: #00c3ff;
-}
-
-/* Header buttons */
-.vfrc-header--button:nth-of-type(1) .vfrc-icon,
-.vfrc-header--button:nth-of-type(2) .vfrc-icon {
-  width: 24px !important;
-  height: 24px !important;
+.c-kIbiaN-iiTsXc-size-small {
+    width: 32px !important;
+    height: 32px !important;
 }
 
 /* Responsive design */
@@ -261,8 +249,53 @@
   }
 }
 
-/* Hover effect */
+/* Hover effects */
 .vfrc-launcher:hover {
   transform: scale(1.05);
   transition: transform 0.2s ease-in-out;
+}
+
+/* Footer styling */
+.vfrc-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  border-left: 1px solid #e0e0e0;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 92, 48, 0.3);
+}
+
+/* Header buttons */
+.vfrc-header--button:nth-of-type(1) .vfrc-icon,
+.vfrc-header--button:nth-of-type(2) .vfrc-icon {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+/* Prompt styling */
+.vfrc-prompt {
+    background-color: #ffffff;
+}
+
+.vfrc-prompt button {
+    color: #145c30;
+}
+
+.vfrc-prompt button:hover {
+    color: #9b8841;
+}
+
+/* Links */
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
+    color: #145c30;
+    text-decoration: none;
+}
+
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
+    color: #9b8841;
 }
