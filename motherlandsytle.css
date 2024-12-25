@@ -71,9 +71,22 @@
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
+  width: 100px !important;
+  height: 100px !important;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 9999 !important;
 }
 
-.vfrc-launcher img,
+.vfrc-launcher img {
+  background: transparent !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  width: 100px !important;
+  height: 100px !important;
+}
+
 .vfrc-message-avatar img,
 .c-kIbiaN img,
 .vfrc-assistant-info--avatar img {
@@ -102,9 +115,46 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
 }
 
+/* Proactive messages container */
+.vfrc-proactive-messages-container {
+  bottom: 140px !important;
+  right: 20px !important;
+  z-index: 9998 !important;
+}
+
 /* Main chat background */
 .vfrc-chat {
   background-color: #ffffff;
+}
+
+/* Remove any potential overlays */
+.c-kIbiaN::before,
+.c-kIbiaN::after,
+.vfrc-message-avatar::before,
+.vfrc-message-avatar::after,
+.vfrc-assistant-info--avatar::before,
+.vfrc-assistant-info--avatar::after,
+.vfrc-launcher::before,
+.vfrc-launcher::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Avatar container cleanup */
+.vfrc-message-avatar,
+.c-kIbiaN,
+.vfrc-assistant-info--avatar {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Remove backgrounds from message containers */
+.vfrc-message-container,
+.vfrc-message-wrapper,
+.vfrc-message-content {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* Responsive design */
@@ -129,15 +179,26 @@
   }
 }
 
-/* Remove any potential overlays */
-.c-kIbiaN::before,
-.c-kIbiaN::after,
-.vfrc-message-avatar::before,
-.vfrc-message-avatar::after,
-.vfrc-assistant-info--avatar::before,
-.vfrc-assistant-info--avatar::after,
-.vfrc-launcher::before,
-.vfrc-launcher::after {
-  display: none !important;
-  content: none !important;
+/* Hover effect for launcher */
+.vfrc-launcher:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Additional fixes for any potential overlay issues */
+.vfrc-widget--launcher {
+  background: transparent !important;
+}
+
+.vfrc-launcher {
+  background: transparent !important;
+}
+
+/* Message bubble styling */
+.vfrc-message-bubble {
+  background-color: rgb(255, 252, 247) !important;
+  color: #333333 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  padding: 10px 15px !important;
 }
