@@ -34,9 +34,10 @@
   background-color: #145c30;
 }
 
-.c-kIbiaN-iiTsXc-size-small {
-  width: 32px !important;
-  height: 32px !important;
+.c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
+  background-color: rgb(255, 255, 255);
+  width: 32px;
+  height: 32px;
 }
 
 .c-dzcdPv .vfrc-header--button {
