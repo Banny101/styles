@@ -90,4 +90,312 @@
   width: 100%;
   background-color: transparent;
   color: rgba(0, 0, 0, 0.85);
-  transition: all 333ms ease-in-out 0
+  transition: all 333ms ease-in-out 0s;
+}
+
+.vfrc-message {
+  font-weight: 400;
+}
+
+.vfrc-button--secondary {
+  display: inline-block;
+  border: 1px solid #145c30;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 9px 13px;
+  margin: 0px;
+  box-sizing: border-box;
+  background-color: transparent;
+  color: #145c30;
+  cursor: pointer;
+  transition: background-color 50ms ease-in-out 0s,
+    border-color 100ms ease-in-out 0s;
+  white-space: normal;
+  text-align: left;
+}
+
+.vfrc-button--secondary:hover {
+  background-color: rgba(20, 92, 48, 0.1);
+  border-color: #9b8841;
+}
+
+.vfrc-header--title {
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.vfrc-widget--launcher {
+  background-color: transparent;
+}
+
+.vfrc-chat-input.c-jzUcYW {
+  border: inherit;
+  border-radius: inherit;
+}
+
+.vfrc-widget--launcher {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.vfrc-launcher.c-bQoszf {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.vfrc-launcher img {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+}
+
+.vfrc-header--button:nth-of-type(1) .vfrc-icon,
+.vfrc-header--button:nth-of-type(2) .vfrc-icon,
+.vfrc-header--button:nth-of-type(3) .vfrc-icon {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.vfrc-launcher:hover {
+  background-color: none;
+}
+
+.c-fbwYwp {
+  background-color: #145c30;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.c-cejRVw {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0 var(--space-3) 0;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17px;
+  color: #000000;
+}
+
+.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension)
+  .vfrc-timestamp {
+  display: none;
+}
+
+.vfrc-message--extension-DropdownExtension {
+  max-width: 280px;
+  width: 100%; 
+}
+
+@media (max-width: 768px) {
+  .vfrc-message--extension-DropdownExtension {
+    max-width: 220px;
+    width: 100%; 
+  }
+}
+
+.c-cejRVw a {
+  margin-left: 0.5ch;
+  text-decoration: none;
+  color: #145c30;
+}
+
+@media screen and (min-width: 768px) {
+  .vfrc-widget--chat {
+    border-radius: 20px;
+  }
+}
+
+.vfrc-chat {
+  background-color: rgb(255, 255, 255);
+}
+
+.vfrc-header {
+  background-color: #145c30;
+  height: 66px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.vfrc-footer {
+  background-color: #ffffff;
+  border-top: solid 1px rgb(255, 255, 255);
+}
+
+::-webkit-scrollbar {
+  border-left: 1px solid #145c30;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(20, 92, 48, 0.3);
+}
+
+.c-PJLV-gJqBfM-from-user {
+  background-color: #9b8841;
+  color: #ffffff;
+}
+
+.c-PJLV-jueArD-from-system {
+  background-color: #f5f5f5;
+  color: #000000;
+  font-size: 15px;
+}
+
+.vfrc-chat-input textarea,
+.vfrc-chat-input--button {
+  background-color: rgb(255, 255, 255) !important;
+  color: #000000;
+  border: 1px solid #145c30;
+}
+
+.vfrc-prompt {
+  background-color: #145c30;
+}
+
+.vfrc-prompt button {
+  color: #ffffff;
+}
+
+.vfrc-prompt button:hover {
+  color: #9b8841;
+}
+
+.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
+  text-decoration: none;
+}
+
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  background-image: url('https://framerusercontent.com/images/DP7HATaAgLiAGF8NsNcIWR4GNTQ.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top center;
+  width: 300px;
+  border-radius: 0%;
+  height: auto;
+  box-shadow: none;
+}
+
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  height: 200px; 
+}
+
+@media (max-width: 768px) {
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 100%; 
+    height: 150px; 
+  }
+}
+
+@media (max-width: 480px) {
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 100%; 
+    height: 100px; 
+  }
+}
+
+/* Header avatar */
+.vfrc-header .c-kIbiaN {
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vfrc-header .c-kIbiaN img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Large avatar in assistant info */
+.vfrc-assistant-info--avatar {
+    width: 72px !important;
+    height: 72px !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vfrc-assistant-info--avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Message avatars */
+.vfrc-message-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    margin-right: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.vfrc-message-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Launcher styling */
+.vfrc-widget--launcher {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+    width: 100px !important;
+    height: 100px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove backgrounds from message containers */
+.vfrc-message-container,
+.vfrc-message-wrapper,
+.vfrc-message-content {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Message bubble styling */
+.vfrc-message-bubble {
+  background-color: rgb(255, 252, 247) !important;
+  color: #333333 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+  padding: 10px 15px !important;
+}
+
+/* Remove any background colors or overlays */
+.c-kIbiaN,
+.vfrc-message-avatar,
+.vfrc-assistant-info--avatar {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+}
+
+/* Ensure images are visible */
+.c-kIbiaN img,
+.vfrc-message-avatar img,
+.vfrc-assistant-info--avatar img {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
