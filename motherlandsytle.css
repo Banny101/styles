@@ -1,9 +1,3 @@
-:root {
-  --primary-green: #0F4D2E;
-  --primary-gold: #B5A642;
-  --hover-gold: #998b38;
-}
-
 .voiceflow-chat {
   box-shadow: none;
 }
@@ -37,7 +31,7 @@
 }
 
 .c-kIbiaN-icyFRzP-css img {
-  background-color: var(--primary-green);
+  background-color: #0F4D2E;
 }
 
 .c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
@@ -70,20 +64,20 @@
 }
 
 .c-fYYkXN {
-  border: 1px solid var(--primary-gold);
+  border: 1px solid #0F4D2E;
 }
 
 .c-bXTvXv-lckiv-type-info {
-  background-color: var(--primary-gold);
+  background-color: #0F4D2E;
 }
 
 .c-bXTvXv-lckiv-type-info:hover {
-  background-color: var(--hover-gold);
+  background-color: #0a3621;
 }
 
 .c-bXTvXv-igaDqE-type-subtle {
   margin: 0px;
-  border: 1px solid var(--primary-gold);
+  border: 1px solid #0F4D2E;
   font-size: 16px;
   font-weight: 500;
   border-radius: 8px;
@@ -96,7 +90,7 @@
   display: block;
   width: 100%;
   background-color: transparent;
-  color: var(--primary-gold);
+  color: #0F4D2E;
   transition: all 333ms ease-in-out 0s;
 }
 
@@ -106,7 +100,7 @@
 
 .vfrc-button--secondary {
   display: inline-block;
-  border: 1px solid var(--primary-gold);
+  border: 1px solid #0F4D2E;
   font-size: 16px;
   font-weight: 500;
   border-radius: 8px;
@@ -114,7 +108,7 @@
   margin: 0px;
   box-sizing: border-box;
   background-color: transparent;
-  color: var(--primary-gold);
+  color: #0F4D2E;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: normal;
@@ -122,8 +116,9 @@
 }
 
 .vfrc-button--secondary:hover {
-  background-color: rgba(181, 166, 66, 0.1);
-  border-color: var(--primary-gold);
+  background-color: rgba(184, 134, 11, 0.1);
+  border-color: #B8860B;
+  color: #B8860B;
 }
 
 .vfrc-header--title {
@@ -133,17 +128,18 @@
 
 .vfrc-widget--launcher {
   background-color: transparent;
+  box-shadow: none;
+  border: none;
 }
 
 .vfrc-chat-input.c-jzUcYW {
-  border: 1px solid var(--primary-gold);
+  border: 2px solid #B8860B;
   border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
-.vfrc-widget--launcher {
-  background: transparent;
-  box-shadow: none;
-  border: none;
+.vfrc-chat-input.c-jzUcYW:focus-within {
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.2);
 }
 
 .vfrc-launcher.c-bQoszf {
@@ -156,7 +152,7 @@
   width: 80px;
   height: 80px;
   border-radius: 40px;
-  border: 2px solid var(--primary-gold);
+  border: 2px solid #0F4D2E;
 }
 
 .vfrc-header--button .vfrc-icon {
@@ -169,7 +165,7 @@
 }
 
 .c-fbwYwp {
-  background: linear-gradient(to right, var(--primary-green), var(--primary-gold));
+  background-color: #0F4D2E;
   font-size: 15px;
   font-weight: 700;
   color: #ffffff;
@@ -205,7 +201,7 @@
 .c-cejRVw a {
   margin-left: 0.5ch;
   text-decoration: none;
-  color: var(--primary-gold);
+  color: #0F4D2E;
 }
 
 .vfrc-chat {
@@ -213,7 +209,7 @@
 }
 
 .vfrc-header {
-  background: linear-gradient(to right, var(--primary-green), var(--primary-gold));
+  background-color: #0F4D2E;
   height: 66px;
   border-radius: 20px 20px 0 0;
 }
@@ -229,12 +225,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(181, 166, 66, 0.3);
+  background-color: #B8860B;
   border-radius: 3px;
 }
 
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9F7511;
+}
+
 .c-PJLV-gJqBfM-from-user {
-  background-color: var(--primary-gold);
+  background-color: #0F4D2E;
   color: #ffffff;
   border-radius: 12px;
 }
@@ -251,22 +251,28 @@
 .vfrc-chat-input--button {
   background-color: #ffffff !important;
   color: #000000;
-  border: 1px solid var(--primary-gold);
+  border: none !important;
   border-radius: 8px;
 }
 
 .vfrc-chat-input textarea:focus {
-  border-color: var(--primary-gold);
-  box-shadow: 0 0 0 2px rgba(181, 166, 66, 0.2);
   outline: none;
 }
 
+.vfrc-chat-input--button {
+  color: #B8860B !important;
+}
+
 .vfrc-chat-input--button:hover {
-  background-color: rgba(181, 166, 66, 0.1) !important;
+  color: #9F7511 !important;
+}
+
+.vfrc-timestamp {
+  color: #B8860B;
 }
 
 .vfrc-prompt {
-  background-color: var(--primary-gold);
+  background-color: #0F4D2E;
 }
 
 .vfrc-prompt button {
@@ -280,7 +286,7 @@
 
 .vfrc-system-response--list .vfrc-message .c-kLDnXB a {
   text-decoration: none;
-  color: var(--primary-gold);
+  color: #0F4D2E;
 }
 
 .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
@@ -308,42 +314,70 @@
   }
 }
 
-/* Additional decorative elements */
-.vfrc-widget--chat::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20px;
-  background: url('path-to-wave-pattern.png') repeat-x;
-  background-size: contain;
-  z-index: 1;
+.vfrc-chat-input textarea::placeholder {
+  color: rgba(184, 134, 11, 0.6);
 }
 
-/* Safari-specific fixes */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #B8860B;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #B8860B;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: #9F7511;
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: #9F7511;
+  transform: scale(1.1);
+}
+
+.vfrc-progress-bar {
+  background-color: rgba(184, 134, 11, 0.2);
+}
+
+.vfrc-progress-bar__fill {
+  background-color: #B8860B;
+}
+
+::selection {
+  background-color: rgba(184, 134, 11, 0.2);
+  color: #000000;
+}
+
+*:focus {
+  outline: 2px solid rgba(184, 134, 11, 0.5);
+  outline-offset: 2px;
+}
+
 @supports (-webkit-overflow-scrolling: touch) {
   .vfrc-widget--chat {
     -webkit-overflow-scrolling: touch;
   }
-}
-
-/* Hover effects for interactive elements */
-.vfrc-button--secondary:hover,
-.c-bXTvXv-igaDqE-type-subtle:hover {
-  background-color: rgba(181, 166, 66, 0.1);
-  transform: translateY(-1px);
-}
-
-/* Focus states */
-.vfrc-button--secondary:focus,
-.c-bXTvXv-igaDqE-type-subtle:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(181, 166, 66, 0.2);
-}
-
-/* Active states */
-.vfrc-button--secondary:active,
-.c-bXTvXv-igaDqE-type-subtle:active {
-  transform: translateY(1px);
 }
