@@ -4,13 +4,21 @@
 
 .vfrc-widget--chat {
   animation: fadeInChat 1s ease-out;
-  border-radius: 20px;
+  border-radius: 8px;
   overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.vfrc-widget--chat img[alt="Motherland Beauty"] {
+  width: 180px;
+  margin: 20px auto;
+  display: block;
 }
 
 .vfrc-assistant-info--title {
-  font-size: 20px;
+  font-size: 18px;
   color: #ffffff;
+  font-weight: 500;
 }
 
 .vfrc-icon.c-dhzjXW-iPJLV-css {
@@ -96,16 +104,18 @@
 
 .vfrc-message {
   font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .vfrc-button--secondary {
   display: inline-block;
   border: 1px solid #0F4D2E;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   border-radius: 8px;
-  padding: 9px 13px;
-  margin: 0px;
+  padding: 10px 15px;
+  margin: 4px 0;
   box-sizing: border-box;
   background-color: transparent;
   color: #0F4D2E;
@@ -124,6 +134,7 @@
 .vfrc-header--title {
   color: #ffffff;
   font-size: 16px;
+  font-weight: 500;
 }
 
 .vfrc-widget--launcher {
@@ -133,13 +144,16 @@
 }
 
 .vfrc-chat-input.c-jzUcYW {
-  border: 2px solid #B8860B;
+  border: 1px solid #B8860B;
   border-radius: 8px;
   transition: all 0.3s ease;
+  margin: 10px;
+  background-color: #ffffff;
 }
 
 .vfrc-chat-input.c-jzUcYW:focus-within {
   box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.2);
+  border-color: #B8860B;
 }
 
 .vfrc-launcher.c-bQoszf {
@@ -149,9 +163,9 @@
 }
 
 .vfrc-launcher img {
-  width: 80px;
-  height: 80px;
-  border-radius: 40px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
   border: 2px solid #0F4D2E;
 }
 
@@ -167,7 +181,7 @@
 .c-fbwYwp {
   background-color: #0F4D2E;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 500;
   color: #ffffff;
 }
 
@@ -175,33 +189,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0 var(--space-3) 0;
+  padding: 10px 0;
   font-size: 12px;
   font-weight: 400;
-  line-height: 17px;
-  color: #000000;
-}
-
-.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension) .vfrc-timestamp {
-  display: none;
+  line-height: 1.5;
+  color: #666666;
 }
 
 .vfrc-message--extension-DropdownExtension {
   max-width: 280px;
   width: 100%;
-}
-
-@media (max-width: 768px) {
-  .vfrc-message--extension-DropdownExtension {
-    max-width: 220px;
-    width: 100%;
-  }
-}
-
-.c-cejRVw a {
-  margin-left: 0.5ch;
-  text-decoration: none;
-  color: #0F4D2E;
 }
 
 .vfrc-chat {
@@ -211,12 +208,16 @@
 .vfrc-header {
   background-color: #0F4D2E;
   height: 66px;
-  border-radius: 20px 20px 0 0;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
 }
 
 .vfrc-footer {
   background-color: #ffffff;
   border-top: 1px solid #e0e0e0;
+  padding: 10px;
 }
 
 ::-webkit-scrollbar {
@@ -236,14 +237,18 @@
 .c-PJLV-gJqBfM-from-user {
   background-color: #0F4D2E;
   color: #ffffff;
-  border-radius: 12px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 4px 0;
 }
 
 .c-PJLV-jueArD-from-system {
   background-color: #f5f5f5;
   color: #000000;
   font-size: 15px;
-  border-radius: 12px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 4px 0;
   border: 1px solid #e0e0e0;
 }
 
@@ -253,6 +258,8 @@
   color: #000000;
   border: none !important;
   border-radius: 8px;
+  font-size: 15px;
+  padding: 12px;
 }
 
 .vfrc-chat-input textarea:focus {
@@ -261,6 +268,7 @@
 
 .vfrc-chat-input--button {
   color: #B8860B !important;
+  padding: 8px;
 }
 
 .vfrc-chat-input--button:hover {
@@ -269,49 +277,23 @@
 
 .vfrc-timestamp {
   color: #B8860B;
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 .vfrc-prompt {
   background-color: #0F4D2E;
+  border-radius: 8px;
+  margin: 4px 0;
 }
 
 .vfrc-prompt button {
   color: #ffffff;
+  padding: 12px 16px;
 }
 
 .vfrc-prompt button:hover {
-  color: #e0e0e0;
   background-color: rgba(255, 255, 255, 0.1);
-}
-
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
-  text-decoration: none;
-  color: #0F4D2E;
-}
-
-.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-  background-image: url('https://framerusercontent.com/images/CKftSWrPCipORGLgQ75LOjio.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: top center;
-  width: 300px;
-  border-radius: 0%;
-  height: 200px;
-  box-shadow: none;
-}
-
-@media (max-width: 768px) {
-  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-    width: 100%;
-    height: 150px;
-  }
-}
-
-@media (max-width: 480px) {
-  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-    width: 100%;
-    height: 100px;
-  }
 }
 
 .vfrc-chat-input textarea::placeholder {
@@ -325,11 +307,11 @@ input[type="range"] {
   background: #e0e0e0;
   border-radius: 2px;
   outline: none;
+  margin: 10px 0;
 }
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  appearance: none;
   width: 16px;
   height: 16px;
   background: #B8860B;
@@ -353,17 +335,15 @@ input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
 }
 
-input[type="range"]::-moz-range-thumb:hover {
-  background: #9F7511;
-  transform: scale(1.1);
-}
-
 .vfrc-progress-bar {
   background-color: rgba(184, 134, 11, 0.2);
+  border-radius: 4px;
+  margin: 8px 0;
 }
 
 .vfrc-progress-bar__fill {
   background-color: #B8860B;
+  border-radius: 4px;
 }
 
 ::selection {
@@ -374,6 +354,20 @@ input[type="range"]::-moz-range-thumb:hover {
 *:focus {
   outline: 2px solid rgba(184, 134, 11, 0.5);
   outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .vfrc-message--extension-DropdownExtension {
+    max-width: 220px;
+  }
+  
+  .vfrc-widget--chat {
+    border-radius: 0;
+  }
+  
+  .vfrc-header {
+    border-radius: 0;
+  }
 }
 
 @supports (-webkit-overflow-scrolling: touch) {
