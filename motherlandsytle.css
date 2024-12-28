@@ -9,10 +9,25 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.vfrc-widget--chat img[alt="Motherland Beauty"] {
-  width: 180px;
+/* Updated Logo Styles */
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  background-image: url('https://framerusercontent.com/images/CKftSWrPCipORGLgQ75LOjio.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 200px;
+  height: 200px;
   margin: 20px auto;
   display: block;
+  background-color: #ffffff;
+  box-shadow: none;
+}
+
+/* Logo Container Background */
+.vfrc-system-response:has(.c-kIbiaN-eyfkxi-size-large) {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
 }
 
 .vfrc-assistant-info--title {
@@ -24,18 +39,6 @@
 .vfrc-icon.c-dhzjXW-iPJLV-css {
   width: 24px;
   height: 24px;
-}
-
-/* Logo and Large Image Styles */
-.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-  background-image: url('https://framerusercontent.com/images/CKftSWrPCipORGLgQ75LOjio.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: top center;
-  width: 300px;
-  border-radius: 0%;
-  height: 200px;
-  box-shadow: none;
 }
 
 .c-iCDrnV .c-kIbiaN {
@@ -76,6 +79,7 @@
   opacity: 0;
   transform: translateY(16px);
   animation: 400ms ease-out 150ms 1 normal forwards running cxARAE;
+  background-color: #ffffff;
 }
 
 .c-fYYkXN {
@@ -114,6 +118,7 @@
   font-weight: 400;
   font-size: 15px;
   line-height: 1.5;
+  background-color: #ffffff;
 }
 
 .vfrc-button--secondary {
@@ -340,7 +345,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Responsive Styles */
 @media (max-width: 768px) {
   .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-    width: 100%;
+    width: 150px;
     height: 150px;
   }
   
@@ -359,8 +364,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 @media (max-width: 480px) {
   .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-    width: 100%;
-    height: 100px;
+    width: 120px;
+    height: 120px;
   }
 }
 
