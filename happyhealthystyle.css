@@ -4,19 +4,21 @@
   --background: #fdfdfd;
   --text-dark: #000000;
   --text-light: #72727a;
-  --border: #cccccc;
-  --shadow: rgba(0, 0, 0, 0.1);
+  --border: #e0e0e0;
+  --shadow: rgba(84, 88, 87, 0.15);
+  --hover: rgba(114, 114, 122, 0.1);
   --transition: all 0.3s ease;
 }
 
 .voiceflow-chat {
-  box-shadow: #000000;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
 .vfrc-widget--chat {
   animation: fadeInChat 1s ease-out;
   border-radius: 20px;
-  background-color: var(--background);
+  background-color: #f5f5f7;
+  border: 1px solid var(--border);
 }
 
 @media screen and (min-width: 768px) {
@@ -33,16 +35,20 @@
   display: flex;
   align-items: center;
   padding: 0 20px;
+  box-shadow: 0 2px 4px var(--shadow);
 }
 
 .vfrc-header--title {
-  color: #fffffffa;
+  color: #ffffff;
   font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .vfrc-assistant-info--title {
   font-size: 20px;
   color: #ffffff;
+  font-weight: 600;
 }
 
 /* Icon Styles */
@@ -62,11 +68,8 @@
   transition: all 100ms ease;
 }
 
-.vfrc-header--button:nth-of-type(1) .vfrc-icon,
-.vfrc-header--button:nth-of-type(2) .vfrc-icon,
-.vfrc-header--button:nth-of-type(3) .vfrc-icon {
-  width: 24px !important;
-  height: 24px !important;
+.vfrc-header--button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Logo/Avatar Styles */
@@ -87,13 +90,14 @@
   flex: 1 1 0px;
   overflow: hidden;
   min-height: 0px;
-  color: rgba(0, 0, 0, 0.85);
+  color: var(--text-dark);
   position: relative;
   direction: ltr;
   opacity: 0;
   transform: translateY(16px);
   animation: 400ms ease-out 150ms 1 normal forwards running cxARAE;
-  background-color: var(--background);
+  background-color: #f5f5f7;
+  padding: 16px;
 }
 
 .c-PJLV-gJqBfM-from-user {
@@ -104,55 +108,80 @@
   margin: 8px 0;
   max-width: 85%;
   margin-left: auto;
+  box-shadow: 0 1px 2px var(--shadow);
 }
 
 .c-PJLV-jueArD-from-system {
-  background-color: #f3f3f3;
+  background-color: #ffffff;
   color: var(--text-dark);
   font-size: 15px;
   border-radius: 18px 18px 18px 4px;
   padding: 12px 16px;
   margin: 8px 0;
   max-width: 85%;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px var(--shadow);
 }
 
 /* Button Styles */
 .vfrc-button--secondary {
   display: inline-block;
-  border: 1px solid rgba(0, 43, 69, 0.45);
+  border: 1px solid var(--secondary);
   font-size: 16px;
   font-weight: 500;
   border-radius: 20px;
-  padding: 9px 13px;
-  margin: 0px;
-  background-color: transparent;
-  color: #002b45;
+  padding: 12px 16px;
+  margin: 4px 0;
+  background-color: #ffffff;
+  color: var(--secondary);
   cursor: pointer;
-  transition: background-color 50ms ease-in-out,
-              border-color 100ms ease-in-out;
+  transition: all 0.2s ease;
   white-space: normal;
   text-align: left;
   width: 100%;
 }
 
 .vfrc-button--secondary:hover {
-  background-color: rgba(0, 43, 69, 0.1);
-  border-color: rgba(0, 43, 69, 0.7);
+  background-color: var(--hover);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px var(--shadow);
 }
 
 /* Input Area */
 .vfrc-chat-input.c-jzUcYW {
-  border: 1px solid var(--secondary);
+  border: 1px solid var(--border);
   border-radius: 20px;
   margin: 12px;
-  background-color: var(--background);
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px var(--shadow);
+  transition: var(--transition);
 }
 
-.vfrc-chat-input textarea,
-.vfrc-chat-input--button {
-  background-color: var(--background) !important;
+.vfrc-chat-input.c-jzUcYW:focus-within {
+  border-color: var(--secondary);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.vfrc-chat-input textarea {
+  background-color: transparent !important;
   color: var(--text-dark);
   border: none !important;
+  padding: 12px 16px;
+  font-size: 15px;
+}
+
+.vfrc-chat-input--button {
+  color: var(--secondary) !important;
+  background-color: transparent !important;
+  padding: 12px;
+  transition: var(--transition);
+}
+
+.vfrc-chat-input--button:hover {
+  color: var(--primary) !important;
+  transform: scale(1.1);
 }
 
 /* Launcher Styles */
@@ -167,46 +196,66 @@
   width: 80px;
   height: 80px;
   border-radius: 40px;
+  border: 2px solid var(--secondary);
+  transition: var(--transition);
 }
 
-.vfrc-launcher:hover {
-  background-color: transparent;
+.vfrc-launcher:hover img {
+  border-color: var(--primary);
+  transform: scale(1.05);
 }
 
 /* Footer Styles */
 .vfrc-footer {
-  background-color: var(--background);
-  border-top: solid 1px var(--background);
+  background-color: #f5f5f7;
+  border-top: 1px solid var(--border);
+  padding: 12px;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  border-left: 1px solid var(--text-dark);
   width: 6px;
 }
 
+::-webkit-scrollbar-track {
+  background: var(--hover);
+}
+
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--secondary);
   border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
 }
 
 /* Prompt Styles */
 .vfrc-prompt {
   background-color: var(--secondary);
+  border-radius: 12px;
+  padding: 2px;
+  margin: 8px 0;
 }
 
 .vfrc-prompt button {
   color: #ffffff;
+  padding: 10px 14px;
+  transition: var(--transition);
 }
 
 .vfrc-prompt button:hover {
-  color: #efefef;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 /* Extension Styles */
 .vfrc-message--extension-DropdownExtension {
   max-width: 280px;
   width: 100%;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px var(--shadow);
 }
 
 /* Footer Text */
@@ -214,17 +263,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px 0 var(--space-3) 0;
+  padding: 10px 0;
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
-  color: var(--text-dark);
+  color: var(--text-light);
 }
 
 .c-cejRVw a {
   margin-left: 0.5ch;
   text-decoration: none;
-  color: var(--text-dark);
+  color: var(--secondary);
+  transition: var(--transition);
+}
+
+.c-cejRVw a:hover {
+  color: var(--primary);
 }
 
 /* Responsive Styles */
@@ -244,10 +298,25 @@
     width: 100%;
     height: 100px;
   }
+  
+  .vfrc-chat-input.c-jzUcYW {
+    margin: 8px;
+  }
 }
 
 /* Hide timestamp for dropdown extensions */
 .vfrc-system-response:has(.vfrc-message--extension-DropdownExtension)
 .vfrc-timestamp {
   display: none;
+}
+
+/* Loading Animation */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.vfrc-message--loading {
+  animation: pulse 1.5s ease-in-out infinite;
 }
