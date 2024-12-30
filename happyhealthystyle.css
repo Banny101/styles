@@ -139,7 +139,7 @@
 }
 
 .vfrc-button--secondary:hover {
-  background-color: rgba(173, 240, 242, 0.3);
+  background-color: rgba(232, 246, 246, 0.3);
   border-color: #545857;
   color: #545857;
 }
@@ -184,7 +184,7 @@
 }
 
 .vfrc-chat-input.c-jzUcYW:focus-within {
-  box-shadow: 0 0 0 2px rgba(173, 240, 242, 0.2);
+  box-shadow: 0 0 0 2px rgba(232, 246, 246, 0.2);
   border-color: #545857;
 }
 
@@ -209,6 +209,22 @@
 
 .vfrc-chat-input--button:hover {
   color: #727272 !important;
+}
+
+/* Send Button Specific Styles */
+.vfrc-send-button,
+.vfrc-chat-input--button {
+  color: #545857 !important;
+}
+
+.vfrc-send-button:hover,
+.vfrc-chat-input--button:hover {
+  color: #727272 !important;
+}
+
+.vfrc-send-button-container {
+  background-color: #545857;
+  border-radius: 50%;
 }
 
 /* Header and Footer Styles */
@@ -237,7 +253,7 @@
 }
 
 .c-PJLV-jueArD-from-system {
-  background-color: #ADF0F2;
+  background-color: #E8F6F6;
   color: #545857;
   font-size: 15px;
   border-radius: 8px;
@@ -321,7 +337,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Progress Bar */
 .vfrc-progress-bar {
-  background-color: rgba(173, 240, 242, 0.2);
+  background-color: rgba(232, 246, 246, 0.2);
   border-radius: 4px;
   margin: 8px 0;
 }
@@ -333,12 +349,12 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Selection and Focus States */
 ::selection {
-  background-color: rgba(173, 240, 242, 0.2);
+  background-color: rgba(232, 246, 246, 0.2);
   color: #545857;
 }
 
 *:focus {
-  outline: 2px solid rgba(173, 240, 242, 0.5);
+  outline: 2px solid rgba(232, 246, 246, 0.5);
   outline-offset: 2px;
 }
 
