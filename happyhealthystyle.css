@@ -41,6 +41,23 @@
   height: 24px;
 }
 
+/* Updated Arrow Button Styles */
+.vfrc-icon.c-dhzjXW.c-dhzjXW-iPJLV-css svg,
+.vf-arrow-up {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+.vfrc-chat-input--button.c-iGGXrm.c-iGGXrm-giLHwd-ready-true {
+  color: #000000 !important;
+}
+
+.vfrc-chat-input--button:hover .vfrc-icon svg,
+.vfrc-chat-input--button:hover .vf-arrow-up {
+  color: #333333 !important;
+  fill: #333333 !important;
+}
+
 .c-iCDrnV .c-kIbiaN {
   width: 40px;
   height: 40px;
