@@ -36,26 +36,25 @@
   font-weight: 500;
 }
 
-.vfrc-icon.c-dhzjXW-iPJLV-css {
-  width: 24px;
-  height: 24px;
+/* Arrow Button Styles */
+.vfrc-icon.c-dhzjXW.c-dhzjXW-iPJLV-css {
+  background-color: #000000 !important;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Updated Arrow Button Styles */
 .vfrc-icon.c-dhzjXW.c-dhzjXW-iPJLV-css svg,
 .vf-arrow-up {
-  color: #000000 !important;
-  fill: #000000 !important;
+  color: #ffffff !important;
+  fill: #ffffff !important;
 }
 
-.vfrc-chat-input--button.c-iGGXrm.c-iGGXrm-giLHwd-ready-true {
-  color: #000000 !important;
-}
-
-.vfrc-chat-input--button:hover .vfrc-icon svg,
-.vfrc-chat-input--button:hover .vf-arrow-up {
-  color: #333333 !important;
-  fill: #333333 !important;
+.vfrc-icon.c-dhzjXW.c-dhzjXW-iPJLV-css:hover {
+  background-color: #333333 !important;
 }
 
 .c-iCDrnV .c-kIbiaN {
@@ -208,7 +207,7 @@
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
   background-color: #fdfdfd !important;
-  color: #000000;
+  color: #545857;
   border: none !important;
   border-radius: 8px;
   font-size: 15px;
@@ -220,28 +219,7 @@
 }
 
 .vfrc-chat-input--button {
-  color: #000000 !important;
   padding: 8px;
-}
-
-.vfrc-chat-input--button:hover {
-  color: #333333 !important;
-}
-
-/* Send Button Specific Styles */
-.vfrc-send-button,
-.vfrc-chat-input--button {
-  color: #000000 !important;
-}
-
-.vfrc-send-button:hover,
-.vfrc-chat-input--button:hover {
-  color: #333333 !important;
-}
-
-.vfrc-send-button-container {
-  background-color: #000000;
-  border-radius: 50%;
 }
 
 /* Header and Footer Styles */
