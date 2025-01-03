@@ -344,8 +344,23 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 /* Selection and Focus States */
 ::selection {
-  background-color: rgba(248, 248, 248, 0.2);
-  color: #545857;
+  background-color: #727272;
+  color: #fdfdfd;
+}
+
+::-moz-selection {
+  background-color: #727272;
+  color: #fdfdfd;
+}
+
+.vfrc-chat-input textarea::selection {
+  background-color: #727272;
+  color: #fdfdfd;
+}
+
+.vfrc-chat-input textarea::-moz-selection {
+  background-color: #727272;
+  color: #fdfdfd;
 }
 
 *:focus {
