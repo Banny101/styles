@@ -7,10 +7,9 @@
   border-radius: 8px;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-/* Logo Styles */
+/* Updated Logo Styles */
 .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
   background-image: url('https://framerusercontent.com/images/CKftSWrPCipORGLgQ75LOjio.png');
   background-size: contain;
@@ -24,6 +23,7 @@
   box-shadow: none;
 }
 
+/* Logo Container Background */
 .vfrc-system-response:has(.c-kIbiaN-eyfkxi-size-large) {
   background-color: #ffffff;
   padding: 20px;
@@ -31,11 +31,9 @@
 }
 
 .vfrc-assistant-info--title {
-  font-family: "Canela", serif;
   font-size: 18px;
   color: #ffffff;
   font-weight: 500;
-  letter-spacing: 0.5px;
 }
 
 .vfrc-icon.c-dhzjXW-iPJLV-css {
@@ -50,7 +48,7 @@
 }
 
 .c-kIbiaN-icyFRzP-css img {
-  background-color: #000000;
+  background-color: #CC1C1C;
 }
 
 .c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
@@ -60,25 +58,6 @@
 }
 
 /* Header and Button Styles */
-.vfrc-header {
-  background-color: #000000;
-  height: 66px;
-  border-radius: 8px 8px 0 0;
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  position: relative;
-  z-index: 1000;
-}
-
-.vfrc-header--title {
-  font-family: "Canela", serif;
-  font-size: 18px;
-  color: #ffffff;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-}
-
 .c-dzcdPv .vfrc-header--button {
   border: none;
   padding: 0px;
@@ -87,7 +66,7 @@
   border-radius: 8px;
   height: 32px;
   width: 32px;
-  transition: all 0.3s ease;
+  transition: all 100ms ease 0s;
 }
 
 .vfrc-chat-dialog {
@@ -103,16 +82,12 @@
   background-color: #ffffff;
 }
 
-/* Button Styles */
 .c-fYYkXN {
   border: 1px solid #CC1C1C;
 }
 
 .c-bXTvXv-lckiv-type-info {
   background-color: #CC1C1C;
-  font-family: "Canela", serif;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .c-bXTvXv-lckiv-type-info:hover {
@@ -121,8 +96,8 @@
 
 .c-bXTvXv-igaDqE-type-subtle {
   margin: 0px;
-  border: 1px solid #000000;
-  font-size: 14px;
+  border: 1px solid #CC1C1C;
+  font-size: 16px;
   font-weight: 500;
   border-radius: 8px;
   line-height: 20px;
@@ -133,55 +108,46 @@
   align-items: center;
   display: block;
   width: 100%;
-  background-color: #000000;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-}
-
-.c-bXTvXv-igaDqE-type-subtle:hover {
-  background-color: #CC1C1C;
-  border-color: #CC1C1C;
+  background-color: transparent;
+  color: #CC1C1C;
+  transition: all 333ms ease-in-out 0s;
 }
 
 /* Message Styles */
 .vfrc-message {
   font-weight: 400;
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.5;
   background-color: #ffffff;
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .vfrc-button--secondary {
   display: inline-block;
   border: 1px solid #000000;
-  background-color: #000000;
-  color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
   border-radius: 8px;
   padding: 10px 15px;
   margin: 4px 0;
   box-sizing: border-box;
+  background-color: transparent;
+  color: #000000;
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
   white-space: normal;
   text-align: left;
 }
 
 .vfrc-button--secondary:hover {
-  background-color: #CC1C1C;
-  border-color: #CC1C1C;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: #000000;
+  color: #000000;
+}
+
+.vfrc-header--title {
   color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 /* Launcher Styles */
@@ -202,18 +168,15 @@
   height: 60px;
   border-radius: 30px;
   border: 2px solid #CC1C1C;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
 }
 
-.vfrc-launcher img:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+.vfrc-launcher:hover {
+  background-color: transparent;
 }
 
 /* Chat Input Styles */
 .vfrc-chat-input.c-jzUcYW {
-  border: 1px solid #e0e0e0;
+  border: 1px solid #000000;
   border-radius: 8px;
   transition: all 0.3s ease;
   margin: 10px;
@@ -221,52 +184,52 @@
 }
 
 .vfrc-chat-input.c-jzUcYW:focus-within {
-  border-color: #CC1C1C;
-  box-shadow: 0 0 0 2px rgba(204, 28, 28, 0.1);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+  border-color: #000000;
 }
 
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
   background-color: #ffffff !important;
+  color: #000000;
   border: none !important;
   border-radius: 8px;
   font-size: 15px;
   padding: 12px;
 }
 
-.vfrc-chat-input textarea {
-  color: #000000;
-}
-
 .vfrc-chat-input textarea:focus {
   outline: none;
 }
 
-/* Updated Send Button/Arrow Styling */
 .vfrc-chat-input--button {
-  color: #CC1C1C !important;
+  color: #000000 !important;
   padding: 8px;
-  transition: all 0.3s ease;
 }
 
 .vfrc-chat-input--button:hover {
-  color: #b01818 !important;
-  transform: scale(1.1);
+  color: #333333 !important;
 }
 
-.vfrc-chat-input--button svg {
-  fill: #CC1C1C;
-  width: 20px;
-  height: 20px;
+/* Header and Footer Styles */
+.vfrc-header {
+  background-color: #ff0000;
+  height: 66px;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
 }
 
-.vfrc-chat-input--button:hover svg {
-  fill: #b01818;
+.vfrc-footer {
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px;
 }
 
 /* Message Bubbles */
 .c-PJLV-gJqBfM-from-user {
-  background-color: #000000;
+  background-color: #CC1C1C;
   color: #ffffff;
   border-radius: 8px;
   padding: 12px 16px;
@@ -274,47 +237,39 @@
 }
 
 .c-PJLV-jueArD-from-system {
-  background-color: #ffffff;
+  background-color: #f5f5f5;
   color: #000000;
   font-size: 15px;
   border-radius: 8px;
   padding: 12px 16px;
   margin: 4px 0;
   border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-/* Footer Styles */
-.vfrc-footer {
-  background-color: #ffffff;
-  border-top: 1px solid #e0e0e0;
-  padding: 10px;
 }
 
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
-  width: 4px;
   border-left: 1px solid #e0e0e0;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(0,0,0,0.2);
-  border-radius: 2px;
+  background-color: #000000;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0,0,0,0.3);
+  background-color: #333333;
 }
 
 /* Additional Elements */
 .vfrc-timestamp {
-  color: #666666;
+  color: #000000;
   font-size: 12px;
   margin-top: 4px;
 }
 
 .vfrc-prompt {
-  background-color: #000000;
+  background-color: #CC1C1C;
   border-radius: 8px;
   margin: 4px 0;
 }
@@ -325,20 +280,7 @@
 }
 
 .vfrc-prompt button:hover {
-  background-color: rgba(204, 28, 28, 0.1);
-}
-
-/* Error and Loading States */
-.vfrc-error-message {
-  color: #CC1C1C;
-  font-size: 14px;
-  margin-top: 4px;
-}
-
-.vfrc-loading {
-  color: #666666;
-  font-size: 14px;
-  font-style: italic;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Range Input Styles */
@@ -373,13 +315,13 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: #CC1C1C;
+  background: #333333;
   transform: scale(1.1);
 }
 
 /* Progress Bar */
 .vfrc-progress-bar {
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   margin: 8px 0;
 }
@@ -412,15 +354,11 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
   
   .vfrc-widget--chat {
-    margin: 0;
     border-radius: 0;
-    height: 100vh;
   }
   
   .vfrc-header {
     border-radius: 0;
-    position: sticky;
-    top: 0;
   }
 }
 
