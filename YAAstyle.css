@@ -228,24 +228,40 @@
 .vfrc-chat-input textarea,
 .vfrc-chat-input--button {
   background-color: #ffffff !important;
-  color: #000000;
   border: none !important;
   border-radius: 8px;
   font-size: 15px;
   padding: 12px;
 }
 
+.vfrc-chat-input textarea {
+  color: #000000;
+}
+
 .vfrc-chat-input textarea:focus {
   outline: none;
 }
 
+/* Updated Send Button/Arrow Styling */
 .vfrc-chat-input--button {
-  color: #000000 !important;
+  color: #CC1C1C !important;
   padding: 8px;
+  transition: all 0.3s ease;
 }
 
 .vfrc-chat-input--button:hover {
-  color: #CC1C1C !important;
+  color: #b01818 !important;
+  transform: scale(1.1);
+}
+
+.vfrc-chat-input--button svg {
+  fill: #CC1C1C;
+  width: 20px;
+  height: 20px;
+}
+
+.vfrc-chat-input--button:hover svg {
+  fill: #b01818;
 }
 
 /* Message Bubbles */
