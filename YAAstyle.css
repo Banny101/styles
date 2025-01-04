@@ -48,7 +48,7 @@
 }
 
 .c-kIbiaN-icyFRzP-css img {
-  background-color: #0F4D2E;
+  background-color: #CC1C1C;
 }
 
 .c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
@@ -83,20 +83,20 @@
 }
 
 .c-fYYkXN {
-  border: 1px solid #0F4D2E;
+  border: 1px solid #CC1C1C;
 }
 
 .c-bXTvXv-lckiv-type-info {
-  background-color: #0F4D2E;
+  background-color: #CC1C1C;
 }
 
 .c-bXTvXv-lckiv-type-info:hover {
-  background-color: #0a3621;
+  background-color: #b01818;
 }
 
 .c-bXTvXv-igaDqE-type-subtle {
   margin: 0px;
-  border: 1px solid #0F4D2E;
+  border: 1px solid #CC1C1C;
   font-size: 16px;
   font-weight: 500;
   border-radius: 8px;
@@ -109,7 +109,7 @@
   display: block;
   width: 100%;
   background-color: transparent;
-  color: #0F4D2E;
+  color: #CC1C1C;
   transition: all 333ms ease-in-out 0s;
 }
 
@@ -123,7 +123,7 @@
 
 .vfrc-button--secondary {
   display: inline-block;
-  border: 1px solid #0F4D2E;
+  border: 1px solid #000000;
   font-size: 15px;
   font-weight: 500;
   border-radius: 8px;
@@ -131,7 +131,7 @@
   margin: 4px 0;
   box-sizing: border-box;
   background-color: transparent;
-  color: #0F4D2E;
+  color: #000000;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: normal;
@@ -139,9 +139,9 @@
 }
 
 .vfrc-button--secondary:hover {
-  background-color: rgba(184, 134, 11, 0.1);
-  border-color: #B8860B;
-  color: #B8860B;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-color: #000000;
+  color: #000000;
 }
 
 .vfrc-header--title {
@@ -167,7 +167,7 @@
   width: 60px;
   height: 60px;
   border-radius: 30px;
-  border: 2px solid #0F4D2E;
+  border: 2px solid #CC1C1C;
 }
 
 .vfrc-launcher:hover {
@@ -176,7 +176,7 @@
 
 /* Chat Input Styles */
 .vfrc-chat-input.c-jzUcYW {
-  border: 1px solid #B8860B;
+  border: 1px solid #000000;
   border-radius: 8px;
   transition: all 0.3s ease;
   margin: 10px;
@@ -184,8 +184,8 @@
 }
 
 .vfrc-chat-input.c-jzUcYW:focus-within {
-  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.2);
-  border-color: #B8860B;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+  border-color: #000000;
 }
 
 .vfrc-chat-input textarea,
@@ -203,17 +203,17 @@
 }
 
 .vfrc-chat-input--button {
-  color: #B8860B !important;
+  color: #000000 !important;
   padding: 8px;
 }
 
 .vfrc-chat-input--button:hover {
-  color: #9F7511 !important;
+  color: #333333 !important;
 }
 
 /* Header and Footer Styles */
 .vfrc-header {
-  background-color: #0F4D2E;
+  background-color: #CC1C1C;
   height: 66px;
   border-radius: 8px 8px 0 0;
   display: flex;
@@ -229,7 +229,7 @@
 
 /* Message Bubbles */
 .c-PJLV-gJqBfM-from-user {
-  background-color: #0F4D2E;
+  background-color: #CC1C1C;
   color: #ffffff;
   border-radius: 8px;
   padding: 12px 16px;
@@ -253,23 +253,23 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #B8860B;
+  background-color: #000000;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #9F7511;
+  background-color: #333333;
 }
 
 /* Additional Elements */
 .vfrc-timestamp {
-  color: #B8860B;
+  color: #000000;
   font-size: 12px;
   margin-top: 4px;
 }
 
 .vfrc-prompt {
-  background-color: #0F4D2E;
+  background-color: #CC1C1C;
   border-radius: 8px;
   margin: 4px 0;
 }
@@ -298,7 +298,7 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
-  background: #B8860B;
+  background: #000000;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -307,7 +307,7 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]::-moz-range-thumb {
   width: 16px;
   height: 16px;
-  background: #B8860B;
+  background: #000000;
   border-radius: 50%;
   cursor: pointer;
   border: none;
@@ -315,30 +315,30 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  background: #9F7511;
+  background: #333333;
   transform: scale(1.1);
 }
 
 /* Progress Bar */
 .vfrc-progress-bar {
-  background-color: rgba(184, 134, 11, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   margin: 8px 0;
 }
 
 .vfrc-progress-bar__fill {
-  background-color: #B8860B;
+  background-color: #000000;
   border-radius: 4px;
 }
 
 /* Selection and Focus States */
 ::selection {
-  background-color: rgba(184, 134, 11, 0.2);
+  background-color: rgba(204, 28, 28, 0.2);
   color: #000000;
 }
 
 *:focus {
-  outline: 2px solid rgba(184, 134, 11, 0.5);
+  outline: 2px solid rgba(204, 28, 28, 0.5);
   outline-offset: 2px;
 }
 
