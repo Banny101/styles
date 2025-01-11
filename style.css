@@ -1,14 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-
-:root {
-  --primary-color: #000000;
-  --accent-color: #CC1C1C;
-  --background-color: #FFFFFF;
-  --text-color: #000000;
-  --border-color: #e0e0e0;
-  --hover-color: #b01818;
-}
-
 .voiceflow-chat {
   box-shadow: none;
 }
@@ -19,97 +8,200 @@
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  background-color: var(--background-color);
 }
 
-/* Header styling */
+/* Logo Styles */
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  background-image: url('https://framerusercontent.com/images/Jbq57pXBvuHbbNxDRt57DFO5PEo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 200px;
+  height: 200px;
+  margin: 20px auto;
+  display: block;
+  background-color: #ffffff;
+  box-shadow: none;
+}
+
+.vfrc-system-response:has(.c-kIbiaN-eyfkxi-size-large) {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.vfrc-assistant-info--title {
+  font-family: "Canela", serif;
+  font-size: 18px;
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.vfrc-icon.c-dhzjXW-iPJLV-css {
+  width: 24px;
+  height: 24px;
+}
+
+.c-iCDrnV .c-kIbiaN {
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff;
+}
+
+.c-kIbiaN-icyFRzP-css img {
+  background-color: #000000;
+}
+
+.c-kIbiaN-iiTsXc-size-small.c-kIbiaN-iCrztk-css {
+  background-color: #ffffff;
+  width: 32px;
+  height: 32px;
+}
+
+/* Header and Button Styles */
 .vfrc-header {
-  background-color: var(--primary-color);
+  background-color: #000000;
   height: 66px;
   border-radius: 8px 8px 0 0;
   display: flex;
   align-items: center;
   padding: 0 16px;
+  position: relative;
+  z-index: 1000;
 }
 
 .vfrc-header--title {
-  color: #FFFFFF;
+  font-family: "Canela", serif;
   font-size: 18px;
+  color: #ffffff;
   font-weight: 500;
   letter-spacing: 0.5px;
 }
 
-/* Message bubbles */
-.c-PJLV-jueArD-from-system {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  font-size: 15px;
+.c-dzcdPv .vfrc-header--button {
+  border: none;
+  padding: 0px;
+  cursor: pointer;
+  color: #ffffff;
   border-radius: 8px;
-  padding: 12px 16px;
-  margin: 4px 0;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.c-PJLV-gJqBfM-from-user {
-  background-color: var(--primary-color);
-  color: #FFFFFF;
-  border-radius: 8px;
-  padding: 12px 16px;
-  margin: 4px 0;
-}
-
-/* Chat input */
-.vfrc-chat-input.c-jzUcYW {
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  height: 32px;
+  width: 32px;
   transition: all 0.3s ease;
-  margin: 10px;
-  background-color: var(--background-color);
 }
 
-.vfrc-chat-input.c-jzUcYW:focus-within {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(204, 28, 28, 0.1);
+.vfrc-chat-dialog {
+  flex: 1 1 0px;
+  overflow: hidden;
+  min-height: 0px;
+  color: rgba(0, 0, 0, 0.85);
+  position: relative;
+  direction: ltr;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: 400ms ease-out 150ms 1 normal forwards running cxARAE;
+  background-color: #ffffff;
 }
 
-.vfrc-chat-input textarea,
-.vfrc-chat-input--button {
-  background-color: var(--background-color) !important;
-  color: var(--text-color);
-  border: none !important;
-  border-radius: 8px;
-  font-size: 15px;
-  padding: 12px;
+/* Button Styles */
+.c-fYYkXN {
+  border: 1px solid #CC1C1C;
 }
 
-/* Buttons */
-.vfrc-button--secondary {
-  display: inline-block;
-  border: 1px solid var(--primary-color);
-  background-color: var(--primary-color);
-  color: #FFFFFF;
+.c-bXTvXv-lckiv-type-info {
+  background-color: #CC1C1C;
+  font-family: "Canela", serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.c-bXTvXv-lckiv-type-info:hover {
+  background-color: #b01818;
+}
+
+.c-bXTvXv-igaDqE-type-subtle {
+  margin: 0px;
+  border: 1px solid #000000;
   font-size: 14px;
   font-weight: 500;
   border-radius: 8px;
-  padding: 10px 15px;
-  margin: 4px 0;
+  line-height: 20px;
+  padding: 7px 17px;
+  box-sizing: border-box;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  display: block;
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 
-.vfrc-button--secondary:hover {
-  background-color: var(--accent-color);
-  border-color: var(--accent-color);
+.c-bXTvXv-igaDqE-type-subtle:hover {
+  background-color: #CC1C1C;
+  border-color: #CC1C1C;
 }
 
-/* Launcher */
+/* Message Styles */
+.vfrc-message {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  background-color: #ffffff;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.vfrc-button--secondary {
+  display: inline-block;
+  border: 1px solid #000000;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin: 4px 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  white-space: normal;
+  text-align: left;
+}
+
+.vfrc-button--secondary:hover {
+  background-color: #CC1C1C;
+  border-color: #CC1C1C;
+  color: #ffffff;
+}
+
+/* Launcher Styles */
+.vfrc-widget--launcher {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.vfrc-launcher.c-bQoszf {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
 .vfrc-launcher img {
   width: 60px;
   height: 60px;
   border-radius: 30px;
-  border: 2px solid var(--accent-color);
+  border: 2px solid #CC1C1C;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
 }
@@ -119,28 +211,74 @@
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
-/* Proactive messages */
-.c-fbwYwp {
-  background-color: var(--primary-color);
-  font-size: 15px;
-  font-weight: 500;
-  color: #FFFFFF;
+/* Chat Input Styles */
+.vfrc-chat-input.c-jzUcYW {
+  border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+  margin: 10px;
+  background-color: #ffffff;
 }
 
-/* Footer */
+.vfrc-chat-input.c-jzUcYW:focus-within {
+  border-color: #CC1C1C;
+  box-shadow: 0 0 0 2px rgba(204, 28, 28, 0.1);
+}
+
+.vfrc-chat-input textarea,
+.vfrc-chat-input--button {
+  background-color: #ffffff !important;
+  color: #000000;
+  border: none !important;
+  border-radius: 8px;
+  font-size: 15px;
+  padding: 12px;
+}
+
+.vfrc-chat-input textarea:focus {
+  outline: none;
+}
+
+.vfrc-chat-input--button {
+  color: #000000 !important;
+  padding: 8px;
+}
+
+.vfrc-chat-input--button:hover {
+  color: #CC1C1C !important;
+}
+
+/* Message Bubbles */
+.c-PJLV-gJqBfM-from-user {
+  background-color: #000000;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 4px 0;
+}
+
+.c-PJLV-jueArD-from-system {
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 15px;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 4px 0;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Footer Styles */
 .vfrc-footer {
-  background-color: var(--background-color);
-  border-top: 1px solid var(--border-color);
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
   padding: 10px;
 }
 
-/* Scrollbar */
+/* Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 4px;
-  border-left: 1px solid var(--border-color);
+  border-left: 1px solid #e0e0e0;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -152,59 +290,128 @@
   background-color: rgba(0,0,0,0.3);
 }
 
-/* System message links */
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a {
-  color: var(--accent-color);
-  text-decoration: none;
-}
-
-.vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
-  color: var(--hover-color);
-}
-
-/* Powered by section */
-.c-cejRVw {
+/* Additional Elements */
+.vfrc-timestamp {
   color: #666666;
   font-size: 12px;
-  padding: 8px;
-  background-color: var(--background-color);
-  border-top: 1px solid var(--border-color);
+  margin-top: 4px;
 }
 
-.c-cejRVw a {
-  color: var(--accent-color);
+.vfrc-prompt {
+  background-color: #000000;
+  border-radius: 8px;
+  margin: 4px 0;
 }
 
-/* Error states */
+.vfrc-prompt button {
+  color: #ffffff;
+  padding: 12px 16px;
+}
+
+.vfrc-prompt button:hover {
+  background-color: rgba(204, 28, 28, 0.1);
+}
+
+/* Error and Loading States */
 .vfrc-error-message {
-  color: var(--accent-color);
+  color: #CC1C1C;
   font-size: 14px;
   margin-top: 4px;
 }
 
-/* Selection */
+.vfrc-loading {
+  color: #666666;
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Range Input Styles */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  outline: none;
+  margin: 10px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #000000;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #000000;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: #CC1C1C;
+  transform: scale(1.1);
+}
+
+/* Progress Bar */
+.vfrc-progress-bar {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.vfrc-progress-bar__fill {
+  background-color: #000000;
+  border-radius: 4px;
+}
+
+/* Selection and Focus States */
 ::selection {
   background-color: rgba(204, 28, 28, 0.2);
-  color: var(--text-color);
+  color: #000000;
 }
 
-@media screen and (min-width: 768px) {
-  .vfrc-widget--chat {
-    max-height: 725px !important;
-    width: 425px !important;
-    border-radius: 8px;
+*:focus {
+  outline: 2px solid rgba(204, 28, 28, 0.5);
+  outline-offset: 2px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 150px;
+    height: 150px;
   }
-}
-
-@media (max-width: 767.98px) {
+  
+  .vfrc-message--extension-DropdownExtension {
+    max-width: 220px;
+  }
+  
   .vfrc-widget--chat {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 0 !important;
+    margin: 0;
+    border-radius: 0;
+    height: 100vh;
   }
   
   .vfrc-header {
     border-radius: 0;
+    position: sticky;
+    top: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 120px;
+    height: 120px;
   }
 }
 
