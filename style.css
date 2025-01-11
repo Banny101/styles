@@ -163,16 +163,22 @@
   transition: all 0.3s ease;
 }
 
-.vfrc-chat-input--button svg {
+.vfrc-chat-input--button svg,
+.vfrc-chat-input--button svg circle,
+.vfrc-chat-input--button svg path,
+.vfrc-chat-input--button * {
   background-color: #000000 !important;
-  border-radius: 50%;
-  padding: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  fill: #000000 !important;
+  stroke: #000000 !important;
 }
 
-.vfrc-chat-input--button:hover svg {
+.vfrc-chat-input--button:hover svg,
+.vfrc-chat-input--button:hover svg circle,
+.vfrc-chat-input--button:hover svg path,
+.vfrc-chat-input--button:hover * {
   background-color: #333333 !important;
+  fill: #333333 !important;
+  stroke: #333333 !important;
   transform: scale(1.1) rotate(45deg);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
