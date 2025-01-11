@@ -1,12 +1,12 @@
-/* Base colors */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 :root {
-  --primary-color: #7C3AED; /* Purple */
+  --primary-color: #000000;
+  --accent-color: #CC1C1C;
   --background-color: #FFFFFF;
-  --text-color: #1A1A1A;
-  --border-color: #E5E7EB;
-  --message-system-bg: #F9FAFB;
-  --message-user-bg: #7C3AED;
-  --hover-color: #9F67FF;
+  --text-color: #000000;
+  --border-color: #e0e0e0;
+  --hover-color: #b01818;
 }
 
 .voiceflow-chat {
@@ -15,10 +15,10 @@
 
 .vfrc-widget--chat {
   animation: fadeInChat 1s ease-out;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   background-color: var(--background-color);
 }
 
@@ -26,82 +26,82 @@
 .vfrc-header {
   background-color: var(--primary-color);
   height: 66px;
-  border-radius: 12px 12px 0 0;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
 }
 
 .vfrc-header--title {
   color: #FFFFFF;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-/* Message bubbles - improved colors */
+/* Message bubbles */
 .c-PJLV-jueArD-from-system {
-  background-color: var(--message-system-bg);
+  background-color: var(--background-color);
   color: var(--text-color);
-  border-radius: 12px;
+  font-size: 15px;
+  border-radius: 8px;
   padding: 12px 16px;
-  margin: 8px 12px;
+  margin: 4px 0;
   border: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .c-PJLV-gJqBfM-from-user {
-  background-color: var(--message-user-bg);
+  background-color: var(--primary-color);
   color: #FFFFFF;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 12px 16px;
-  margin: 8px 12px;
+  margin: 4px 0;
 }
 
-/* Chat input area */
-.vfrc-chat-input {
+/* Chat input */
+.vfrc-chat-input.c-jzUcYW {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  margin: 10px;
   background-color: var(--background-color);
-  border-top: 1px solid var(--border-color);
-  padding: 12px;
 }
 
-.vfrc-chat-input textarea {
+.vfrc-chat-input.c-jzUcYW:focus-within {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(204, 28, 28, 0.1);
+}
+
+.vfrc-chat-input textarea,
+.vfrc-chat-input--button {
   background-color: var(--background-color) !important;
   color: var(--text-color);
-  border: 1px solid var(--border-color) !important;
+  border: none !important;
   border-radius: 8px;
+  font-size: 15px;
   padding: 12px;
-}
-
-.vfrc-chat-input textarea:focus {
-  border-color: var(--primary-color) !important;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
 }
 
 /* Buttons */
 .vfrc-button--secondary {
-  border: 1px solid var(--border-color);
-  background-color: var(--background-color);
-  color: var(--text-color);
+  display: inline-block;
+  border: 1px solid var(--primary-color);
+  background-color: var(--primary-color);
+  color: #FFFFFF;
   font-size: 14px;
   font-weight: 500;
   border-radius: 8px;
   padding: 10px 15px;
-  margin: 4px 8px;
-  transition: all 0.2s ease;
+  margin: 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
 }
 
 .vfrc-button--secondary:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #FFFFFF;
-}
-
-/* Proactive messages */
-.c-fbwYwp {
-  background-color: var(--primary-color);
-  color: #FFFFFF;
-  border-radius: 12px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 6px rgba(124, 58, 237, 0.1);
-  margin: 8px;
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 /* Launcher */
@@ -109,54 +109,62 @@
   width: 60px;
   height: 60px;
   border-radius: 30px;
-  border: 2px solid var(--primary-color);
-  box-shadow: 0 4px 8px rgba(124, 58, 237, 0.1);
-  transition: transform 0.2s ease;
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
 .vfrc-launcher img:hover {
   transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Proactive messages */
+.c-fbwYwp {
+  background-color: var(--primary-color);
+  font-size: 15px;
+  font-weight: 500;
+  color: #FFFFFF;
+  border-radius: 8px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 /* Footer */
 .vfrc-footer {
   background-color: var(--background-color);
   border-top: 1px solid var(--border-color);
-  padding: 12px;
+  padding: 10px;
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+  border-left: 1px solid var(--border-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(124, 58, 237, 0.2);
-  border-radius: 3px;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(124, 58, 237, 0.3);
-}
-
-/* Chat container */
-.vfrc-chat {
-  background-color: var(--background-color);
+  background-color: rgba(0,0,0,0.3);
 }
 
 /* System message links */
 .vfrc-system-response--list .vfrc-message .c-kLDnXB a {
-  color: var(--primary-color);
+  color: var(--accent-color);
   text-decoration: none;
 }
 
 .vfrc-system-response--list .vfrc-message .c-kLDnXB a:hover {
-  text-decoration: underline;
+  color: var(--hover-color);
 }
 
 /* Powered by section */
 .c-cejRVw {
-  color: #6B7280;
+  color: #666666;
   font-size: 12px;
   padding: 8px;
   background-color: var(--background-color);
@@ -164,14 +172,27 @@
 }
 
 .c-cejRVw a {
-  color: var(--primary-color);
+  color: var(--accent-color);
+}
+
+/* Error states */
+.vfrc-error-message {
+  color: var(--accent-color);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(204, 28, 28, 0.2);
+  color: var(--text-color);
 }
 
 @media screen and (min-width: 768px) {
   .vfrc-widget--chat {
     max-height: 725px !important;
     width: 425px !important;
-    border-radius: 12px;
+    border-radius: 8px;
   }
 }
 
@@ -184,5 +205,11 @@
   
   .vfrc-header {
     border-radius: 0;
+  }
+}
+
+@supports (-webkit-overflow-scrolling: touch) {
+  .vfrc-widget--chat {
+    -webkit-overflow-scrolling: touch;
   }
 }
