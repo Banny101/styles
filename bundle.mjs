@@ -49654,7 +49654,7 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
       ...bO(kA),
       ...EO,
     },
-    Mz = "'Open Sans', sans-serif",
+    Mz = "'Montserrat', sans-serif",
     TO = { 1: "13px", 2: "15px", 3: "18px" },
     AO = { 1: 400, 2: 600 },
     SO = { 1: "20px", 2: "22px", 3: "24px" },
@@ -50190,15 +50190,15 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
       Ne.createElement(
         "svg",
         {
-          viewBox: "0 0 16 16",
+          viewBox: "0 0 24 24",
           xmlns: "http://www.w3.org/2000/svg",
           xmlnsXlink: "http://www.w3.org/1999/xlink",
           ...e,
         },
         Ne.createElement("path", {
           id: "vf-close",
-          d: "M13.748 3.32a.773.773 0 0 0-1.093-1.094l-4.389 4.39a.363.363 0 0 1-.514 0L3.368 2.23a.779.779 0 0 0-1.101 0l-.039.038a.779.779 0 0 0 0 1.101l4.385 4.385a.363.363 0 0 1 0 .514l-4.37 4.37a.773.773 0 1 0 1.092 1.093l4.37-4.37a.363.363 0 0 1 .514 0l4.413 4.412a.779.779 0 0 0 1.101 0l.039-.038a.779.779 0 0 0 0-1.101L9.359 8.222a.363.363 0 0 1 0-.514l4.389-4.389z",
-          fill: "#666666",
+          d: "M13.41,12l6.3-6.29a1,1,0,1,0-1.42-1.42L12,10.59,5.71,4.29A1,1,0,0,0,4.29,5.71L10.59,12l-6.3,6.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L12,13.41l6.29,6.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z",
+          fill: "#ffffff",
         })
       ),
     tY = (e) =>
@@ -50261,7 +50261,7 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
       Ne.createElement(
         "svg",
         {
-          viewBox: "0 0 16 16",
+          viewBox: "0 0 24 24",
           xmlns: "http://www.w3.org/2000/svg",
           xmlnsXlink: "http://www.w3.org/1999/xlink",
           ...e,
@@ -50270,8 +50270,8 @@ You might need to use a local HTTP server (instead of file://): https://reactjs.
           "g",
           { id: "vf-minus", fill: "none", fillRule: "evenodd" },
           Ne.createElement("path", {
-            d: "M15 8a.84.84 0 0 1-.84.84H1.84a.84.84 0 0 1 0-1.68h12.32A.84.84 0 0 1 15 8z",
-            fill: "#666666",
+            d: "M19,11H5a1,1,0,0,0,0,2H19a1,1,0,0,0,0-2Z",
+            fill: "#ffffff",
           })
         )
       ),
@@ -52609,7 +52609,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
               ? Me.jsx(hs, { onClick: i, children: "Start New Chat" })
               : Me.jsx(iG, {
                   value: d,
-                  placeholder: "Ask a question...",
+                  placeholder: "Enter your response here...",
                   autoFocus: !0,
                   onValueChange: m,
                   onSend: g,
@@ -72109,8 +72109,8 @@ ${"<br/>".repeat(t.length - 2)}
         d ? Me.jsx(kD, { className: V }) : null
       );
     },
-    Wne = 725,
-    qne = 425,
+    Wne = 440,
+    qne = 880,
     f_ = qr($r.WIDGET),
     hv = It(f_("div", "chat"), {
       width: Wne,
