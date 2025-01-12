@@ -112,6 +112,7 @@
 .vfrc-avatar {
   position: relative;
   transition: all 0.3s ease;
+  background: #ffffff !important;
 }
 
 .vfrc-avatar::before {
@@ -240,7 +241,7 @@
 }
 
 .vfrc-launcher {
-  background-color: transparent;
+  background-color: transparent !important;
   box-shadow: none;
   border: none;
   bottom: 20px;
@@ -252,6 +253,7 @@
   height: 60px;
   border-radius: 30px;
   border: 2px solid #000000;
+  background: #ffffff;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
   animation: pulseAndRotate 3s infinite;
@@ -259,8 +261,18 @@
 
 .vfrc-launcher img:hover {
   transform: scale(1.1);
+  background: #ffffff;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
   animation: none;
+}
+
+.vfrc-launcher-button {
+  background: transparent !important;
+  border: none !important;
+}
+
+.vfrc-launcher-button:hover {
+  background: transparent !important;
 }
 
 .typing-indicator {
