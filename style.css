@@ -35,7 +35,6 @@
 .vfrc-message {
   animation: messageIn 0.3s ease-out forwards;
   animation-delay: calc(var(--message-index, 0) * 0.1s);
-  opacity: 0;
 }
 
 .c-PJLV-gJqBfM-from-user {
@@ -118,6 +117,16 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   animation: rotateGradient 4s linear infinite;
+}
+
+.vfrc-chat-dialog {
+  flex: 1 1 0px;
+  overflow: hidden;
+  min-height: 0px;
+  color: rgba(0, 0, 0, 0.85);
+  position: relative;
+  direction: ltr;
+  background-color: #ffffff;
 }
 
 .vfrc-chat-input.c-jzUcYW {
