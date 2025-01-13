@@ -10,67 +10,6 @@
   visibility: visible;
 }
 
-/* Proactive Messages */
-.vfrc-notification {
-  position: relative;
-  padding: 12px 16px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #ffffff;
-  border-radius: 12px;
-  margin: 8px;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: proactiveSlideIn 0.5s ease forwards;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.vfrc-notification-content {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: 
-    typing 2s steps(40, end),
-    blink-caret 0.75s step-end infinite;
-  animation-delay: 0.5s;
-  animation-fill-mode: both;
-  border-right: 2px solid transparent;
-}
-
-.vfrc-launcher-tooltip {
-  position: relative;
-  padding: 12px 16px;
-  background: linear-gradient(145deg, #000000, #1a1a1a);
-  color: #ffffff;
-  border-radius: 12px;
-  margin: 8px;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: proactiveSlideIn 0.5s ease forwards;
-  animation-delay: 0.3s;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.vfrc-launcher-tooltip-content {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: 
-    typing 1.5s steps(20, end),
-    blink-caret 0.75s step-end infinite;
-  animation-delay: 0.8s;
-  animation-fill-mode: both;
-  border-right: 2px solid transparent;
-}
-
-.vfrc-notification-emoji,
-.vfrc-launcher-tooltip-emoji {
-  display: inline-block;
-  animation: waveEmoji 1.5s infinite;
-  transform-origin: 70% 70%;
-}
-
 .vfrc-widget--chat {
   animation: none;
   transform: translateY(20px);
@@ -91,6 +30,37 @@
 .vfrc-widget--chat.open {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* Proactive Messages */
+.vfrc-proactive-message-primary {
+  animation: slideInLeft 0.6s ease-out forwards, bounce 2s ease infinite;
+  transform-origin: center;
+  background: #ffffff;
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vfrc-proactive-message-secondary {
+  animation: slideInRight 0.6s ease-out forwards, pulse 2s ease infinite;
+  transform-origin: center;
+  background: #ffffff;
+  padding: 12px 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.emoji {
+  display: inline-block;
+  animation: wave 1.5s ease infinite;
+  transform-origin: 70% 70%;
 }
 
 /* Image Handling */
@@ -432,38 +402,7 @@
   outline-offset: 2px;
 }
 
-@keyframes proactiveSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
-}
-
-@keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: #ffffff }
-}
-
-@keyframes waveEmoji {
-  0% { transform: rotate(0deg); }
-  10% { transform: rotate(14deg); }
-  20% { transform: rotate(-8deg); }
-  30% { transform: rotate(14deg); }
-  40% { transform: rotate(-4deg); }
-  50% { transform: rotate(10deg); }
-  60% { transform: rotate(0deg); }
-  100% { transform: rotate(0deg); }
-}
-
+/* Animations */
 @keyframes fadeInChat {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -496,6 +435,39 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Media Queries */
 @media (max-width: 768px) {
   .vfrc-widget--chat {
     width: 100%;
