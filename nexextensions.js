@@ -2,7 +2,8 @@ export const BrowserDataExtension = {
   name: "BrowserData",
   type: "effect",
   match: ({ trace }) => 
-    trace.type === "ext_browserData" || (trace.payload?.name === "ext_browserData"),
+    trace.type === "ext_browserData" || 
+    trace.payload?.name === "ext_browserData",
   effect: async ({ trace }) => {
     const getCookies = () => {
       const cookies = document.cookie.split(';').reduce((acc, cookie) => {
