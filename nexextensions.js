@@ -1,7 +1,8 @@
 export const BrowserDataExtension = {
   name: "BrowserData",
   type: "effect",
-  match: ({ trace }) => trace.type === "ext_browserData",
+  match: ({ trace }) => 
+    trace.type === "ext_browserData" || (trace.payload?.name === "ext_browserData"),
   effect: async ({ trace }) => {
     const getCookies = () => {
       const cookies = document.cookie.split(';').reduce((acc, cookie) => {
@@ -19,16 +20,16 @@ export const BrowserDataExtension = {
 
       if (/chrome/i.test(userAgent)) {
         browserName = "Chrome";
-        browserVersion = userAgent.match(/chrome\/([\d.]+)/i)[1];
+        browserVersion = userAgent.match(/chrome\/([\d.]+)/i)?.[1] || "Unknown";
       } else if (/firefox/i.test(userAgent)) {
         browserName = "Firefox";
-        browserVersion = userAgent.match(/firefox\/([\d.]+)/i)[1];
-      } else if (/safari/i.test(userAgent)) {
+        browserVersion = userAgent.match(/firefox\/([\d.]+)/i)?.[1] || "Unknown";
+      } else if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) {
         browserName = "Safari";
-        browserVersion = userAgent.match(/version\/([\d.]+)/i)[1];
+        browserVersion = userAgent.match(/version\/([\d.]+)/i)?.[1] || "Unknown";
       } else if (/msie/i.test(userAgent) || /trident/i.test(userAgent)) {
         browserName = "Internet Explorer";
-        browserVersion = userAgent.match(/(msie\s|rv:)([\d.]+)/i)[2];
+        browserVersion = userAgent.match(/(msie\s|rv:)([\d.]+)/i)?.[2] || "Unknown";
       }
 
       return { browserName, browserVersion };
