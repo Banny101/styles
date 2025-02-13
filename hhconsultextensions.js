@@ -156,9 +156,8 @@ export const DropdownExtension = {
         <input 
           type="text" 
           class="dropdown-extension-input dropdown-extension-search" 
-          placeholder="Select an option..." 
+          placeholder="Search or select an option..." 
           autocomplete="off"
-          readonly
         >
         <div class="dropdown-extension-options">
           ${dropdownOptions
@@ -192,15 +191,23 @@ export const DropdownExtension = {
 
     // Handle clicking the input
     dropdownSearch.addEventListener("click", () => {
-      const isVisible = dropdownOptionsDiv.style.display === "block";
-      dropdownOptionsDiv.style.display = isVisible ? "none" : "block";
+      dropdownOptionsDiv.style.display = 
+        dropdownOptionsDiv.style.display === "block" ? "none" : "block";
     });
 
-    // Close dropdown when clicking outside
-    document.addEventListener("click", (event) => {
-      if (!formContainer.contains(event.target)) {
-        dropdownOptionsDiv.style.display = "none";
-      }
+    // Handle input/search functionality
+    dropdownSearch.addEventListener("input", () => {
+      const filter = dropdownSearch.value.toLowerCase();
+      const options = dropdownOptionsDiv.querySelectorAll("div");
+      
+      options.forEach((option) => {
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(filter) ? "" : "none";
+      });
+      
+      dropdownOptionsDiv.style.display = "block";
+      hiddenDropdownInput.value = "";
+      enableSubmitButton();
     });
 
     // Handle option selection
@@ -211,6 +218,13 @@ export const DropdownExtension = {
         hiddenDropdownInput.value = selectedValue;
         dropdownOptionsDiv.style.display = "none";
         enableSubmitButton();
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (event) => {
+      if (!formContainer.contains(event.target)) {
+        dropdownOptionsDiv.style.display = "none";
       }
     });
 
