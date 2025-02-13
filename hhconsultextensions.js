@@ -4,189 +4,236 @@ export const DropdownExtension = {
   match: ({ trace }) =>
     trace.type === "ext_dropdown" || trace.payload.name === "ext_dropdown",
   render: ({ trace, element }) => {
+    // Function to disable or enable Voiceflow's footer input
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv) {
-        const shadowRoot = chatDiv.shadowRoot;
-        if (shadowRoot) {
-          const textareas = shadowRoot.querySelectorAll("textarea");
-          textareas.forEach((textarea) => {
-            textarea.disabled = isDisabled;
-            textarea.style.backgroundColor = isDisabled ? "#d3d3d3" : "";
-            textarea.style.opacity = isDisabled ? "0.5" : "";
-            textarea.style.pointerEvents = isDisabled ? "none" : "auto";
-          });
-
-          const buttons = shadowRoot.querySelectorAll(
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          infoButtons: chatDiv.shadowRoot.querySelectorAll(
             ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          );
-          buttons.forEach((button) => {
-            button.disabled = isDisabled;
-            button.style.pointerEvents = isDisabled ? "none" : "auto";
-          });
-
-          const additionalButtons = shadowRoot.querySelectorAll(
+          ),
+          chatButtons: chatDiv.shadowRoot.querySelectorAll(
             ".vfrc-chat-input--button.c-iSWgdS"
-          );
-          additionalButtons.forEach((button) => {
-            button.disabled = isDisabled;
-            button.style.pointerEvents = isDisabled ? "none" : "auto";
-            button.style.opacity = isDisabled ? "0.5" : "";
-          });
-        }
+          ),
+        };
+
+        const applyStyles = (element) => {
+          element.disabled = isDisabled;
+          element.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+          element.style.opacity = isDisabled ? "0.6" : "1";
+          element.style.pointerEvents = isDisabled ? "none" : "auto";
+        };
+
+        Object.values(elements).forEach(collection => 
+          collection.forEach(applyStyles)
+        );
       }
     };
 
     const formContainer = document.createElement("form");
-
     const dropdownOptions = trace.payload.options || [];
 
     formContainer.innerHTML = `
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
-      
-      .dropdown-extension-form {
-        width: 400px; 
-        max-width: 100%; 
-        margin: 0 auto; 
-      }
-      
-      .dropdown-extension-label {
-        font-size: 0.8em;
-        color: #888;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .dropdown-extension-input[type="text"], .dropdown-extension-select {
-        width: 100%;
-        border: none;
-        border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
-        background: transparent;
-        margin: 5px 0;
-        outline: none;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .dropdown-extension-invalid {
-        border-color: red;
-      }
-      .dropdown-extension-submit {
-        background-color: #545857;
-        border: none;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        width: 100%;
-        cursor: pointer;
-        opacity: 0.5;
-        pointer-events: none;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .dropdown-extension-submit.enabled {
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .dropdown-extension-container {
-        position: relative;
-        width: 100%;
-      }
-      .dropdown-extension-options {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        max-height: 150px;
-        overflow-y: auto;
-        background: white;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        z-index: 999;
-        display: none;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .dropdown-extension-options div {
-        padding: 10px;
-        cursor: pointer;
-      }
-      .dropdown-extension-options div:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
-    </style>
-  
-    <label class="dropdown-extension-label" for="dropdown">Select an option</label>
-    <div class="dropdown-extension-container">
-      <input type="text" class="dropdown-extension-input dropdown-extension-search" placeholder="Search..." autocomplete="off">
-      <div class="dropdown-extension-options">
-        ${dropdownOptions
-          .map((option) => `<div data-value="${option}">${option}</div>`)
-          .join("")}
+      <style>
+        .dropdown-form {
+          width: 100%;
+          max-width: 600px;
+          margin: 1rem auto;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .dropdown-container {
+          position: relative;
+          background: #ffffff;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          padding: 1.5rem;
+        }
+
+        .dropdown-label {
+          display: block;
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #2c3e50;
+          margin-bottom: 0.5rem;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 12px;
+          font-size: 1rem;
+          border: 2px solid #e2e8f0;
+          border-radius: 6px;
+          background: #f8fafc;
+          transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: #3b82f6;
+          background: #ffffff;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-input.invalid {
+          border-color: #ef4444;
+          background: #fef2f2;
+        }
+
+        .dropdown-options {
+          position: absolute;
+          top: calc(100% - 1rem);
+          left: 0;
+          right: 0;
+          max-height: 200px;
+          overflow-y: auto;
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          z-index: 1000;
+          display: none;
+          scrollbar-width: thin;
+        }
+
+        .dropdown-options div {
+          padding: 0.75rem 1rem;
+          cursor: pointer;
+          transition: background 0.2s ease;
+        }
+
+        .dropdown-options div:hover {
+          background: #f1f5f9;
+        }
+
+        .submit-button {
+          width: 100%;
+          margin-top: 1rem;
+          padding: 0.75rem;
+          background: #3b82f6;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .submit-button:disabled {
+          background: #94a3b8;
+          cursor: not-allowed;
+        }
+
+        .submit-button:not(:disabled):hover {
+          background: #2563eb;
+          transform: translateY(-1px);
+        }
+
+        @media (max-width: 640px) {
+          .dropdown-form {
+            max-width: 100%;
+            margin: 0.5rem;
+          }
+        }
+      </style>
+
+      <div class="dropdown-form">
+        <div class="dropdown-container">
+          <label class="dropdown-label">Select an option</label>
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="Type to search..." 
+            autocomplete="off"
+          />
+          <div class="dropdown-options">
+            ${dropdownOptions
+              .map((option) => `<div data-value="${option}">${option}</div>`)
+              .join("")}
+          </div>
+          <input type="hidden" class="hidden-input" required />
+          <button type="submit" class="submit-button" disabled>
+            Confirm Selection
+          </button>
+        </div>
       </div>
-      <input type="hidden" class="dropdown-extension-input dropdown-extension-hidden" name="dropdown" required>
-    </div><br><br>
-  
-    <input type="submit" class="dropdown-extension-submit" value="Submit">
-  `;  
+    `;
 
-    const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
-    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
-    const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
-    const submitButton = formContainer.querySelector(".dropdown-extension-submit");
+    // Element references
+    const elements = {
+      search: formContainer.querySelector(".search-input"),
+      options: formContainer.querySelector(".dropdown-options"),
+      hidden: formContainer.querySelector(".hidden-input"),
+      submit: formContainer.querySelector(".submit-button"),
+    };
 
-    const enableSubmitButton = () => {
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      if (isValidOption) {
-        submitButton.classList.add("enabled");
-      } else {
-        submitButton.classList.remove("enabled");
+    // Event handlers
+    const handlers = {
+      toggleDropdown: () => {
+        const isVisible = elements.options.style.display === "block";
+        elements.options.style.display = isVisible ? "none" : "block";
+      },
+
+      filterOptions: () => {
+        const filter = elements.search.value.toLowerCase();
+        const options = elements.options.querySelectorAll("div");
+        
+        options.forEach((option) => {
+          const matches = option.textContent.toLowerCase().includes(filter);
+          option.style.display = matches ? "" : "none";
+        });
+
+        elements.options.style.display = "block";
+        elements.hidden.value = "";
+        elements.submit.disabled = true;
+      },
+
+      selectOption: (event) => {
+        if (event.target.tagName === "DIV") {
+          const value = event.target.getAttribute("data-value");
+          elements.search.value = value;
+          elements.hidden.value = value;
+          elements.options.style.display = "none";
+          elements.submit.disabled = false;
+          elements.search.classList.remove("invalid");
+        }
+      },
+
+      handleSubmit: (event) => {
+        event.preventDefault();
+        
+        if (!dropdownOptions.includes(elements.hidden.value)) {
+          elements.search.classList.add("invalid");
+          return;
+        }
+
+        elements.submit.remove();
+        disableFooterInputs(false);
+
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { dropdown: elements.hidden.value },
+        });
       }
     };
 
-    dropdownSearch.addEventListener("click", function () {
-      dropdownOptionsDiv.style.display =
-        dropdownOptionsDiv.style.display === "block" ? "none" : "block";
-    });
+    // Event listeners
+    elements.search.addEventListener("click", handlers.toggleDropdown);
+    elements.search.addEventListener("input", handlers.filterOptions);
+    elements.options.addEventListener("click", handlers.selectOption);
+    formContainer.addEventListener("submit", handlers.handleSubmit);
 
-    dropdownSearch.addEventListener("input", function () {
-      const filter = dropdownSearch.value.toLowerCase();
-      const options = dropdownOptionsDiv.querySelectorAll("div");
-      options.forEach((option) => {
-        const text = option.textContent.toLowerCase();
-        option.style.display = text.includes(filter) ? "" : "none";
-      });
-      dropdownOptionsDiv.style.display = "block";
-      hiddenDropdownInput.value = "";
-      enableSubmitButton();
-    });
-
-    dropdownOptionsDiv.addEventListener("click", function (event) {
-      if (event.target.tagName === "DIV") {
-        const selectedValue = event.target.getAttribute("data-value");
-        dropdownSearch.value = selectedValue;
-        hiddenDropdownInput.value = selectedValue;
-        dropdownOptionsDiv.style.display = "none";
-        enableSubmitButton();
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (event) => {
+      if (!formContainer.contains(event.target)) {
+        elements.options.style.display = "none";
       }
     });
 
-    formContainer.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      const dropdown = formContainer.querySelector(".dropdown-extension-hidden");
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-
-      if (!isValidOption) {
-        dropdownSearch.classList.add("dropdown-extension-invalid");
-        return;
-      }
-
-      formContainer.querySelector(".dropdown-extension-submit").remove();
-      disableFooterInputs(false);
-
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { dropdown: dropdown.value },
-      });
-    });
-
-    element.appendChild(formContainer);
-
+    // Initial setup
     disableFooterInputs(true);
+    element.appendChild(formContainer);
   },
 };
