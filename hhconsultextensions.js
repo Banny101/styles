@@ -203,13 +203,28 @@ export const DropdownExtension = {
       }
     };
 
-    // Show dropup on focus
-    dropdownSearch.addEventListener("focus", () => {
+    const showDropup = () => {
       dropdownOptionsDiv.style.display = "block";
+    };
+
+    const hideDropup = () => {
+      dropdownOptionsDiv.style.display = "none";
+    };
+
+    // Show dropup on focus and click
+    dropdownSearch.addEventListener("focus", (e) => {
+      e.stopPropagation();
+      showDropup();
+    });
+
+    dropdownSearch.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showDropup();
     });
 
     // Handle input/search functionality
-    dropdownSearch.addEventListener("input", () => {
+    dropdownSearch.addEventListener("input", (e) => {
+      e.stopPropagation();
       const filter = dropdownSearch.value.toLowerCase();
       const options = dropdownOptionsDiv.querySelectorAll("div");
       
@@ -218,33 +233,39 @@ export const DropdownExtension = {
         option.style.display = text.includes(filter) ? "" : "none";
       });
       
-      dropdownOptionsDiv.style.display = "block";
+      showDropup();
       hiddenDropdownInput.value = "";
       enableSubmitButton();
     });
 
     // Handle option selection
-    dropdownOptionsDiv.addEventListener("click", (event) => {
-      if (event.target.tagName === "DIV") {
-        const selectedValue = event.target.getAttribute("data-value");
+    dropdownOptionsDiv.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (e.target.tagName === "DIV") {
+        const selectedValue = e.target.getAttribute("data-value");
         dropdownSearch.value = selectedValue;
         hiddenDropdownInput.value = selectedValue;
-        dropdownOptionsDiv.style.display = "none";
+        hideDropup();
         enableSubmitButton();
-        dropdownSearch.blur(); // Remove focus after selection
+        dropdownSearch.blur();
       }
     });
 
     // Close dropdown when clicking outside
-    document.addEventListener("click", (event) => {
-      if (!formContainer.contains(event.target)) {
-        dropdownOptionsDiv.style.display = "none";
+    document.addEventListener("click", (e) => {
+      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
+        hideDropup();
       }
     });
 
+    // Prevent dropup from closing when clicking inside it
+    dropdownOptionsDiv.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
     // Handle form submission
-    formContainer.addEventListener("submit", (event) => {
-      event.preventDefault();
+    formContainer.addEventListener("submit", (e) => {
+      e.preventDefault();
 
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
       if (!isValidOption) {
@@ -259,6 +280,14 @@ export const DropdownExtension = {
         type: "complete",
         payload: { dropdown: hiddenDropdownInput.value },
       });
+    });
+
+    // Optional: Close dropup when pressing Escape key
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        hideDropup();
+        dropdownSearch.blur();
+      }
     });
 
     element.appendChild(formContainer);
