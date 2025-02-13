@@ -45,8 +45,9 @@ export const DropdownExtension = {
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
       
       .dropdown-wrapper {
-        padding: 0 16px;
-        max-width: 400px;
+        padding: 0 8px;
+        width: 100%;
+        max-width: 320px;
         margin: 0 auto;
         font-family: 'Montserrat', sans-serif;
       }
@@ -54,19 +55,20 @@ export const DropdownExtension = {
       .dropdown-extension-container {
         position: relative;
         width: 100%;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
       
       .dropdown-extension-input[type="text"] {
         width: 100%;
-        padding: 12px 16px;
+        padding: 10px 14px;
         border: 1px solid rgba(84, 88, 87, 0.2);
-        border-radius: 8px;
+        border-radius: 6px;
         background: white;
         color: #545857;
         font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
+        font-size: 13px;
         transition: all 0.2s ease;
+        cursor: pointer;
       }
 
       .dropdown-extension-input[type="text"]:focus {
@@ -82,25 +84,28 @@ export const DropdownExtension = {
 
       .dropdown-extension-options {
         position: absolute;
-        bottom: calc(100% + 8px);
+        bottom: calc(100% + 4px);
         left: 0;
         right: 0;
-        max-height: 200px;
+        max-height: 180px;
         overflow-y: auto;
         background: white;
-        border-radius: 8px;
+        border-radius: 6px;
         border: 1px solid rgba(84, 88, 87, 0.15);
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
         display: none;
         z-index: 1000;
       }
 
       .dropdown-extension-options div {
-        padding: 12px 16px;
-        font-size: 14px;
+        padding: 8px 14px;
+        font-size: 13px;
         color: #545857;
         cursor: pointer;
         transition: background-color 0.2s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .dropdown-extension-options div:hover {
@@ -109,13 +114,13 @@ export const DropdownExtension = {
 
       .dropdown-extension-submit {
         width: 100%;
-        padding: 12px 24px;
+        padding: 10px 20px;
         background-color: #545857;
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 6px;
         font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 500;
         cursor: pointer;
         opacity: 0.5;
@@ -130,6 +135,7 @@ export const DropdownExtension = {
 
       .dropdown-extension-submit.enabled:hover {
         background-color: #72727a;
+        transform: translateY(-1px);
       }
 
       .dropdown-extension-invalid {
@@ -138,7 +144,7 @@ export const DropdownExtension = {
 
       /* Custom scrollbar */
       .dropdown-extension-options::-webkit-scrollbar {
-        width: 6px;
+        width: 4px;
       }
 
       .dropdown-extension-options::-webkit-scrollbar-track {
@@ -147,7 +153,15 @@ export const DropdownExtension = {
 
       .dropdown-extension-options::-webkit-scrollbar-thumb {
         background: #72727a;
-        border-radius: 3px;
+        border-radius: 2px;
+      }
+
+      /* Arrow indicator */
+      .dropdown-extension-input[type="text"] {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23545857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 35px;
       }
     </style>
   
@@ -156,7 +170,7 @@ export const DropdownExtension = {
         <input 
           type="text" 
           class="dropdown-extension-input dropdown-extension-search" 
-          placeholder="Search or select an option..." 
+          placeholder="Search or select..." 
           autocomplete="off"
         >
         <div class="dropdown-extension-options">
@@ -189,10 +203,9 @@ export const DropdownExtension = {
       }
     };
 
-    // Handle clicking the input
-    dropdownSearch.addEventListener("click", () => {
-      dropdownOptionsDiv.style.display = 
-        dropdownOptionsDiv.style.display === "block" ? "none" : "block";
+    // Show dropup on focus
+    dropdownSearch.addEventListener("focus", () => {
+      dropdownOptionsDiv.style.display = "block";
     });
 
     // Handle input/search functionality
@@ -218,6 +231,7 @@ export const DropdownExtension = {
         hiddenDropdownInput.value = selectedValue;
         dropdownOptionsDiv.style.display = "none";
         enableSubmitButton();
+        dropdownSearch.blur(); // Remove focus after selection
       }
     });
 
