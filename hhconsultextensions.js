@@ -4,7 +4,6 @@ export const DropdownExtension = {
   match: ({ trace }) =>
     trace.type === "ext_dropdown" || trace.payload.name === "ext_dropdown",
   render: ({ trace, element }) => {
-    // Function to disable or enable Voiceflow’s footer input
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv) {
@@ -38,142 +37,113 @@ export const DropdownExtension = {
       }
     };
 
-    // Create a form element as your container
     const formContainer = document.createElement("form");
+
     const dropdownOptions = trace.payload.options || [];
 
-    // Insert your updated styling + minimal dropdown styles
     formContainer.innerHTML = `
-      <style>
-        .form-container {
-          width: 100%;
-          max-width: 800px;
-          min-width: 200px;
-          margin: auto;
-          padding: 20px;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          background: #f9f9f9;
-          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-          margin-bottom: 15px;
-        }
-        ._1ddzqsn7 {
-          display: block;
-        }
-        
-        .form-group label {
-          display: block;
-          font-weight: bold;
-          margin-bottom: 5px;
-        }
-        .form-group input {
-          width: 100%;
-          padding: 10px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          font-size: 16px;
-        }
-        .invalid {
-          border-color: red;
-        }
-        .submit-btn {
-          background: #4CAF50;
-          color: white;
-          border: none;
-          padding: 12px 15px;
-          cursor: pointer;
-          border-radius: 4px;
-          font-size: 16px;
-          width: 100%;
-        }
-        .submit-btn:hover {
-          background: #45a049;
-        }
-
-        /* Minimal dropdown-specific styling */
-        .dropdown-container {
-          position: relative;
-          width: 100%;
-        }
-        .dropdown-options {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          max-height: 150px;
-          overflow-y: auto;
-          background: white;
-          border: 1px solid #ccc;
-          z-index: 999;
-          display: none; /* opened via JS */
-        }
-        .dropdown-options div {
-          padding: 10px;
-          cursor: pointer;
-        }
-        .dropdown-options div:hover {
-          background-color: #eee;
-        }
-      </style>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
       
-      <!-- Actual form layout -->
-      <div class="form-container">
-        
-        <!-- A form-group for the dropdown label + search input -->
-        <div class="form-group dropdown-container">
-          <label for="dropdownSearch">Select an option</label>
-          <input 
-            id="dropdownSearch"
-            type="text" 
-            class="search-input" 
-            placeholder="Search..." 
-            autocomplete="off"
-          />
-          <div class="dropdown-options">
-            ${dropdownOptions
-              .map((option) => `<div data-value="${option}">${option}</div>`)
-              .join("")}
-          </div>
-          
-          <!-- Hidden input to hold the final selected value -->
-          <input 
-            type="hidden" 
-            class="hidden-input" 
-            name="dropdown" 
-            required
-          />
-        </div>
-        
-        <!-- Submit button -->
-        <div class="form-group">
-          <button type="submit" class="submit-btn" disabled>Submit</button>
-        </div>
-
+      .dropdown-extension-form {
+        width: 400px; 
+        max-width: 100%; 
+        margin: 0 auto; 
+      }
+      
+      .dropdown-extension-label {
+        font-size: 0.8em;
+        color: #888;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .dropdown-extension-input[type="text"], .dropdown-extension-select {
+        width: 100%;
+        border: none;
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+        background: transparent;
+        margin: 5px 0;
+        outline: none;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .dropdown-extension-invalid {
+        border-color: red;
+      }
+      .dropdown-extension-submit {
+        background-color: #545857;
+        border: none;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+        opacity: 0.5;
+        pointer-events: none;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .dropdown-extension-submit.enabled {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .dropdown-extension-container {
+        position: relative;
+        width: 100%;
+      }
+      .dropdown-extension-options {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        max-height: 150px;
+        overflow-y: auto;
+        background: white;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        display: none;
+        font-family: 'Montserrat', sans-serif;
+      }
+      .dropdown-extension-options div {
+        padding: 10px;
+        cursor: pointer;
+      }
+      .dropdown-extension-options div:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  
+    <label class="dropdown-extension-label" for="dropdown">Select an option</label>
+    <div class="dropdown-extension-container">
+      <input type="text" class="dropdown-extension-input dropdown-extension-search" placeholder="Search..." autocomplete="off">
+      <div class="dropdown-extension-options">
+        ${dropdownOptions
+          .map((option) => `<div data-value="${option}">${option}</div>`)
+          .join("")}
       </div>
-    `;
+      <input type="hidden" class="dropdown-extension-input dropdown-extension-hidden" name="dropdown" required>
+    </div><br><br>
+  
+    <input type="submit" class="dropdown-extension-submit" value="Submit">
+  `;  
 
-    // Grab important elements
-    const dropdownSearch = formContainer.querySelector(".search-input");
-    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-options");
-    const hiddenDropdownInput = formContainer.querySelector(".hidden-input");
-    const submitButton = formContainer.querySelector(".submit-btn");
+    const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
+    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
+    const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
+    const submitButton = formContainer.querySelector(".dropdown-extension-submit");
 
-    // Function: enable/disable the submit button
     const enableSubmitButton = () => {
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      submitButton.disabled = !isValidOption;
+      if (isValidOption) {
+        submitButton.classList.add("enabled");
+      } else {
+        submitButton.classList.remove("enabled");
+      }
     };
 
-    // Clicking the search input toggles the dropdown
-    dropdownSearch.addEventListener("click", () => {
+    dropdownSearch.addEventListener("click", function () {
       dropdownOptionsDiv.style.display =
         dropdownOptionsDiv.style.display === "block" ? "none" : "block";
     });
 
-    // As user types, filter visible options
-    dropdownSearch.addEventListener("input", () => {
+    dropdownSearch.addEventListener("input", function () {
       const filter = dropdownSearch.value.toLowerCase();
       const options = dropdownOptionsDiv.querySelectorAll("div");
       options.forEach((option) => {
@@ -185,8 +155,7 @@ export const DropdownExtension = {
       enableSubmitButton();
     });
 
-    // Handle selection of a dropdown option
-    dropdownOptionsDiv.addEventListener("click", (event) => {
+    dropdownOptionsDiv.addEventListener("click", function (event) {
       if (event.target.tagName === "DIV") {
         const selectedValue = event.target.getAttribute("data-value");
         dropdownSearch.value = selectedValue;
@@ -196,35 +165,28 @@ export const DropdownExtension = {
       }
     });
 
-    // On form submission
-    formContainer.addEventListener("submit", (event) => {
+    formContainer.addEventListener("submit", function (event) {
       event.preventDefault();
 
+      const dropdown = formContainer.querySelector(".dropdown-extension-hidden");
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
+
       if (!isValidOption) {
-        dropdownSearch.classList.add("invalid");
+        dropdownSearch.classList.add("dropdown-extension-invalid");
         return;
-      } else {
-        dropdownSearch.classList.remove("invalid");
       }
 
-      // Remove submit button to prevent double-submits
-      submitButton.remove();
-
-      // Re-enable Voiceflow’s footer
+      formContainer.querySelector(".dropdown-extension-submit").remove();
       disableFooterInputs(false);
 
-      // Send the data back to Voiceflow
       window.voiceflow.chat.interact({
         type: "complete",
-        payload: { dropdown: hiddenDropdownInput.value },
+        payload: { dropdown: dropdown.value },
       });
     });
 
-    // Initially disable the Voiceflow footer inputs
-    disableFooterInputs(true);
-
-    // Finally, append the form to the DOM element
     element.appendChild(formContainer);
+
+    disableFooterInputs(true);
   },
 };
