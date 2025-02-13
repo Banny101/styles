@@ -48,7 +48,7 @@ export const DropdownExtension = {
         .form-container {
           width: 100%;
           max-width: 800px;
-          min-width: 800px;
+          min-width: 200px;
           margin: auto;
           padding: 20px;
           border: 1px solid #ccc;
