@@ -330,179 +330,89 @@ export const BrowserDataExtension = {
     trace.type === "ext_browserData" || 
     trace.payload?.name === "ext_browserData",
   effect: async ({ trace }) => {
-    // Utility function for safe data collection
-    const safeCollect = (fn, defaultValue = "Unknown") => {
-      try {
-        return fn() || defaultValue;
-      } catch (error) {
-        console.warn(`Error collecting browser data: ${error.message}`);
-        return defaultValue;
-      }
-    };
-
-    // Enhanced cookie collection with parsing
     const getCookies = () => {
-      try {
-        return document.cookie.split(';')
-          .filter(cookie => cookie.trim())
-          .reduce((acc, cookie) => {
-            const [name, ...values] = cookie.split('=').map(c => c.trim());
-            const value = values.join('='); // Handle values containing '='
-            if (name) acc[name] = value;
-            return acc;
-          }, {});
-      } catch (error) {
-        console.warn(`Cookie parsing error: ${error.message}`);
-        return {};
-      }
+      const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+        const [name, value] = cookie.split('=').map(c => c.trim());
+        acc[name] = value;
+        return acc;
+      }, {});
+      return cookies;
     };
 
-    // Enhanced browser detection
     const getBrowserInfo = () => {
       const userAgent = navigator.userAgent;
-      const browsers = [
-        { name: 'Edge', regex: /edg\/([\d.]+)/i },
-        { name: 'Chrome', regex: /chrome\/([\d.]+)/i },
-        { name: 'Firefox', regex: /firefox\/([\d.]+)/i },
-        { name: 'Safari', regex: /version\/([\d.]+).*safari/i },
-        { name: 'Opera', regex: /opr\/([\d.]+)/i },
-        { name: 'Internet Explorer', regex: /(msie\s|rv:)([\d.]+)/i }
-      ];
+      let browserName = "Unknown";
+      let browserVersion = "Unknown";
 
-      for (const browser of browsers) {
-        const match = userAgent.match(browser.regex);
-        if (match) {
-          return {
-            browserName: browser.name,
-            browserVersion: match[1] || "Unknown"
-          };
-        }
+      if (/chrome/i.test(userAgent)) {
+        browserName = "Chrome";
+        browserVersion = userAgent.match(/chrome\/([\d.]+)/i)?.[1] || "Unknown";
+      } else if (/firefox/i.test(userAgent)) {
+        browserName = "Firefox";
+        browserVersion = userAgent.match(/firefox\/([\d.]+)/i)?.[1] || "Unknown";
+      } else if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) {
+        browserName = "Safari";
+        browserVersion = userAgent.match(/version\/([\d.]+)/i)?.[1] || "Unknown";
+      } else if (/msie/i.test(userAgent) || /trident/i.test(userAgent)) {
+        browserName = "Internet Explorer";
+        browserVersion = userAgent.match(/(msie\s|rv:)([\d.]+)/i)?.[2] || "Unknown";
       }
 
-      return { browserName: "Unknown", browserVersion: "Unknown" };
+      return { browserName, browserVersion };
     };
 
-    // Enhanced viewport and screen info
-    const getDisplayInfo = () => {
-      const dpr = window.devicePixelRatio || 1;
-      const viewport = {
-        width: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0),
-        height: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0)
-      };
-      const screen = {
-        width: window.screen.width,
-        height: window.screen.height,
-        colorDepth: window.screen.colorDepth,
-        orientation: screen.orientation?.type || "Unknown"
-      };
-
-      return { viewport, screen, dpr };
+    const getViewportSize = () => {
+      const width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      const height = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+      return { width, height };
     };
 
-    // Enhanced IP address collection with timeout
     const getIpAddress = async () => {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-        const response = await fetch('https://api.ipify.org?format=json', {
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
+        const response = await fetch('https://api.ipify.org?format=json');
         const data = await response.json();
         return data.ip;
       } catch (error) {
-        console.warn(`IP fetch error: ${error.message}`);
-        return "Unable to fetch IP";
+        return "Unable to fetch IP address";
       }
     };
 
-    // Additional system capabilities detection
-    const getSystemCapabilities = () => ({
-      cookiesEnabled: navigator.cookieEnabled,
-      localStorage: !!window.localStorage,
-      sessionStorage: !!window.sessionStorage,
-      webGL: (() => {
-        try {
-          return !!window.WebGLRenderingContext && 
-                 !!document.createElement('canvas').getContext('webgl');
-        } catch (e) {
-          return false;
-        }
-      })(),
-      touchscreen: ('ontouchstart' in window) || (navigator.maxTouchPoints > 0),
-      languages: navigator.languages || [navigator.language],
-      doNotTrack: navigator.doNotTrack || window.doNotTrack,
-      onlineStatus: navigator.onLine
-    });
-
-    // Collect all data
-    const { viewport, screen, dpr } = getDisplayInfo();
-    const { browserName, browserVersion } = getBrowserInfo();
-    const capabilities = getSystemCapabilities();
     const ip = await getIpAddress();
+    const url = window.location.href;
+    const params = new URLSearchParams(window.location.search).toString();
+    const cookies = getCookies();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const time = new Date().toLocaleTimeString();
+    const ts = Math.floor(Date.now() / 1000);
+    const userAgent = navigator.userAgent;
+    const { browserName, browserVersion } = getBrowserInfo();
+    const lang = navigator.language;
+    const supportsCookies = navigator.cookieEnabled;
+    const platform = navigator.platform;
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    const { width: viewportWidth, height: viewportHeight } = getViewportSize();
 
-    // Prepare payload with all collected data
-    const payload = {
-      ip,
-      url: safeCollect(() => window.location.href),
-      referrer: safeCollect(() => document.referrer),
-      params: safeCollect(() => new URLSearchParams(window.location.search).toString()),
-      cookies: getCookies(),
-      timezone: safeCollect(() => Intl.DateTimeFormat().resolvedOptions().timeZone),
-      time: new Date().toISOString(),
-      ts: Math.floor(Date.now() / 1000),
-      userAgent: navigator.userAgent,
-      browserName,
-      browserVersion,
-      platform: {
-        os: navigator.platform,
-        vendor: navigator.vendor,
-        language: navigator.language,
-        languages: capabilities.languages
-      },
-      screen: {
-        width: screen.width,
-        height: screen.height,
-        colorDepth: screen.colorDepth,
-        orientation: screen.orientation,
-        dpr
-      },
-      viewport: {
-        width: viewport.width,
-        height: viewport.height
-      },
-      capabilities: {
-        ...capabilities,
-        connection: navigator.connection ? {
-          type: navigator.connection.effectiveType,
-          downlink: navigator.connection.downlink,
-          rtt: navigator.connection.rtt,
-          saveData: navigator.connection.saveData
-        } : null
+    window.voiceflow.chat.interact({
+      type: "complete",
+      payload: {
+        ip,
+        url,
+        params,
+        cookies,
+        timezone,
+        time,
+        ts,
+        userAgent,
+        browserName,
+        browserVersion,
+        lang,
+        supportsCookies,
+        platform,
+        screenResolution: `${screenWidth}x${screenHeight}`,
+        viewportSize: `${viewportWidth}x${viewportHeight}`
       }
-    };
-
-    // Send collected data
-    try {
-      await window.voiceflow.chat.interact({
-        type: "complete",
-        payload
-      });
-    } catch (error) {
-      console.error("Failed to send browser data:", error);
-      // Attempt to send minimal payload if full payload fails
-      await window.voiceflow.chat.interact({
-        type: "complete",
-        payload: {
-          error: "Failed to collect complete browser data",
-          browserName,
-          browserVersion,
-          timestamp: Date.now()
-        }
-      });
-    }
+    });
   }
 };
 
