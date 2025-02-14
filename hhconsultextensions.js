@@ -868,34 +868,42 @@ export const DelayEffectExtension = {
     const styleElement = document.createElement('style');
     styleElement.textContent = `
       .delay-countdown {
-        background: rgba(84, 88, 87, 0.1);
+        background: white;
+        border: 1px solid rgba(84, 88, 87, 0.2);
         border-radius: 8px;
         padding: 12px;
         margin: 8px 0;
         font-family: 'Montserrat', sans-serif;
         color: #545857;
-        text-align: center;
       }
       
-      .countdown-number {
-        font-size: 16px;
+      .countdown-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .countdown-circle {
+        width: 32px;
+        height: 32px;
+        border: 2px solid #72727a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-weight: 500;
-        margin-bottom: 4px;
+        animation: pulse 1s infinite;
       }
       
-      .progress-bar {
-        width: 100%;
-        height: 4px;
-        background: #e0e0e0;
-        border-radius: 2px;
-        overflow: hidden;
+      .countdown-text {
+        color: #72727a;
+        font-size: 14px;
       }
       
-      .progress {
-        height: 100%;
-        background: #72727a;
-        width: 100%;
-        transition: width 1s linear;
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
       }
     `;
     document.head.appendChild(styleElement);
@@ -914,9 +922,9 @@ export const DelayEffectExtension = {
     // Countdown loop
     for (let i = seconds; i > 0; i--) {
       countdownElement.innerHTML = `
-        <div class="countdown-number">${i}</div>
-        <div class="progress-bar">
-          <div class="progress" style="width: ${(i/seconds) * 100}%"></div>
+        <div class="countdown-content">
+          <div class="countdown-circle">${i}</div>
+          <div class="countdown-text">seconds remaining...</div>
         </div>
       `;
       await new Promise(resolve => setTimeout(resolve, 1000));
