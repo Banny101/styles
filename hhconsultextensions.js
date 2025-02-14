@@ -836,12 +836,32 @@ export const RankOptionsExtension = {
 export const DelayEffectExtension = {
   name: "DelayEffect",
   type: "effect",
-  match: ({ trace }) => trace.type === "ext_delay" || trace.payload.name === "ext_delay",
+  match: ({ trace }) => 
+    trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
   effect: async ({ trace }) => {
-    const { delay } = trace.payload;
+    try {
+      // Get delay value with validation
+      const delay = Math.max(
+        0,
+        parseInt(trace.payload?.delay) || 1000
+      );
 
-    await new Promise(resolve => setTimeout(resolve, delay));
+      // Show typing indicator during delay
+      window.voiceflow.chat.trigger('typingStart');
 
-    window.voiceflow.chat.interact({ type: "complete" });
+      // Execute delay
+      await new Promise(resolve => setTimeout(resolve, delay));
+      
+      // Hide typing indicator
+      window.voiceflow.chat.trigger('typingEnd');
+
+      // Complete the interaction
+      window.voiceflow.chat.interact({ type: "complete" });
+
+    } catch (error) {
+      console.error('DelayEffect Extension Error:', error);
+      window.voiceflow.chat.trigger('typingEnd');
+      window.voiceflow.chat.interact({ type: "complete" });
+    }
   }
 };
