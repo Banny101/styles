@@ -176,13 +176,11 @@ export const DropdownExtension = {
         animation: fadeIn 0.15s ease;
       }
 
-      /* Active/Focus states */
       .dropdown-extension-input[type="text"]:active,
       .dropdown-extension-submit:active {
         transform: translateY(1px);
       }
 
-      /* Empty state */
       .dropdown-extension-options:empty::after {
         content: "No options available";
         display: block;
@@ -192,7 +190,6 @@ export const DropdownExtension = {
         font-size: 12px;
       }
 
-      /* Loading state */
       .dropdown-extension-options.loading::after {
         content: "Loading...";
         display: block;
@@ -226,11 +223,150 @@ export const DropdownExtension = {
       </div>
       <button type="submit" class="dropdown-extension-submit">Submit</button>
     </div>
-  `;
+  `;  
 
-    // ... (rest of the JavaScript remains the same)
+    const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
+    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
+    const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
+    const submitButton = formContainer.querySelector(".dropdown-extension-submit");
+    let highlightedIndex = -1;
+
+    const enableSubmitButton = () => {
+      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
+      submitButton.classList.toggle("enabled", isValidOption);
+    };
+
+    const showDropup = () => {
+      dropdownOptionsDiv.classList.add("visible");
+      const filter = dropdownSearch.value.toLowerCase();
+      const options = dropdownOptionsDiv.querySelectorAll("div");
+      let hasVisibleOptions = false;
+      
+      options.forEach((option) => {
+        const text = option.textContent.toLowerCase();
+        const isVisible = text.includes(filter);
+        option.style.display = isVisible ? "" : "none";
+        if (isVisible) hasVisibleOptions = true;
+      });
+
+      dropdownOptionsDiv.classList.toggle("empty", !hasVisibleOptions);
+    };
+
+    const hideDropup = () => {
+      dropdownOptionsDiv.classList.remove("visible");
+      highlightedIndex = -1;
+      updateHighlight();
+    };
+
+    const updateHighlight = () => {
+      const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
+      options.forEach((option, index) => {
+        option.classList.toggle("highlighted", index === highlightedIndex);
+        if (index === highlightedIndex) {
+          option.scrollIntoView({ block: "nearest" });
+        }
+      });
+    };
+
+    const handleKeyNavigation = (e) => {
+      const visibleOptions = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
+      
+      switch(e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          if (!dropdownOptionsDiv.classList.contains("visible")) {
+            showDropup();
+            highlightedIndex = 0;
+          } else {
+            highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
+          }
+          updateHighlight();
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          if (highlightedIndex > -1) {
+            highlightedIndex = Math.max(highlightedIndex - 1, 0);
+            updateHighlight();
+          }
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
+            visibleOptions[highlightedIndex].click();
+          }
+          break;
+        case "Escape":
+          hideDropup();
+          dropdownSearch.blur();
+          break;
+        case "Tab":
+          hideDropup();
+          break;
+      }
+    };
+
+    dropdownSearch.addEventListener("focus", (e) => {
+      e.stopPropagation();
+      showDropup();
+    });
+
+    dropdownSearch.addEventListener("click", (e) => {
+      e.stopPropagation();
+      showDropup();
+    });
+
+    dropdownSearch.addEventListener("input", (e) => {
+      e.stopPropagation();
+      showDropup();
+      hiddenDropdownInput.value = "";
+      enableSubmitButton();
+      highlightedIndex = -1;
+      updateHighlight();
+    });
+
+    dropdownSearch.addEventListener("keydown", handleKeyNavigation);
+
+    dropdownOptionsDiv.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (e.target.tagName === "DIV") {
+        const selectedValue = e.target.getAttribute("data-value");
+        dropdownSearch.value = selectedValue;
+        hiddenDropdownInput.value = selectedValue;
+        hideDropup();
+        enableSubmitButton();
+        dropdownSearch.blur();
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
+        hideDropup();
+      }
+    });
+
+    formContainer.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
+      if (!isValidOption) {
+        dropdownSearch.classList.add("dropdown-extension-invalid");
+        return;
+      }
+      submitButton.remove();
+      disableFooterInputs(false);
+      window.voiceflow.chat.interact({
+        type: "complete",
+        payload: { dropdown: hiddenDropdownInput.value },
+      });
+    });
+
+    element.appendChild(formContainer);
+    disableFooterInputs(true);
+
+    // Initial focus
+    setTimeout(() => dropdownSearch.focus(), 0);
   },
 };
+
 export const BrowserDataExtension = {
   name: "BrowserData",
   type: "effect",
