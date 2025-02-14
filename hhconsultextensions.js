@@ -38,24 +38,15 @@ export const DropdownExtension = {
     };
 
     const formContainer = document.createElement("form");
-    formContainer.style.width = "100%";
-    formContainer.style.display = "block";
+    formContainer.className = "_1ddzqsn7";
     const dropdownOptions = trace.payload.options || [];
 
     formContainer.innerHTML = `
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
       
-      form {
-        width: 100%;
-        display: block;
-        box-sizing: border-box;
-      }
-      
       .dropdown-wrapper {
         width: 100%;
-        display: block;
-        box-sizing: border-box;
         font-family: 'Montserrat', sans-serif;
       }
       
@@ -63,8 +54,6 @@ export const DropdownExtension = {
         position: relative;
         width: 100%;
         margin-bottom: 12px;
-        display: block;
-        box-sizing: border-box;
       }
       
       .dropdown-extension-input[type="text"] {
@@ -78,8 +67,6 @@ export const DropdownExtension = {
         font-size: 13px;
         transition: all 0.2s ease;
         cursor: pointer;
-        display: block;
-        box-sizing: border-box;
       }
 
       .dropdown-extension-input[type="text"]:focus {
@@ -107,7 +94,6 @@ export const DropdownExtension = {
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
         display: none;
         z-index: 1000;
-        box-sizing: border-box;
       }
 
       .dropdown-extension-options div {
@@ -127,8 +113,6 @@ export const DropdownExtension = {
 
       .dropdown-extension-submit {
         width: 100%;
-        display: block;
-        box-sizing: border-box;
         padding: 10px 20px;
         background-color: #545857;
         color: white;
