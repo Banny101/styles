@@ -838,9 +838,6 @@ export const DelayEffectExtension = {
   type: "effect",
   match: ({ trace }) => trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
   effect: async ({ trace }) => {
-    const delay = trace.payload?.delay || 1000;
-    const seconds = Math.ceil(delay / 1000);
-
     // Disable chat input
     const disableChat = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
@@ -860,81 +857,23 @@ export const DelayEffectExtension = {
       }
     };
 
-    // Create countdown element
-    const countdownElement = document.createElement('div');
-    countdownElement.className = 'delay-countdown';
-    
-    // Add styles
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-      .delay-countdown {
-        background: white;
-        border: 1px solid rgba(84, 88, 87, 0.2);
-        border-radius: 8px;
-        padding: 12px;
-        margin: 8px 0;
-        font-family: 'Montserrat', sans-serif;
-        color: #545857;
-      }
-      
-      .countdown-content {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      
-      .countdown-circle {
-        width: 32px;
-        height: 32px;
-        border: 2px solid #72727a;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 500;
-        animation: pulse 1s infinite;
-      }
-      
-      .countdown-text {
-        color: #72727a;
-        font-size: 14px;
-      }
-      
-      @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-      }
-    `;
-    document.head.appendChild(styleElement);
+    try {
+      // Disable chat input during delay
+      disableChat(true);
 
-    // Add to chat
-    const messagesContainer = document.querySelector('.vfrc-chat-messages');
-    if (messagesContainer) {
-      messagesContainer.appendChild(countdownElement);
-      // Scroll to the countdown
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      // Execute delay
+      const delay = trace.payload?.delay || 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      // Re-enable chat input
+      disableChat(false);
+
+      // Move to next block
+      window.voiceflow.chat.interact({ type: "complete" });
+    } catch (error) {
+      // Ensure chat input is re-enabled even if there's an error
+      disableChat(false);
+      window.voiceflow.chat.interact({ type: "complete" });
     }
-
-    // Disable chat input
-    disableChat(true);
-
-    // Countdown loop
-    for (let i = seconds; i > 0; i--) {
-      countdownElement.innerHTML = `
-        <div class="countdown-content">
-          <div class="countdown-circle">${i}</div>
-          <div class="countdown-text">seconds remaining...</div>
-        </div>
-      `;
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-
-    // Cleanup
-    countdownElement.remove();
-    styleElement.remove();
-    disableChat(false);
-
-    window.voiceflow.chat.interact({ type: "complete" });
   }
 };
