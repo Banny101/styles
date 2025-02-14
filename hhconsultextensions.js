@@ -192,10 +192,9 @@ export const DropdownExtension = {
       submitButton.classList.toggle("enabled", isValidOption);
     };
 
-    const showDropup = () => {
-      if (!dropdownSearch.disabled) {
-        dropdownOptionsDiv.style.display = "block";
-      }
+    const showDropup = (e) => {
+      if (e) e.stopPropagation();
+      dropdownOptionsDiv.style.display = "block";
     };
 
     const hideDropup = () => {
@@ -216,17 +215,26 @@ export const DropdownExtension = {
       hiddenDropdownInput.value = selectedValue;
       hideDropup();
       enableSubmitButton();
+    };
+
+    const handleInput = (e) => {
+      e.stopPropagation();
+      const filter = dropdownSearch.value.toLowerCase();
+      const options = dropdownOptionsDiv.querySelectorAll("div");
       
-      // Disable input after selection
-      dropdownSearch.disabled = true;
-      dropdownSearch.style.backgroundColor = "#f5f5f5";
-      dropdownSearch.style.cursor = "not-allowed";
-      dropdownSearch.style.opacity = "0.7";
+      options.forEach((option) => {
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(filter) ? "" : "none";
+      });
+      
+      showDropup();
+      hiddenDropdownInput.value = "";
+      enableSubmitButton();
+      highlightedIndex = -1;
+      updateHighlight();
     };
 
     const handleKeyNavigation = (e) => {
-      if (dropdownSearch.disabled) return;
-      
       const visibleOptions = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
       
       switch(e.key) {
@@ -260,33 +268,10 @@ export const DropdownExtension = {
       }
     };
 
-    dropdownSearch.addEventListener("focus", (e) => {
-      e.stopPropagation();
-      showDropup();
-    });
-
-    dropdownSearch.addEventListener("click", (e) => {
-      e.stopPropagation();
-      showDropup();
-    });
-
-    dropdownSearch.addEventListener("input", (e) => {
-      e.stopPropagation();
-      const filter = dropdownSearch.value.toLowerCase();
-      const options = dropdownOptionsDiv.querySelectorAll("div");
-      
-      options.forEach((option) => {
-        const text = option.textContent.toLowerCase();
-        option.style.display = text.includes(filter) ? "" : "none";
-      });
-      
-      showDropup();
-      hiddenDropdownInput.value = "";
-      enableSubmitButton();
-      highlightedIndex = -1;
-      updateHighlight();
-    });
-
+    // Add event listeners
+    dropdownSearch.addEventListener("focus", showDropup);
+    dropdownSearch.addEventListener("click", showDropup);
+    dropdownSearch.addEventListener("input", handleInput);
     dropdownSearch.addEventListener("keydown", handleKeyNavigation);
 
     dropdownOptionsDiv.addEventListener("click", (e) => {
@@ -298,9 +283,7 @@ export const DropdownExtension = {
     });
 
     document.addEventListener("click", (e) => {
-      if (!dropdownSearch.contains(e.target) && 
-          !dropdownOptionsDiv.contains(e.target) && 
-          !dropdownSearch.disabled) {
+      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
         hideDropup();
       }
     });
@@ -313,8 +296,19 @@ export const DropdownExtension = {
         return;
       }
 
-      // Disable form inputs immediately
+      // Disable input and prevent changes after submission
       dropdownSearch.disabled = true;
+      dropdownSearch.style.backgroundColor = "#f5f5f5";
+      dropdownSearch.style.cursor = "not-allowed";
+      dropdownSearch.style.opacity = "0.7";
+      
+      // Remove all event listeners to prevent any interaction
+      dropdownSearch.removeEventListener("focus", showDropup);
+      dropdownSearch.removeEventListener("click", showDropup);
+      dropdownSearch.removeEventListener("input", handleInput);
+      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
+      
+      // Disable submit button
       submitButton.disabled = true;
       
       // Re-enable Voiceflow's footer first
@@ -334,7 +328,10 @@ export const DropdownExtension = {
 
     const cleanup = () => {
       document.removeEventListener("click", hideDropup);
-      document.removeEventListener("keydown", handleKeyNavigation);
+      dropdownSearch.removeEventListener("focus", showDropup);
+      dropdownSearch.removeEventListener("click", showDropup);
+      dropdownSearch.removeEventListener("input", handleInput);
+      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
     };
 
     element.appendChild(formContainer);
