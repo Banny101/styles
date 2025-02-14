@@ -893,37 +893,30 @@ export const DelayEffectExtension = {
         parseInt(trace.payload?.delay) || 1000
       );
 
-      // Hide any existing scroll indicators before delay
+      // Hide any existing scroll indicators
       const hideScrollIndicators = () => {
         document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
           .forEach(el => {
             el.style.display = 'none';
-            // Optional: remove them entirely
-            // el.remove();
           });
       };
 
-      // Initial cleanup
       hideScrollIndicators();
-
-      // Show typing indicator during delay
-      window.voiceflow.chat.trigger('typingStart');
 
       // Execute delay
       await new Promise(resolve => setTimeout(resolve, delay));
       
-      // Hide typing indicator
-      window.voiceflow.chat.trigger('typingEnd');
-
-      // Final cleanup of any scroll indicators
       hideScrollIndicators();
 
-      // Complete the interaction
-      window.voiceflow.chat.interact({ type: "complete" });
+      // Move to next block
+      window.voiceflow.chat.interact({ 
+        type: "complete",
+        payload: { delay: delay }  // Optional: pass the actual delay used
+      });
 
     } catch (error) {
       console.error('DelayEffect Extension Error:', error);
-      window.voiceflow.chat.trigger('typingEnd');
+      // Ensure we still move to next block even if there's an error
       window.voiceflow.chat.interact({ type: "complete" });
     }
   }
