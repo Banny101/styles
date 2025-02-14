@@ -2,7 +2,7 @@ export const DropdownExtension = {
   name: "DropdownExtension",
   type: "response",
   match: ({ trace }) =>
-    trace.type === "ext_dropdown" || trace.payload.name === "ext_dropdown",
+    trace.type === "ext_dropdown" || trace.payload?.name === "ext_dropdown",
   render: ({ trace, element }) => {
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
