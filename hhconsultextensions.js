@@ -723,68 +723,61 @@ export const RankOptionsExtension = {
           
           .rank-options-container {
             font-family: 'Montserrat', sans-serif;
-            color: #545857;
+            padding: 0 4px;
           }
           
-          .rank-instructions {
-            font-size: 13px;
-            margin-bottom: 12px;
-            color: #72727a;
+          .rank-title {
+            font-size: 14px;
+            margin-bottom: 16px;
+            color: #303235;
           }
           
           .rank-options-list {
             list-style: none;
             padding: 0;
-            margin: 0 0 12px 0;
+            margin: 0;
           }
           
           .rank-options-list li {
             display: flex;
             align-items: center;
-            padding: 10px 12px;
+            padding: 8px 12px;
             margin-bottom: 8px;
             background-color: white;
-            border: 1px solid rgba(84, 88, 87, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 6px;
             cursor: grab;
-            font-size: 13px;
-            transition: all 0.2s ease;
-          }
-          
-          .rank-options-list li:hover {
-            border-color: #545857;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+            color: #303235;
           }
           
           .rank-options-list li:active {
             cursor: grabbing;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
+          }
+
+          .rank-number {
+            min-width: 24px;
+            margin-right: 8px;
+            color: #666;
+            font-size: 14px;
           }
           
-          .rank-number {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 20px;
-            height: 20px;
-            background: #f5f5f5;
-            border-radius: 50%;
-            margin-right: 8px;
-            font-size: 12px;
-            color: #72727a;
+          .rank-text {
+            flex: 1;
           }
           
           .submit-button {
             width: 100%;
-            padding: 10px;
+            padding: 12px 16px;
             background-color: #545857;
             color: white;
             border: none;
             border-radius: 6px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 14px;
             cursor: pointer;
+            margin-top: 16px;
             transition: background-color 0.2s ease;
           }
           
@@ -793,21 +786,21 @@ export const RankOptionsExtension = {
           }
           
           .sortable-ghost {
-            opacity: 0.4;
+            opacity: 0.5;
           }
-          
-          .sortable-chosen {
-            background-color: #f5f5f5;
+
+          .sortable-drag {
+            background-color: #f8f9fa;
           }
         </style>
         
         <div class="rank-options-container">
-          <div class="rank-instructions">Drag and drop to rank in order of preference</div>
+          <div class="rank-title">Drag and drop to rank options</div>
           <ul class="rank-options-list">
             ${options.map((option, index) => `
               <li data-value="${option}">
                 <span class="rank-number">${index + 1}</span>
-                <span>${option}</span>
+                <span class="rank-text">${option}</span>
               </li>
             `).join('')}
           </ul>
@@ -822,7 +815,6 @@ export const RankOptionsExtension = {
         });
       };
 
-      // Handle form submission
       formContainer.addEventListener("submit", (e) => {
         e.preventDefault();
         
@@ -830,15 +822,12 @@ export const RankOptionsExtension = {
           formContainer.querySelectorAll('.rank-options-list li')
         ).map(li => li.dataset.value);
 
-        // Disable form and show completion state
         const submitButton = formContainer.querySelector('.submit-button');
         submitButton.disabled = true;
         submitButton.style.opacity = "0.5";
         
-        // Re-enable chat inputs
         disableFooterInputs(false);
 
-        // Complete the interaction
         window.voiceflow.chat.interact({
           type: "complete",
           payload: { rankedOptions }
@@ -847,16 +836,16 @@ export const RankOptionsExtension = {
 
       element.appendChild(formContainer);
 
-      // Initialize Sortable
       if (typeof Sortable !== 'undefined') {
         new Sortable(formContainer.querySelector('.rank-options-list'), {
           animation: 150,
-          onEnd: updateRankNumbers
+          onEnd: updateRankNumbers,
+          ghostClass: 'sortable-ghost',
+          dragClass: 'sortable-drag'
         });
       }
     };
 
-    // Load Sortable.js if not already loaded
     if (typeof Sortable === 'undefined') {
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
@@ -867,11 +856,9 @@ export const RankOptionsExtension = {
       createForm();
     }
 
-    // Initially disable chat inputs
     disableFooterInputs(true);
   },
 };
-
 export const DelayEffectExtension = {
   name: "DelayEffect",
   type: "effect",
