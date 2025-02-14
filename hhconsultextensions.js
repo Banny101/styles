@@ -859,39 +859,52 @@ export const DelayEffectExtension = {
       chatContainer.appendChild(countdownElement);
     }
 
+    // Add styles for the progress bar
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes countdown {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
+    `;
+    document.head.appendChild(style);
+
     // Countdown animation
     for (let i = seconds; i > 0; i--) {
       countdownElement.innerHTML = `
         <div style="
+          background: #f5f5f5;
+          border-radius: 4px;
+          padding: 8px;
           display: flex;
-          align-items: center;
-          gap: 8px;
-          opacity: 0.7;
+          flex-direction: column;
+          gap: 4px;
         ">
           <div style="
-            width: 20px;
-            height: 20px;
-            border: 2px solid #72727a;
-            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
-            animation: pulse 1s infinite;
-          ">${i}</div>
-          <span>seconds remaining...</span>
+            justify-content: space-between;
+            color: #72727a;
+          ">
+            <span>Please wait...</span>
+            <span>${i}s</span>
+          </div>
+          <div style="
+            width: 100%;
+            height: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+          ">
+            <div style="
+              height: 100%;
+              background: #72727a;
+              width: 100%;
+              animation: countdown 1s linear;
+            "></div>
+          </div>
         </div>
       `;
-
-      // Add pulse animation
-      const style = document.createElement('style');
-      style.textContent = `
-        @keyframes pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.1); }
-          100% { transform: scale(1); }
-        }
-      `;
-      document.head.appendChild(style);
 
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
