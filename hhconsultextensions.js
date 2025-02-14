@@ -841,78 +841,91 @@ export const DelayEffectExtension = {
     const delay = trace.payload?.delay || 1000;
     const seconds = Math.ceil(delay / 1000);
 
-    // Create and style the countdown element
+    // Disable chat input
+    const disableChat = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          buttons: chatDiv.shadowRoot.querySelectorAll("button"),
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+          });
+        });
+      }
+    };
+
+    // Create countdown element
     const countdownElement = document.createElement('div');
-    countdownElement.style.cssText = `
-      position: relative;
-      text-align: center;
-      padding: 10px;
-      margin: 10px 0;
-      font-family: 'Montserrat', sans-serif;
-      color: #545857;
-      font-size: 14px;
-    `;
-
-    // Add countdown element to the chat
-    const chatContainer = document.querySelector('.vfrc-chat-messages');
-    if (chatContainer) {
-      chatContainer.appendChild(countdownElement);
-    }
-
-    // Add styles for the progress bar
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes countdown {
-        from { width: 100%; }
-        to { width: 0%; }
+    countdownElement.className = 'delay-countdown';
+    
+    // Add styles
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      .delay-countdown {
+        background: rgba(84, 88, 87, 0.1);
+        border-radius: 8px;
+        padding: 12px;
+        margin: 8px 0;
+        font-family: 'Montserrat', sans-serif;
+        color: #545857;
+        text-align: center;
+      }
+      
+      .countdown-number {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      
+      .progress-bar {
+        width: 100%;
+        height: 4px;
+        background: #e0e0e0;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      
+      .progress {
+        height: 100%;
+        background: #72727a;
+        width: 100%;
+        transition: width 1s linear;
       }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(styleElement);
 
-    // Countdown animation
+    // Add to chat
+    const messagesContainer = document.querySelector('.vfrc-chat-messages');
+    if (messagesContainer) {
+      messagesContainer.appendChild(countdownElement);
+      // Scroll to the countdown
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Disable chat input
+    disableChat(true);
+
+    // Countdown loop
     for (let i = seconds; i > 0; i--) {
       countdownElement.innerHTML = `
-        <div style="
-          background: #f5f5f5;
-          border-radius: 4px;
-          padding: 8px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        ">
-          <div style="
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: #72727a;
-          ">
-            <span>Please wait...</span>
-            <span>${i}s</span>
-          </div>
-          <div style="
-            width: 100%;
-            height: 2px;
-            background: #e0e0e0;
-            border-radius: 2px;
-            overflow: hidden;
-          ">
-            <div style="
-              height: 100%;
-              background: #72727a;
-              width: 100%;
-              animation: countdown 1s linear;
-            "></div>
-          </div>
+        <div class="countdown-number">${i}</div>
+        <div class="progress-bar">
+          <div class="progress" style="width: ${(i/seconds) * 100}%"></div>
         </div>
       `;
-
       await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
-    // Remove countdown element
-    if (countdownElement) {
-      countdownElement.remove();
-    }
+    // Cleanup
+    countdownElement.remove();
+    styleElement.remove();
+    disableChat(false);
 
     window.voiceflow.chat.interact({ type: "complete" });
   }
