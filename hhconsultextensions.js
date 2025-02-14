@@ -46,14 +46,14 @@ export const DropdownExtension = {
       .dropdown-extension-container {
         position: relative;
         width: 100%;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
       }
       
       .dropdown-extension-input[type="text"] {
         width: 100%;
-        padding: 6px 10px;
+        padding: 8px 12px;
         border: 1px solid rgba(84, 88, 87, 0.2);
-        border-radius: 4px;
+        border-radius: 6px;
         background: white;
         color: #545857;
         font-family: 'Montserrat', sans-serif;
@@ -61,14 +61,12 @@ export const DropdownExtension = {
         transition: all 0.2s ease;
         cursor: pointer;
         margin: 0;
-        height: 32px;
-        line-height: 20px;
       }
 
       .dropdown-extension-input[type="text"]:focus {
         outline: none;
         border-color: #545857;
-        box-shadow: 0 0 0 1px rgba(84, 88, 87, 0.1);
+        box-shadow: 0 0 0 2px rgba(84, 88, 87, 0.1);
       }
 
       .dropdown-extension-input[type="text"]::placeholder {
@@ -78,16 +76,16 @@ export const DropdownExtension = {
 
       .dropdown-extension-options {
         position: absolute;
-        bottom: calc(100% + 2px);
+        bottom: calc(100% + 4px);
         left: 0;
         right: 0;
         width: 100%;
-        max-height: 180px;
+        max-height: 200px;
         overflow-y: auto;
         background: white;
-        border-radius: 4px;
+        border-radius: 6px;
         border: 1px solid rgba(84, 88, 87, 0.15);
-        box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
         display: none;
         z-index: 1000;
         scrollbar-width: thin;
@@ -95,32 +93,28 @@ export const DropdownExtension = {
       }
 
       .dropdown-extension-options div {
-        padding: 6px 10px;
+        padding: 8px 12px;
         font-size: 13px;
         color: #545857;
         cursor: pointer;
-        transition: all 0.15s ease;
+        transition: all 0.2s ease;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        min-height: 30px;
-        display: flex;
-        align-items: center;
       }
 
       .dropdown-extension-options div:hover,
       .dropdown-extension-options div.highlighted {
-        background-color: rgba(84, 88, 87, 0.06);
+        background-color: rgba(84, 88, 87, 0.08);
       }
 
       .dropdown-extension-submit {
         width: 100%;
-        padding: 6px 12px;
-        height: 32px;
+        padding: 8px 16px;
         background-color: #545857;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         font-family: 'Montserrat', sans-serif;
         font-size: 13px;
         font-weight: 500;
@@ -129,7 +123,6 @@ export const DropdownExtension = {
         pointer-events: none;
         transition: all 0.2s ease;
         margin: 0;
-        line-height: 20px;
       }
 
       .dropdown-extension-submit.enabled {
@@ -147,7 +140,7 @@ export const DropdownExtension = {
       }
 
       .dropdown-extension-options::-webkit-scrollbar {
-        width: 3px;
+        width: 4px;
       }
 
       .dropdown-extension-options::-webkit-scrollbar-track {
@@ -156,47 +149,24 @@ export const DropdownExtension = {
 
       .dropdown-extension-options::-webkit-scrollbar-thumb {
         background: #72727a;
-        border-radius: 1.5px;
+        border-radius: 2px;
       }
 
       .dropdown-extension-input[type="text"] {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23545857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23545857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 10px center;
-        padding-right: 28px;
+        background-position: right 12px center;
+        padding-right: 32px;
       }
 
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(2px); }
+        from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
       }
 
       .dropdown-extension-options.visible {
         display: block;
-        animation: fadeIn 0.15s ease;
-      }
-
-      .dropdown-extension-input[type="text"]:active,
-      .dropdown-extension-submit:active {
-        transform: translateY(1px);
-      }
-
-      .dropdown-extension-options:empty::after {
-        content: "No options available";
-        display: block;
-        padding: 6px 10px;
-        color: #72727a;
-        font-style: italic;
-        font-size: 12px;
-      }
-
-      .dropdown-extension-options.loading::after {
-        content: "Loading...";
-        display: block;
-        padding: 6px 10px;
-        color: #72727a;
-        font-style: italic;
-        font-size: 12px;
+        animation: fadeIn 0.2s ease;
       }
     </style>
   
@@ -238,18 +208,6 @@ export const DropdownExtension = {
 
     const showDropup = () => {
       dropdownOptionsDiv.classList.add("visible");
-      const filter = dropdownSearch.value.toLowerCase();
-      const options = dropdownOptionsDiv.querySelectorAll("div");
-      let hasVisibleOptions = false;
-      
-      options.forEach((option) => {
-        const text = option.textContent.toLowerCase();
-        const isVisible = text.includes(filter);
-        option.style.display = isVisible ? "" : "none";
-        if (isVisible) hasVisibleOptions = true;
-      });
-
-      dropdownOptionsDiv.classList.toggle("empty", !hasVisibleOptions);
     };
 
     const hideDropup = () => {
@@ -262,9 +220,6 @@ export const DropdownExtension = {
       const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
       options.forEach((option, index) => {
         option.classList.toggle("highlighted", index === highlightedIndex);
-        if (index === highlightedIndex) {
-          option.scrollIntoView({ block: "nearest" });
-        }
       });
     };
 
@@ -276,11 +231,10 @@ export const DropdownExtension = {
           e.preventDefault();
           if (!dropdownOptionsDiv.classList.contains("visible")) {
             showDropup();
-            highlightedIndex = 0;
           } else {
             highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
+            updateHighlight();
           }
-          updateHighlight();
           break;
         case "ArrowUp":
           e.preventDefault();
@@ -299,9 +253,6 @@ export const DropdownExtension = {
           hideDropup();
           dropdownSearch.blur();
           break;
-        case "Tab":
-          hideDropup();
-          break;
       }
     };
 
@@ -317,6 +268,14 @@ export const DropdownExtension = {
 
     dropdownSearch.addEventListener("input", (e) => {
       e.stopPropagation();
+      const filter = dropdownSearch.value.toLowerCase();
+      const options = dropdownOptionsDiv.querySelectorAll("div");
+      
+      options.forEach((option) => {
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(filter) ? "" : "none";
+      });
+      
       showDropup();
       hiddenDropdownInput.value = "";
       enableSubmitButton();
@@ -361,9 +320,6 @@ export const DropdownExtension = {
 
     element.appendChild(formContainer);
     disableFooterInputs(true);
-
-    // Initial focus
-    setTimeout(() => dropdownSearch.focus(), 0);
   },
 };
 
