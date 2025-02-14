@@ -883,43 +883,47 @@ export const RankOptionsExtension = {
 export const DelayEffectExtension = {
   name: "DelayEffect",
   type: "effect",
-  match: ({ trace }) => trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
+  match: ({ trace }) => 
+    trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
   effect: async ({ trace }) => {
-    // Disable chat input
-    const disableChat = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          buttons: chatDiv.shadowRoot.querySelectorAll("button"),
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-          });
-        });
-      }
-    };
-
     try {
-      // Disable chat input during delay
-      disableChat(true);
+      // Get delay value with validation
+      const delay = Math.max(
+        0,
+        parseInt(trace.payload?.delay) || 1000
+      );
+
+      // Hide any existing scroll indicators before delay
+      const hideScrollIndicators = () => {
+        document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+          .forEach(el => {
+            el.style.display = 'none';
+            // Optional: remove them entirely
+            // el.remove();
+          });
+      };
+
+      // Initial cleanup
+      hideScrollIndicators();
+
+      // Show typing indicator during delay
+      window.voiceflow.chat.trigger('typingStart');
 
       // Execute delay
-      const delay = trace.payload?.delay || 1000;
       await new Promise(resolve => setTimeout(resolve, delay));
+      
+      // Hide typing indicator
+      window.voiceflow.chat.trigger('typingEnd');
 
-      // Re-enable chat input
-      disableChat(false);
+      // Final cleanup of any scroll indicators
+      hideScrollIndicators();
 
-      // Move to next block
+      // Complete the interaction
       window.voiceflow.chat.interact({ type: "complete" });
+
     } catch (error) {
-      // Ensure chat input is re-enabled even if there's an error
-      disableChat(false);
+      console.error('DelayEffect Extension Error:', error);
+      window.voiceflow.chat.trigger('typingEnd');
       window.voiceflow.chat.interact({ type: "complete" });
     }
   }
