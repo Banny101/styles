@@ -836,23 +836,71 @@ export const RankOptionsExtension = {
 export const DelayEffectExtension = {
   name: "DelayEffect",
   type: "effect",
-  match: ({ trace }) => 
-    trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
-  effect: ({ trace }) => {
-    return new Promise((resolve) => {
-      const delay = parseInt(trace.payload?.delay) || 1000;
-      
-      // Show typing indicator
-      window.voiceflow.chat.trigger('typingStart');
+  match: ({ trace }) => trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
+  effect: async ({ trace }) => {
+    const delay = trace.payload?.delay || 1000;
+    const seconds = Math.ceil(delay / 1000);
 
-      setTimeout(() => {
-        // Hide typing indicator
-        window.voiceflow.chat.trigger('typingEnd');
-        
-        // Complete the interaction and resolve the promise
-        window.voiceflow.chat.interact({ type: "complete" });
-        resolve();
-      }, delay);
-    });
+    // Create and style the countdown element
+    const countdownElement = document.createElement('div');
+    countdownElement.style.cssText = `
+      position: relative;
+      text-align: center;
+      padding: 10px;
+      margin: 10px 0;
+      font-family: 'Montserrat', sans-serif;
+      color: #545857;
+      font-size: 14px;
+    `;
+
+    // Add countdown element to the chat
+    const chatContainer = document.querySelector('.vfrc-chat-messages');
+    if (chatContainer) {
+      chatContainer.appendChild(countdownElement);
+    }
+
+    // Countdown animation
+    for (let i = seconds; i > 0; i--) {
+      countdownElement.innerHTML = `
+        <div style="
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          opacity: 0.7;
+        ">
+          <div style="
+            width: 20px;
+            height: 20px;
+            border: 2px solid #72727a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1s infinite;
+          ">${i}</div>
+          <span>seconds remaining...</span>
+        </div>
+      `;
+
+      // Add pulse animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
+        }
+      `;
+      document.head.appendChild(style);
+
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    // Remove countdown element
+    if (countdownElement) {
+      countdownElement.remove();
+    }
+
+    window.voiceflow.chat.interact({ type: "complete" });
   }
 };
