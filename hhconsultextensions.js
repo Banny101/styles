@@ -6,40 +6,33 @@ export const DropdownExtension = {
   render: ({ trace, element }) => {
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv) {
-        const shadowRoot = chatDiv.shadowRoot;
-        if (shadowRoot) {
-          const textareas = shadowRoot.querySelectorAll("textarea");
-          textareas.forEach((textarea) => {
-            textarea.disabled = isDisabled;
-            textarea.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
-            textarea.style.opacity = isDisabled ? "0.5" : "";
-            textarea.style.pointerEvents = isDisabled ? "none" : "auto";
-          });
-
-          const buttons = shadowRoot.querySelectorAll(
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          );
-          buttons.forEach((button) => {
-            button.disabled = isDisabled;
-            button.style.pointerEvents = isDisabled ? "none" : "auto";
-          });
-
-          const additionalButtons = shadowRoot.querySelectorAll(
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".vfrc-chat-input--button.c-iSWgdS"
-          );
-          additionalButtons.forEach((button) => {
-            button.disabled = isDisabled;
-            button.style.pointerEvents = isDisabled ? "none" : "auto";
-            button.style.opacity = isDisabled ? "0.5" : "";
+          ),
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = isDisabled;
+            el.style.pointerEvents = isDisabled ? "none" : "auto";
+            el.style.opacity = isDisabled ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+            }
           });
-        }
+        });
       }
     };
 
     const formContainer = document.createElement("form");
     formContainer.className = "_1ddzqsn7";
-    const dropdownOptions = trace.payload.options || [];
+    const dropdownOptions = trace.payload?.options || [];
 
     formContainer.innerHTML = `
     <style>
@@ -53,12 +46,12 @@ export const DropdownExtension = {
       .dropdown-extension-container {
         position: relative;
         width: 100%;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
       }
       
       .dropdown-extension-input[type="text"] {
         width: 100%;
-        padding: 10px 14px;
+        padding: 8px 12px;
         border: 1px solid rgba(84, 88, 87, 0.2);
         border-radius: 6px;
         background: white;
@@ -67,6 +60,7 @@ export const DropdownExtension = {
         font-size: 13px;
         transition: all 0.2s ease;
         cursor: pointer;
+        margin: 0;
       }
 
       .dropdown-extension-input[type="text"]:focus {
@@ -86,7 +80,7 @@ export const DropdownExtension = {
         left: 0;
         right: 0;
         width: 100%;
-        max-height: 180px;
+        max-height: 200px;
         overflow-y: auto;
         background: white;
         border-radius: 6px;
@@ -94,26 +88,29 @@ export const DropdownExtension = {
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
         display: none;
         z-index: 1000;
+        scrollbar-width: thin;
+        scrollbar-color: #72727a transparent;
       }
 
       .dropdown-extension-options div {
-        padding: 8px 14px;
+        padding: 8px 12px;
         font-size: 13px;
         color: #545857;
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: all 0.2s ease;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
-      .dropdown-extension-options div:hover {
+      .dropdown-extension-options div:hover,
+      .dropdown-extension-options div.highlighted {
         background-color: rgba(84, 88, 87, 0.08);
       }
 
       .dropdown-extension-submit {
         width: 100%;
-        padding: 10px 20px;
+        padding: 8px 16px;
         background-color: #545857;
         color: white;
         border: none;
@@ -125,6 +122,7 @@ export const DropdownExtension = {
         opacity: 0.5;
         pointer-events: none;
         transition: all 0.2s ease;
+        margin: 0;
       }
 
       .dropdown-extension-submit.enabled {
@@ -158,7 +156,17 @@ export const DropdownExtension = {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23545857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 12px center;
-        padding-right: 35px;
+        padding-right: 32px;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .dropdown-extension-options.visible {
+        display: block;
+        animation: fadeIn 0.2s ease;
       }
     </style>
   
@@ -169,6 +177,7 @@ export const DropdownExtension = {
           class="dropdown-extension-input dropdown-extension-search" 
           placeholder="Search or select..." 
           autocomplete="off"
+          spellcheck="false"
         >
         <div class="dropdown-extension-options">
           ${dropdownOptions
@@ -190,22 +199,61 @@ export const DropdownExtension = {
     const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
     const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
     const submitButton = formContainer.querySelector(".dropdown-extension-submit");
+    let highlightedIndex = -1;
 
     const enableSubmitButton = () => {
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      if (isValidOption) {
-        submitButton.classList.add("enabled");
-      } else {
-        submitButton.classList.remove("enabled");
-      }
+      submitButton.classList.toggle("enabled", isValidOption);
     };
 
     const showDropup = () => {
-      dropdownOptionsDiv.style.display = "block";
+      dropdownOptionsDiv.classList.add("visible");
     };
 
     const hideDropup = () => {
-      dropdownOptionsDiv.style.display = "none";
+      dropdownOptionsDiv.classList.remove("visible");
+      highlightedIndex = -1;
+      updateHighlight();
+    };
+
+    const updateHighlight = () => {
+      const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
+      options.forEach((option, index) => {
+        option.classList.toggle("highlighted", index === highlightedIndex);
+      });
+    };
+
+    const handleKeyNavigation = (e) => {
+      const visibleOptions = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
+      
+      switch(e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          if (!dropdownOptionsDiv.classList.contains("visible")) {
+            showDropup();
+          } else {
+            highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
+            updateHighlight();
+          }
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          if (highlightedIndex > -1) {
+            highlightedIndex = Math.max(highlightedIndex - 1, 0);
+            updateHighlight();
+          }
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
+            visibleOptions[highlightedIndex].click();
+          }
+          break;
+        case "Escape":
+          hideDropup();
+          dropdownSearch.blur();
+          break;
+      }
     };
 
     dropdownSearch.addEventListener("focus", (e) => {
@@ -231,7 +279,11 @@ export const DropdownExtension = {
       showDropup();
       hiddenDropdownInput.value = "";
       enableSubmitButton();
+      highlightedIndex = -1;
+      updateHighlight();
     });
+
+    dropdownSearch.addEventListener("keydown", handleKeyNavigation);
 
     dropdownOptionsDiv.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -251,33 +303,19 @@ export const DropdownExtension = {
       }
     });
 
-    dropdownOptionsDiv.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-
     formContainer.addEventListener("submit", (e) => {
       e.preventDefault();
-
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
       if (!isValidOption) {
         dropdownSearch.classList.add("dropdown-extension-invalid");
         return;
       }
-
       submitButton.remove();
       disableFooterInputs(false);
-
       window.voiceflow.chat.interact({
         type: "complete",
         payload: { dropdown: hiddenDropdownInput.value },
       });
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        hideDropup();
-        dropdownSearch.blur();
-      }
     });
 
     element.appendChild(formContainer);
