@@ -78,6 +78,12 @@ export const DropdownExtension = {
         opacity: 0.7;
       }
 
+      .dropdown-extension-input[type="text"]:disabled {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
       .dropdown-extension-options {
         position: absolute;
         bottom: calc(100% + 4px);
@@ -101,7 +107,7 @@ export const DropdownExtension = {
         font-size: 13px;
         color: #545857;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: background-color 0.2s ease;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -136,24 +142,10 @@ export const DropdownExtension = {
 
       .dropdown-extension-submit.enabled:hover {
         background-color: #72727a;
-        transform: translateY(-1px);
       }
 
       .dropdown-extension-invalid {
         border-color: #ff4444 !important;
-      }
-
-      .dropdown-extension-options::-webkit-scrollbar {
-        width: 4px;
-      }
-
-      .dropdown-extension-options::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      .dropdown-extension-options::-webkit-scrollbar-thumb {
-        background: #72727a;
-        border-radius: 2px;
       }
 
       .dropdown-extension-input[type="text"] {
@@ -161,16 +153,6 @@ export const DropdownExtension = {
         background-repeat: no-repeat;
         background-position: right 12px center;
         padding-right: 32px;
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(4px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      .dropdown-extension-options.visible {
-        display: block;
-        animation: fadeIn 0.2s ease;
       }
     </style>
   
@@ -211,11 +193,13 @@ export const DropdownExtension = {
     };
 
     const showDropup = () => {
-      dropdownOptionsDiv.classList.add("visible");
+      if (!dropdownSearch.disabled) {
+        dropdownOptionsDiv.style.display = "block";
+      }
     };
 
     const hideDropup = () => {
-      dropdownOptionsDiv.classList.remove("visible");
+      dropdownOptionsDiv.style.display = "none";
       highlightedIndex = -1;
       updateHighlight();
     };
@@ -227,13 +211,28 @@ export const DropdownExtension = {
       });
     };
 
+    const handleOptionSelection = (selectedValue) => {
+      dropdownSearch.value = selectedValue;
+      hiddenDropdownInput.value = selectedValue;
+      hideDropup();
+      enableSubmitButton();
+      
+      // Disable input after selection
+      dropdownSearch.disabled = true;
+      dropdownSearch.style.backgroundColor = "#f5f5f5";
+      dropdownSearch.style.cursor = "not-allowed";
+      dropdownSearch.style.opacity = "0.7";
+    };
+
     const handleKeyNavigation = (e) => {
+      if (dropdownSearch.disabled) return;
+      
       const visibleOptions = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
       
       switch(e.key) {
         case "ArrowDown":
           e.preventDefault();
-          if (!dropdownOptionsDiv.classList.contains("visible")) {
+          if (!dropdownOptionsDiv.style.display === "block") {
             showDropup();
           } else {
             highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
@@ -250,7 +249,8 @@ export const DropdownExtension = {
         case "Enter":
           e.preventDefault();
           if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
-            visibleOptions[highlightedIndex].click();
+            const selectedValue = visibleOptions[highlightedIndex].getAttribute("data-value");
+            handleOptionSelection(selectedValue);
           }
           break;
         case "Escape":
@@ -293,16 +293,14 @@ export const DropdownExtension = {
       e.stopPropagation();
       if (e.target.tagName === "DIV") {
         const selectedValue = e.target.getAttribute("data-value");
-        dropdownSearch.value = selectedValue;
-        hiddenDropdownInput.value = selectedValue;
-        hideDropup();
-        enableSubmitButton();
-        dropdownSearch.blur();
+        handleOptionSelection(selectedValue);
       }
     });
 
     document.addEventListener("click", (e) => {
-      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
+      if (!dropdownSearch.contains(e.target) && 
+          !dropdownOptionsDiv.contains(e.target) && 
+          !dropdownSearch.disabled) {
         hideDropup();
       }
     });
@@ -314,16 +312,35 @@ export const DropdownExtension = {
         dropdownSearch.classList.add("dropdown-extension-invalid");
         return;
       }
-      submitButton.remove();
+
+      // Disable form inputs immediately
+      dropdownSearch.disabled = true;
+      submitButton.disabled = true;
+      
+      // Re-enable Voiceflow's footer first
       disableFooterInputs(false);
+      
+      // Remove submit button with a slight delay
+      setTimeout(() => {
+        submitButton.style.opacity = "0";
+        submitButton.remove();
+      }, 50);
+
       window.voiceflow.chat.interact({
         type: "complete",
         payload: { dropdown: hiddenDropdownInput.value },
       });
     });
 
+    const cleanup = () => {
+      document.removeEventListener("click", hideDropup);
+      document.removeEventListener("keydown", handleKeyNavigation);
+    };
+
     element.appendChild(formContainer);
     disableFooterInputs(true);
+
+    return cleanup;
   },
 };
 
