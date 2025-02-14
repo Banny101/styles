@@ -723,12 +723,13 @@ export const RankOptionsExtension = {
           
           .rank-options-container {
             font-family: 'Montserrat', sans-serif;
-            padding: 0 4px;
+            padding: 0;
+            width: 100%;
           }
           
           .rank-title {
             font-size: 14px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             color: #303235;
           }
           
@@ -736,19 +737,22 @@ export const RankOptionsExtension = {
             list-style: none;
             padding: 0;
             margin: 0;
+            width: 100%;
           }
           
           .rank-options-list li {
             display: flex;
             align-items: center;
-            padding: 8px 12px;
-            margin-bottom: 8px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
             background-color: white;
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 6px;
             cursor: grab;
             font-size: 14px;
             color: #303235;
+            width: 100%;
+            box-sizing: border-box;
           }
           
           .rank-options-list li:active {
@@ -757,19 +761,22 @@ export const RankOptionsExtension = {
           }
 
           .rank-number {
-            min-width: 24px;
-            margin-right: 8px;
+            min-width: 20px;
             color: #666;
             font-size: 14px;
+            margin-right: 8px;
+            user-select: none;
           }
           
           .rank-text {
             flex: 1;
+            padding-right: 4px;
+            line-height: 1.3;
           }
           
           .submit-button {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 16px;
             background-color: #545857;
             color: white;
             border: none;
@@ -777,7 +784,7 @@ export const RankOptionsExtension = {
             font-family: 'Montserrat', sans-serif;
             font-size: 14px;
             cursor: pointer;
-            margin-top: 16px;
+            margin-top: 12px;
             transition: background-color 0.2s ease;
           }
           
@@ -792,10 +799,16 @@ export const RankOptionsExtension = {
           .sortable-drag {
             background-color: #f8f9fa;
           }
+
+          /* Remove any down arrows that might be added by the chat UI */
+          [class*="scroll-down"],
+          [class*="scroll-button"] {
+            display: none !important;
+          }
         </style>
         
         <div class="rank-options-container">
-          <div class="rank-title">Drag and drop to rank options</div>
+          <div class="rank-title">Drag and drop to rank in order of preference</div>
           <ul class="rank-options-list">
             ${options.map((option, index) => `
               <li data-value="${option}">
@@ -808,7 +821,6 @@ export const RankOptionsExtension = {
         </div>
       `;
 
-      // Update rank numbers after sorting
       const updateRankNumbers = () => {
         formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
           span.textContent = index + 1;
@@ -825,6 +837,10 @@ export const RankOptionsExtension = {
         const submitButton = formContainer.querySelector('.submit-button');
         submitButton.disabled = true;
         submitButton.style.opacity = "0.5";
+        
+        // Remove any scroll indicators that might be present
+        document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+          .forEach(el => el.remove());
         
         disableFooterInputs(false);
 
@@ -856,9 +872,14 @@ export const RankOptionsExtension = {
       createForm();
     }
 
+    // Remove any existing scroll indicators
+    document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+      .forEach(el => el.remove());
+
     disableFooterInputs(true);
   },
 };
+
 export const DelayEffectExtension = {
   name: "DelayEffect",
   type: "effect",
