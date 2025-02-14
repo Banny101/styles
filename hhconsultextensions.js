@@ -38,6 +38,10 @@ export const DropdownExtension = {
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
       
+      ._1ddzqsn7 {
+        display: block;
+      }
+      
       .dropdown-wrapper {
         width: 100%;
         font-family: 'Montserrat', sans-serif;
