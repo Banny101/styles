@@ -439,241 +439,296 @@ export const MultiSelectExtension = {
   type: "response",
   match: ({ trace }) =>
     trace.type === "ext_multiselect" ||
-    trace.payload.name === "ext_multiselect",
+    trace.payload?.name === "ext_multiselect",
   render: ({ trace, element }) => {
-    const { options, maxSelections } = trace.payload;
-    const multiSelectContainer = document.createElement("form");
-    multiSelectContainer.classList.add("multi-select-form-unique");
-
-    const applyGrayStyleToButton = (apply) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv) {
-        const shadowRoot = chatDiv.shadowRoot;
-        if (shadowRoot) {
-          const buttons = shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          );
-          buttons.forEach((button) => {
-            button.style.backgroundColor = apply ? "#d3d3d3" : "";
-            button.style.opacity = apply ? "0.5" : "";
-          });
-        }
-      }
-    };
+    const options = trace.payload?.options || [];
+    const maxSelections = trace.payload?.maxSelections || options.length;
 
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv) {
-        const shadowRoot = chatDiv.shadowRoot;
-        if (shadowRoot) {
-          const textareas = shadowRoot.querySelectorAll("textarea");
-          textareas.forEach((textarea) => {
-            textarea.disabled = isDisabled;
-            textarea.style.backgroundColor = isDisabled ? "#d3d3d3" : "";
-            textarea.style.opacity = isDisabled ? "0.5" : "";
-            textarea.style.pointerEvents = isDisabled ? "none" : "auto";
-          });
-
-          const buttons = shadowRoot.querySelectorAll(
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          );
-          buttons.forEach((button) => {
-            button.disabled = isDisabled;
-            button.style.pointerEvents = isDisabled ? "none" : "auto";
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = isDisabled;
+            el.style.pointerEvents = isDisabled ? "none" : "auto";
+            el.style.opacity = isDisabled ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+            }
           });
-        }
+        });
       }
     };
 
-    element.innerHTML = "";
+    const multiSelectContainer = document.createElement("form");
+    multiSelectContainer.className = "_1ddzqsn7";
 
     multiSelectContainer.innerHTML = `
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+        ._1ddzqsn7 {
+          display: block;
+        }
         
-        .multi-select-form-unique {
-          display: flex;
-          flex-direction: column;
-          padding: 20px;
-          background-color: #f8f9fa;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .multi-select-container {
           font-family: 'Montserrat', sans-serif;
-          max-width: 400px;
-          margin: 20px auto;
+          width: 100%;
         }
-        .multi-select-options-unique {
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 20px;
+        
+        .multi-select-title {
+          font-size: 14px;
+          color: #72727a;
+          margin-bottom: 12px;
         }
-        .multi-select-options-unique label {
+        
+        .multi-select-subtitle {
+          font-size: 13px;
+          color: #72727a;
+          margin-bottom: 16px;
+          opacity: 0.8;
+        }
+        
+        .multi-select-options {
+          display: grid;
+          gap: 8px;
+          margin-bottom: 16px;
+        }
+        
+        .option-label {
           display: flex;
           align-items: center;
-          margin-bottom: 10px;
-          padding: 10px;
-          border-radius: 4px;
-          background-color: #ffffff;
-          border: 1px solid #ced4da;
+          padding: 12px;
+          background: white;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          border-radius: 8px;
           cursor: pointer;
-          transition: background-color 0.3s, border-color 0.3s;
-          font-family: 'Montserrat', sans-serif;
+          transition: all 0.2s ease;
+          user-select: none;
         }
-        .multi-select-options-unique input[type="checkbox"] {
-          margin-right: 10px;
+        
+        .option-label:hover {
+          border-color: #545857;
+          transform: translateX(2px);
         }
-        .multi-select-options-unique label:hover {
-          background-color: #e9ecef;
-          border-color: #adb5bd;
+        
+        .checkbox-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          margin-right: 12px;
+          border: 2px solid #72727a;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+          flex-shrink: 0;
         }
-        .submit-unique, .cancel-unique {
-          background-color: #007bff;
+        
+        .option-label:hover .checkbox-wrapper {
+          border-color: #545857;
+        }
+        
+        .checkbox-input {
+          display: none;
+        }
+        
+        .checkbox-input:checked + .checkbox-wrapper {
+          background: #545857;
+          border-color: #545857;
+        }
+        
+        .checkbox-input:checked + .checkbox-wrapper:after {
+          content: '';
+          width: 6px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg) translate(-1px, -1px);
+          display: block;
+        }
+        
+        .option-text {
+          font-size: 14px;
+          color: #303235;
+          line-height: 1.4;
+        }
+        
+        .error-message {
+          color: #ff4444;
+          font-size: 13px;
+          margin: -8px 0 12px;
+          display: none;
+          animation: slideIn 0.3s ease;
+        }
+        
+        .button-group {
+          display: grid;
+          gap: 8px;
+        }
+        
+        .submit-button, .cancel-button {
+          width: 100%;
+          padding: 12px;
           border: none;
-          color: white;
-          padding: 10px;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-          margin-top: 10px;
+          border-radius: 8px;
           font-family: 'Montserrat', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
         }
-        .submit-unique:disabled {
-          background-color: #6c757d;
+        
+        .submit-button {
+          background: #545857;
+          color: white;
+        }
+        
+        .submit-button:not(:disabled):hover {
+          background: #72727a;
+          transform: translateY(-1px);
+        }
+        
+        .submit-button:disabled {
+          opacity: 0.5;
           cursor: not-allowed;
         }
-        .submit-unique:hover:not(:disabled) {
-          background-color: #0056b3;
+        
+        .cancel-button {
+          background: transparent;
+          color: #72727a;
+          border: 1px solid rgba(114, 114, 122, 0.2);
         }
-        .cancel-unique {
-          background-color: #dc3545;
+        
+        .cancel-button:hover {
+          background: rgba(114, 114, 122, 0.1);
         }
-        .cancel-unique:hover {
-          background-color: #c82333;
+        
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        .button-group-unique {
-          display: flex;
-          justify-content: space-between;
-        }
-        .error-message-unique {
-          color: #dc3545;
-          font-size: 0.9em;
-          margin-bottom: 10px;
-          font-family: 'Montserrat', sans-serif;
-        }
+        
         @keyframes shake {
-          0% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          50% { transform: translateX(5px); }
-          75% { transform: translateX(-5px); }
-          100% { transform: translateX(0); }
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          75% { transform: translateX(4px); }
+        }
+        
+        .shake {
+          animation: shake 0.3s ease;
         }
       </style>
-      <div class="multi-select-options-unique">
-        ${options
-          .map(
-            (option) => `
-          <label>
-            <input type="checkbox" name="options" value="${option}">
-            ${option}
-          </label>
-        `
-          )
-          .join("")}
-      </div>
-      <div class="error-message-unique" style="display: none;"></div>
-      <div class="button-group-unique">
-        <button type="submit" class="submit-unique" disabled>Select</button>
-        <button type="button" class="cancel-unique">Cancel</button>
+      
+      <div class="multi-select-container">
+        <div class="multi-select-title">Select your options</div>
+        ${maxSelections < options.length ? 
+          `<div class="multi-select-subtitle">Choose up to ${maxSelections} options</div>` : 
+          ''}
+        <div class="multi-select-options">
+          ${options.map((option, index) => `
+            <label class="option-label" style="animation-delay: ${index * 0.05}s">
+              <input type="checkbox" class="checkbox-input" name="options" value="${option}">
+              <div class="checkbox-wrapper"></div>
+              <span class="option-text">${option}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div class="error-message"></div>
+        <div class="button-group">
+          <button type="submit" class="submit-button" disabled>Submit</button>
+          <button type="button" class="cancel-button">Cancel</button>
+        </div>
       </div>
     `;
 
-    const optionsContainer = multiSelectContainer.querySelector(
-      ".multi-select-options-unique"
-    );
-    const errorMessage = multiSelectContainer.querySelector(".error-message-unique");
-    const submitButton = multiSelectContainer.querySelector(".submit-unique");
-    const checkboxes = optionsContainer.querySelectorAll(
-      'input[type="checkbox"]'
-    );
+    let isSubmitted = false;
+    const errorMessage = multiSelectContainer.querySelector(".error-message");
+    const submitButton = multiSelectContainer.querySelector(".submit-button");
+    const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
 
-    const updateSubmitButtonState = () => {
-      const selected = optionsContainer.querySelectorAll(
-        'input[name="options"]:checked'
-      );
-      submitButton.disabled = selected.length === 0;
+    const updateSubmitButton = () => {
+      if (isSubmitted) return;
+      const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
+      submitButton.disabled = selectedCount === 0;
     };
 
-    const resetForm = () => {
-      checkboxes.forEach((checkbox) => {
-        checkbox.checked = false;
-      });
-      errorMessage.style.display = "none";
-      submitButton.disabled = true;
+    const showError = (message) => {
+      errorMessage.textContent = message;
+      errorMessage.style.display = "block";
+      multiSelectContainer.querySelector('.multi-select-options').classList.add('shake');
+      setTimeout(() => {
+        multiSelectContainer.querySelector('.multi-select-options').classList.remove('shake');
+      }, 300);
     };
 
-    resetForm();
-
-    checkboxes.forEach((checkbox) => {
+    checkboxes.forEach(checkbox => {
       checkbox.addEventListener("change", () => {
-        const selected = optionsContainer.querySelectorAll(
-          'input[name="options"]:checked'
-        );
-        if (selected.length > maxSelections) {
+        if (isSubmitted) return;
+        
+        const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
+        
+        if (selectedCount > maxSelections) {
           checkbox.checked = false;
-          errorMessage.style.display = "block";
-          errorMessage.textContent = `You can select up to ${maxSelections} options only.`;
-          multiSelectContainer.style.animation = "shake 0.5s";
-          setTimeout(() => {
-            multiSelectContainer.style.animation = "none";
-          }, 500);
+          showError(`You can select up to ${maxSelections} options`);
         } else {
           errorMessage.style.display = "none";
         }
-        updateSubmitButtonState();
+        
+        updateSubmitButton();
       });
     });
 
-    multiSelectContainer.addEventListener("submit", function (event) {
-      event.preventDefault();
-      const selectedOptions = optionsContainer.querySelectorAll(
-        'input[name="options"]:checked'
-      );
-      const selectedOptionsValues = Array.from(selectedOptions).map(
-        (option) => option.value
-      );
+    multiSelectContainer.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (isSubmitted) return;
 
+      const selectedOptions = Array.from(
+        multiSelectContainer.querySelectorAll('input[name="options"]:checked')
+      ).map(input => input.value);
+
+      isSubmitted = true;
+      
+      // Disable all inputs
+      checkboxes.forEach(checkbox => {
+        checkbox.disabled = true;
+        checkbox.parentElement.style.opacity = "0.7";
+        checkbox.parentElement.style.cursor = "not-allowed";
+      });
+      
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      
       disableFooterInputs(false);
-      applyGrayStyleToButton(false);
 
       window.voiceflow.chat.interact({
         type: "complete",
-        payload: {
-          options: selectedOptionsValues,
-        },
+        payload: { options: selectedOptions }
       });
-      resetForm();
     });
 
-    const cancelButton = multiSelectContainer.querySelector(".cancel-unique");
-    cancelButton.addEventListener("click", (event) => {
-      event.preventDefault();
-
+    multiSelectContainer.querySelector(".cancel-button").addEventListener("click", () => {
+      if (isSubmitted) return;
+      
       disableFooterInputs(false);
-      applyGrayStyleToButton(false);
-
-      resetForm();
+      
       window.voiceflow.chat.interact({
         type: "cancel",
-        payload: {
-          options: [],
-        },
+        payload: { options: [] }
       });
     });
 
+    element.innerHTML = '';
     element.appendChild(multiSelectContainer);
-
     disableFooterInputs(true);
-    applyGrayStyleToButton(true);
   },
 };
 
