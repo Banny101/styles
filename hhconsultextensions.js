@@ -838,30 +838,21 @@ export const DelayEffectExtension = {
   type: "effect",
   match: ({ trace }) => 
     trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
-  effect: async ({ trace }) => {
-    try {
-      // Get delay value with validation
-      const delay = Math.max(
-        0,
-        parseInt(trace.payload?.delay) || 1000
-      );
-
-      // Show typing indicator during delay
+  effect: ({ trace }) => {
+    return new Promise((resolve) => {
+      const delay = parseInt(trace.payload?.delay) || 1000;
+      
+      // Show typing indicator
       window.voiceflow.chat.trigger('typingStart');
 
-      // Execute delay
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      // Hide typing indicator
-      window.voiceflow.chat.trigger('typingEnd');
-
-      // Complete the interaction
-      window.voiceflow.chat.interact({ type: "complete" });
-
-    } catch (error) {
-      console.error('DelayEffect Extension Error:', error);
-      window.voiceflow.chat.trigger('typingEnd');
-      window.voiceflow.chat.interact({ type: "complete" });
-    }
+      setTimeout(() => {
+        // Hide typing indicator
+        window.voiceflow.chat.trigger('typingEnd');
+        
+        // Complete the interaction and resolve the promise
+        window.voiceflow.chat.interact({ type: "complete" });
+        resolve();
+      }, delay);
+    });
   }
 };
