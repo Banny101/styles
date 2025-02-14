@@ -893,6 +893,33 @@ export const DelayEffectExtension = {
         parseInt(trace.payload?.delay) || 1000
       );
 
+      // Function to disable/enable chat inputs
+      const disableInputs = (isDisabled) => {
+        const chatDiv = document.getElementById("voiceflow-chat");
+        if (chatDiv?.shadowRoot) {
+          const elements = {
+            textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+            primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+              ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+            ),
+            secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+              ".vfrc-chat-input--button.c-iSWgdS"
+            ),
+          };
+
+          Object.values(elements).forEach(elementList => {
+            elementList.forEach(el => {
+              el.disabled = isDisabled;
+              el.style.pointerEvents = isDisabled ? "none" : "auto";
+              el.style.opacity = isDisabled ? "0.5" : "1";
+              if (el.tagName.toLowerCase() === "textarea") {
+                el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+              }
+            });
+          });
+        }
+      };
+
       // Hide any existing scroll indicators
       const hideScrollIndicators = () => {
         document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
@@ -901,22 +928,27 @@ export const DelayEffectExtension = {
           });
       };
 
+      // Initial cleanup and disable inputs
       hideScrollIndicators();
+      disableInputs(true);
 
       // Execute delay
       await new Promise(resolve => setTimeout(resolve, delay));
       
+      // Cleanup and re-enable inputs
       hideScrollIndicators();
+      disableInputs(false);
 
       // Move to next block
       window.voiceflow.chat.interact({ 
         type: "complete",
-        payload: { delay: delay }  // Optional: pass the actual delay used
+        payload: { delay: delay }
       });
 
     } catch (error) {
       console.error('DelayEffect Extension Error:', error);
-      // Ensure we still move to next block even if there's an error
+      // Re-enable inputs even if there's an error
+      disableInputs(false);
       window.voiceflow.chat.interact({ type: "complete" });
     }
   }
