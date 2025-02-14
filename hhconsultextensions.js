@@ -680,156 +680,195 @@ export const MultiSelectExtension = {
 export const RankOptionsExtension = {
   name: "RankOptions",
   type: "response",
-  match: ({ trace }) => trace.type === "ext_rankoptions" || trace.payload.name === "ext_rankoptions",
+  match: ({ trace }) => 
+    trace.type === "ext_rankoptions" || trace.payload?.name === "ext_rankoptions",
   render: ({ trace, element }) => {
-    const { options } = trace.payload;
-
-    const applyGrayStyleToButton = (apply) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv) {
-        const shadowRoot = chatDiv.shadowRoot;
-        if (shadowRoot) {
-          const buttons = shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          );
-          buttons.forEach((button) => {
-            button.style.backgroundColor = apply ? "#d3d3d3" : "";
-            button.style.opacity = apply ? "0.5" : "";
-          });
-        }
-      }
-    };
+    const options = trace.payload?.options || [];
 
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv) {
-        const shadowRoot = chatDiv.shadowRoot;
-        if (shadowRoot) {
-          const textareas = shadowRoot.querySelectorAll("textarea");
-          textareas.forEach((textarea) => {
-            textarea.disabled = isDisabled;
-            textarea.style.backgroundColor = isDisabled ? "#d3d3d3" : "";
-            textarea.style.opacity = isDisabled ? "0.5" : "";
-            textarea.style.pointerEvents = isDisabled ? "none" : "auto";
-          });
-
-          const buttons = shadowRoot.querySelectorAll(
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          );
-          buttons.forEach((button) => {
-            button.disabled = isDisabled;
-            button.style.pointerEvents = isDisabled ? "none" : "auto";
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = isDisabled;
+            el.style.pointerEvents = isDisabled ? "none" : "auto";
+            el.style.opacity = isDisabled ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+            }
           });
-        }
+        });
       }
     };
 
     const createForm = () => {
       const formContainer = document.createElement("form");
-      formContainer.classList.add("rank-options-form");
-
-      element.innerHTML = "";
+      formContainer.className = "_1ddzqsn7";
 
       formContainer.innerHTML = `
         <style>
-          .rank-options-form {
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            font-family: 'Montserrat', sans-serif;
-            width: 243px;
-            color: black;
+          ._1ddzqsn7 {
+            display: block;
           }
+          
+          .rank-options-container {
+            font-family: 'Montserrat', sans-serif;
+            color: #545857;
+          }
+          
+          .rank-instructions {
+            font-size: 13px;
+            margin-bottom: 12px;
+            color: #72727a;
+          }
+          
           .rank-options-list {
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin: 0 0 12px 0;
           }
+          
           .rank-options-list li {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            margin-bottom: 10px;
-            background-color: #ffffff;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background-color: white;
+            border: 1px solid rgba(84, 88, 87, 0.2);
+            border-radius: 6px;
             cursor: grab;
-            color: black;
+            font-size: 13px;
+            transition: all 0.2s ease;
           }
-          .rank-options-form .submit-button {
-            background-color: #545857;
-            border: none;
-            color: white;
+          
+          .rank-options-list li:hover {
+            border-color: #545857;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          }
+          
+          .rank-options-list li:active {
+            cursor: grabbing;
+            background-color: #f5f5f5;
+          }
+          
+          .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            margin-right: 8px;
+            font-size: 12px;
+            color: #72727a;
+          }
+          
+          .submit-button {
+            width: 100%;
             padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-            font-family: 'Montserrat', sans-serif; 
-            font-size: 16px; 
-          }
-          .rank-options-form .submit-button:hover {
             background-color: #545857;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+          }
+          
+          .submit-button:hover {
+            background-color: #72727a;
+          }
+          
+          .sortable-ghost {
+            opacity: 0.4;
+          }
+          
+          .sortable-chosen {
+            background-color: #f5f5f5;
           }
         </style>
-        <h3>Drag and drop to rank options</h4>
-        <ul class="rank-options-list">
-          ${options.map(option => `
-            <li data-value="${option}">
-              <span>${option}</span>
-            </li>
-          `).join('')}
-        </ul>
-        <button type="submit" class="submit-button">Submit</button>
+        
+        <div class="rank-options-container">
+          <div class="rank-instructions">Drag and drop to rank in order of preference</div>
+          <ul class="rank-options-list">
+            ${options.map((option, index) => `
+              <li data-value="${option}">
+                <span class="rank-number">${index + 1}</span>
+                <span>${option}</span>
+              </li>
+            `).join('')}
+          </ul>
+          <button type="submit" class="submit-button">Submit</button>
+        </div>
       `;
 
-      formContainer.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const rankedOptions = Array.from(formContainer.querySelectorAll('.rank-options-list li'))
-          .map(li => li.dataset.value);
+      // Update rank numbers after sorting
+      const updateRankNumbers = () => {
+        formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
+          span.textContent = index + 1;
+        });
+      };
 
+      // Handle form submission
+      formContainer.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const rankedOptions = Array.from(
+          formContainer.querySelectorAll('.rank-options-list li')
+        ).map(li => li.dataset.value);
+
+        // Disable form and show completion state
+        const submitButton = formContainer.querySelector('.submit-button');
+        submitButton.disabled = true;
+        submitButton.style.opacity = "0.5";
+        
+        // Re-enable chat inputs
         disableFooterInputs(false);
-        applyGrayStyleToButton(false);
 
+        // Complete the interaction
         window.voiceflow.chat.interact({
           type: "complete",
-          payload: { rankedOptions },
+          payload: { rankedOptions }
         });
       });
 
       element.appendChild(formContainer);
 
-      initializeSortable();
-
-      disableFooterInputs(true);
-      applyGrayStyleToButton(true);
-    };
-
-    function initializeSortable() {
-      const rankOptionsList = element.querySelector('.rank-options-list');
-      if (rankOptionsList) {
-        new Sortable(rankOptionsList, {
+      // Initialize Sortable
+      if (typeof Sortable !== 'undefined') {
+        new Sortable(formContainer.querySelector('.rank-options-list'), {
           animation: 150,
-          onEnd: () => {}
+          onEnd: updateRankNumbers
         });
       }
-    }
+    };
 
+    // Load Sortable.js if not already loaded
     if (typeof Sortable === 'undefined') {
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
-      script.onload = () => {
-        createForm();
-      };
-      script.onerror = () => {};
+      script.onload = createForm;
+      script.onerror = () => console.error('Failed to load Sortable.js');
       document.head.appendChild(script);
     } else {
       createForm();
     }
+
+    // Initially disable chat inputs
+    disableFooterInputs(true);
   },
 };
 
