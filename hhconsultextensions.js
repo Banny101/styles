@@ -38,17 +38,24 @@ export const DropdownExtension = {
     };
 
     const formContainer = document.createElement("form");
+    formContainer.style.width = "100%";
+    formContainer.style.display = "block";
     const dropdownOptions = trace.payload.options || [];
 
     formContainer.innerHTML = `
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
       
-      .dropdown-wrapper {
-        padding: 0 8px;
+      form {
         width: 100%;
-        max-width: 320px;
-        margin: 0 auto;
+        display: block;
+        box-sizing: border-box;
+      }
+      
+      .dropdown-wrapper {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
         font-family: 'Montserrat', sans-serif;
       }
       
@@ -56,6 +63,8 @@ export const DropdownExtension = {
         position: relative;
         width: 100%;
         margin-bottom: 12px;
+        display: block;
+        box-sizing: border-box;
       }
       
       .dropdown-extension-input[type="text"] {
@@ -69,6 +78,8 @@ export const DropdownExtension = {
         font-size: 13px;
         transition: all 0.2s ease;
         cursor: pointer;
+        display: block;
+        box-sizing: border-box;
       }
 
       .dropdown-extension-input[type="text"]:focus {
@@ -87,6 +98,7 @@ export const DropdownExtension = {
         bottom: calc(100% + 4px);
         left: 0;
         right: 0;
+        width: 100%;
         max-height: 180px;
         overflow-y: auto;
         background: white;
@@ -95,6 +107,7 @@ export const DropdownExtension = {
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
         display: none;
         z-index: 1000;
+        box-sizing: border-box;
       }
 
       .dropdown-extension-options div {
@@ -114,6 +127,8 @@ export const DropdownExtension = {
 
       .dropdown-extension-submit {
         width: 100%;
+        display: block;
+        box-sizing: border-box;
         padding: 10px 20px;
         background-color: #545857;
         color: white;
@@ -142,7 +157,6 @@ export const DropdownExtension = {
         border-color: #ff4444 !important;
       }
 
-      /* Custom scrollbar */
       .dropdown-extension-options::-webkit-scrollbar {
         width: 4px;
       }
@@ -156,7 +170,6 @@ export const DropdownExtension = {
         border-radius: 2px;
       }
 
-      /* Arrow indicator */
       .dropdown-extension-input[type="text"] {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23545857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
@@ -211,7 +224,6 @@ export const DropdownExtension = {
       dropdownOptionsDiv.style.display = "none";
     };
 
-    // Show dropup on focus and click
     dropdownSearch.addEventListener("focus", (e) => {
       e.stopPropagation();
       showDropup();
@@ -222,7 +234,6 @@ export const DropdownExtension = {
       showDropup();
     });
 
-    // Handle input/search functionality
     dropdownSearch.addEventListener("input", (e) => {
       e.stopPropagation();
       const filter = dropdownSearch.value.toLowerCase();
@@ -238,7 +249,6 @@ export const DropdownExtension = {
       enableSubmitButton();
     });
 
-    // Handle option selection
     dropdownOptionsDiv.addEventListener("click", (e) => {
       e.stopPropagation();
       if (e.target.tagName === "DIV") {
@@ -251,19 +261,16 @@ export const DropdownExtension = {
       }
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener("click", (e) => {
       if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
         hideDropup();
       }
     });
 
-    // Prevent dropup from closing when clicking inside it
     dropdownOptionsDiv.addEventListener("click", (e) => {
       e.stopPropagation();
     });
 
-    // Handle form submission
     formContainer.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -282,7 +289,6 @@ export const DropdownExtension = {
       });
     });
 
-    // Optional: Close dropup when pressing Escape key
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         hideDropup();
