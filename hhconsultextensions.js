@@ -1214,7 +1214,6 @@ export const TransitionAnimationExtension = {
   render: ({ trace, element }) => {
     const duration = trace.payload?.duration || 2000;
     
-    // Disable chat inputs
     const disableInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv?.shadowRoot) {
@@ -1244,44 +1243,67 @@ export const TransitionAnimationExtension = {
     const animationContainer = document.createElement("div");
     animationContainer.className = "_1ddzqsn7";
 
-    const processingMessages = [
-      "Analyzing your responses",
-      "Calculating recommendations",
-      "Personalizing your plan",
-      "Preparing your results"
-    ];
-
     animationContainer.innerHTML = `
       <style>
         ._1ddzqsn7 {
           display: block;
-          pointer-events: none; /* Prevent interaction with animation */
+          pointer-events: none;
         }
 
         .processing-container {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 20px;
-          background: white;
+          padding: 12px 20px;
+          background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
           border-radius: 12px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-          border: 1px solid rgba(84, 88, 87, 0.1);
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+          border: 1px solid rgba(84, 88, 87, 0.08);
+          position: relative;
+          overflow: hidden;
         }
 
         .processing-content {
           display: flex;
           align-items: center;
           gap: 15px;
+          position: relative;
+          z-index: 2;
         }
 
-        .spinner {
-          width: 24px;
-          height: 24px;
-          border: 3px solid #f3f3f3;
-          border-top: 3px solid #545857;
+        .loader-ring {
+          position: relative;
+          width: 28px;
+          height: 28px;
+        }
+
+        .loader-ring::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
           border-radius: 50%;
+          border: 3px solid transparent;
+          border-top-color: #545857;
+          border-right-color: #72727a;
+          border-bottom-color: #9c9ca6;
           animation: spin 1s linear infinite;
+        }
+
+        .loader-ring::before {
+          content: '';
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          border-radius: 50%;
+          border: 3px solid transparent;
+          border-top-color: #545857;
+          animation: spin 2s linear infinite reverse;
+          opacity: 0.4;
         }
 
         .processing-text {
@@ -1289,6 +1311,42 @@ export const TransitionAnimationExtension = {
           font-family: 'Montserrat', sans-serif;
           font-size: 14px;
           font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          opacity: 0;
+          animation: fadeIn 0.3s ease forwards 0.2s;
+        }
+
+        .gradient-line {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: linear-gradient(
+            90deg,
+            #545857 0%,
+            #72727a 50%,
+            #545857 100%
+          );
+          animation: gradientMove 2s linear infinite;
+          opacity: 0.7;
+        }
+
+        .pulse-bg {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 100%;
+          height: 100%;
+          background: radial-gradient(
+            circle,
+            rgba(84, 88, 87, 0.03) 0%,
+            transparent 70%
+          );
+          animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes spin {
@@ -1296,9 +1354,26 @@ export const TransitionAnimationExtension = {
           100% { transform: rotate(360deg); }
         }
 
-        .dots {
-          display: inline-flex;
-          gap: 2px;
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.2; }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(5px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dots-container {
+          display: flex;
+          gap: 3px;
+          align-items: center;
+          height: 14px;
         }
 
         .dot {
@@ -1306,39 +1381,60 @@ export const TransitionAnimationExtension = {
           height: 3px;
           background: #545857;
           border-radius: 50%;
-          animation: dotPulse 1.5s infinite;
+          animation: dotScale 1.5s infinite;
         }
 
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
-        @keyframes dotPulse {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
+        @keyframes dotScale {
+          0%, 100% { transform: scale(1); opacity: 0.3; }
+          50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        .shine {
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.5) 50%,
+            transparent 100%
+          );
+          animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+          0% { left: -100%; }
+          20% { left: 100%; }
+          100% { left: 100%; }
         }
       </style>
 
       <div class="processing-container">
+        <div class="pulse-bg"></div>
+        <div class="shine"></div>
         <div class="processing-content">
-          <div class="spinner"></div>
+          <div class="loader-ring"></div>
           <div class="processing-text">
             Processing
-            <span class="dots">
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </span>
+            <div class="dots-container">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
           </div>
         </div>
+        <div class="gradient-line"></div>
       </div>
     `;
 
-    // Disable inputs immediately
     disableInputs(true);
-    
     element.appendChild(animationContainer);
 
-    // Enable inputs and complete after duration
     setTimeout(() => {
       disableInputs(false);
       window.voiceflow.chat.interact({ type: "complete" });
