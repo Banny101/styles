@@ -1589,6 +1589,65 @@ export const StripePaymentExtension = {
           width: 100%;
           transition: width linear;
         }
+
+        .backup-link {
+          margin-top: 12px;
+          padding: 12px;
+          background: #f8fafc;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #4a5568;
+          text-align: center;
+          display: none;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          border: 1px solid rgba(99, 91, 255, 0.1);
+        }
+
+        .backup-link.visible {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          opacity: 1;
+        }
+
+        .backup-link svg {
+          width: 16px;
+          height: 16px;
+          color: #635bff;
+        }
+
+        .backup-link a {
+          color: #635bff;
+          text-decoration: none;
+          font-weight: 500;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .backup-link a:hover {
+          text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .payment-status {
+          display: none;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-top: 12px;
+          padding: 8px;
+          border-radius: 6px;
+          font-size: 13px;
+          color: #4a5568;
+          animation: fadeIn 0.3s ease;
+        }
       </style>
 
       <div class="payment-container">
@@ -1619,6 +1678,15 @@ export const StripePaymentExtension = {
             ${laterButtonText}
           </button>
         </div>
+
+        <div class="backup-link" id="backupLink">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>Payment page not opening? <a href="${paymentUrl}" target="_blank" rel="noopener noreferrer">Click here to open it</a></span>
+        </div>
       </div>
     `;
 
@@ -1626,6 +1694,7 @@ export const StripePaymentExtension = {
       const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
       const laterButton = paymentContainer.querySelector('#payLaterBtn');
       const countdown = paymentContainer.querySelector('.redirect-countdown');
+      const backupLink = paymentContainer.querySelector('#backupLink');
       
       // Disable buttons
       paymentLink.style.pointerEvents = 'none';
@@ -1635,6 +1704,16 @@ export const StripePaymentExtension = {
       if (countdown) {
         countdown.style.display = 'none';
       }
+
+      // Show backup link after a short delay
+      setTimeout(() => {
+        backupLink.classList.add('visible');
+      }, 1500);
+
+      // Re-enable chat input after a short delay
+      setTimeout(() => {
+        disableFooterInputs(false);
+      }, 500);
 
       // Complete the interaction
       setTimeout(() => {
@@ -1649,6 +1728,9 @@ export const StripePaymentExtension = {
     };
 
     const handlePayLater = () => {
+      // Re-enable chat input before completing
+      disableFooterInputs(false);
+      
       window.voiceflow.chat.interact({
         type: "cancel",
         payload: { 
@@ -1657,7 +1739,7 @@ export const StripePaymentExtension = {
       });
     };
 
-    // Disable inputs immediately
+    // Disable inputs immediately when extension starts
     disableFooterInputs(true);
 
     const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
@@ -1691,6 +1773,14 @@ export const StripePaymentExtension = {
         if (timeLeft <= 0) {
           clearInterval(countdown);
           paymentLink.click();
+          // Show backup link after auto-redirect
+          setTimeout(() => {
+            paymentContainer.querySelector('#backupLink').classList.add('visible');
+          }, 1500);
+          // Re-enable chat input
+          setTimeout(() => {
+            disableFooterInputs(false);
+          }, 500);
         }
       }, 1000);
 
