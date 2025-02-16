@@ -1212,12 +1212,38 @@ export const TransitionAnimationExtension = {
     trace.type === "ext_transitionAnimation" || 
     trace.payload?.name === "ext_transitionAnimation",
   render: ({ trace, element }) => {
+    const duration = trace.payload?.duration || 2000;
+    
+    // Disable chat inputs
+    const disableInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = disable ? "#f5f5f5" : "";
+            }
+          });
+        });
+      }
+    };
+
     const animationContainer = document.createElement("div");
     animationContainer.className = "_1ddzqsn7";
 
-    const duration = trace.payload?.duration || 2000;
-    
-    // Array of processing messages that will cycle
     const processingMessages = [
       "Analyzing your responses",
       "Calculating recommendations",
@@ -1229,94 +1255,57 @@ export const TransitionAnimationExtension = {
       <style>
         ._1ddzqsn7 {
           display: block;
+          pointer-events: none; /* Prevent interaction with animation */
         }
 
         .processing-container {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 16px;
-          padding: 16px;
-          margin: 10px 0;
-          background: rgba(84, 88, 87, 0.03);
+          padding: 20px;
+          background: white;
           border-radius: 12px;
-          font-family: 'Montserrat', sans-serif;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          border: 1px solid rgba(84, 88, 87, 0.1);
         }
 
         .processing-content {
           display: flex;
-          flex-direction: column;
           align-items: center;
-          gap: 12px;
-        }
-
-        .processing-text {
-          color: #545857;
-          font-size: 14px;
-          font-weight: 500;
-          opacity: 0;
-          transform: translateY(10px);
-          animation: fadeInUp 0.5s forwards;
-        }
-
-        .processing-icon {
-          position: relative;
-          width: 40px;
-          height: 40px;
+          gap: 15px;
         }
 
         .spinner {
-          width: 100%;
-          height: 100%;
-          border: 3px solid rgba(84, 88, 87, 0.1);
-          border-top-color: #545857;
+          width: 24px;
+          height: 24px;
+          border: 3px solid #f3f3f3;
+          border-top: 3px solid #545857;
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
 
-        .pulse {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          background: rgba(84, 88, 87, 0.05);
-          animation: pulse 2s ease-out infinite;
+        .processing-text {
+          color: #545857;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
         }
 
         @keyframes spin {
-          to { transform: rotate(360deg); }
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
         }
 
-        @keyframes pulse {
-          0% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(2); opacity: 0; }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .progress-dots {
-          display: flex;
-          gap: 4px;
-          margin-top: 4px;
+        .dots {
+          display: inline-flex;
+          gap: 2px;
         }
 
         .dot {
-          width: 4px;
-          height: 4px;
+          width: 3px;
+          height: 3px;
           background: #545857;
           border-radius: 50%;
-          opacity: 0.3;
           animation: dotPulse 1.5s infinite;
         }
 
@@ -1331,48 +1320,27 @@ export const TransitionAnimationExtension = {
 
       <div class="processing-container">
         <div class="processing-content">
-          <div class="processing-icon">
-            <div class="pulse"></div>
-            <div class="spinner"></div>
-          </div>
-          <div class="processing-text"></div>
-          <div class="progress-dots">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
+          <div class="spinner"></div>
+          <div class="processing-text">
+            Processing
+            <span class="dots">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </span>
           </div>
         </div>
       </div>
     `;
 
-    const textElement = animationContainer.querySelector('.processing-text');
-    let messageIndex = 0;
-
-    // Function to update the processing message
-    const updateMessage = () => {
-      textElement.style.opacity = "0";
-      textElement.style.transform = "translateY(10px)";
-      
-      setTimeout(() => {
-        textElement.textContent = processingMessages[messageIndex];
-        textElement.style.opacity = "1";
-        textElement.style.transform = "translateY(0)";
-        
-        messageIndex = (messageIndex + 1) % processingMessages.length;
-      }, 300);
-    };
-
-    // Initial message
-    updateMessage();
-
-    // Update message every 2 seconds
-    const messageInterval = setInterval(updateMessage, 2000);
-
+    // Disable inputs immediately
+    disableInputs(true);
+    
     element.appendChild(animationContainer);
 
-    // Cleanup and complete
+    // Enable inputs and complete after duration
     setTimeout(() => {
-      clearInterval(messageInterval);
+      disableInputs(false);
       window.voiceflow.chat.interact({ type: "complete" });
     }, duration);
   }
