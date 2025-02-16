@@ -1459,8 +1459,34 @@ export const StripePaymentExtension = {
     const paymentUrl = trace.payload?.paymentUrl;
     const buttonText = trace.payload?.buttonText || "Pay Now";
     const autoRedirect = trace.payload?.autoRedirect || false;
-    const redirectDelay = trace.payload?.redirectDelay || 1000;
-    const autoRedirectText = trace.payload?.autoRedirectText || "You will be redirected to the payment page in";
+    const redirectDelay = trace.payload?.redirectDelay || 5000;
+    const autoRedirectText = trace.payload?.autoRedirectText || "Redirecting to secure payment in";
+
+    const disableFooterInputs = (isDisabled) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = isDisabled;
+            el.style.pointerEvents = isDisabled ? "none" : "auto";
+            el.style.opacity = isDisabled ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+            }
+          });
+        });
+      }
+    };
 
     const paymentContainer = document.createElement("div");
     paymentContainer.className = "_1ddzqsn7";
@@ -1509,15 +1535,6 @@ export const StripePaymentExtension = {
           transform: translateY(-1px);
         }
 
-        .payment-button:active {
-          transform: translateY(0);
-        }
-
-        .payment-icon {
-          width: 20px;
-          height: 20px;
-        }
-
         .redirect-countdown {
           margin-top: 12px;
           padding: 12px;
@@ -1526,17 +1543,12 @@ export const StripePaymentExtension = {
           font-size: 13px;
           color: #4a5568;
           text-align: center;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
         }
 
         .countdown-number {
           font-weight: 600;
           color: #635bff;
-          min-width: 24px;
-          text-align: center;
+          margin: 0 4px;
         }
 
         .redirect-progress {
@@ -1552,38 +1564,7 @@ export const StripePaymentExtension = {
           height: 100%;
           background: #635bff;
           width: 100%;
-          transition: transform linear;
-          transform-origin: left;
-        }
-
-        @keyframes slideOut {
-          from { transform: scaleX(1); }
-          to { transform: scaleX(0); }
-        }
-
-        .payment-status {
-          display: none;
-          align-items: center;
-          gap: 8px;
-          margin-top: 12px;
-          padding: 12px;
-          border-radius: 8px;
-          background: #f7fafc;
-          font-size: 13px;
-          color: #4a5568;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .loading-spinner {
-          width: 16px;
-          height: 16px;
-          border: 2px solid #e2e8f0;
-          border-top-color: #635bff;
-          border-radius: 50%;
-          animation: spin 0.8s linear infinite;
+          transition: width linear;
         }
       </style>
 
@@ -1593,39 +1574,40 @@ export const StripePaymentExtension = {
         ${autoRedirect ? `
           <div class="redirect-countdown">
             <span>${autoRedirectText}</span>
-            <span class="countdown-number">${redirectDelay/1000}</span>
+            <span class="countdown-number">${Math.ceil(redirectDelay/1000)}</span>
             <span>seconds</span>
-          </div>
-          <div class="redirect-progress">
-            <div class="redirect-progress-bar" style="animation: slideOut ${redirectDelay}ms linear forwards;"></div>
+            <div class="redirect-progress">
+              <div class="redirect-progress-bar"></div>
+            </div>
           </div>
         ` : ''}
         
         <button class="payment-button" id="stripePaymentBtn" ${autoRedirect ? 'style="margin-top: 12px;"' : ''}>
-          <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
             <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
             <path d="M4 8h16M8 14h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
           ${buttonText}
         </button>
-        
-        <div class="payment-status">
-          <div class="loading-spinner"></div>
-          <span>Redirecting to payment page...</span>
-        </div>
       </div>
     `;
 
     const handlePayment = () => {
-      const status = paymentContainer.querySelector('.payment-status');
+      // Disable all inputs
+      disableFooterInputs(true);
+      
       const button = paymentContainer.querySelector('.payment-button');
       const countdown = paymentContainer.querySelector('.redirect-countdown');
       
-      // Show loading state
-      status.style.display = 'flex';
-      button.style.opacity = '0.7';
-      button.style.pointerEvents = 'none';
-      if (countdown) countdown.style.display = 'none';
+      // Disable button and update UI
+      if (button) {
+        button.disabled = true;
+        button.style.opacity = '0.7';
+        button.style.pointerEvents = 'none';
+      }
+      if (countdown) {
+        countdown.style.display = 'none';
+      }
 
       // Open payment in new tab
       window.open(paymentUrl, '_blank');
@@ -1639,20 +1621,36 @@ export const StripePaymentExtension = {
             paymentUrl 
           }
         });
-      }, 1500);
+      }, 1000);
     };
+
+    // Disable inputs immediately
+    disableFooterInputs(true);
 
     const paymentButton = paymentContainer.querySelector('#stripePaymentBtn');
     paymentButton.addEventListener('click', handlePayment);
 
-    // Auto-redirect countdown
+    // Handle auto-redirect
     if (autoRedirect && paymentUrl) {
-      let timeLeft = redirectDelay / 1000;
       const countdownElement = paymentContainer.querySelector('.countdown-number');
-      
+      const progressBar = paymentContainer.querySelector('.redirect-progress-bar');
+      let timeLeft = Math.ceil(redirectDelay/1000);
+
+      // Start progress bar animation
+      if (progressBar) {
+        progressBar.style.width = '100%';
+        setTimeout(() => {
+          progressBar.style.width = '0%';
+          progressBar.style.transition = `width ${redirectDelay}ms linear`;
+        }, 50);
+      }
+
+      // Start countdown
       const countdown = setInterval(() => {
         timeLeft -= 1;
-        if (countdownElement) countdownElement.textContent = timeLeft;
+        if (countdownElement) {
+          countdownElement.textContent = timeLeft;
+        }
         
         if (timeLeft <= 0) {
           clearInterval(countdown);
