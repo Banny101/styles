@@ -1249,6 +1249,7 @@ export const TransitionAnimationExtension = {
           width: 100%;
           margin: 0;
           padding: 0;
+          background: none;
         }
 
         .processing-container {
@@ -1261,6 +1262,8 @@ export const TransitionAnimationExtension = {
           height: 36px;
           width: 100%;
           border-radius: 4px;
+          margin: 0;
+          padding: 0;
         }
 
         .processing-content {
@@ -1311,10 +1314,6 @@ export const TransitionAnimationExtension = {
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
-        .processing-container.success {
-          background: #2D936C;
-        }
-
         @keyframes progress {
           0% { width: 0%; }
           100% { width: 100%; }
@@ -1348,7 +1347,6 @@ export const TransitionAnimationExtension = {
     element.appendChild(animationContainer);
 
     setTimeout(() => {
-      container.classList.add('success');
       processingText.innerHTML = 'Complete ✓';
       
       setTimeout(() => {
