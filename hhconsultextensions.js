@@ -1247,29 +1247,30 @@ export const TransitionAnimationExtension = {
         ._1ddzqsn7 {
           display: block;
           width: 100%;
+          margin: 0;
+          padding: 0;
         }
 
         .processing-container {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: linear-gradient(135deg, #2D936C 0%, #88B04B 100%);
+          background: #2D936C;
           position: relative;
           overflow: hidden;
-          height: 40px;
+          height: 36px;
           width: 100%;
-          margin: 0;
-          padding: 0;
+          border-radius: 4px;
         }
 
         .processing-content {
           display: flex;
           align-items: center;
-          gap: 12px;
+          justify-content: center;
+          gap: 8px;
           position: relative;
           z-index: 2;
-          margin: 0;
-          padding: 0;
+          width: 100%;
         }
 
         .processing-text {
@@ -1279,21 +1280,15 @@ export const TransitionAnimationExtension = {
           font-weight: 500;
           display: flex;
           align-items: center;
-          gap: 8px;
-          text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-          margin: 0;
-          padding: 0;
+          gap: 6px;
         }
 
         .progress-bar {
           position: absolute;
           bottom: 0;
           left: 0;
-          height: 3px;
-          background: linear-gradient(90deg, 
-            rgba(255,255,255,0.5) 0%,
-            rgba(255,255,255,0.8) 50%,
-            rgba(255,255,255,0.5) 100%);
+          height: 2px;
+          background: rgba(255,255,255,0.3);
           width: 0%;
           animation: progress ${actualDuration}ms linear forwards;
         }
@@ -1302,8 +1297,6 @@ export const TransitionAnimationExtension = {
           display: flex;
           gap: 3px;
           align-items: center;
-          margin: 0;
-          padding: 0;
         }
 
         .dot {
@@ -1319,22 +1312,7 @@ export const TransitionAnimationExtension = {
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
         .processing-container.success {
-          background: linear-gradient(135deg, #3FB07C 0%, #9DC88D 100%);
-        }
-
-        .shine-effect {
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.2) 50%,
-            transparent 100%
-          );
-          animation: shine 2s infinite;
+          background: #2D936C;
         }
 
         @keyframes progress {
@@ -1346,14 +1324,9 @@ export const TransitionAnimationExtension = {
           0%, 100% { transform: scale(1); opacity: 0.5; }
           50% { transform: scale(1.5); opacity: 1; }
         }
-
-        @keyframes shine {
-          to { left: 100%; }
-        }
       </style>
 
       <div class="processing-container">
-        <div class="shine-effect"></div>
         <div class="progress-bar"></div>
         <div class="processing-content">
           <div class="processing-text">
@@ -1374,7 +1347,6 @@ export const TransitionAnimationExtension = {
     disableInputs(true);
     element.appendChild(animationContainer);
 
-    // Show completion state
     setTimeout(() => {
       container.classList.add('success');
       processingText.innerHTML = 'Complete ✓';
