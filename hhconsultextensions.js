@@ -1240,16 +1240,48 @@ export const TransitionAnimationExtension = {
     const animationContainer = document.createElement("div");
     animationContainer.className = "_1ddzqsn7";
 
-    // Array of health-themed emojis that will cycle
-    const healthEmojis = ['🥗', '🏃‍♀️', '🍎', '💪', '🥑'];
-    let currentEmojiIndex = 0;
+    export const TransitionAnimationExtension = {
+  name: "TransitionAnimation",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_transitionAnimation" || 
+    trace.payload?.name === "ext_transitionAnimation",
+  render: ({ trace, element }) => {
+    const duration = parseInt(trace.payload?.duration) || 2000;
+    const completionDelay = 800;
+    const actualDuration = duration - completionDelay;
+    
+    const disableInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+          });
+        });
+      }
+    };
+
+    const animationContainer = document.createElement("div");
+    animationContainer.className = "_1ddzqsn7";
 
     animationContainer.innerHTML = `
       <style>
         ._1ddzqsn7 {
           display: block;
-          pointer-events: none;
-          margin: -8px -12px; /* Negative margin to counter chat padding */
+          width: 100%;
         }
 
         .processing-container {
@@ -1260,6 +1292,9 @@ export const TransitionAnimationExtension = {
           position: relative;
           overflow: hidden;
           height: 40px;
+          width: 100%;
+          margin: 0;
+          padding: 0;
         }
 
         .processing-content {
@@ -1268,16 +1303,8 @@ export const TransitionAnimationExtension = {
           gap: 12px;
           position: relative;
           z-index: 2;
-        }
-
-        .emoji-container {
-          width: 24px;
-          height: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 16px;
-          animation: bounce 1s infinite;
+          margin: 0;
+          padding: 0;
         }
 
         .processing-text {
@@ -1289,6 +1316,8 @@ export const TransitionAnimationExtension = {
           align-items: center;
           gap: 8px;
           text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+          margin: 0;
+          padding: 0;
         }
 
         .progress-bar {
@@ -1301,13 +1330,15 @@ export const TransitionAnimationExtension = {
             rgba(255,255,255,0.8) 50%,
             rgba(255,255,255,0.5) 100%);
           width: 0%;
-          animation: progress ${duration}ms linear forwards;
+          animation: progress ${actualDuration}ms linear forwards;
         }
 
         .dots-container {
           display: flex;
           gap: 3px;
           align-items: center;
+          margin: 0;
+          padding: 0;
         }
 
         .dot {
@@ -1322,38 +1353,8 @@ export const TransitionAnimationExtension = {
         .dot:nth-child(2) { animation-delay: 0.2s; }
         .dot:nth-child(3) { animation-delay: 0.4s; }
 
-        /* Success state */
-        .success-container {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          opacity: 0;
-          transform: scale(0.9);
-        }
-
-        .processing-container.success .success-container {
-          opacity: 1;
-          transform: scale(1);
-          transition: all 0.3s ease;
-        }
-
         .processing-container.success {
           background: linear-gradient(135deg, #3FB07C 0%, #9DC88D 100%);
-        }
-
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-3px); }
-        }
-
-        @keyframes progress {
-          0% { width: 0%; }
-          100% { width: 100%; }
-        }
-
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 0.5; }
-          50% { transform: scale(1.5); opacity: 1; }
         }
 
         .shine-effect {
@@ -1371,22 +1372,18 @@ export const TransitionAnimationExtension = {
           animation: shine 2s infinite;
         }
 
+        @keyframes progress {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.5); opacity: 1; }
+        }
+
         @keyframes shine {
           to { left: 100%; }
-        }
-
-        .health-particles {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-        }
-
-        .particle {
-          position: absolute;
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 50%;
-          pointer-events: none;
         }
       </style>
 
@@ -1394,9 +1391,8 @@ export const TransitionAnimationExtension = {
         <div class="shine-effect"></div>
         <div class="progress-bar"></div>
         <div class="processing-content">
-          <div class="emoji-container">🥗</div>
           <div class="processing-text">
-            Preparing your health journey
+            Processing
             <div class="dots-container">
               <div class="dot"></div>
               <div class="dot"></div>
@@ -1408,28 +1404,20 @@ export const TransitionAnimationExtension = {
     `;
 
     const container = animationContainer.querySelector('.processing-container');
-    const emojiContainer = animationContainer.querySelector('.emoji-container');
     const processingText = animationContainer.querySelector('.processing-text');
-
-    // Cycle through emojis
-    const cycleEmojis = setInterval(() => {
-      currentEmojiIndex = (currentEmojiIndex + 1) % healthEmojis.length;
-      emojiContainer.textContent = healthEmojis[currentEmojiIndex];
-    }, 1000);
 
     disableInputs(true);
     element.appendChild(animationContainer);
 
     // Show completion state
     setTimeout(() => {
-      clearInterval(cycleEmojis);
       container.classList.add('success');
-      processingText.innerHTML = 'Ready to continue your journey! 🌱';
+      processingText.innerHTML = 'Complete ✓';
       
       setTimeout(() => {
         disableInputs(false);
         window.voiceflow.chat.interact({ type: "complete" });
-      }, 500);
-    }, duration - 500);
+      }, completionDelay);
+    }, actualDuration);
   }
 };
