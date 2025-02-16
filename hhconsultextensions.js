@@ -1212,42 +1212,6 @@ export const TransitionAnimationExtension = {
     trace.type === "ext_transitionAnimation" || 
     trace.payload?.name === "ext_transitionAnimation",
   render: ({ trace, element }) => {
-    const duration = trace.payload?.duration || 2000;
-    
-    const disableInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-          });
-        });
-      }
-    };
-
-    const animationContainer = document.createElement("div");
-    animationContainer.className = "_1ddzqsn7";
-
-
-  export const TransitionAnimationExtension = {
-  name: "TransitionAnimation",
-  type: "response",
-  match: ({ trace }) => 
-    trace.type === "ext_transitionAnimation" || 
-    trace.payload?.name === "ext_transitionAnimation",
-  render: ({ trace, element }) => {
     const duration = parseInt(trace.payload?.duration) || 2000;
     const completionDelay = 800;
     const actualDuration = duration - completionDelay;
