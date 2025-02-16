@@ -1232,9 +1232,6 @@ export const TransitionAnimationExtension = {
             el.disabled = disable;
             el.style.pointerEvents = disable ? "none" : "auto";
             el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? "#f5f5f5" : "";
-            }
           });
         });
       }
@@ -1254,27 +1251,26 @@ export const TransitionAnimationExtension = {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 12px 20px;
-          background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-          border-radius: 12px;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-          border: 1px solid rgba(84, 88, 87, 0.08);
+          padding: 8px 16px;
+          background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+          border-radius: 8px;
           position: relative;
           overflow: hidden;
+          height: 36px;
         }
 
         .processing-content {
           display: flex;
           align-items: center;
-          gap: 15px;
+          gap: 12px;
           position: relative;
           z-index: 2;
         }
 
         .loader-ring {
           position: relative;
-          width: 28px;
-          height: 28px;
+          width: 20px;
+          height: 20px;
         }
 
         .loader-ring::after {
@@ -1285,37 +1281,23 @@ export const TransitionAnimationExtension = {
           width: 100%;
           height: 100%;
           border-radius: 50%;
-          border: 3px solid transparent;
-          border-top-color: #545857;
-          border-right-color: #72727a;
-          border-bottom-color: #9c9ca6;
+          border: 2px solid transparent;
+          border-top-color: #64ffda;
+          border-right-color: #00bcd4;
+          border-bottom-color: #80deea;
           animation: spin 1s linear infinite;
         }
 
-        .loader-ring::before {
-          content: '';
-          position: absolute;
-          top: -2px;
-          left: -2px;
-          right: -2px;
-          bottom: -2px;
-          border-radius: 50%;
-          border: 3px solid transparent;
-          border-top-color: #545857;
-          animation: spin 2s linear infinite reverse;
-          opacity: 0.4;
-        }
-
         .processing-text {
-          color: #545857;
+          color: white;
           font-family: 'Montserrat', sans-serif;
-          font-size: 14px;
+          font-size: 13px;
           font-weight: 500;
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           opacity: 0;
-          animation: fadeIn 0.3s ease forwards 0.2s;
+          animation: fadeIn 0.3s ease forwards;
         }
 
         .gradient-line {
@@ -1326,27 +1308,68 @@ export const TransitionAnimationExtension = {
           height: 2px;
           background: linear-gradient(
             90deg,
-            #545857 0%,
-            #72727a 50%,
-            #545857 100%
+            #64ffda 0%,
+            #00bcd4 50%,
+            #64ffda 100%
           );
+          background-size: 200% 100%;
           animation: gradientMove 2s linear infinite;
-          opacity: 0.7;
         }
 
-        .pulse-bg {
+        .dots-container {
+          display: flex;
+          gap: 3px;
+          align-items: center;
+        }
+
+        .dot {
+          width: 3px;
+          height: 3px;
+          background: #64ffda;
+          border-radius: 50%;
+          animation: dotScale 1.5s infinite;
+        }
+
+        .dot:nth-child(2) { 
+          animation-delay: 0.2s;
+          background: #00bcd4;
+        }
+        .dot:nth-child(3) { 
+          animation-delay: 0.4s;
+          background: #80deea;
+        }
+
+        /* Success state */
+        .success-icon {
+          width: 20px;
+          height: 20px;
+          position: relative;
+          opacity: 0;
+          transform: scale(0);
+        }
+
+        .success .success-icon {
+          opacity: 1;
+          transform: scale(1);
+          transition: all 0.3s ease;
+        }
+
+        .success-icon::before {
+          content: '';
           position: absolute;
           top: 50%;
           left: 50%;
-          transform: translate(-50%, -50%);
-          width: 100%;
-          height: 100%;
-          background: radial-gradient(
-            circle,
-            rgba(84, 88, 87, 0.03) 0%,
-            transparent 70%
-          );
-          animation: pulse 2s ease-in-out infinite;
+          transform: translate(-50%, -50%) rotate(45deg);
+          width: 8px;
+          height: 16px;
+          border: 2px solid #64ffda;
+          border-top: 0;
+          border-left: 0;
+          animation: checkmark 0.3s ease forwards;
+        }
+
+        .processing-container.success {
+          background: linear-gradient(135deg, #1b4943 0%, #2b5876 100%);
         }
 
         @keyframes spin {
@@ -1359,66 +1382,26 @@ export const TransitionAnimationExtension = {
           100% { background-position: 100% 50%; }
         }
 
-        @keyframes pulse {
-          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
-          50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.2; }
-        }
-
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(5px); }
           to { opacity: 1; transform: translateY(0); }
         }
 
-        .dots-container {
-          display: flex;
-          gap: 3px;
-          align-items: center;
-          height: 14px;
-        }
-
-        .dot {
-          width: 3px;
-          height: 3px;
-          background: #545857;
-          border-radius: 50%;
-          animation: dotScale 1.5s infinite;
-        }
-
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
-
         @keyframes dotScale {
-          0%, 100% { transform: scale(1); opacity: 0.3; }
+          0%, 100% { transform: scale(1); opacity: 0.5; }
           50% { transform: scale(1.5); opacity: 1; }
         }
 
-        .shine {
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.5) 50%,
-            transparent 100%
-          );
-          animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-          0% { left: -100%; }
-          20% { left: 100%; }
-          100% { left: 100%; }
+        @keyframes checkmark {
+          0% { transform: translate(-50%, -50%) rotate(45deg) scale(0); }
+          100% { transform: translate(-50%, -50%) rotate(45deg) scale(1); }
         }
       </style>
 
       <div class="processing-container">
-        <div class="pulse-bg"></div>
-        <div class="shine"></div>
         <div class="processing-content">
           <div class="loader-ring"></div>
+          <div class="success-icon"></div>
           <div class="processing-text">
             Processing
             <div class="dots-container">
@@ -1432,12 +1415,24 @@ export const TransitionAnimationExtension = {
       </div>
     `;
 
+    const container = animationContainer.querySelector('.processing-container');
+    const processingText = animationContainer.querySelector('.processing-text');
+    const loaderRing = animationContainer.querySelector('.loader-ring');
+
     disableInputs(true);
     element.appendChild(animationContainer);
 
+    // Show completion state
     setTimeout(() => {
-      disableInputs(false);
-      window.voiceflow.chat.interact({ type: "complete" });
-    }, duration);
+      container.classList.add('success');
+      loaderRing.style.display = 'none';
+      processingText.innerHTML = 'Complete';
+      
+      // Wait a bit to show completion state before removing
+      setTimeout(() => {
+        disableInputs(false);
+        window.voiceflow.chat.interact({ type: "complete" });
+      }, 500);
+    }, duration - 500);
   }
 };
