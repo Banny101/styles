@@ -1253,110 +1253,139 @@ export const TransitionAnimationExtension = {
         }
 
         .processing-container {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: linear-gradient(135deg, #34D399 0%, #059669 100%);
           position: relative;
-          overflow: hidden;
           height: 36px;
           width: 100%;
           border-radius: 4px;
           margin: 0;
           padding: 0;
-          transform-origin: center;
-          animation: subtlePulse 2s infinite;
+          background: rgba(52, 211, 153, 0.1);
+          overflow: hidden;
+        }
+
+        .liquid-fill {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 0%;
+          height: 100%;
+          background: linear-gradient(90deg, #34D399, #059669);
+          animation: fillProgress ${actualDuration}ms linear forwards;
+        }
+
+        .liquid-fill::after {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: 0;
+          width: 100%;
+          height: 200%;
+          background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255,255,255,0.1) 10px,
+            rgba(255,255,255,0.1) 20px
+          );
+          animation: waterPattern 20s linear infinite;
+        }
+
+        .liquid-fill::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,0.2),
+            transparent
+          );
+          animation: shimmer 2s linear infinite;
+        }
+
+        .wave {
+          position: absolute;
+          top: -100%;
+          right: 0;
+          width: 200px;
+          height: 200px;
+          background: radial-gradient(
+            circle at center,
+            rgba(255,255,255,0.4) 0%,
+            transparent 70%
+          );
+          border-radius: 45%;
+          animation: rotate 10s linear infinite;
         }
 
         .processing-content {
+          position: relative;
+          z-index: 2;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
-          position: relative;
-          z-index: 2;
-          width: 100%;
-        }
-
-        .processing-text {
+          height: 100%;
           color: white;
           font-family: 'Montserrat', sans-serif;
           font-size: 14px;
           font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 6px;
           text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-          animation: fadeInUp 0.5s ease forwards;
         }
 
-        .progress-bar-container {
+        .bubbles {
           position: absolute;
-          bottom: 0;
-          left: 0;
           width: 100%;
-          height: 36px;
-          overflow: hidden;
-        }
-
-        .progress-bar {
-          position: absolute;
-          bottom: 0;
-          left: 0;
           height: 100%;
-          background: linear-gradient(90deg, 
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.1) 50%,
-            rgba(255,255,255,0) 100%);
-          width: 0%;
-          animation: progress ${actualDuration}ms linear forwards,
-                     shimmer 2s infinite;
+          pointer-events: none;
         }
 
-        .dots-container {
-          display: flex;
-          gap: 3px;
-          align-items: center;
-        }
-
-        .dot {
-          width: 3px;
-          height: 3px;
-          background: white;
+        .bubble {
+          position: absolute;
+          background: rgba(255,255,255,0.4);
           border-radius: 50%;
-          opacity: 0.8;
-          animation: pulse 1s infinite;
-          box-shadow: 0 0 4px rgba(255,255,255,0.5);
+          animation: bubble 4s ease-in infinite;
         }
 
-        .dot:nth-child(2) { 
-          animation-delay: 0.2s;
-          background: rgba(255,255,255,0.9);
-        }
-        .dot:nth-child(3) { 
-          animation-delay: 0.4s;
-          background: rgba(255,255,255,0.8);
+        @keyframes fillProgress {
+          0% { width: 0%; }
+          100% { width: 100%; }
         }
 
-        .shine {
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255,255,255,0.2) 50%,
-            transparent 100%
-          );
-          animation: shine 3s infinite;
+        @keyframes waterPattern {
+          0% { transform: translateX(0) translateY(0); }
+          100% { transform: translateX(-100px) translateY(-100px); }
         }
 
-        /* Success state animations */
-        .processing-container.success {
-          background: linear-gradient(135deg, #059669 0%, #047857 100%);
-          animation: successPulse 0.5s ease forwards;
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
+        @keyframes rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        @keyframes bubble {
+          0% {
+            transform: translateY(100%) scale(0);
+            opacity: 0;
+          }
+          50% {
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(-100%) scale(1);
+            opacity: 0;
+          }
+        }
+
+        .success .liquid-fill {
+          background: linear-gradient(90deg, #059669, #047857);
+          transition: background 0.3s ease;
         }
 
         .checkmark {
@@ -1368,52 +1397,7 @@ export const TransitionAnimationExtension = {
           border-right: 2px solid white;
           opacity: 0;
           margin-left: 4px;
-        }
-
-        .success .checkmark {
           animation: checkmarkAnimation 0.5s ease forwards;
-        }
-
-        @keyframes subtlePulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.002); }
-        }
-
-        @keyframes progress {
-          0% { width: 0%; }
-          100% { width: 100%; }
-        }
-
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-
-        @keyframes pulse {
-          0%, 100% { transform: scale(1); opacity: 0.5; }
-          50% { transform: scale(1.5); opacity: 1; }
-        }
-
-        @keyframes shine {
-          0% { left: -100%; }
-          20%, 100% { left: 100%; }
-        }
-
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(4px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes successPulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.02); }
-          100% { transform: scale(1); }
         }
 
         @keyframes checkmarkAnimation {
@@ -1429,25 +1413,26 @@ export const TransitionAnimationExtension = {
       </style>
 
       <div class="processing-container">
-        <div class="shine"></div>
-        <div class="progress-bar-container">
-          <div class="progress-bar"></div>
-        </div>
-        <div class="processing-content">
-          <div class="processing-text">
-            Processing
-            <div class="dots-container">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
+        <div class="liquid-fill">
+          <div class="wave"></div>
+          <div class="wave" style="animation-delay: -2s; animation-duration: 7s;"></div>
+          <div class="bubbles">
+            ${Array.from({length: 10}, (_, i) => `
+              <div class="bubble" style="
+                left: ${Math.random() * 100}%;
+                width: ${4 + Math.random() * 4}px;
+                height: ${4 + Math.random() * 4}px;
+                animation-delay: ${Math.random() * 4}s;
+              "></div>
+            `).join('')}
           </div>
         </div>
+        <div class="processing-content">Processing</div>
       </div>
     `;
 
     const container = animationContainer.querySelector('.processing-container');
-    const processingText = animationContainer.querySelector('.processing-text');
+    const processingText = animationContainer.querySelector('.processing-content');
 
     disableInputs(true);
     element.appendChild(animationContainer);
