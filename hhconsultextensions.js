@@ -1256,7 +1256,7 @@ export const TransitionAnimationExtension = {
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #2D936C;
+          background: linear-gradient(135deg, #34D399 0%, #059669 100%);
           position: relative;
           overflow: hidden;
           height: 36px;
@@ -1264,6 +1264,8 @@ export const TransitionAnimationExtension = {
           border-radius: 4px;
           margin: 0;
           padding: 0;
+          transform-origin: center;
+          animation: subtlePulse 2s infinite;
         }
 
         .processing-content {
@@ -1284,16 +1286,31 @@ export const TransitionAnimationExtension = {
           display: flex;
           align-items: center;
           gap: 6px;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+          animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .progress-bar-container {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 36px;
+          overflow: hidden;
         }
 
         .progress-bar {
           position: absolute;
           bottom: 0;
           left: 0;
-          height: 2px;
-          background: rgba(255,255,255,0.3);
+          height: 100%;
+          background: linear-gradient(90deg, 
+            rgba(255,255,255,0) 0%,
+            rgba(255,255,255,0.1) 50%,
+            rgba(255,255,255,0) 100%);
           width: 0%;
-          animation: progress ${actualDuration}ms linear forwards;
+          animation: progress ${actualDuration}ms linear forwards,
+                     shimmer 2s infinite;
         }
 
         .dots-container {
@@ -1309,24 +1326,113 @@ export const TransitionAnimationExtension = {
           border-radius: 50%;
           opacity: 0.8;
           animation: pulse 1s infinite;
+          box-shadow: 0 0 4px rgba(255,255,255,0.5);
         }
 
-        .dot:nth-child(2) { animation-delay: 0.2s; }
-        .dot:nth-child(3) { animation-delay: 0.4s; }
+        .dot:nth-child(2) { 
+          animation-delay: 0.2s;
+          background: rgba(255,255,255,0.9);
+        }
+        .dot:nth-child(3) { 
+          animation-delay: 0.4s;
+          background: rgba(255,255,255,0.8);
+        }
+
+        .shine {
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255,255,255,0.2) 50%,
+            transparent 100%
+          );
+          animation: shine 3s infinite;
+        }
+
+        /* Success state animations */
+        .processing-container.success {
+          background: linear-gradient(135deg, #059669 0%, #047857 100%);
+          animation: successPulse 0.5s ease forwards;
+        }
+
+        .checkmark {
+          display: inline-block;
+          transform: rotate(45deg);
+          height: 12px;
+          width: 6px;
+          border-bottom: 2px solid white;
+          border-right: 2px solid white;
+          opacity: 0;
+          margin-left: 4px;
+        }
+
+        .success .checkmark {
+          animation: checkmarkAnimation 0.5s ease forwards;
+        }
+
+        @keyframes subtlePulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.002); }
+        }
 
         @keyframes progress {
           0% { width: 0%; }
           100% { width: 100%; }
         }
 
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+
         @keyframes pulse {
           0%, 100% { transform: scale(1); opacity: 0.5; }
           50% { transform: scale(1.5); opacity: 1; }
         }
+
+        @keyframes shine {
+          0% { left: -100%; }
+          20%, 100% { left: 100%; }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(4px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes successPulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.02); }
+          100% { transform: scale(1); }
+        }
+
+        @keyframes checkmarkAnimation {
+          0% {
+            opacity: 0;
+            transform: rotate(45deg) scale(0.8);
+          }
+          100% {
+            opacity: 1;
+            transform: rotate(45deg) scale(1);
+          }
+        }
       </style>
 
       <div class="processing-container">
-        <div class="progress-bar"></div>
+        <div class="shine"></div>
+        <div class="progress-bar-container">
+          <div class="progress-bar"></div>
+        </div>
         <div class="processing-content">
           <div class="processing-text">
             Processing
@@ -1347,7 +1453,8 @@ export const TransitionAnimationExtension = {
     element.appendChild(animationContainer);
 
     setTimeout(() => {
-      processingText.innerHTML = 'Complete ✓';
+      container.classList.add('success');
+      processingText.innerHTML = 'Complete <span class="checkmark"></span>';
       
       setTimeout(() => {
         disableInputs(false);
