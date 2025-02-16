@@ -1448,3 +1448,224 @@ export const TransitionAnimationExtension = {
     }, actualDuration);
   }
 };
+
+export const StripePaymentExtension = {
+  name: "StripePayment",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_stripePayment" || 
+    trace.payload?.name === "ext_stripePayment",
+  render: ({ trace, element }) => {
+    const paymentUrl = trace.payload?.paymentUrl;
+    const buttonText = trace.payload?.buttonText || "Pay Now";
+    const autoRedirect = trace.payload?.autoRedirect || false;
+    const redirectDelay = trace.payload?.redirectDelay || 1000;
+    const autoRedirectText = trace.payload?.autoRedirectText || "You will be redirected to the payment page in";
+
+    const paymentContainer = document.createElement("div");
+    paymentContainer.className = "_1ddzqsn7";
+
+    paymentContainer.innerHTML = `
+      <style>
+        ._1ddzqsn7 {
+          display: block;
+        }
+        
+        .payment-container {
+          font-family: 'Montserrat', sans-serif;
+          padding: 16px;
+          background: white;
+          border-radius: 12px;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          margin: 8px 0;
+        }
+
+        .payment-title {
+          font-size: 14px;
+          color: #303235;
+          margin-bottom: 12px;
+        }
+
+        .payment-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          background: #635bff;
+          color: white;
+          border: none;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-family: 'Montserrat', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          width: 100%;
+        }
+
+        .payment-button:hover {
+          background: #5851e9;
+          transform: translateY(-1px);
+        }
+
+        .payment-button:active {
+          transform: translateY(0);
+        }
+
+        .payment-icon {
+          width: 20px;
+          height: 20px;
+        }
+
+        .redirect-countdown {
+          margin-top: 12px;
+          padding: 12px;
+          background: #f7fafc;
+          border-radius: 8px;
+          font-size: 13px;
+          color: #4a5568;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+
+        .countdown-number {
+          font-weight: 600;
+          color: #635bff;
+          min-width: 24px;
+          text-align: center;
+        }
+
+        .redirect-progress {
+          width: 100%;
+          height: 4px;
+          background: #e2e8f0;
+          border-radius: 2px;
+          margin-top: 8px;
+          overflow: hidden;
+        }
+
+        .redirect-progress-bar {
+          height: 100%;
+          background: #635bff;
+          width: 100%;
+          transition: transform linear;
+          transform-origin: left;
+        }
+
+        @keyframes slideOut {
+          from { transform: scaleX(1); }
+          to { transform: scaleX(0); }
+        }
+
+        .payment-status {
+          display: none;
+          align-items: center;
+          gap: 8px;
+          margin-top: 12px;
+          padding: 12px;
+          border-radius: 8px;
+          background: #f7fafc;
+          font-size: 13px;
+          color: #4a5568;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid #e2e8f0;
+          border-top-color: #635bff;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+      </style>
+
+      <div class="payment-container">
+        <div class="payment-title">Complete your payment to proceed</div>
+        
+        ${autoRedirect ? `
+          <div class="redirect-countdown">
+            <span>${autoRedirectText}</span>
+            <span class="countdown-number">${redirectDelay/1000}</span>
+            <span>seconds</span>
+          </div>
+          <div class="redirect-progress">
+            <div class="redirect-progress-bar" style="animation: slideOut ${redirectDelay}ms linear forwards;"></div>
+          </div>
+        ` : ''}
+        
+        <button class="payment-button" id="stripePaymentBtn" ${autoRedirect ? 'style="margin-top: 12px;"' : ''}>
+          <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
+            <path d="M4 8h16M8 14h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          ${buttonText}
+        </button>
+        
+        <div class="payment-status">
+          <div class="loading-spinner"></div>
+          <span>Redirecting to payment page...</span>
+        </div>
+      </div>
+    `;
+
+    const handlePayment = () => {
+      const status = paymentContainer.querySelector('.payment-status');
+      const button = paymentContainer.querySelector('.payment-button');
+      const countdown = paymentContainer.querySelector('.redirect-countdown');
+      
+      // Show loading state
+      status.style.display = 'flex';
+      button.style.opacity = '0.7';
+      button.style.pointerEvents = 'none';
+      if (countdown) countdown.style.display = 'none';
+
+      // Open payment in new tab
+      window.open(paymentUrl, '_blank');
+
+      // Complete the interaction
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { 
+            status: "payment_initiated",
+            paymentUrl 
+          }
+        });
+      }, 1500);
+    };
+
+    const paymentButton = paymentContainer.querySelector('#stripePaymentBtn');
+    paymentButton.addEventListener('click', handlePayment);
+
+    // Auto-redirect countdown
+    if (autoRedirect && paymentUrl) {
+      let timeLeft = redirectDelay / 1000;
+      const countdownElement = paymentContainer.querySelector('.countdown-number');
+      
+      const countdown = setInterval(() => {
+        timeLeft -= 1;
+        if (countdownElement) countdownElement.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          handlePayment();
+        }
+      }, 1000);
+
+      // Allow manual click during countdown
+      paymentButton.addEventListener('click', () => {
+        clearInterval(countdown);
+      });
+    }
+
+    element.appendChild(paymentContainer);
+  },
+};
