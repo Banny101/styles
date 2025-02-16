@@ -1240,23 +1240,26 @@ export const TransitionAnimationExtension = {
     const animationContainer = document.createElement("div");
     animationContainer.className = "_1ddzqsn7";
 
+    // Array of health-themed emojis that will cycle
+    const healthEmojis = ['🥗', '🏃‍♀️', '🍎', '💪', '🥑'];
+    let currentEmojiIndex = 0;
+
     animationContainer.innerHTML = `
       <style>
         ._1ddzqsn7 {
           display: block;
           pointer-events: none;
+          margin: -8px -12px; /* Negative margin to counter chat padding */
         }
 
         .processing-container {
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 8px 16px;
-          background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
-          border-radius: 8px;
+          background: linear-gradient(135deg, #2D936C 0%, #88B04B 100%);
           position: relative;
           overflow: hidden;
-          height: 36px;
+          height: 40px;
         }
 
         .processing-content {
@@ -1267,53 +1270,38 @@ export const TransitionAnimationExtension = {
           z-index: 2;
         }
 
-        .loader-ring {
-          position: relative;
-          width: 20px;
-          height: 20px;
-        }
-
-        .loader-ring::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          border: 2px solid transparent;
-          border-top-color: #64ffda;
-          border-right-color: #00bcd4;
-          border-bottom-color: #80deea;
-          animation: spin 1s linear infinite;
+        .emoji-container {
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+          animation: bounce 1s infinite;
         }
 
         .processing-text {
           color: white;
           font-family: 'Montserrat', sans-serif;
-          font-size: 13px;
+          font-size: 14px;
           font-weight: 500;
           display: flex;
           align-items: center;
-          gap: 6px;
-          opacity: 0;
-          animation: fadeIn 0.3s ease forwards;
+          gap: 8px;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        .gradient-line {
+        .progress-bar {
           position: absolute;
           bottom: 0;
           left: 0;
-          width: 100%;
-          height: 2px;
-          background: linear-gradient(
-            90deg,
-            #64ffda 0%,
-            #00bcd4 50%,
-            #64ffda 100%
-          );
-          background-size: 200% 100%;
-          animation: gradientMove 2s linear infinite;
+          height: 3px;
+          background: linear-gradient(90deg, 
+            rgba(255,255,255,0.5) 0%,
+            rgba(255,255,255,0.8) 50%,
+            rgba(255,255,255,0.5) 100%);
+          width: 0%;
+          animation: progress ${duration}ms linear forwards;
         }
 
         .dots-container {
@@ -1325,85 +1313,90 @@ export const TransitionAnimationExtension = {
         .dot {
           width: 3px;
           height: 3px;
-          background: #64ffda;
+          background: white;
           border-radius: 50%;
-          animation: dotScale 1.5s infinite;
+          opacity: 0.8;
+          animation: pulse 1s infinite;
         }
 
-        .dot:nth-child(2) { 
-          animation-delay: 0.2s;
-          background: #00bcd4;
-        }
-        .dot:nth-child(3) { 
-          animation-delay: 0.4s;
-          background: #80deea;
-        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
 
         /* Success state */
-        .success-icon {
-          width: 20px;
-          height: 20px;
-          position: relative;
+        .success-container {
+          display: flex;
+          align-items: center;
+          gap: 8px;
           opacity: 0;
-          transform: scale(0);
+          transform: scale(0.9);
         }
 
-        .success .success-icon {
+        .processing-container.success .success-container {
           opacity: 1;
           transform: scale(1);
           transition: all 0.3s ease;
         }
 
-        .success-icon::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%) rotate(45deg);
-          width: 8px;
-          height: 16px;
-          border: 2px solid #64ffda;
-          border-top: 0;
-          border-left: 0;
-          animation: checkmark 0.3s ease forwards;
-        }
-
         .processing-container.success {
-          background: linear-gradient(135deg, #1b4943 0%, #2b5876 100%);
+          background: linear-gradient(135deg, #3FB07C 0%, #9DC88D 100%);
         }
 
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
         }
 
-        @keyframes gradientMove {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 100% 50%; }
+        @keyframes progress {
+          0% { width: 0%; }
+          100% { width: 100%; }
         }
 
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(5px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes dotScale {
+        @keyframes pulse {
           0%, 100% { transform: scale(1); opacity: 0.5; }
           50% { transform: scale(1.5); opacity: 1; }
         }
 
-        @keyframes checkmark {
-          0% { transform: translate(-50%, -50%) rotate(45deg) scale(0); }
-          100% { transform: translate(-50%, -50%) rotate(45deg) scale(1); }
+        .shine-effect {
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            transparent 100%
+          );
+          animation: shine 2s infinite;
+        }
+
+        @keyframes shine {
+          to { left: 100%; }
+        }
+
+        .health-particles {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+        }
+
+        .particle {
+          position: absolute;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          pointer-events: none;
         }
       </style>
 
       <div class="processing-container">
+        <div class="shine-effect"></div>
+        <div class="progress-bar"></div>
         <div class="processing-content">
-          <div class="loader-ring"></div>
-          <div class="success-icon"></div>
+          <div class="emoji-container">🥗</div>
           <div class="processing-text">
-            Processing
+            Preparing your health journey
             <div class="dots-container">
               <div class="dot"></div>
               <div class="dot"></div>
@@ -1411,24 +1404,28 @@ export const TransitionAnimationExtension = {
             </div>
           </div>
         </div>
-        <div class="gradient-line"></div>
       </div>
     `;
 
     const container = animationContainer.querySelector('.processing-container');
+    const emojiContainer = animationContainer.querySelector('.emoji-container');
     const processingText = animationContainer.querySelector('.processing-text');
-    const loaderRing = animationContainer.querySelector('.loader-ring');
+
+    // Cycle through emojis
+    const cycleEmojis = setInterval(() => {
+      currentEmojiIndex = (currentEmojiIndex + 1) % healthEmojis.length;
+      emojiContainer.textContent = healthEmojis[currentEmojiIndex];
+    }, 1000);
 
     disableInputs(true);
     element.appendChild(animationContainer);
 
     // Show completion state
     setTimeout(() => {
+      clearInterval(cycleEmojis);
       container.classList.add('success');
-      loaderRing.style.display = 'none';
-      processingText.innerHTML = 'Complete';
+      processingText.innerHTML = 'Ready to continue your journey! 🌱';
       
-      // Wait a bit to show completion state before removing
       setTimeout(() => {
         disableInputs(false);
         window.voiceflow.chat.interact({ type: "complete" });
