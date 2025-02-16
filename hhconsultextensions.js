@@ -1240,7 +1240,8 @@ export const TransitionAnimationExtension = {
     const animationContainer = document.createElement("div");
     animationContainer.className = "_1ddzqsn7";
 
-    export const TransitionAnimationExtension = {
+
+  export const TransitionAnimationExtension = {
   name: "TransitionAnimation",
   type: "response",
   match: ({ trace }) => 
