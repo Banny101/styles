@@ -1519,8 +1519,15 @@ export const StripePaymentExtension = {
           margin-top: ${autoRedirect ? '12px' : '0'};
         }
 
+        .payment-link {
+          text-decoration: none;
+          display: block;
+          width: 100%;
+        }
+
         .payment-button {
-          display: inline-flex;
+          width: 100%;
+          display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
@@ -1534,7 +1541,6 @@ export const StripePaymentExtension = {
           font-weight: 500;
           cursor: pointer;
           transition: all 0.2s ease;
-          width: 100%;
         }
 
         .payment-button:hover {
@@ -1583,17 +1589,6 @@ export const StripePaymentExtension = {
           width: 100%;
           transition: width linear;
         }
-
-        .payment-link {
-          margin-top: 12px;
-          padding: 8px;
-          background: #f7fafc;
-          border-radius: 6px;
-          font-size: 12px;
-          color: #4a5568;
-          word-break: break-all;
-          display: none;
-        }
       </style>
 
       <div class="payment-container">
@@ -1611,54 +1606,46 @@ export const StripePaymentExtension = {
         ` : ''}
         
         <div class="button-group">
-          <button class="payment-button" id="stripePaymentBtn">
-            <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
-              <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
-              <path d="M4 8h16M8 14h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            ${buttonText}
-          </button>
+          <a href="${paymentUrl}" target="_blank" rel="noopener noreferrer" class="payment-link" id="stripePaymentBtn">
+            <div class="payment-button">
+              <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+                <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
+                <path d="M4 8h16M8 14h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              ${buttonText}
+            </div>
+          </a>
           <button class="payment-button later-button" id="payLaterBtn">
             ${laterButtonText}
           </button>
         </div>
-
-        <div class="payment-link">
-          If the payment page doesn't open automatically, <a href="${paymentUrl}" target="_blank">click here</a>
-        </div>
       </div>
     `;
 
-    const handlePayment = () => {
-      const button = paymentContainer.querySelector('#stripePaymentBtn');
+    const handlePayment = (e) => {
+      const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
       const laterButton = paymentContainer.querySelector('#payLaterBtn');
       const countdown = paymentContainer.querySelector('.redirect-countdown');
-      const paymentLink = paymentContainer.querySelector('.payment-link');
       
       // Disable buttons
-      button.disabled = true;
-      button.style.opacity = '0.7';
-      button.style.pointerEvents = 'none';
+      paymentLink.style.pointerEvents = 'none';
+      paymentLink.style.opacity = '0.7';
       laterButton.style.display = 'none';
       
       if (countdown) {
         countdown.style.display = 'none';
       }
 
-      // Show payment link as fallback
-      paymentLink.style.display = 'block';
-
-      // Try to open in new tab
-      const newWindow = window.open(paymentUrl, '_blank');
-      
       // Complete the interaction
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { 
-          status: "payment_initiated",
-          paymentUrl 
-        }
-      });
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { 
+            status: "payment_initiated",
+            paymentUrl 
+          }
+        });
+      }, 1000);
     };
 
     const handlePayLater = () => {
@@ -1673,10 +1660,10 @@ export const StripePaymentExtension = {
     // Disable inputs immediately
     disableFooterInputs(true);
 
-    const paymentButton = paymentContainer.querySelector('#stripePaymentBtn');
+    const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
     const laterButton = paymentContainer.querySelector('#payLaterBtn');
     
-    paymentButton.addEventListener('click', handlePayment);
+    paymentLink.addEventListener('click', handlePayment);
     laterButton.addEventListener('click', handlePayLater);
 
     // Handle auto-redirect
@@ -1703,12 +1690,12 @@ export const StripePaymentExtension = {
         
         if (timeLeft <= 0) {
           clearInterval(countdown);
-          handlePayment();
+          paymentLink.click();
         }
       }, 1000);
 
       // Allow manual click during countdown
-      paymentButton.addEventListener('click', () => {
+      paymentLink.addEventListener('click', () => {
         clearInterval(countdown);
       });
     }
