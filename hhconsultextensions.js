@@ -1204,3 +1204,68 @@ export const DelayEffectExtension = {
     }
   }
 };
+
+export const TransitionAnimationExtension = {
+  name: "TransitionAnimation",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_transitionAnimation" || 
+    trace.payload?.name === "ext_transitionAnimation",
+  render: ({ trace, element }) => {
+    const animationContainer = document.createElement("div");
+    animationContainer.className = "_1ddzqsn7";
+
+    const duration = trace.payload?.duration || 1500;
+    const message = trace.payload?.message || 'Processing';
+
+    animationContainer.innerHTML = `
+      <style>
+        ._1ddzqsn7 {
+          display: block;
+        }
+
+        .processing-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          padding: 12px;
+          margin: 10px 0;
+          background: rgba(84, 88, 87, 0.05);
+          border-radius: 8px;
+          font-family: 'Montserrat', sans-serif;
+        }
+
+        .processing-text {
+          color: #545857;
+          font-size: 14px;
+        }
+
+        .processing-icon {
+          width: 20px;
+          height: 20px;
+          border: 2px solid #545857;
+          border-right-color: transparent;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      </style>
+
+      <div class="processing-container">
+        <div class="processing-icon"></div>
+        <span class="processing-text">${message}</span>
+      </div>
+    `;
+
+    element.appendChild(animationContainer);
+
+    setTimeout(() => {
+      window.voiceflow.chat.interact({ type: "complete" });
+    }, duration);
+  }
+};
