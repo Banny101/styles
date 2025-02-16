@@ -1458,6 +1458,7 @@ export const StripePaymentExtension = {
   render: ({ trace, element }) => {
     const paymentUrl = trace.payload?.paymentUrl;
     const buttonText = trace.payload?.buttonText || "Pay Now";
+    const laterButtonText = trace.payload?.laterButtonText || "Pay Later";
     const autoRedirect = trace.payload?.autoRedirect || false;
     const redirectDelay = trace.payload?.redirectDelay || 5000;
     const autoRedirectText = trace.payload?.autoRedirectText || "Redirecting to secure payment in";
@@ -1512,6 +1513,12 @@ export const StripePaymentExtension = {
           margin-bottom: 12px;
         }
 
+        .button-group {
+          display: grid;
+          gap: 8px;
+          margin-top: ${autoRedirect ? '12px' : '0'};
+        }
+
         .payment-button {
           display: inline-flex;
           align-items: center;
@@ -1535,8 +1542,18 @@ export const StripePaymentExtension = {
           transform: translateY(-1px);
         }
 
+        .later-button {
+          background: transparent;
+          color: #72727a;
+          border: 1px solid rgba(114, 114, 122, 0.2);
+        }
+
+        .later-button:hover {
+          background: rgba(114, 114, 122, 0.1);
+        }
+
         .redirect-countdown {
-          margin-top: 12px;
+          margin-bottom: 12px;
           padding: 12px;
           background: #f7fafc;
           border-radius: 8px;
@@ -1566,6 +1583,17 @@ export const StripePaymentExtension = {
           width: 100%;
           transition: width linear;
         }
+
+        .payment-link {
+          margin-top: 12px;
+          padding: 8px;
+          background: #f7fafc;
+          border-radius: 6px;
+          font-size: 12px;
+          color: #4a5568;
+          word-break: break-all;
+          display: none;
+        }
       </style>
 
       <div class="payment-container">
@@ -1582,53 +1610,74 @@ export const StripePaymentExtension = {
           </div>
         ` : ''}
         
-        <button class="payment-button" id="stripePaymentBtn" ${autoRedirect ? 'style="margin-top: 12px;"' : ''}>
-          <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
-            <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
-            <path d="M4 8h16M8 14h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          ${buttonText}
-        </button>
+        <div class="button-group">
+          <button class="payment-button" id="stripePaymentBtn">
+            <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+              <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 8h16M8 14h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            ${buttonText}
+          </button>
+          <button class="payment-button later-button" id="payLaterBtn">
+            ${laterButtonText}
+          </button>
+        </div>
+
+        <div class="payment-link">
+          If the payment page doesn't open automatically, <a href="${paymentUrl}" target="_blank">click here</a>
+        </div>
       </div>
     `;
 
     const handlePayment = () => {
-      // Disable all inputs
-      disableFooterInputs(true);
-      
-      const button = paymentContainer.querySelector('.payment-button');
+      const button = paymentContainer.querySelector('#stripePaymentBtn');
+      const laterButton = paymentContainer.querySelector('#payLaterBtn');
       const countdown = paymentContainer.querySelector('.redirect-countdown');
+      const paymentLink = paymentContainer.querySelector('.payment-link');
       
-      // Disable button and update UI
-      if (button) {
-        button.disabled = true;
-        button.style.opacity = '0.7';
-        button.style.pointerEvents = 'none';
-      }
+      // Disable buttons
+      button.disabled = true;
+      button.style.opacity = '0.7';
+      button.style.pointerEvents = 'none';
+      laterButton.style.display = 'none';
+      
       if (countdown) {
         countdown.style.display = 'none';
       }
 
-      // Open payment in new tab
-      window.open(paymentUrl, '_blank');
+      // Show payment link as fallback
+      paymentLink.style.display = 'block';
 
+      // Try to open in new tab
+      const newWindow = window.open(paymentUrl, '_blank');
+      
       // Complete the interaction
-      setTimeout(() => {
-        window.voiceflow.chat.interact({
-          type: "complete",
-          payload: { 
-            status: "payment_initiated",
-            paymentUrl 
-          }
-        });
-      }, 1000);
+      window.voiceflow.chat.interact({
+        type: "complete",
+        payload: { 
+          status: "payment_initiated",
+          paymentUrl 
+        }
+      });
+    };
+
+    const handlePayLater = () => {
+      window.voiceflow.chat.interact({
+        type: "cancel",
+        payload: { 
+          status: "payment_delayed"
+        }
+      });
     };
 
     // Disable inputs immediately
     disableFooterInputs(true);
 
     const paymentButton = paymentContainer.querySelector('#stripePaymentBtn');
+    const laterButton = paymentContainer.querySelector('#payLaterBtn');
+    
     paymentButton.addEventListener('click', handlePayment);
+    laterButton.addEventListener('click', handlePayLater);
 
     // Handle auto-redirect
     if (autoRedirect && paymentUrl) {
