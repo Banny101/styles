@@ -1835,27 +1835,25 @@ export const DynamicButtonsExtension = {
     buttonsContainer.innerHTML = `
       <style>
         ._1ddzqsn7 {
-          display: flex;
-          flex-wrap: wrap;
+          display: inline-flex;
           gap: 8px;
+          flex-wrap: wrap;
         }
         
         .chat-button {
-          background: #f0f0f0;
+          background: #f8f9fa;
           border: none;
-          border-radius: 20px;
-          padding: 8px 16px;
-          font-family: inherit;
+          border-radius: 15px;
+          padding: 6px 12px;
           font-size: 14px;
           color: #303235;
           cursor: pointer;
           transition: background-color 0.2s ease;
-          text-align: center;
-          line-height: 1.4;
+          font-family: inherit;
         }
 
         .chat-button:hover:not(:disabled) {
-          background: #e0e0e0;
+          background: #e9ecef;
         }
 
         .chat-button:disabled {
