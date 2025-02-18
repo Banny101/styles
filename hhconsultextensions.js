@@ -1802,8 +1802,6 @@ export const DynamicButtonsExtension = {
     trace.payload?.name === "ext_dynamicButtons",
   render: ({ trace, element }) => {
     const buttons = trace.payload?.buttons || [];
-    const title = trace.payload?.title || "Please select an option";
-    let currentFocusIndex = 0;
 
     const disableFooterInputs = (isDisabled) => {
       const chatDiv = document.getElementById("voiceflow-chat");
@@ -1842,129 +1840,45 @@ export const DynamicButtonsExtension = {
           display: block;
         }
         
-        .buttons-container {
-          font-family: 'Roboto', sans-serif;
-          padding: 12px;
-          margin: 8px 0;
-        }
-
-        .buttons-title {
-          font-size: 14px;
-          color: #303235;
-          margin-bottom: 12px;
-          font-weight: 400;
-        }
-
-        .buttons-grid {
-          display: grid;
-          gap: 8px;
-          grid-template-columns: ${buttons.length === 2 ? '1fr 1fr' : '1fr'};
-        }
-
         .dynamic-button {
           width: 100%;
-          padding: 10px 16px;
+          padding: 8px 12px;
           background: white;
           border: 1px solid #e0e0e0;
           border-radius: 4px;
           font-family: 'Roboto', sans-serif;
           font-size: 14px;
-          font-weight: 400;
           color: #303235;
           cursor: pointer;
-          transition: background-color 0.2s ease;
-          text-align: center;
-          min-height: 40px;
+          margin-bottom: 8px;
+          text-align: left;
+        }
+
+        .dynamic-button:last-child {
+          margin-bottom: 0;
         }
 
         .dynamic-button:hover:not(:disabled) {
           background: #f5f5f5;
-          border-color: #d0d0d0;
-        }
-
-        .dynamic-button:focus {
-          outline: 2px solid #303235;
-          outline-offset: 1px;
         }
 
         .dynamic-button:disabled {
-          background-color: #f5f5f5;
-          color: #a0a0a0;
+          opacity: 0.5;
           cursor: not-allowed;
-        }
-
-        .button-text {
-          pointer-events: none;
-        }
-
-        .loading-spinner {
-          display: none;
-          width: 14px;
-          height: 14px;
-          border: 2px solid #f3f3f3;
-          border-top: 2px solid #303235;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-          margin: 0 auto;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .dynamic-button.loading {
-          pointer-events: none;
-        }
-
-        .dynamic-button.loading .loading-spinner {
-          display: block;
-        }
-
-        .dynamic-button.loading .button-text {
-          display: none;
-        }
-
-        @media (max-width: 480px) {
-          .buttons-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .buttons-container {
-            padding: 8px;
-          }
         }
       </style>
 
-      <div 
-        class="buttons-container" 
-        role="region" 
-        aria-label="${title}"
-      >
-        ${title ? `
-          <div 
-            class="buttons-title" 
-            id="buttons-title"
-            role="heading" 
-            aria-level="2"
-          >${title}</div>
-        ` : ''}
-        
-        <div class="buttons-grid" role="group" aria-labelledby="buttons-title">
-          ${buttons.map((button, index) => `
-            <button 
-              class="dynamic-button"
-              data-choice="${button.choice}"
-              type="button"
-              aria-label="${button.label || button.text}"
-              ${button.disabled ? 'disabled aria-disabled="true"' : ''}
-              tabindex="0"
-            >
-              <div class="loading-spinner" aria-hidden="true"></div>
-              <span class="button-text">${button.text}</span>
-            </button>
-          `).join('')}
-        </div>
-      </div>
+      ${buttons.map((button, index) => `
+        <button 
+          class="dynamic-button"
+          data-choice="${button.choice}"
+          data-path="${button.path || ''}"
+          type="button"
+          aria-label="${button.label || button.text}"
+        >
+          ${button.text}
+        </button>
+      `).join('')}
     `;
 
     const handleButtonClick = async (e) => {
@@ -1972,67 +1886,34 @@ export const DynamicButtonsExtension = {
       if (!button || button.disabled) return;
 
       const choice = button.dataset.choice;
-      
-      // Show loading state
-      button.classList.add('loading');
+      const path = button.dataset.path;
       
       // Disable all buttons
       const allButtons = buttonsContainer.querySelectorAll('.dynamic-button');
       allButtons.forEach(btn => {
-        if (btn !== button) {
-          btn.disabled = true;
-        }
+        btn.disabled = true;
       });
 
-      try {
-        // Complete interaction with choice
-        await window.voiceflow.chat.interact({
-          type: "complete",
-          payload: { choice }
-        });
+      // Re-enable chat input
+      disableFooterInputs(false);
 
-        // Re-enable chat input
-        disableFooterInputs(false);
-      } catch (error) {
-        console.error('Button interaction failed:', error);
-        
-        // Reset button state
-        button.classList.remove('loading');
-        allButtons.forEach(btn => {
-          btn.disabled = false;
-        });
-      }
-    };
-
-    const handleKeydown = (e) => {
-      const buttons = [...buttonsContainer.querySelectorAll('.dynamic-button:not(:disabled)')];
-      if (!buttons.length) return;
-
-      switch (e.key) {
-        case 'ArrowDown':
-        case 'ArrowRight':
-          e.preventDefault();
-          currentFocusIndex = (currentFocusIndex + 1) % buttons.length;
-          buttons[currentFocusIndex].focus();
-          break;
-        case 'ArrowUp':
-        case 'ArrowLeft':
-          e.preventDefault();
-          currentFocusIndex = (currentFocusIndex - 1 + buttons.length) % buttons.length;
-          buttons[currentFocusIndex].focus();
-          break;
-      }
+      // Complete interaction with choice and path
+      window.voiceflow.chat.interact({
+        type: "complete",
+        payload: { 
+          choice,
+          path
+        }
+      });
     };
 
     buttonsContainer.addEventListener('click', handleButtonClick);
-    buttonsContainer.addEventListener('keydown', handleKeydown);
     disableFooterInputs(true);
 
     element.appendChild(buttonsContainer);
 
     return () => {
       buttonsContainer.removeEventListener('click', handleButtonClick);
-      buttonsContainer.removeEventListener('keydown', handleKeydown);
     };
   },
 };
