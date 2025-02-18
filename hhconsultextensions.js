@@ -1835,25 +1835,20 @@ export const DynamicButtonsExtension = {
     buttonsContainer.innerHTML = `
       <style>
         ._1ddzqsn7 {
-          display: inline-flex;
+          display: flex;
           gap: 8px;
-          flex-wrap: wrap;
+          margin: 4px 0;
         }
         
         .chat-button {
-          background: #f8f9fa;
+          background: #f7f7f7;
           border: none;
-          border-radius: 15px;
-          padding: 6px 12px;
+          border-radius: 18px;
+          padding: 8px 16px;
           font-size: 14px;
           color: #303235;
           cursor: pointer;
-          transition: background-color 0.2s ease;
           font-family: inherit;
-        }
-
-        .chat-button:hover:not(:disabled) {
-          background: #e9ecef;
         }
 
         .chat-button:disabled {
@@ -1866,9 +1861,7 @@ export const DynamicButtonsExtension = {
         <button 
           class="chat-button"
           data-choice="${button.choice}"
-          data-path="${button.path || ''}"
           type="button"
-          aria-label="${button.label || button.text}"
         >
           ${button.text}
         </button>
@@ -1880,7 +1873,6 @@ export const DynamicButtonsExtension = {
       if (!button || button.disabled) return;
 
       const choice = button.dataset.choice;
-      const path = button.dataset.path;
       
       // Disable all buttons
       const allButtons = buttonsContainer.querySelectorAll('.chat-button');
@@ -1891,13 +1883,10 @@ export const DynamicButtonsExtension = {
       // Re-enable chat input
       disableFooterInputs(false);
 
-      // Complete interaction with choice and path
+      // Complete interaction with choice
       window.voiceflow.chat.interact({
         type: "complete",
-        payload: { 
-          choice,
-          path
-        }
+        payload: { choice }
       });
     };
 
