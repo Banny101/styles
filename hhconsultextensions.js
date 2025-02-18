@@ -1834,43 +1834,39 @@ export const DynamicButtonsExtension = {
 
     buttonsContainer.innerHTML = `
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-        
         ._1ddzqsn7 {
-          display: block;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
         }
         
-        .dynamic-button {
-          width: 100%;
-          padding: 8px 12px;
-          background: white;
-          border: 1px solid #e0e0e0;
-          border-radius: 4px;
-          font-family: 'Roboto', sans-serif;
+        .chat-button {
+          background: #f0f0f0;
+          border: none;
+          border-radius: 20px;
+          padding: 8px 16px;
+          font-family: inherit;
           font-size: 14px;
           color: #303235;
           cursor: pointer;
-          margin-bottom: 8px;
-          text-align: left;
+          transition: background-color 0.2s ease;
+          text-align: center;
+          line-height: 1.4;
         }
 
-        .dynamic-button:last-child {
-          margin-bottom: 0;
+        .chat-button:hover:not(:disabled) {
+          background: #e0e0e0;
         }
 
-        .dynamic-button:hover:not(:disabled) {
-          background: #f5f5f5;
-        }
-
-        .dynamic-button:disabled {
+        .chat-button:disabled {
           opacity: 0.5;
           cursor: not-allowed;
         }
       </style>
 
-      ${buttons.map((button, index) => `
+      ${buttons.map((button) => `
         <button 
-          class="dynamic-button"
+          class="chat-button"
           data-choice="${button.choice}"
           data-path="${button.path || ''}"
           type="button"
@@ -1882,14 +1878,14 @@ export const DynamicButtonsExtension = {
     `;
 
     const handleButtonClick = async (e) => {
-      const button = e.target.closest('.dynamic-button');
+      const button = e.target.closest('.chat-button');
       if (!button || button.disabled) return;
 
       const choice = button.dataset.choice;
       const path = button.dataset.path;
       
       // Disable all buttons
-      const allButtons = buttonsContainer.querySelectorAll('.dynamic-button');
+      const allButtons = buttonsContainer.querySelectorAll('.chat-button');
       allButtons.forEach(btn => {
         btn.disabled = true;
       });
