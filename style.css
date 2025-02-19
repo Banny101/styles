@@ -1,9 +1,25 @@
-/* Avatar Styles with Tech Effects */
+/* Avatar Styles */
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  background-image: url('https://framerusercontent.com/images/XjxgDhIpDNooTWyDoA0zaQO4fQ.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 200px;
+  height: 200px;
+  margin: 20px auto;
+  display: block;
+  background-color: #ffffff;
+  box-shadow: none;
+  transition: transform 0.3s ease;
+}
+
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large:hover {
+  transform: scale(1.02);
+}
+
 .vfrc-avatar {
   position: relative;
   transition: all 0.3s ease;
-  transform-style: preserve-3d;
-  perspective: 1000px;
 }
 
 .vfrc-avatar::before {
@@ -12,8 +28,7 @@
   inset: -2px;
   border-radius: 50%;
   padding: 2px;
-  background: linear-gradient(45deg, #000000, transparent, #000000, #333333);
-  background-size: 300% 300%;
+  background: linear-gradient(45deg, #000000, transparent, #000000);
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
@@ -22,35 +37,13 @@
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: rotateGradient 4s linear infinite,
-             glowPulse 2s ease-in-out infinite;
+  animation: rotateGradient 4s linear infinite;
 }
 
-.vfrc-avatar::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.1));
-  filter: blur(4px);
-  animation: rotateShadow 3s linear infinite;
-}
-
-.vfrc-assistant-info img.vfrc-avatar,
-.vfrc-avatar.wfg6590.wfg6592 {
-  border: none !important;
-  border-radius: 50% !important;
-  box-shadow: 
-    0 0 10px rgba(0, 0, 0, 0.1),
-    0 0 20px rgba(0, 0, 0, 0.05) !important;
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease;
-}
-
-/* Header Arrow Button with Tech Styling */
+/* Header Arrow Button Styling */
 .vfrc-button._1ytjivy0._17qb7gk0._1ytjivy2.vfrc-header--button._1q5q0m17._17qb7gk0,
 .vfrc-header--button {
-  background: linear-gradient(145deg, #000000, #1a1a1a) !important;
+  background-color: #000000 !important;
   border-radius: 50% !important;
   width: 28px !important;
   height: 28px !important;
@@ -60,22 +53,10 @@
   overflow: hidden !important;
   padding: 0 !important;
   margin: 0 !important;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  position: relative !important;
-  transform-style: preserve-3d !important;
-  perspective: 1000px !important;
+  transition: all 0.3s ease !important;
 }
 
-.vfrc-header--button::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  border-radius: 50%;
-  animation: borderGlow 2s linear infinite;
-}
-
-/* Arrow Icon Enhanced Styling */
+/* Arrow Icon Styling */
 .vfrc-header--button .vfrc-icon,
 .vfrc-button .vfrc-icon._141dsik0 {
   width: 28px !important;
@@ -85,120 +66,33 @@
   justify-content: center !important;
   margin: 0 !important;
   padding: 0 !important;
-  position: relative !important;
-  z-index: 2 !important;
 }
 
+/* Arrow SVG Styling */
 .vfrc-header--button .vfrc-icon svg,
 .vfrc-button .vfrc-icon._141dsik0 svg {
   width: 24px !important;
   height: 24px !important;
   min-width: 24px !important;
   min-height: 24px !important;
-  transition: transform 0.3s ease !important;
 }
 
+/* Arrow Path Styling */
 .vfrc-header--button .vfrc-icon path,
 .vfrc-button .vfrc-icon._141dsik0 path {
   fill: white !important;
   stroke: none !important;
-  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.3)) !important;
 }
 
-/* Enhanced Hover Effects */
+/* Hover Effects */
 .vfrc-header--button:hover,
 .vfrc-button._1ytjivy0._17qb7gk0._1ytjivy2.vfrc-header--button:hover {
-  transform: translateY(-2px) scale(1.1) !important;
-  background: linear-gradient(145deg, #1a1a1a, #000000) !important;
-  box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  transform: scale(1.1);
+  background-color: #333333 !important;
 }
 
-.vfrc-header--button:hover .vfrc-icon svg {
-  transform: scale(0.95) !important;
-}
-
-/* Tech-inspired Animations */
+/* Animation */
 @keyframes rotateGradient {
-  0% { 
-    transform: rotate(0deg); 
-    background-position: 0% 0%;
-  }
-  100% { 
-    transform: rotate(360deg);
-    background-position: 100% 100%;
-  }
-}
-
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-}
-
-@keyframes rotateShadow {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-360deg); }
-}
-
-@keyframes borderGlow {
-  0%, 100% { 
-    opacity: 0;
-    transform: rotate(0deg);
-  }
-  50% { 
-    opacity: 1;
-    transform: rotate(180deg);
-  }
-}
-
-@keyframes dataStream {
-  0% { 
-    height: 0;
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  20% { opacity: 0.5; }
-  100% { 
-    height: 40px;
-    opacity: 0;
-    transform: translateY(0);
-  }
-}
-
-/* Tech Grid Effect */
-.vfrc-header--button::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background: 
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px) 0 0 / 8px 8px,
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px) 0 0 / 8px 8px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  animation: gridRotate 20s linear infinite;
-}
-
-.vfrc-header--button:hover::after {
-  opacity: 1;
-}
-
-@keyframes gridRotate {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* Data Stream Effect */
-.vfrc-avatar::before {
-  content: '';
-  position: absolute;
-  width: 2px;
-  height: 40px;
-  background: linear-gradient(to bottom, transparent, #000000, transparent);
-  top: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: dataStream 2s linear infinite;
-  opacity: 0;
 }
