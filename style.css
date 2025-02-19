@@ -2,6 +2,8 @@
 .vfrc-avatar {
   position: relative;
   transition: all 0.3s ease;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .vfrc-avatar::before {
@@ -10,7 +12,8 @@
   inset: -2px;
   border-radius: 50%;
   padding: 2px;
-  background: linear-gradient(45deg, #000000, transparent, #000000);
+  background: linear-gradient(45deg, #000000, transparent, #000000, #333333);
+  background-size: 300% 300%;
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
@@ -19,7 +22,18 @@
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: rotateGradient 4s linear infinite;
+  animation: rotateGradient 4s linear infinite,
+             glowPulse 2s ease-in-out infinite;
+}
+
+.vfrc-avatar::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.1));
+  filter: blur(4px);
+  animation: rotateShadow 3s linear infinite;
 }
 
 /* Launcher Styles */
@@ -29,6 +43,8 @@
   border: none;
   bottom: 20px;
   right: 20px;
+  transform-style: preserve-3d;
+  perspective: 1000px;
 }
 
 .vfrc-launcher.c-bQoszf {
@@ -49,26 +65,137 @@
   border-radius: 30px;
   border: 2px solid #000000;
   background: transparent !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  animation: pulseAndRotate 3s infinite;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: floatAndGlow 6s ease-in-out infinite;
+  transform-style: preserve-3d;
 }
 
 .vfrc-launcher img:hover {
-  transform: scale(1.1);
-  background: transparent !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  transform: 
+    scale(1.1) 
+    rotate(5deg) 
+    translateZ(10px);
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 4px rgba(0, 0, 0, 0.1),
+    0 0 30px rgba(0, 0, 0, 0.2);
   animation: none;
 }
 
-/* Required Animations */
-@keyframes rotateGradient {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.vfrc-launcher::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.1));
+  filter: blur(8px);
+  animation: shadowPulse 3s ease-in-out infinite;
 }
 
-@keyframes pulseAndRotate {
-  0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4); }
-  50% { transform: scale(1.05) rotate(5deg); box-shadow: 0 0 0 10px rgba(0, 0, 0, 0); }
-  100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+/* Enhanced Animations */
+@keyframes rotateGradient {
+  0% { transform: rotate(0deg); background-position: 0% 0%; }
+  100% { transform: rotate(360deg); background-position: 100% 100%; }
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes rotateShadow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes floatAndGlow {
+  0%, 100% { 
+    transform: translateY(0) rotate(0deg) translateZ(0);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.2),
+      0 0 0 2px rgba(0, 0, 0, 0.1),
+      0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  25% { 
+    transform: translateY(-5px) rotate(3deg) translateZ(5px);
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.3),
+      0 0 0 2px rgba(0, 0, 0, 0.15),
+      0 0 30px rgba(0, 0, 0, 0.2);
+  }
+  75% { 
+    transform: translateY(5px) rotate(-3deg) translateZ(5px);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.2),
+      0 0 0 2px rgba(0, 0, 0, 0.1),
+      0 0 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes shadowPulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.2;
+  }
+  50% { 
+    transform: scale(1.1);
+    opacity: 0.4;
+  }
+}
+
+/* Add a tech-inspired data stream effect */
+.vfrc-launcher::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, #000000, transparent);
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: dataStream 2s linear infinite;
+  opacity: 0;
+}
+
+@keyframes dataStream {
+  0% { 
+    height: 0;
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  20% { 
+    opacity: 0.5;
+  }
+  100% { 
+    height: 40px;
+    opacity: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Add subtle tech grid background */
+.vfrc-launcher::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: 
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px) 0 0 / 20px 20px,
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px) 0 0 / 20px 20px;
+  border-radius: 50%;
+  animation: gridRotate 20s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.vfrc-launcher:hover::before {
+  opacity: 1;
+}
+
+@keyframes gridRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
