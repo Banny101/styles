@@ -1829,62 +1829,35 @@ export const DynamicButtonsExtension = {
       }
     };
 
-    const buttonsContainer = document.createElement("div");
-    buttonsContainer.className = "_1ddzqsn7";
+    buttons.forEach(button => {
+      const buttonElement = document.createElement('button');
+      buttonElement.style.cssText = `
+        background: #f8f8f8;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 14px;
+        margin-right: 12px;
+        font-size: 14px;
+        color: #303235;
+        cursor: pointer;
+      `;
+      buttonElement.textContent = button.text;
+      buttonElement.dataset.choice = button.choice;
 
-    buttonsContainer.innerHTML = `
-      <style>
-        ._1ddzqsn7 {
-          display: flex;
-          gap: 12px;
-        }
+      buttonElement.addEventListener('click', async () => {
+        const allButtons = element.querySelectorAll('button');
+        allButtons.forEach(btn => btn.disabled = true);
+        disableFooterInputs(false);
         
-        .chat-button {
-          background: #f8f8f8;
-          border: none;
-          border-radius: 20px;
-          padding: 6px 14px;
-          font-size: 14px;
-          color: #303235;
-          cursor: pointer;
-        }
-      </style>
-
-      ${buttons.map((button) => `
-        <button 
-          class="chat-button"
-          data-choice="${button.choice}"
-          type="button"
-        >${button.text}</button>
-      `).join('')}
-    `;
-
-    const handleButtonClick = async (e) => {
-      const button = e.target.closest('.chat-button');
-      if (!button || button.disabled) return;
-
-      const choice = button.dataset.choice;
-      
-      const allButtons = buttonsContainer.querySelectorAll('.chat-button');
-      allButtons.forEach(btn => {
-        btn.disabled = true;
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { choice: button.choice }
+        });
       });
 
-      disableFooterInputs(false);
+      element.appendChild(buttonElement);
+    });
 
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { choice }
-      });
-    };
-
-    buttonsContainer.addEventListener('click', handleButtonClick);
     disableFooterInputs(true);
-
-    element.appendChild(buttonsContainer);
-
-    return () => {
-      buttonsContainer.removeEventListener('click', handleButtonClick);
-    };
   },
 };
