@@ -1801,13 +1801,6 @@ export const DynamicButtonsExtension = {
     trace.type === "ext_dynamicButtons" || 
     trace.payload?.name === "ext_dynamicButtons",
   render: ({ trace, element }) => {
-    const buttons = trace.payload?.buttons || [];export const DynamicButtonsExtension = {
-  name: "DynamicButtons",
-  type: "response",
-  match: ({ trace }) => 
-    trace.type === "ext_dynamicButtons" || 
-    trace.payload?.name === "ext_dynamicButtons",
-  render: ({ trace, element }) => {
     const buttons = trace.payload?.buttons || [];
 
     const disableFooterInputs = (isDisabled) => {
@@ -1836,43 +1829,33 @@ export const DynamicButtonsExtension = {
       }
     };
 
-    const buttonsContainer = document.createElement("div");
-    buttonsContainer.className = "_1ddzqsn7";
-
-    buttonsContainer.innerHTML = `
-      <style>
-        ._1ddzqsn7 {
-          display: flex;
-          gap: 12px;
-        }
-        
-        .chat-button {
-          background: #f8f8f8;
-          border: none;
-          border-radius: 20px;
-          padding: 6px 14px;
-          font-size: 14px;
-          color: #303235;
-          cursor: pointer;
-        }
-      </style>
-
-      ${buttons.map((button) => `
-        <button 
-          class="chat-button"
-          data-choice="${button.choice}"
-          type="button"
-        >${button.text}</button>
-      `).join('')}
+    element.innerHTML = `
+      <div style="display: flex; gap: 12px;">
+        ${buttons.map((button) => `
+          <button 
+            style="
+              background: #f8f8f8;
+              border: none;
+              border-radius: 20px;
+              padding: 6px 14px;
+              font-size: 14px;
+              color: #303235;
+              cursor: pointer;
+            "
+            data-choice="${button.choice}"
+            type="button"
+          >${button.text}</button>
+        `).join('')}
+      </div>
     `;
 
-    const handleButtonClick = async (e) => {
-      const button = e.target.closest('.chat-button');
+    const handleButtonClick = (e) => {
+      const button = e.target.closest('button');
       if (!button || button.disabled) return;
 
       const choice = button.dataset.choice;
       
-      const allButtons = buttonsContainer.querySelectorAll('.chat-button');
+      const allButtons = element.querySelectorAll('button');
       allButtons.forEach(btn => {
         btn.disabled = true;
       });
@@ -1885,13 +1868,11 @@ export const DynamicButtonsExtension = {
       });
     };
 
-    buttonsContainer.addEventListener('click', handleButtonClick);
+    element.addEventListener('click', handleButtonClick);
     disableFooterInputs(true);
 
-    element.appendChild(buttonsContainer);
-
     return () => {
-      buttonsContainer.removeEventListener('click', handleButtonClick);
+      element.removeEventListener('click', handleButtonClick);
     };
   },
 };
