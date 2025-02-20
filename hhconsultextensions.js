@@ -1829,33 +1829,43 @@ export const DynamicButtonsExtension = {
       }
     };
 
-    element.innerHTML = `
-      <div style="display: flex; gap: 12px;">
-        ${buttons.map((button) => `
-          <button 
-            style="
-              background: #f8f8f8;
-              border: none;
-              border-radius: 20px;
-              padding: 6px 14px;
-              font-size: 14px;
-              color: #303235;
-              cursor: pointer;
-            "
-            data-choice="${button.choice}"
-            type="button"
-          >${button.text}</button>
-        `).join('')}
-      </div>
+    const buttonsContainer = document.createElement("div");
+    buttonsContainer.className = "_1ddzqsn7";
+
+    buttonsContainer.innerHTML = `
+      <style>
+        ._1ddzqsn7 {
+          display: flex;
+          gap: 12px;
+        }
+        
+        .chat-button {
+          background: #f8f8f8;
+          border: none;
+          border-radius: 20px;
+          padding: 6px 14px;
+          font-size: 14px;
+          color: #303235;
+          cursor: pointer;
+        }
+      </style>
+
+      ${buttons.map((button) => `
+        <button 
+          class="chat-button"
+          data-choice="${button.choice}"
+          type="button"
+        >${button.text}</button>
+      `).join('')}
     `;
 
-    const handleButtonClick = (e) => {
-      const button = e.target.closest('button');
+    const handleButtonClick = async (e) => {
+      const button = e.target.closest('.chat-button');
       if (!button || button.disabled) return;
 
       const choice = button.dataset.choice;
       
-      const allButtons = element.querySelectorAll('button');
+      const allButtons = buttonsContainer.querySelectorAll('.chat-button');
       allButtons.forEach(btn => {
         btn.disabled = true;
       });
@@ -1868,11 +1878,13 @@ export const DynamicButtonsExtension = {
       });
     };
 
-    element.addEventListener('click', handleButtonClick);
+    buttonsContainer.addEventListener('click', handleButtonClick);
     disableFooterInputs(true);
 
+    element.appendChild(buttonsContainer);
+
     return () => {
-      element.removeEventListener('click', handleButtonClick);
+      buttonsContainer.removeEventListener('click', handleButtonClick);
     };
   },
 };
