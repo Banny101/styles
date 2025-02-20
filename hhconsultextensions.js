@@ -1801,6 +1801,13 @@ export const DynamicButtonsExtension = {
     trace.type === "ext_dynamicButtons" || 
     trace.payload?.name === "ext_dynamicButtons",
   render: ({ trace, element }) => {
+    const buttons = trace.payload?.buttons || [];export const DynamicButtonsExtension = {
+  name: "DynamicButtons",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_dynamicButtons" || 
+    trace.payload?.name === "ext_dynamicButtons",
+  render: ({ trace, element }) => {
     const buttons = trace.payload?.buttons || [];
 
     const disableFooterInputs = (isDisabled) => {
@@ -1836,24 +1843,17 @@ export const DynamicButtonsExtension = {
       <style>
         ._1ddzqsn7 {
           display: flex;
-          gap: 8px;
-          margin: 4px 0;
+          gap: 12px;
         }
         
         .chat-button {
-          background: #f7f7f7;
+          background: #f8f8f8;
           border: none;
-          border-radius: 18px;
-          padding: 8px 16px;
+          border-radius: 20px;
+          padding: 6px 14px;
           font-size: 14px;
           color: #303235;
           cursor: pointer;
-          font-family: inherit;
-        }
-
-        .chat-button:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
         }
       </style>
 
@@ -1862,9 +1862,7 @@ export const DynamicButtonsExtension = {
           class="chat-button"
           data-choice="${button.choice}"
           type="button"
-        >
-          ${button.text}
-        </button>
+        >${button.text}</button>
       `).join('')}
     `;
 
@@ -1874,16 +1872,13 @@ export const DynamicButtonsExtension = {
 
       const choice = button.dataset.choice;
       
-      // Disable all buttons
       const allButtons = buttonsContainer.querySelectorAll('.chat-button');
       allButtons.forEach(btn => {
         btn.disabled = true;
       });
 
-      // Re-enable chat input
       disableFooterInputs(false);
 
-      // Complete interaction with choice
       window.voiceflow.chat.interact({
         type: "complete",
         payload: { choice }
