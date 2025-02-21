@@ -1793,7 +1793,6 @@ export const StripePaymentExtension = {
     element.appendChild(paymentContainer);
   },
 };
-
 export const DynamicButtonsExtension = {
   name: "DynamicButtons",
   type: "response",
@@ -1829,8 +1828,32 @@ export const DynamicButtonsExtension = {
       }
     };
 
+    // Add style element for focus states and animations
+    const style = document.createElement('style');
+    style.textContent = `
+      .accessible-button:focus-visible {
+        outline: 2px solid #303235;
+        outline-offset: 2px;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .accessible-button {
+          transition: background-color 0.2s ease;
+        }
+      }
+
+      @media (forced-colors: active) {
+        .accessible-button {
+          border: 1px solid ButtonText;
+        }
+      }
+    `;
+    element.appendChild(style);
+
     buttons.forEach(button => {
       const buttonElement = document.createElement('button');
+      
+      // Essential styling
       buttonElement.style.cssText = `
         background: #f8f8f8;
         border: none;
@@ -1840,13 +1863,48 @@ export const DynamicButtonsExtension = {
         font-size: 14px;
         color: #303235;
         cursor: pointer;
+        min-height: 44px; /* WCAG Target Size */
+        text-align: center;
       `;
-      buttonElement.textContent = button.text;
+
+      // Accessibility attributes
+      buttonElement.className = 'accessible-button';
+      buttonElement.setAttribute('role', 'button');
+      buttonElement.setAttribute('aria-label', button.label || button.text);
+      buttonElement.setAttribute('type', 'button');
+      
+      // Ensure visible text
+      const textSpan = document.createElement('span');
+      textSpan.style.cssText = `
+        display: inline-block;
+        line-height: 1.5;
+        font-family: inherit;
+      `;
+      textSpan.textContent = button.text;
+      buttonElement.appendChild(textSpan);
+
+      // Data attributes
       buttonElement.dataset.choice = button.choice;
 
+      // Keyboard interaction
+      buttonElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          buttonElement.click();
+        }
+      });
+
+      // Click handler
       buttonElement.addEventListener('click', async () => {
+        // Visual feedback before disabling
+        buttonElement.style.backgroundColor = '#e8e8e8';
+        
         const allButtons = element.querySelectorAll('button');
-        allButtons.forEach(btn => btn.disabled = true);
+        allButtons.forEach(btn => {
+          btn.disabled = true;
+          btn.setAttribute('aria-disabled', 'true');
+        });
+        
         disableFooterInputs(false);
         
         window.voiceflow.chat.interact({
@@ -1858,6 +1916,13 @@ export const DynamicButtonsExtension = {
       element.appendChild(buttonElement);
     });
 
+    // Initial state
     disableFooterInputs(true);
+
+    // Focus first button (optional, based on UX preference)
+    const firstButton = element.querySelector('button');
+    if (firstButton) {
+      setTimeout(() => firstButton.focus(), 100);
+    }
   },
 };
