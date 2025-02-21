@@ -1793,6 +1793,7 @@ export const StripePaymentExtension = {
     element.appendChild(paymentContainer);
   },
 };
+
 export const DynamicButtonsExtension = {
   name: "DynamicButtons",
   type: "response",
@@ -1863,7 +1864,7 @@ export const DynamicButtonsExtension = {
         font-size: 14px;
         color: #303235;
         cursor: pointer;
-        min-height: 44px; /* WCAG Target Size */
+        min-height: 44px;
         text-align: center;
       `;
 
@@ -1883,8 +1884,9 @@ export const DynamicButtonsExtension = {
       textSpan.textContent = button.text;
       buttonElement.appendChild(textSpan);
 
-      // Data attributes
+      // Data attributes for choice and path
       buttonElement.dataset.choice = button.choice;
+      buttonElement.dataset.path = button.path || '';
 
       // Keyboard interaction
       buttonElement.addEventListener('keydown', (e) => {
@@ -1894,7 +1896,7 @@ export const DynamicButtonsExtension = {
         }
       });
 
-      // Click handler
+      // Click handler with path handling
       buttonElement.addEventListener('click', async () => {
         // Visual feedback before disabling
         buttonElement.style.backgroundColor = '#e8e8e8';
@@ -1907,9 +1909,13 @@ export const DynamicButtonsExtension = {
         
         disableFooterInputs(false);
         
+        // Send both choice and path to Voiceflow
         window.voiceflow.chat.interact({
           type: "complete",
-          payload: { choice: button.choice }
+          payload: { 
+            choice: button.dataset.choice,
+            path: button.dataset.path
+          }
         });
       });
 
@@ -1918,11 +1924,5 @@ export const DynamicButtonsExtension = {
 
     // Initial state
     disableFooterInputs(true);
-
-    // Focus first button (optional, based on UX preference)
-    const firstButton = element.querySelector('button');
-    if (firstButton) {
-      setTimeout(() => firstButton.focus(), 100);
-    }
   },
 };
