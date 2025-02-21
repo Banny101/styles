@@ -1821,108 +1821,47 @@ export const DynamicButtonsExtension = {
             el.disabled = isDisabled;
             el.style.pointerEvents = isDisabled ? "none" : "auto";
             el.style.opacity = isDisabled ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
-            }
           });
         });
       }
     };
 
-    // Add style element for focus states and animations
-    const style = document.createElement('style');
-    style.textContent = `
-      .accessible-button:focus-visible {
-        outline: 2px solid #303235;
-        outline-offset: 2px;
-      }
-
-      @media (prefers-reduced-motion: no-preference) {
-        .accessible-button {
-          transition: background-color 0.2s ease;
-        }
-      }
-
-      @media (forced-colors: active) {
-        .accessible-button {
-          border: 1px solid ButtonText;
-        }
-      }
-    `;
-    element.appendChild(style);
+    const buttonsDiv = document.createElement('div');
+    buttonsDiv.style.display = 'flex';
+    buttonsDiv.style.gap = '12px';
 
     buttons.forEach(button => {
       const buttonElement = document.createElement('button');
-      
-      // Essential styling
+      buttonElement.textContent = button.text;
       buttonElement.style.cssText = `
         background: #f8f8f8;
         border: none;
         border-radius: 20px;
         padding: 6px 14px;
-        margin-right: 12px;
         font-size: 14px;
         color: #303235;
         cursor: pointer;
-        min-height: 44px;
-        text-align: center;
       `;
-
-      // Accessibility attributes
-      buttonElement.className = 'accessible-button';
-      buttonElement.setAttribute('role', 'button');
-      buttonElement.setAttribute('aria-label', button.label || button.text);
-      buttonElement.setAttribute('type', 'button');
       
-      // Ensure visible text
-      const textSpan = document.createElement('span');
-      textSpan.style.cssText = `
-        display: inline-block;
-        line-height: 1.5;
-        font-family: inherit;
-      `;
-      textSpan.textContent = button.text;
-      buttonElement.appendChild(textSpan);
-
-      // Data attributes for choice and path
-      buttonElement.dataset.choice = button.choice;
-      buttonElement.dataset.path = button.path || '';
-
-      // Keyboard interaction
-      buttonElement.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          buttonElement.click();
-        }
-      });
-
-      // Click handler with path handling
-      buttonElement.addEventListener('click', async () => {
-        // Visual feedback before disabling
-        buttonElement.style.backgroundColor = '#e8e8e8';
-        
-        const allButtons = element.querySelectorAll('button');
-        allButtons.forEach(btn => {
-          btn.disabled = true;
-          btn.setAttribute('aria-disabled', 'true');
-        });
+      buttonElement.addEventListener('click', () => {
+        const allButtons = buttonsDiv.querySelectorAll('button');
+        allButtons.forEach(btn => btn.disabled = true);
         
         disableFooterInputs(false);
         
-        // Send both choice and path to Voiceflow
         window.voiceflow.chat.interact({
           type: "complete",
           payload: { 
-            choice: button.dataset.choice,
-            path: button.dataset.path
+            choice: button.choice,
+            path: button.path
           }
         });
       });
 
-      element.appendChild(buttonElement);
+      buttonsDiv.appendChild(buttonElement);
     });
 
-    // Initial state
+    element.appendChild(buttonsDiv);
     disableFooterInputs(true);
   },
 };
