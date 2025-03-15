@@ -198,24 +198,31 @@ export const DropdownExtension = {
     const formContainer = document.createElement("form");
     formContainer.className = "_1ddzqsn7";
     const dropdownOptions = trace.payload?.options || [];
+    const placeholder = trace.payload?.placeholder || "Search or select...";
+    const submitText = trace.payload?.submitText || "Submit";
 
     formContainer.innerHTML = `
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
       
       ._1ddzqsn7 {
-        display: block;
+        display: inline-block;
+        width: 100%;
+        box-sizing: border-box;
+        max-width: 100%;
       }
       
       .dropdown-wrapper {
         width: 100%;
         font-family: 'Montserrat', sans-serif;
+        box-sizing: border-box;
       }
       
       .dropdown-extension-container {
         position: relative;
         width: 100%;
         margin-bottom: 8px;
+        box-sizing: border-box;
       }
       
       .dropdown-extension-input[type="text"] {
@@ -230,6 +237,7 @@ export const DropdownExtension = {
         transition: all 0.2s ease;
         cursor: pointer;
         margin: 0;
+        box-sizing: border-box;
       }
 
       .dropdown-extension-input[type="text"]:focus {
@@ -265,6 +273,7 @@ export const DropdownExtension = {
         z-index: 1000;
         scrollbar-width: thin;
         scrollbar-color: #72727a transparent;
+        box-sizing: border-box;
       }
 
       .dropdown-extension-options div {
@@ -276,6 +285,7 @@ export const DropdownExtension = {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        box-sizing: border-box;
       }
 
       .dropdown-extension-options div:hover,
@@ -298,6 +308,7 @@ export const DropdownExtension = {
         pointer-events: none;
         transition: all 0.2s ease;
         margin: 0;
+        box-sizing: border-box;
       }
 
       .dropdown-extension-submit.enabled {
@@ -319,6 +330,30 @@ export const DropdownExtension = {
         background-position: right 12px center;
         padding-right: 32px;
       }
+      
+      /* Media query for smaller screens */
+      @media screen and (max-width: 480px) {
+        .dropdown-extension-input[type="text"],
+        .dropdown-extension-submit {
+          padding: 6px 10px;
+          font-size: 12px;
+        }
+        
+        .dropdown-extension-options div {
+          padding: 6px 10px;
+          font-size: 12px;
+        }
+      }
+
+      /* For widget mode */
+      .vfrc-widget ._1ddzqsn7 {
+        max-width: 100%;
+        padding: 0;
+      }
+      
+      .vfrc-widget .dropdown-extension-options {
+        max-height: 150px;
+      }
     </style>
   
     <div class="dropdown-wrapper">
@@ -326,13 +361,14 @@ export const DropdownExtension = {
         <input 
           type="text" 
           class="dropdown-extension-input dropdown-extension-search" 
-          placeholder="Search or select..." 
+          placeholder="${placeholder}" 
           autocomplete="off"
           spellcheck="false"
+          aria-label="Select an option"
         >
-        <div class="dropdown-extension-options">
+        <div class="dropdown-extension-options" role="listbox">
           ${dropdownOptions
-            .map((option) => `<div data-value="${option}">${option}</div>`)
+            .map((option, index) => `<div data-value="${option}" role="option" id="option-${index}">${option}</div>`)
             .join("")}
         </div>
         <input 
@@ -342,7 +378,7 @@ export const DropdownExtension = {
           required
         >
       </div>
-      <button type="submit" class="dropdown-extension-submit">Submit</button>
+      <button type="submit" class="dropdown-extension-submit">${submitText}</button>
     </div>
   `;  
 
@@ -352,18 +388,60 @@ export const DropdownExtension = {
     const submitButton = formContainer.querySelector(".dropdown-extension-submit");
     let highlightedIndex = -1;
 
+    // Detect if in popup/widget mode
+    const isInWidget = () => {
+      let parent = element.parentElement;
+      while (parent) {
+        if (parent.classList && (
+            parent.classList.contains('vfrc-widget') || 
+            parent.classList.contains('vfrc-popup')
+        )) {
+          return true;
+        }
+        parent = parent.parentElement;
+      }
+      return false;
+    };
+
+    // Adjust dropup position based on space
+    const adjustDropupPosition = () => {
+      const inputRect = dropdownSearch.getBoundingClientRect();
+      const spaceAbove = inputRect.top;
+      const windowHeight = window.innerHeight;
+      
+      // If in widget mode or limited space above
+      if (isInWidget() || spaceAbove < 200) {
+        dropdownOptionsDiv.style.bottom = 'auto';
+        dropdownOptionsDiv.style.top = '100%';
+        dropdownOptionsDiv.style.maxHeight = '150px';
+      } else {
+        dropdownOptionsDiv.style.bottom = 'calc(100% + 4px)';
+        dropdownOptionsDiv.style.top = 'auto';
+        dropdownOptionsDiv.style.maxHeight = '200px';
+      }
+    };
+
+    // Handle window resize for responsive behavior
+    const handleResize = () => {
+      adjustDropupPosition();
+    };
+
     const enableSubmitButton = () => {
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
       submitButton.classList.toggle("enabled", isValidOption);
+      submitButton.setAttribute('aria-disabled', !isValidOption);
     };
 
     const showDropup = (e) => {
       if (e) e.stopPropagation();
+      adjustDropupPosition();
       dropdownOptionsDiv.style.display = "block";
+      dropdownSearch.setAttribute('aria-expanded', 'true');
     };
 
     const hideDropup = () => {
       dropdownOptionsDiv.style.display = "none";
+      dropdownSearch.setAttribute('aria-expanded', 'false');
       highlightedIndex = -1;
       updateHighlight();
     };
@@ -372,12 +450,20 @@ export const DropdownExtension = {
       const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
       options.forEach((option, index) => {
         option.classList.toggle("highlighted", index === highlightedIndex);
+        option.setAttribute('aria-selected', index === highlightedIndex);
       });
+      
+      // Ensure highlighted option is visible
+      if (highlightedIndex >= 0 && options[highlightedIndex]) {
+        options[highlightedIndex].scrollIntoView({ block: 'nearest' });
+      }
     };
 
     const handleOptionSelection = (selectedValue) => {
       dropdownSearch.value = selectedValue;
       hiddenDropdownInput.value = selectedValue;
+      dropdownSearch.setAttribute('aria-activedescendant', 
+        dropdownOptionsDiv.querySelector(`[data-value="${selectedValue}"]`)?.id || '');
       hideDropup();
       enableSubmitButton();
     };
@@ -405,39 +491,50 @@ export const DropdownExtension = {
       switch(e.key) {
         case "ArrowDown":
           e.preventDefault();
-          if (!dropdownOptionsDiv.style.display === "block") {
+          if (dropdownOptionsDiv.style.display !== "block") {
             showDropup();
-          } else {
-            highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
-            updateHighlight();
-          }
+          } 
+          highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
+          if (highlightedIndex < 0 && visibleOptions.length > 0) highlightedIndex = 0;
+          updateHighlight();
           break;
         case "ArrowUp":
           e.preventDefault();
-          if (highlightedIndex > -1) {
+          if (highlightedIndex > 0) {
             highlightedIndex = Math.max(highlightedIndex - 1, 0);
             updateHighlight();
           }
           break;
         case "Enter":
-          e.preventDefault();
-          if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
+          if (dropdownOptionsDiv.style.display === "block" && 
+              highlightedIndex >= 0 && 
+              visibleOptions[highlightedIndex]) {
+            e.preventDefault();
             const selectedValue = visibleOptions[highlightedIndex].getAttribute("data-value");
             handleOptionSelection(selectedValue);
           }
           break;
         case "Escape":
+          e.preventDefault();
           hideDropup();
           dropdownSearch.blur();
           break;
       }
     };
 
+    // Set up ARIA attributes
+    dropdownSearch.setAttribute('role', 'combobox');
+    dropdownSearch.setAttribute('aria-autocomplete', 'list');
+    dropdownSearch.setAttribute('aria-expanded', 'false');
+    dropdownSearch.setAttribute('aria-controls', 'dropdown-options');
+    dropdownOptionsDiv.id = 'dropdown-options';
+
     // Add event listeners
     dropdownSearch.addEventListener("focus", showDropup);
     dropdownSearch.addEventListener("click", showDropup);
     dropdownSearch.addEventListener("input", handleInput);
     dropdownSearch.addEventListener("keydown", handleKeyNavigation);
+    window.addEventListener("resize", handleResize);
 
     dropdownOptionsDiv.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -493,11 +590,15 @@ export const DropdownExtension = {
 
     const cleanup = () => {
       document.removeEventListener("click", hideDropup);
+      window.removeEventListener("resize", handleResize);
       dropdownSearch.removeEventListener("focus", showDropup);
       dropdownSearch.removeEventListener("click", showDropup);
       dropdownSearch.removeEventListener("input", handleInput);
       dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
     };
+
+    // Initial positioning adjustment
+    setTimeout(adjustDropupPosition, 0);
 
     element.appendChild(formContainer);
     disableFooterInputs(true);
@@ -505,7 +606,6 @@ export const DropdownExtension = {
     return cleanup;
   },
 };
-
 export const MultiSelectExtension = {
   name: "MultiSelect",
   type: "response",
