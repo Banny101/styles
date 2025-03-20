@@ -107,7 +107,7 @@
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Launcher Styles - UPDATED */
+/* Launcher Styles */
 .vfrc-widget--launcher {
   background-color: transparent;
 }
@@ -118,18 +118,14 @@
   box-shadow: none;
 }
 
-/* Make the launcher head bigger */
 .vfrc-launcher img {
-  width: 120px; /* Increased size */
-  height: 120px; /* Increased size */
-  border-radius: 60px; /* Keep it circular */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  border: 2px solid #fff;
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
 }
 
 .vfrc-launcher:hover {
   background-color: none;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 /* Large Image Styles */
@@ -141,15 +137,6 @@
   border-radius: 0%;
   height: 200px;
   box-shadow: none;
-}
-
-/* Chat Container - UPDATED */
-.vfrc-chat-container {
-  background-color: #f0f0f0;
-  padding: 20px;
-  border-radius: 30px;
-  position: relative;
-  overflow: hidden;
 }
 
 /* Dropdown Extension Styles */
@@ -193,6 +180,11 @@
 @keyframes dataStreamAnimation {
   0% { background-position: 0% 50%; }
   100% { background-position: 100% 50%; }
+}
+
+.vfrc-chat-container {
+  position: relative;
+  overflow: hidden;
 }
 
 .vfrc-chat-container::before {
