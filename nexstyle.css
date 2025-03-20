@@ -243,7 +243,7 @@
   background-color: rgba(114, 114, 122, 0.7);
 }
 
-/* Launcher Styles - Enlarged */
+/* Launcher Styles */
 .vfrc-widget--launcher {
   background-color: transparent;
 }
@@ -259,11 +259,8 @@
 }
 
 .vfrc-launcher img {
-  width: 100px !important; /* Enlarged */
-  height: 100px !important; /* Enlarged */
-  border-radius: 50px;
-  object-fit: cover !important; /* Changed from contain to cover */
-  object-position: center top !important; /* Position from the top */
+  object-fit: cover !important;
+  object-position: center top !important;
   transition: all 0.3s ease;
   animation: launcherPulse 3s infinite;
   position: relative;
@@ -282,8 +279,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 110px;
-  height: 110px;
+  width: 110%;
+  height: 110%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(114, 114, 122, 0.1) 0%, rgba(114, 114, 122, 0) 70%);
@@ -292,9 +289,9 @@
 }
 
 @keyframes pulseRing {
-  0% { width: 110px; height: 110px; opacity: 0.3; }
-  50% { width: 140px; height: 140px; opacity: 0.1; }
-  100% { width: 110px; height: 110px; opacity: 0.3; }
+  0% { width: 110%; height: 110%; opacity: 0.3; }
+  50% { width: 140%; height: 140%; opacity: 0.1; }
+  100% { width: 110%; height: 110%; opacity: 0.3; }
 }
 
 .vfrc-launcher:hover img {
@@ -354,43 +351,11 @@
     width: 100%;
     height: 150px;
   }
-  
-  .vfrc-launcher img {
-    width: 80px !important;
-    height: 80px !important;
-  }
-  
-  .vfrc-launcher::before {
-    width: 90px;
-    height: 90px;
-  }
-  
-  @keyframes pulseRing {
-    0% { width: 90px; height: 90px; opacity: 0.3; }
-    50% { width: 120px; height: 120px; opacity: 0.1; }
-    100% { width: 90px; height: 90px; opacity: 0.3; }
-  }
 }
 
 @media (max-width: 480px) {
   .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
     width: 100%;
     height: 100px;
-  }
-  
-  .vfrc-launcher img {
-    width: 70px !important;
-    height: 70px !important;
-  }
-  
-  .vfrc-launcher::before {
-    width: 80px;
-    height: 80px;
-  }
-  
-  @keyframes pulseRing {
-    0% { width: 80px; height: 80px; opacity: 0.3; }
-    50% { width: 100px; height: 100px; opacity: 0.1; }
-    100% { width: 80px; height: 80px; opacity: 0.3; }
   }
 }
