@@ -114,7 +114,7 @@
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Launcher Styles */
+/* Launcher Styles - No Size Modifications */
 .vfrc-widget--launcher {
   background-color: transparent;
 }
@@ -266,7 +266,7 @@
   }
 }
 
-/* Enhanced Launcher Pulse Animation */
+/* Enhanced Launcher Pulse Animation - No Size Changes */
 @keyframes launcherPulse {
   0% {
     transform: scale(1);
@@ -329,6 +329,93 @@
   opacity: 0.3;
 }
 
+/* Vertical Data Stream Animation */
+@keyframes vf-stream {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+/* Additional Glowing Widget Border */
+.vfrc-widget {
+  border-radius: 16px;
+  animation: vf-glow 2s infinite alternate;
+}
+@keyframes vf-glow {
+  from { box-shadow: 0 0 5px rgba(0, 255, 170, 0.5); }
+  to { box-shadow: 0 0 15px rgba(0, 255, 170, 0.9); }
+}
+
+/* Typing Animation Effect */
+@keyframes vf-typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+@keyframes vf-blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: rgba(0, 255, 170, 0.7); }
+}
+
+/* Apply typing animation to system messages */
+.vfrc-system-response .vfrc-message-text {
+  display: inline-block;
+  overflow: hidden;
+  border-right: 3px solid transparent;
+  white-space: nowrap;
+  animation: 
+    vf-typing 3.5s steps(40, end),
+    vf-blink-caret 0.75s step-end infinite;
+  animation-fill-mode: forwards;
+}
+
+/* Circuit Board Pattern Overlay */
+.vf-circuit-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.1;
+  z-index: 0;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+CiAgPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBmZmFhIiBzdHJva2Utd2lkdGg9IjEiIGQ9Ik0xMCwxMCBMOTAsOTAgTTIwLDEwIEw5MCwyMCBNMTAsOTAgTDgwLDIwIE01MCw1MCBMMTAwLDAgTTUwLDUwIEwwLDEwMCBNNTAsNTAgTDEwMCwxMDAgTTUwLDUwIEwwLDAiLz4KICA8Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIyIiBmaWxsPSIjMDBmZmFhIi8+CiAgPGNpcmNsZSBjeD0iOTAiIGN5PSI5MCIgcj0iMiIgZmlsbD0iIzAwZmZhYSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjMiIGZpbGw9IiMwMGZmYWEiLz4KPC9zdmc+');
+  background-size: 100px 100px;
+}
+
+/* Add circuit pattern to chat container */
+.vfrc-chat-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.05;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+CiAgPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBmZmFhIiBzdHJva2Utd2lkdGg9IjEiIGQ9Ik0xMCwxMCBMOTAsOTAgTTIwLDEwIEw5MCwyMCBNMTAsOTAgTDgwLDIwIE01MCw1MCBMMTAwLDAgTTUwLDUwIEwwLDEwMCBNNTAsNTAgTDEwMCwxMDAgTTUwLDUwIEwwLDAiLz4KICA8Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIyIiBmaWxsPSIjMDBmZmFhIi8+CiAgPGNpcmNsZSBjeD0iOTAiIGN5PSI5MCIgcj0iMiIgZmlsbD0iIzAwZmZhYSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjMiIGZpbGw9IiMwMGZmYWEiLz4KPC9zdmc+');
+}
+
+/* Header Animation */
+.vfrc-chat-title {
+  animation: fadeInDown 0.5s ease-out;
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Agent Image Animation */
+.vfrc-avatar-image {
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
 /* Base Animation */
 @keyframes fadeInChat {
   from {
@@ -336,6 +423,50 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Data Stream Element Animation */
+.vf-data-stream {
+  position: absolute;
+  width: 2px;
+  height: 50px;
+  background-color: rgba(0, 255, 170, 0.7);
+  animation: vf-stream 3s linear infinite;
+}
+
+/* Create multiple data stream elements */
+.vfrc-chat-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  width: 1px;
+  height: 100%;
+  background-color: rgba(0, 255, 170, 0.2);
+  animation: vf-stream 7s linear infinite;
+}
+
+.vfrc-chat-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 65%;
+  width: 1px;
+  height: 100%;
+  background-color: rgba(0, 255, 170, 0.2);
+  animation: vf-stream 5s linear infinite;
+  animation-delay: 1s;
+}
+
+/* Accessibility - Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  .vfrc-widget, .vfrc-avatar-image, .vfrc-launcher-button,
+  .vfrc-chat-container::before, .vfrc-chat-container::after,
+  .vfrc-system-response .vfrc-message::before,
+  .vfrc-chat-window, .vfrc-system-response .vfrc-message-text {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
