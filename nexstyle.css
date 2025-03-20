@@ -128,27 +128,6 @@
   position: relative;
 }
 
-/* Matrix-Style Text Effect */
-@keyframes typewriter {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes blinkCursor {
-  from, to { border-right-color: transparent; }
-  50% { border-right-color: #72727a; }
-}
-
-.vfrc-system-response .vfrc-message p {
-  overflow: hidden;
-  white-space: nowrap;
-  margin: 0;
-  animation: 
-    typewriter 0.5s steps(40, end) forwards,
-    blinkCursor 0.75s step-end infinite;
-  border-right: 2px solid transparent;
-}
-
 /* Input Styles */
 .vfrc-chat-input.c-jzUcYW {
   border: 1px solid rgba(114, 114, 122, 0.3);
@@ -283,11 +262,13 @@
   width: 100px !important; /* Enlarged */
   height: 100px !important; /* Enlarged */
   border-radius: 50px;
-  object-fit: contain;
+  object-fit: cover !important; /* Changed from contain to cover */
+  object-position: center top !important; /* Position from the top */
   transition: all 0.3s ease;
   animation: launcherPulse 3s infinite;
   position: relative;
   z-index: 2;
+  background-color: transparent !important;
 }
 
 @keyframes launcherPulse {
@@ -339,17 +320,6 @@
   100% { transform: scale(1); }
 }
 
-/* Dropdown Extension Styles */
-.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension)
-  .vfrc-timestamp {
-  display: none;
-}
-
-.vfrc-message--extension-DropdownExtension {
-  max-width: 280px;
-  width: 100%;
-}
-
 /* Data Stream Animation */
 @keyframes dataStreamAnimation {
   0% { background-position: 0% 50%; }
@@ -376,11 +346,6 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .vfrc-message--extension-DropdownExtension {
-    max-width: 220px;
-    width: 100%;
-  }
-
   .vfrc-widget--chat {
     border-radius: 20px;
   }
