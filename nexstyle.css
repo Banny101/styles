@@ -10,10 +10,7 @@
 .vfrc-chat-container::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   pointer-events: none;
   background: linear-gradient(90deg, 
     rgba(0,255,0,0) 0%, 
@@ -58,10 +55,7 @@
 .vfrc-system-response .vfrc-message::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   pointer-events: none;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M0 9h6v1H0V9zm14 0h6v1h-6V9zM9 0v6h1V0H9zm0 14v6h1v-6H9z' fill='%2300ff00'/%3E%3Cpath d='M9 9h1v1H9V9zm1 1h1v1h-1v-1zm-1-1V8h1v1H9zm1 1v1H9v-1h1z' fill='%2300ff00'/%3E%3C/svg%3E");
@@ -76,6 +70,19 @@
 }
 .vfrc-header-image {
   animation: pulseHeader 3s ease-in-out infinite;
+}
+
+/* Animated Agent Image */
+@keyframes rotateAgent {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.vfrc-avatar-image {
+  transition: all 0.3s ease;
+}
+.vfrc-avatar-image:hover {
+  animation: rotateAgent 2s linear infinite;
+  box-shadow: 0 0 10px #00ffff;
 }
 
 /* Animated Launcher */
