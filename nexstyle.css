@@ -1,3 +1,163 @@
+/* Enhanced Tech-Themed CSS Effects for Voiceflow Chat */
+
+/* Base Styles */
+.voiceflow-chat {
+  box-shadow: #000000;
+}
+
+.vfrc-widget--chat {
+  animation: fadeInChat 1s ease-out;
+}
+
+/* Header Styles */
+.vfrc-header {
+  background-color: #72727a;
+  height: 66px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.vfrc-header--title {
+  color: #fffffffa;
+  font-size: 16px;
+}
+
+.vfrc-assistant-info--title {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+/* Message Styles */
+.vfrc-message {
+  font-weight: 400;
+  position: relative;
+}
+
+.c-PJLV-gJqBfM-from-user {
+  background-color: #72727a;
+  color: #ffffff;
+}
+
+.c-PJLV-jueArD-from-system {
+  background-color: #f3f3f3;
+  color: #000000;
+  font-size: 15px;
+}
+
+/* Input Styles */
+.vfrc-chat-input.c-jzUcYW {
+  border: inherit;
+  border-radius: inherit;
+}
+
+.vfrc-chat-input textarea, 
+.vfrc-chat-input--button {
+  background-color: rgb(255, 255, 255) !important;
+  color: #000000;
+  border-color: 1px solid #72727a;
+}
+
+/* Button Styles */
+.vfrc-button--secondary {
+  display: inline-block;
+  border: 1px solid rgba(0, 43, 69, 0.45);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 9px 13px;
+  margin: 0px;
+  box-sizing: border-box;
+  background-color: transparent;
+  color: #002b45;
+  cursor: pointer;
+  transition: background-color 50ms ease-in-out 0s, border-color 100ms ease-in-out 0s;
+  white-space: normal;
+  text-align: left;
+}
+
+.vfrc-button--secondary:hover {
+  background-color: rgba(0, 43, 69, 0.1);
+  border-color: rgba(0, 43, 69, 0.7);
+}
+
+/* Prompt Styles */
+.vfrc-prompt {
+  background-color: #72727a;
+}
+
+.vfrc-prompt button {
+  color: #ffffff;
+}
+
+.vfrc-prompt button:hover {
+  color: #efefef;
+}
+
+/* Footer Styles */
+.vfrc-footer {
+  background-color: #ffffff;
+  border-top: solid 1px rgb(255, 255, 255);
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  border-left: 1px solid #000000;
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Launcher Styles */
+.vfrc-widget--launcher {
+  background-color: transparent;
+}
+
+.vfrc-launcher.c-bQoszf {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.vfrc-launcher img {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+}
+
+.vfrc-launcher:hover {
+  background-color: transparent;
+}
+
+/* Large Image Styles */
+.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top center;
+  width: 300px;
+  border-radius: 0%;
+  height: 200px;
+  box-shadow: none;
+}
+
+/* Dropdown Extension Styles */
+.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension) .vfrc-timestamp {
+  display: none;
+}
+
+.vfrc-message--extension-DropdownExtension {
+  max-width: 280px;
+  width: 100%;
+}
+
+/* ===== ENHANCED TECH ANIMATIONS ===== */
+
 /* Enhanced Data Stream Effect */
 @keyframes dataStreamAnimation {
   0% {
@@ -173,4 +333,38 @@
   background-size: 100% 4px;
   z-index: 100;
   opacity: 0.3;
+}
+
+/* Base Animation */
+@keyframes fadeInChat {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .vfrc-message--extension-DropdownExtension {
+    max-width: 220px;
+    width: 100%;
+  }
+  
+  .vfrc-widget--chat {
+    border-radius: 20px;
+  }
+  
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 100%;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
+    width: 100%;
+    height: 100px;
+  }
 }
