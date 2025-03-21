@@ -50,6 +50,32 @@
   z-index: -1 !important;
 }
 
+/* Fix Proactive Message Positioning */
+.vfrc-proactive,
+[class*="vfrc-proactive"],
+.vfrc-proactive-message,
+[class*="vfrc-proactive-message"],
+div[role="dialog"][aria-live="polite"] {
+  bottom: 100px !important; /* Much more space from launcher */
+  right: 20px !important;
+  max-width: 260px !important;
+  position: fixed !important;
+  z-index: 9998 !important; /* Below launcher but above other content */
+}
+
+/* Hide Proactive Message When Chat is Open */
+.vfrc-widget--chat.open ~ .vfrc-proactive,
+.vfrc-widget--chat.open ~ [class*="vfrc-proactive"],
+.vfrc-widget--chat.open ~ div[role="dialog"][aria-live="polite"],
+.voiceflow-chat.visible .vfrc-proactive,
+.voiceflow-chat.visible [class*="vfrc-proactive"],
+.voiceflow-chat.visible div[role="dialog"][aria-live="polite"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Launcher Animations */
 @keyframes launcherAnimation {
   0% { 
@@ -86,5 +112,18 @@
   50% { 
     opacity: 0.7;
     transform: scale(1.2);
+  }
+}
+
+/* Mobile Adjustments for Proactive Message */
+@media (max-width: 768px) {
+  .vfrc-proactive,
+  [class*="vfrc-proactive"],
+  .vfrc-proactive-message,
+  [class*="vfrc-proactive-message"],
+  div[role="dialog"][aria-live="polite"] {
+    bottom: 90px !important;
+    right: 10px !important;
+    max-width: 220px !important;
   }
 }
