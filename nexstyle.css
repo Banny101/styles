@@ -3,22 +3,10 @@
 /* Base Styles */
 .voiceflow-chat {
   box-shadow: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  transition: opacity 0.3s ease, visibility 0.3s ease !important;
-}
-
-.voiceflow-chat.visible {
-  opacity: 1 !important;
-  visibility: visible !important;
 }
 
 .vfrc-widget--chat,
 [class*="vfrc-widget--chat"] {
-  animation: none !important;
-  transform: translateY(20px) !important;
-  opacity: 0 !important;
-  transition: transform 0.5s ease, opacity 0.5s ease !important;
   border-radius: 16px !important;
   overflow: hidden !important;
   background: rgba(255, 255, 255, 0.98) !important;
@@ -27,14 +15,6 @@
     0 2px 4px rgba(0, 0, 0, 0.05) !important;
   backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  will-change: transform !important;
-  backface-visibility: hidden !important;
-}
-
-.vfrc-widget--chat.open,
-[class*="vfrc-widget--chat"].open {
-  transform: translateY(0) !important;
-  opacity: 1 !important;
 }
 
 /* Header Styles */
@@ -51,7 +31,6 @@
   position: relative !important;
   z-index: 1000 !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-  backdrop-filter: blur(10px) !important;
 }
 
 .vfrc-header--title,
@@ -77,8 +56,6 @@ img.vfrc-avatar {
   position: relative !important;
   transition: all 0.3s ease !important;
   z-index: 1 !important;
-  transform-style: preserve-3d !important;
-  perspective: 1000px !important;
 }
 
 .vfrc-avatar::before,
@@ -90,8 +67,7 @@ img.vfrc-avatar::before {
   inset: -2px !important;
   border-radius: 50% !important;
   padding: 2px !important;
-  background: linear-gradient(45deg, #000000, transparent, #000000, #333333) !important;
-  background-size: 300% 300% !important;
+  background: linear-gradient(45deg, #000000, transparent, #000000) !important;
   -webkit-mask: 
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0) !important;
@@ -100,30 +76,14 @@ img.vfrc-avatar::before {
     linear-gradient(#fff 0 0) !important;
   -webkit-mask-composite: xor !important;
   mask-composite: exclude !important;
-  animation: rotateGradient 4s linear infinite,
-             glowPulse 2s ease-in-out infinite !important;
+  animation: rotateGradient 4s linear infinite !important;
   z-index: -1 !important;
-}
-
-.vfrc-avatar::after,
-[class*="vfrc-avatar"]::after,
-.vfrc-assistant-info img::after,
-img.vfrc-avatar::after {
-  content: '' !important;
-  position: absolute !important;
-  inset: -4px !important;
-  border-radius: 50% !important;
-  background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.1)) !important;
-  filter: blur(4px) !important;
-  animation: rotateShadow 3s linear infinite !important;
-  z-index: -2 !important;
 }
 
 /* Message Styles */
 .vfrc-message,
 [class*="vfrc-message"] {
   animation: messageIn 0.3s ease-out forwards !important;
-  animation-delay: calc(var(--message-index, 0) * 0.1s) !important;
   max-width: 85% !important;
   margin: 8px 12px !important;
 }
@@ -135,23 +95,14 @@ img.vfrc-avatar::after {
   border-radius: 16px 16px 4px 16px !important;
   padding: 12px 16px !important;
   margin: 4px 0 !important;
-  transform: translateY(0) !important;
-  transition: all 0.3s ease !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
   position: relative !important;
   margin-left: auto !important;
 }
 
-.c-PJLV-gJqBfM-from-user:hover,
-[class*="from-user"]:hover {
-  transform: translateY(-2px) scale(1.01) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
-}
-
 .c-PJLV-jueArD-from-system,
 [class*="from-system"] {
-  background: rgba(255, 255, 255, 0.8) !important;
-  backdrop-filter: blur(8px) !important;
+  background: #ffffff !important; /* Changed to white background */
   color: #000000 !important;
   font-size: 15px !important;
   border-radius: 16px 16px 16px 4px !important;
@@ -159,50 +110,8 @@ img.vfrc-avatar::after {
   margin: 4px 0 !important;
   border: 1px solid rgba(0, 0, 0, 0.05) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
-  transform: translateY(0) !important;
-  transition: all 0.3s ease !important;
   position: relative !important;
   margin-right: auto !important;
-}
-
-.c-PJLV-jueArD-from-system:hover,
-[class*="from-system"]:hover {
-  transform: translateY(-2px) scale(1.01) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* Input Styles */
-.vfrc-chat-input,
-[class*="vfrc-chat-input"] {
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  border-radius: 12px !important;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  margin: 15px !important;
-  background: rgba(255, 255, 255, 0.9) !important;
-  backdrop-filter: blur(8px) !important;
-  box-shadow: 
-    0 2px 6px rgba(0, 0, 0, 0.02),
-    0 1px 2px rgba(0, 0, 0, 0.04) !important;
-}
-
-.vfrc-chat-input:focus-within,
-[class*="vfrc-chat-input"]:focus-within {
-  border-color: rgba(0, 0, 0, 0.2) !important;
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.05),
-    0 1px 3px rgba(0, 0, 0, 0.1) !important;
-  transform: translateY(-1px) !important;
-}
-
-.vfrc-chat-input textarea,
-[class*="vfrc-chat-input"] textarea {
-  background-color: transparent !important;
-  color: #000000 !important;
-  border: none !important;
-  border-radius: 12px !important;
-  font-size: 16px !important;
-  line-height: 1.5 !important;
-  padding: 12px !important;
 }
 
 /* Button Styles */
@@ -217,11 +126,9 @@ img.vfrc-avatar::after {
   border: none !important;
   border-radius: 12px !important;
   padding: 12px 24px !important;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.3s ease !important;
   font-weight: 600 !important;
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.1),
-    0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 .vfrc-button--primary:hover,
@@ -230,10 +137,8 @@ img.vfrc-avatar::after {
 [class*="vfrc-button--secondary"]:hover,
 .vfrc-button--danger:hover,
 [class*="vfrc-button--danger"]:hover {
-  transform: translateY(-2px) scale(1.02) !important;
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.15),
-    0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   background: linear-gradient(135deg, #1a1a1a, #000000) !important;
 }
 
@@ -277,8 +182,6 @@ button[class*="vfrc-header--button"]:hover,
   border: none !important;
   bottom: 20px !important;
   right: 20px !important;
-  transform-style: preserve-3d !important;
-  perspective: 1000px !important;
 }
 
 .vfrc-launcher img,
@@ -288,151 +191,41 @@ button[class*="vfrc-header--button"]:hover,
   border-radius: 30px !important;
   border: 2px solid #000000 !important;
   background: transparent !important;
-  box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.2),
-    0 0 0 2px rgba(0, 0, 0, 0.1),
-    0 0 20px rgba(0, 0, 0, 0.1) !important;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  animation: floatAndGlow 6s ease-in-out infinite !important;
-  transform-style: preserve-3d !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s ease !important;
+  animation: pulse 3s infinite !important;
 }
 
 .vfrc-launcher img:hover,
 [class*="vfrc-launcher"] img:hover {
-  transform: 
-    scale(1.1) 
-    rotate(5deg) 
-    translateZ(10px) !important;
-  box-shadow: 
-    0 6px 20px rgba(0, 0, 0, 0.3),
-    0 0 0 4px rgba(0, 0, 0, 0.1),
-    0 0 30px rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
   animation: none !important;
 }
 
-.vfrc-launcher::before,
-[class*="vfrc-launcher"]::before {
-  content: '' !important;
-  position: absolute !important;
-  inset: -10px !important;
-  border-radius: 50% !important;
-  background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.1)) !important;
-  filter: blur(8px) !important;
-  animation: shadowPulse 3s ease-in-out infinite !important;
+/* Proactive Message Styling */
+.vfrc-proactive,
+[class*="vfrc-proactive"] {
+  bottom: 90px !important; /* Increased spacing from launcher */
+  right: 20px !important;
+  max-width: 260px !important;
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  padding: 10px 15px !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Tech Data Stream Effect */
-.vfrc-chat-dialog::before,
-[class*="vfrc-chat-dialog"]::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 20% !important;
-  width: 1px !important;
-  height: 100% !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-  animation: dataStream 7s linear infinite !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-.vfrc-chat-dialog::after,
-[class*="vfrc-chat-dialog"]::after {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 65% !important;
-  width: 1px !important;
-  height: 100% !important;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-  animation: dataStream 5s linear infinite !important;
-  animation-delay: 1s !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-/* Circuit Board Pattern */
-.c-PJLV-jueArD-from-system::before,
-[class*="from-system"]::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  pointer-events: none !important;
-  opacity: 0.05 !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 18h12v4H0v-4zm28 0h12v4H28v-4zM18 0v12h4V0h-4zm0 28v12h4V28h-4z' fill='%23000000'/%3E%3Cpath d='M18 18h4v4h-4v-4zm4 4h4v4h-4v-4zm-4-4V14h4v4h-4zm4 4v4h-4v-4h4z' fill='%23000000'/%3E%3C/svg%3E") !important;
-  z-index: -1 !important;
-  animation: circuitBoardAnimation 20s linear infinite !important;
-  background-size: 40px 40px !important;
-}
-
-/* Animations */
+/* Simple Animations */
 @keyframes rotateGradient {
-  0% { transform: rotate(0deg); background-position: 0% 0%; }
-  100% { transform: rotate(360deg); background-position: 100% 100%; }
-}
-
-@keyframes glowPulse {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; }
-}
-
-@keyframes rotateShadow {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(-360deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@keyframes floatAndGlow {
-  0%, 100% { 
-    transform: translateY(0) rotate(0deg) translateZ(0);
-    box-shadow: 
-      0 4px 15px rgba(0, 0, 0, 0.2),
-      0 0 0 2px rgba(0, 0, 0, 0.1),
-      0 0 20px rgba(0, 0, 0, 0.1);
-  }
-  25% { 
-    transform: translateY(-5px) rotate(3deg) translateZ(5px);
-    box-shadow: 
-      0 8px 20px rgba(0, 0, 0, 0.3),
-      0 0 0 2px rgba(0, 0, 0, 0.15),
-      0 0 30px rgba(0, 0, 0, 0.2);
-  }
-  75% { 
-    transform: translateY(5px) rotate(-3deg) translateZ(5px);
-    box-shadow: 
-      0 4px 15px rgba(0, 0, 0, 0.2),
-      0 0 0 2px rgba(0, 0, 0, 0.1),
-      0 0 20px rgba(0, 0, 0, 0.1);
-  }
-}
-
-@keyframes shadowPulse {
-  0%, 100% { 
-    transform: scale(1);
-    opacity: 0.2;
-  }
-  50% { 
-    transform: scale(1.1);
-    opacity: 0.4;
-  }
-}
-
-@keyframes dataStream {
-  0% { 
-    height: 0;
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  20% { 
-    opacity: 0.5;
-  }
-  100% { 
-    height: 100%;
-    opacity: 0;
-    transform: translateY(0);
-  }
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+  50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
+  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
 }
 
 @keyframes gradientFlow {
@@ -442,13 +235,8 @@ button[class*="vfrc-header--button"]:hover,
 }
 
 @keyframes messageIn {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes circuitBoardAnimation {
-  from { background-position: 0 0; }
-  to { background-position: 40px 40px; }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsive Styles */
@@ -471,12 +259,12 @@ button[class*="vfrc-header--button"]:hover,
     top: 0 !important;
   }
   
-  .vfrc-chat-input,
-  [class*="vfrc-chat-input"] {
-    position: sticky !important;
-    bottom: 0 !important;
-    padding: 10px !important;
-    background: #ffffff !important;
+  /* Adjust proactive message position on mobile */
+  .vfrc-proactive,
+  [class*="vfrc-proactive"] {
+    bottom: 80px !important;
+    right: 10px !important;
+    max-width: 220px !important;
   }
 }
 
