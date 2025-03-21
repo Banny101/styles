@@ -1,4 +1,54 @@
-/* Enhanced Launcher and Arrow CSS for Voiceflow Chat */
+/* Enhanced CSS for Voiceflow Chat - Bold Widget Shape and Launcher Animations */
+
+/* Widget Shape - More Dramatic */
+.vfrc-widget--chat,
+[class*="vfrc-widget--chat"] {
+  border-radius: 24px !important; /* More pronounced rounded corners */
+  overflow: hidden !important;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.2),
+    0 5px 15px rgba(0, 0, 0, 0.15) !important; /* Deeper shadow */
+  border: 2px solid #000000 !important; /* Bold black border */
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  will-change: transform !important;
+}
+
+/* Close Button (Down Arrow) - Bold Black */
+.vfrc-close-button,
+[class*="vfrc-close-button"],
+.vfrc-widget--close,
+[class*="vfrc-widget--close"],
+button[aria-label="Close"],
+.vfrc-widget--chat button[aria-label="Close"] {
+  background-color: #000000 !important;
+  border-radius: 50% !important;
+  width: 40px !important; /* Larger button */
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  bottom: -20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  z-index: 1000 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.vfrc-close-button svg,
+[class*="vfrc-close-button"] svg,
+.vfrc-widget--close svg,
+[class*="vfrc-widget--close"] svg,
+button[aria-label="Close"] svg {
+  fill: white !important;
+  width: 20px !important; /* Larger icon */
+  height: 20px !important;
+  stroke: white !important;
+  stroke-width: 2px !important; /* Bolder lines */
+}
 
 /* Enhanced Launcher Animations */
 .vfrc-launcher,
@@ -9,7 +59,6 @@
   bottom: 20px !important;
   right: 20px !important;
   z-index: 9999 !important;
-  position: fixed !important;
 }
 
 .vfrc-launcher img,
@@ -20,24 +69,23 @@
   border: 3px solid #000000 !important; /* Thicker border */
   background: transparent !important;
   box-shadow: 
-    0 6px 16px rgba(0, 0, 0, 0.3),
-    0 0 0 4px rgba(0, 0, 0, 0.1) !important;
+    0 8px 20px rgba(0, 0, 0, 0.25),
+    0 0 0 3px rgba(0, 0, 0, 0.1) !important; /* More pronounced shadow */
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   animation: launcherAnimation 6s infinite !important;
   transform-style: preserve-3d !important;
   perspective: 1000px !important;
-  opacity: 1 !important; /* Ensure full visibility */
-  display: block !important;
 }
 
 .vfrc-launcher img:hover,
 [class*="vfrc-launcher"] img:hover {
   transform: 
     scale(1.2) 
-    rotate(10deg) !important;
+    rotate(10deg) 
+    translateZ(10px) !important;
   box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.4),
-    0 0 0 5px rgba(0, 0, 0, 0.2) !important;
+    0 12px 30px rgba(0, 0, 0, 0.3),
+    0 0 0 5px rgba(0, 0, 0, 0.15) !important;
   animation: none !important;
 }
 
@@ -49,88 +97,49 @@
   inset: -15px !important;
   border-radius: 50% !important;
   background: radial-gradient(circle at center, rgba(0, 0, 0, 0.2) 0%, transparent 70%) !important;
-  filter: blur(5px) !important;
+  filter: blur(8px) !important;
   animation: glowPulse 3s ease-in-out infinite !important;
   z-index: -1 !important;
 }
 
-/* Enhanced Arrow Button */
-.vfrc-close-button,
-[class*="vfrc-close-button"],
-.vfrc-widget--close,
-[class*="vfrc-widget--close"],
-button[aria-label="Close"],
-.vfrc-widget--chat button[aria-label="Close"],
-.vfrc-widget--chat svg[aria-label="Close"],
-.vfrc-widget--chat [aria-label="Close"] {
-  background-color: #000000 !important;
-  border-radius: 50% !important;
-  width: 40px !important; /* Larger size */
-  height: 40px !important; /* Larger size */
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  position: absolute !important;
-  bottom: -20px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important; /* Stronger shadow */
-  z-index: 9999 !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-  border: 2px solid white !important; /* White border for contrast */
-}
-
-.vfrc-close-button svg,
-[class*="vfrc-close-button"] svg,
-.vfrc-widget--close svg,
-[class*="vfrc-widget--close"] svg,
-button[aria-label="Close"] svg,
-.vfrc-widget--chat svg[aria-label="Close"],
-.vfrc-widget--chat [aria-label="Close"] svg {
-  fill: white !important;
-  width: 20px !important; /* Larger icon */
-  height: 20px !important; /* Larger icon */
-  stroke: white !important;
-  stroke-width: 2px !important; /* Thicker lines */
-}
-
-.vfrc-close-button:hover,
-[class*="vfrc-close-button"]:hover,
-.vfrc-widget--close:hover,
-[class*="vfrc-widget--close"]:hover,
-button[aria-label="Close"]:hover,
-.vfrc-widget--chat [aria-label="Close"]:hover {
-  transform: translateX(-50%) scale(1.15) !important;
-  background-color: #333333 !important;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5) !important;
+/* Fix Proactive Message Positioning */
+.vfrc-proactive,
+[class*="vfrc-proactive"],
+.vfrc-proactive-message,
+[class*="vfrc-proactive-message"],
+div[role="dialog"][aria-live="polite"] {
+  bottom: 100px !important; /* Much more space from launcher */
+  right: 20px !important;
+  max-width: 260px !important;
+  position: fixed !important;
+  z-index: 9998 !important; /* Below launcher but above other content */
 }
 
 /* Launcher Animations */
 @keyframes launcherAnimation {
   0% { 
     transform: translateY(0) rotate(0deg); 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   }
   20% { 
     transform: translateY(-10px) rotate(8deg); 
-    box-shadow: 0 16px 25px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
   }
   40% { 
     transform: translateY(0) rotate(0deg); 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   }
   60% { 
     transform: translateY(-6px) rotate(-8deg); 
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.22);
   }
   80% { 
     transform: translateY(0) rotate(0deg); 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   }
   100% { 
     transform: translateY(0) rotate(0deg); 
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
   }
 }
 
@@ -140,8 +149,29 @@ button[aria-label="Close"]:hover,
     transform: scale(0.9);
   }
   50% { 
-    opacity: 0.8;
+    opacity: 0.7;
     transform: scale(1.2);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .vfrc-widget--chat,
+  [class*="vfrc-widget--chat"] {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+  
+  /* Adjust proactive message position on mobile */
+  .vfrc-proactive,
+  [class*="vfrc-proactive"],
+  .vfrc-proactive-message,
+  [class*="vfrc-proactive-message"],
+  div[role="dialog"][aria-live="polite"] {
+    bottom: 90px !important;
+    right: 10px !important;
+    max-width: 220px !important;
   }
 }
 
