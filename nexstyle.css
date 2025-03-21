@@ -63,17 +63,53 @@ div[role="dialog"][aria-live="polite"] {
   z-index: 9998 !important; /* Below launcher but above other content */
 }
 
-/* Hide Proactive Message When Chat is Open */
-.vfrc-widget--chat.open ~ .vfrc-proactive,
-.vfrc-widget--chat.open ~ [class*="vfrc-proactive"],
-.vfrc-widget--chat.open ~ div[role="dialog"][aria-live="polite"],
-.voiceflow-chat.visible .vfrc-proactive,
-.voiceflow-chat.visible [class*="vfrc-proactive"],
-.voiceflow-chat.visible div[role="dialog"][aria-live="polite"] {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
+/* Down Arrow Button Styling */
+.vfrc-widget--chat button[aria-label="Close"],
+.vfrc-widget--close,
+[class*="vfrc-widget--close"],
+.vfrc-close-button,
+[class*="vfrc-close-button"],
+.vfrc-footer button[aria-label="Close"],
+.vfrc-footer--button,
+[class*="vfrc-footer--button"] {
+  background-color: #000000 !important; /* Black background */
+  border-radius: 50% !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important; /* Remove shadow */
+  border: none !important;
+  position: relative !important;
+  z-index: 10 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Down Arrow Icon */
+.vfrc-widget--chat button[aria-label="Close"] svg,
+.vfrc-widget--close svg,
+[class*="vfrc-widget--close"] svg,
+.vfrc-close-button svg,
+[class*="vfrc-close-button"] svg,
+.vfrc-footer button[aria-label="Close"] svg,
+.vfrc-footer--button svg,
+[class*="vfrc-footer--button"] svg {
+  fill: white !important;
+  stroke: white !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Remove Background from Footer Area */
+.vfrc-footer,
+[class*="vfrc-footer"],
+.vfrc-widget--footer,
+[class*="vfrc-widget--footer"] {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 /* Launcher Animations */
