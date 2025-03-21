@@ -88,14 +88,3 @@
     transform: scale(1.2);
   }
 }
-
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .vfrc-launcher img,
-  [class*="vfrc-launcher"] img,
-  .vfrc-launcher::before,
-  [class*="vfrc-launcher"]::before {
-    animation: none !important;
-    transition: none !important;
-  }
-}
