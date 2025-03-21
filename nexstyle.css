@@ -17,37 +17,6 @@
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-/* Header Styles */
-.vfrc-header,
-[class*="vfrc-header"] {
-  background: linear-gradient(90deg, #000000, #1a1a1a, #000000) !important;
-  background-size: 200% 100% !important;
-  animation: gradientFlow 15s ease infinite !important;
-  height: auto !important;
-  border-radius: 16px 16px 0 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 16px !important;
-  position: relative !important;
-  z-index: 1000 !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.vfrc-header--title,
-[class*="vfrc-header--title"] {
-  font-size: 18px !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.5px !important;
-  margin-bottom: 4px !important;
-}
-
-.vfrc-header--subtitle,
-[class*="vfrc-header--subtitle"] {
-  font-size: 14px !important;
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
 /* Avatar Styles - Enhanced with Tech Effect */
 .vfrc-avatar,
 [class*="vfrc-avatar"],
@@ -102,7 +71,7 @@ img.vfrc-avatar::before {
 
 .c-PJLV-jueArD-from-system,
 [class*="from-system"] {
-  background: #ffffff !important; /* Changed to white background */
+  background: #ffffff !important; /* White background for agent messages */
   color: #000000 !important;
   font-size: 15px !important;
   border-radius: 16px 16px 16px 4px !important;
@@ -142,35 +111,46 @@ img.vfrc-avatar::before {
   background: linear-gradient(135deg, #1a1a1a, #000000) !important;
 }
 
-/* Header Arrow Button */
-.vfrc-header--button,
-button[class*="vfrc-header--button"],
-.vfrc-header button {
+/* Close Button (Down Arrow) */
+.vfrc-close-button,
+[class*="vfrc-close-button"],
+.vfrc-widget--close,
+[class*="vfrc-widget--close"],
+button[aria-label="Close"],
+.vfrc-widget--chat button[aria-label="Close"] {
   background-color: #000000 !important;
   border-radius: 50% !important;
-  width: 28px !important;
-  height: 28px !important;
+  width: 36px !important;
+  height: 36px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  position: absolute !important;
+  bottom: -18px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  z-index: 1000 !important;
+  cursor: pointer !important;
   transition: all 0.3s ease !important;
 }
 
-.vfrc-header--button svg,
-button[class*="vfrc-header--button"] svg,
-.vfrc-header button svg {
+.vfrc-close-button svg,
+[class*="vfrc-close-button"] svg,
+.vfrc-widget--close svg,
+[class*="vfrc-widget--close"] svg,
+button[aria-label="Close"] svg {
   fill: white !important;
   width: 16px !important;
   height: 16px !important;
 }
 
-.vfrc-header--button:hover,
-button[class*="vfrc-header--button"]:hover,
-.vfrc-header button:hover {
-  transform: scale(1.1) !important;
+.vfrc-close-button:hover,
+[class*="vfrc-close-button"]:hover,
+.vfrc-widget--close:hover,
+[class*="vfrc-widget--close"]:hover,
+button[aria-label="Close"]:hover {
+  transform: translateX(-50%) scale(1.1) !important;
   background-color: #333333 !important;
 }
 
@@ -205,15 +185,15 @@ button[class*="vfrc-header--button"]:hover,
 
 /* Proactive Message Styling */
 .vfrc-proactive,
-[class*="vfrc-proactive"] {
+[class*="vfrc-proactive"],
+.vfrc-proactive-message,
+[class*="vfrc-proactive-message"] {
   bottom: 90px !important; /* Increased spacing from launcher */
   right: 20px !important;
   max-width: 260px !important;
-  background: white !important;
+  background: transparent !important; /* Transparent background */
   border-radius: 12px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
   padding: 10px 15px !important;
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Simple Animations */
@@ -226,12 +206,6 @@ button[class*="vfrc-header--button"]:hover,
   0% { transform: scale(1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
   50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
   100% { transform: scale(1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
-}
-
-@keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 @keyframes messageIn {
@@ -252,16 +226,11 @@ button[class*="vfrc-header--button"]:hover,
     left: 0 !important;
   }
   
-  .vfrc-header,
-  [class*="vfrc-header"] {
-    border-radius: 0 !important;
-    position: sticky !important;
-    top: 0 !important;
-  }
-  
   /* Adjust proactive message position on mobile */
   .vfrc-proactive,
-  [class*="vfrc-proactive"] {
+  [class*="vfrc-proactive"],
+  .vfrc-proactive-message,
+  [class*="vfrc-proactive-message"] {
     bottom: 80px !important;
     right: 10px !important;
     max-width: 220px !important;
