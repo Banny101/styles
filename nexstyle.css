@@ -1,495 +1,490 @@
-/* Enhanced Tech-Themed CSS Effects for Voiceflow Chat */
+/* Enhanced Tech-Themed CSS for Voiceflow Chat */
 
 /* Base Styles */
 .voiceflow-chat {
-  box-shadow: #000000;
+  box-shadow: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
 }
 
-.vfrc-widget--chat {
-  animation: fadeInChat 1s ease-out;
+.voiceflow-chat.visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.vfrc-widget--chat,
+[class*="vfrc-widget--chat"] {
+  animation: none !important;
+  transform: translateY(20px) !important;
+  opacity: 0 !important;
+  transition: transform 0.5s ease, opacity 0.5s ease !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+}
+
+.vfrc-widget--chat.open,
+[class*="vfrc-widget--chat"].open {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
 }
 
 /* Header Styles */
-.vfrc-header {
-  background-color: #72727a;
-  height: 66px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
+.vfrc-header,
+[class*="vfrc-header"] {
+  background: linear-gradient(90deg, #000000, #1a1a1a, #000000) !important;
+  background-size: 200% 100% !important;
+  animation: gradientFlow 15s ease infinite !important;
+  height: auto !important;
+  border-radius: 16px 16px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 16px !important;
+  position: relative !important;
+  z-index: 1000 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
 }
 
-.vfrc-header--title {
-  color: #fffffffa;
-  font-size: 16px;
+.vfrc-header--title,
+[class*="vfrc-header--title"] {
+  font-size: 18px !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 4px !important;
 }
 
-.vfrc-assistant-info--title {
-  font-size: 20px;
-  color: #ffffff;
+.vfrc-header--subtitle,
+[class*="vfrc-header--subtitle"] {
+  font-size: 14px !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Avatar Styles - Enhanced with Tech Effect */
+.vfrc-avatar,
+[class*="vfrc-avatar"],
+.vfrc-assistant-info img,
+img.vfrc-avatar {
+  position: relative !important;
+  transition: all 0.3s ease !important;
+  z-index: 1 !important;
+  transform-style: preserve-3d !important;
+  perspective: 1000px !important;
+}
+
+.vfrc-avatar::before,
+[class*="vfrc-avatar"]::before,
+.vfrc-assistant-info img::before,
+img.vfrc-avatar::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: -2px !important;
+  border-radius: 50% !important;
+  padding: 2px !important;
+  background: linear-gradient(45deg, #000000, transparent, #000000, #333333) !important;
+  background-size: 300% 300% !important;
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0) !important;
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0) !important;
+  -webkit-mask-composite: xor !important;
+  mask-composite: exclude !important;
+  animation: rotateGradient 4s linear infinite,
+             glowPulse 2s ease-in-out infinite !important;
+  z-index: -1 !important;
+}
+
+.vfrc-avatar::after,
+[class*="vfrc-avatar"]::after,
+.vfrc-assistant-info img::after,
+img.vfrc-avatar::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: -4px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.1)) !important;
+  filter: blur(4px) !important;
+  animation: rotateShadow 3s linear infinite !important;
+  z-index: -2 !important;
 }
 
 /* Message Styles */
-.vfrc-message {
-  font-weight: 400;
-  position: relative;
+.vfrc-message,
+[class*="vfrc-message"] {
+  animation: messageIn 0.3s ease-out forwards !important;
+  animation-delay: calc(var(--message-index, 0) * 0.1s) !important;
+  max-width: 85% !important;
+  margin: 8px 12px !important;
 }
 
-.c-PJLV-gJqBfM-from-user {
-  background-color: #72727a;
-  color: #ffffff;
+.c-PJLV-gJqBfM-from-user,
+[class*="from-user"] {
+  background: linear-gradient(135deg, #000000, #1a1a1a) !important;
+  color: #ffffff !important;
+  border-radius: 16px 16px 4px 16px !important;
+  padding: 12px 16px !important;
+  margin: 4px 0 !important;
+  transform: translateY(0) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  position: relative !important;
+  margin-left: auto !important;
 }
 
-.c-PJLV-jueArD-from-system {
-  background-color: #f3f3f3;
-  color: #000000;
-  font-size: 15px;
+.c-PJLV-gJqBfM-from-user:hover,
+[class*="from-user"]:hover {
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.c-PJLV-jueArD-from-system,
+[class*="from-system"] {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  color: #000000 !important;
+  font-size: 15px !important;
+  border-radius: 16px 16px 16px 4px !important;
+  padding: 12px 16px !important;
+  margin: 4px 0 !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+  transform: translateY(0) !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  margin-right: auto !important;
+}
+
+.c-PJLV-jueArD-from-system:hover,
+[class*="from-system"]:hover {
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* Input Styles */
-.vfrc-chat-input.c-jzUcYW {
-  border: inherit;
-  border-radius: inherit;
+.vfrc-chat-input,
+[class*="vfrc-chat-input"] {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  margin: 15px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.04) !important;
 }
 
-.vfrc-chat-input textarea, 
-.vfrc-chat-input--button {
-  background-color: rgb(255, 255, 255) !important;
-  color: #000000;
-  border-color: 1px solid #72727a;
+.vfrc-chat-input:focus-within,
+[class*="vfrc-chat-input"]:focus-within {
+  border-color: rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+.vfrc-chat-input textarea,
+[class*="vfrc-chat-input"] textarea {
+  background-color: transparent !important;
+  color: #000000 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  padding: 12px !important;
 }
 
 /* Button Styles */
-.vfrc-button--secondary {
-  display: inline-block;
-  border: 1px solid rgba(0, 43, 69, 0.45);
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 20px;
-  padding: 9px 13px;
-  margin: 0px;
-  box-sizing: border-box;
-  background-color: transparent;
-  color: #002b45;
-  cursor: pointer;
-  transition: background-color 50ms ease-in-out 0s, border-color 100ms ease-in-out 0s;
-  white-space: normal;
-  text-align: left;
+.vfrc-button--primary,
+[class*="vfrc-button--primary"],
+.vfrc-button--secondary,
+[class*="vfrc-button--secondary"],
+.vfrc-button--danger,
+[class*="vfrc-button--danger"] {
+  background: linear-gradient(135deg, #000000, #1a1a1a) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 24px !important;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  font-weight: 600 !important;
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
-.vfrc-button--secondary:hover {
-  background-color: rgba(0, 43, 69, 0.1);
-  border-color: rgba(0, 43, 69, 0.7);
+.vfrc-button--primary:hover,
+[class*="vfrc-button--primary"]:hover,
+.vfrc-button--secondary:hover,
+[class*="vfrc-button--secondary"]:hover,
+.vfrc-button--danger:hover,
+[class*="vfrc-button--danger"]:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  background: linear-gradient(135deg, #1a1a1a, #000000) !important;
 }
 
-/* Prompt Styles */
-.vfrc-prompt {
-  background-color: #72727a;
+/* Header Arrow Button */
+.vfrc-header--button,
+button[class*="vfrc-header--button"],
+.vfrc-header button {
+  background-color: #000000 !important;
+  border-radius: 50% !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: all 0.3s ease !important;
 }
 
-.vfrc-prompt button {
-  color: #ffffff;
+.vfrc-header--button svg,
+button[class*="vfrc-header--button"] svg,
+.vfrc-header button svg {
+  fill: white !important;
+  width: 16px !important;
+  height: 16px !important;
 }
 
-.vfrc-prompt button:hover {
-  color: #efefef;
+.vfrc-header--button:hover,
+button[class*="vfrc-header--button"]:hover,
+.vfrc-header button:hover {
+  transform: scale(1.1) !important;
+  background-color: #333333 !important;
 }
 
-/* Footer Styles */
-.vfrc-footer {
-  background-color: #ffffff;
-  border-top: solid 1px rgb(255, 255, 255);
+/* Launcher Styles */
+.vfrc-launcher,
+[class*="vfrc-launcher"] {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  transform-style: preserve-3d !important;
+  perspective: 1000px !important;
 }
 
-/* Scrollbar Styles */
-::-webkit-scrollbar {
-  border-left: 1px solid #000000;
-  width: 8px;
+.vfrc-launcher img,
+[class*="vfrc-launcher"] img {
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 30px !important;
+  border: 2px solid #000000 !important;
+  background: transparent !important;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  animation: floatAndGlow 6s ease-in-out infinite !important;
+  transform-style: preserve-3d !important;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
+.vfrc-launcher img:hover,
+[class*="vfrc-launcher"] img:hover {
+  transform: 
+    scale(1.1) 
+    rotate(5deg) 
+    translateZ(10px) !important;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    0 0 0 4px rgba(0, 0, 0, 0.1),
+    0 0 30px rgba(0, 0, 0, 0.2) !important;
+  animation: none !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.5);
+.vfrc-launcher::before,
+[class*="vfrc-launcher"]::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: -10px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.1)) !important;
+  filter: blur(8px) !important;
+  animation: shadowPulse 3s ease-in-out infinite !important;
 }
 
-/* Launcher Styles - No Size Modifications */
-.vfrc-widget--launcher {
-  background-color: transparent;
+/* Tech Data Stream Effect */
+.vfrc-chat-dialog::before,
+[class*="vfrc-chat-dialog"]::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 20% !important;
+  width: 1px !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  animation: dataStream 7s linear infinite !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
 }
 
-.vfrc-launcher.c-bQoszf {
-  background: transparent;
-  border: none;
-  box-shadow: none;
+.vfrc-chat-dialog::after,
+[class*="vfrc-chat-dialog"]::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 65% !important;
+  width: 1px !important;
+  height: 100% !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  animation: dataStream 5s linear infinite !important;
+  animation-delay: 1s !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
 }
 
-.vfrc-launcher:hover {
-  background-color: transparent;
+/* Circuit Board Pattern */
+.c-PJLV-jueArD-from-system::before,
+[class*="from-system"]::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  pointer-events: none !important;
+  opacity: 0.05 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 18h12v4H0v-4zm28 0h12v4H28v-4zM18 0v12h4V0h-4zm0 28v12h4V28h-4z' fill='%23000000'/%3E%3Cpath d='M18 18h4v4h-4v-4zm4 4h4v4h-4v-4zm-4-4V14h4v4h-4zm4 4v4h-4v-4h4z' fill='%23000000'/%3E%3C/svg%3E") !important;
+  z-index: -1 !important;
+  animation: circuitBoardAnimation 20s linear infinite !important;
+  background-size: 40px 40px !important;
 }
 
-/* Large Image Styles */
-.c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: top center;
-  width: 300px;
-  border-radius: 0%;
-  height: 200px;
-  box-shadow: none;
+/* Animations */
+@keyframes rotateGradient {
+  0% { transform: rotate(0deg); background-position: 0% 0%; }
+  100% { transform: rotate(360deg); background-position: 100% 100%; }
 }
 
-/* Dropdown Extension Styles */
-.vfrc-system-response:has(.vfrc-message--extension-DropdownExtension) .vfrc-timestamp {
-  display: none;
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
 
-.vfrc-message--extension-DropdownExtension {
-  max-width: 280px;
-  width: 100%;
+@keyframes rotateShadow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
 }
 
-/* ===== ENHANCED TECH ANIMATIONS ===== */
-
-/* Enhanced Data Stream Effect */
-@keyframes dataStreamAnimation {
-  0% {
-    background-position: 0% 50%;
+@keyframes floatAndGlow {
+  0%, 100% { 
+    transform: translateY(0) rotate(0deg) translateZ(0);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.2),
+      0 0 0 2px rgba(0, 0, 0, 0.1),
+      0 0 20px rgba(0, 0, 0, 0.1);
   }
-  100% {
-    background-position: 100% 50%;
+  25% { 
+    transform: translateY(-5px) rotate(3deg) translateZ(5px);
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.3),
+      0 0 0 2px rgba(0, 0, 0, 0.15),
+      0 0 30px rgba(0, 0, 0, 0.2);
+  }
+  75% { 
+    transform: translateY(5px) rotate(-3deg) translateZ(5px);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.2),
+      0 0 0 2px rgba(0, 0, 0, 0.1),
+      0 0 20px rgba(0, 0, 0, 0.1);
   }
 }
 
-.vfrc-chat-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.vfrc-chat-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 255, 0, 0) 0%,
-    rgba(0, 255, 0, 0.05) 25%,
-    rgba(0, 255, 0, 0.2) 50%,
-    rgba(0, 255, 0, 0.05) 75%,
-    rgba(0, 255, 0, 0) 100%
-  );
-  background-size: 200% 100%;
-  animation: dataStreamAnimation 7s linear infinite;
-  z-index: 10;
-  opacity: 0.8;
-}
-
-/* Data Stream Particles */
-.vfrc-chat-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  background-image: 
-    radial-gradient(circle at 20% 30%, rgba(0, 255, 0, 0.3) 1px, transparent 1px),
-    radial-gradient(circle at 50% 80%, rgba(0, 255, 0, 0.3) 1px, transparent 1px),
-    radial-gradient(circle at 80% 10%, rgba(0, 255, 0, 0.3) 1px, transparent 1px);
-  background-size: 100px 100px;
-  animation: particleAnimation 10s linear infinite;
-  z-index: 9;
-}
-
-@keyframes particleAnimation {
-  0% {
-    background-position: 0px 0px;
+@keyframes shadowPulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.2;
   }
-  100% {
-    background-position: 100px 100px;
+  50% { 
+    transform: scale(1.1);
+    opacity: 0.4;
   }
 }
 
-/* Enhanced Glowing Border Effect */
-@keyframes glowingBorder {
-  0% {
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-    border-color: rgba(0, 255, 255, 0.7);
+@keyframes dataStream {
+  0% { 
+    height: 0;
+    opacity: 0;
+    transform: translateY(-20px);
   }
-  50% {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
-    border-color: rgba(0, 255, 255, 1);
+  20% { 
+    opacity: 0.5;
   }
-  100% {
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-    border-color: rgba(0, 255, 255, 0.7);
+  100% { 
+    height: 100%;
+    opacity: 0;
+    transform: translateY(0);
   }
 }
 
-.vfrc-chat-window {
-  animation: glowingBorder 3s infinite alternate;
-  border: 1px solid rgba(0, 255, 255, 0.3);
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* Enhanced Circuit Board Pattern Background */
-.vfrc-system-response .vfrc-message {
-  position: relative;
-}
-
-.vfrc-system-response .vfrc-message::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  opacity: 0.1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 18h12v4H0v-4zm28 0h12v4H28v-4zM18 0v12h4V0h-4zm0 28v12h4V28h-4z' fill='%2300ff00'/%3E%3Cpath d='M18 18h4v4h-4v-4zm4 4h4v4h-4v-4zm-4-4V14h4v4h-4zm4 4v4h-4v-4h4z' fill='%2300ff00'/%3E%3C/svg%3E");
-  z-index: -1;
-  animation: circuitBoardAnimation 20s linear infinite;
-  background-size: 40px 40px;
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes circuitBoardAnimation {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 40px 40px;
-  }
-}
-
-/* Enhanced Launcher Pulse Animation - No Size Changes */
-@keyframes launcherPulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
-  }
-  70% {
-    transform: scale(1.15);
-    box-shadow: 0 0 0 15px rgba(0, 255, 0, 0);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
-  }
-}
-
-.vfrc-launcher-button {
-  animation: launcherPulse 2.5s infinite;
-  position: relative;
-}
-
-/* Add a subtle glow effect to the launcher */
-.vfrc-launcher-button::before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 255, 0, 0.2) 0%, rgba(0, 255, 0, 0) 70%);
-  z-index: -1;
-  animation: launcherGlow 2.5s infinite alternate;
-}
-
-@keyframes launcherGlow {
-  0% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-/* Add subtle scan lines for a retro tech feel */
-.vfrc-chat-window::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    rgba(0, 255, 0, 0.03) 50%
-  );
-  background-size: 100% 4px;
-  z-index: 100;
-  opacity: 0.3;
-}
-
-/* Vertical Data Stream Animation */
-@keyframes vf-stream {
-  0% { transform: translateY(-100%); opacity: 0; }
-  10% { opacity: 0.7; }
-  90% { opacity: 0.7; }
-  100% { transform: translateY(100%); opacity: 0; }
-}
-
-/* Additional Glowing Widget Border */
-.vfrc-widget {
-  border-radius: 16px;
-  animation: vf-glow 2s infinite alternate;
-}
-@keyframes vf-glow {
-  from { box-shadow: 0 0 5px rgba(0, 255, 170, 0.5); }
-  to { box-shadow: 0 0 15px rgba(0, 255, 170, 0.9); }
-}
-
-/* Typing Animation Effect */
-@keyframes vf-typing {
-  from { width: 0 }
-  to { width: 100% }
-}
-@keyframes vf-blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: rgba(0, 255, 170, 0.7); }
-}
-
-/* Apply typing animation to system messages */
-.vfrc-system-response .vfrc-message-text {
-  display: inline-block;
-  overflow: hidden;
-  border-right: 3px solid transparent;
-  white-space: nowrap;
-  animation: 
-    vf-typing 3.5s steps(40, end),
-    vf-blink-caret 0.75s step-end infinite;
-  animation-fill-mode: forwards;
-}
-
-/* Circuit Board Pattern Overlay */
-.vf-circuit-pattern {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0.1;
-  z-index: 0;
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+CiAgPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBmZmFhIiBzdHJva2Utd2lkdGg9IjEiIGQ9Ik0xMCwxMCBMOTAsOTAgTTIwLDEwIEw5MCwyMCBNMTAsOTAgTDgwLDIwIE01MCw1MCBMMTAwLDAgTTUwLDUwIEwwLDEwMCBNNTAsNTAgTDEwMCwxMDAgTTUwLDUwIEwwLDAiLz4KICA8Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIyIiBmaWxsPSIjMDBmZmFhIi8+CiAgPGNpcmNsZSBjeD0iOTAiIGN5PSI5MCIgcj0iMiIgZmlsbD0iIzAwZmZhYSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjMiIGZpbGw9IiMwMGZmYWEiLz4KPC9zdmc+');
-  background-size: 100px 100px;
-}
-
-/* Add circuit pattern to chat container */
-.vfrc-chat-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.05;
-  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+CiAgPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMDBmZmFhIiBzdHJva2Utd2lkdGg9IjEiIGQ9Ik0xMCwxMCBMOTAsOTAgTTIwLDEwIEw5MCwyMCBNMTAsOTAgTDgwLDIwIE01MCw1MCBMMTAwLDAgTTUwLDUwIEwwLDEwMCBNNTAsNTAgTDEwMCwxMDAgTTUwLDUwIEwwLDAiLz4KICA8Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIyIiBmaWxsPSIjMDBmZmFhIi8+CiAgPGNpcmNsZSBjeD0iOTAiIGN5PSI5MCIgcj0iMiIgZmlsbD0iIzAwZmZhYSIvPgogIDxjaXJjbGUgY3g9IjUwIiBjeT0iNTAiIHI9IjMiIGZpbGw9IiMwMGZmYWEiLz4KPC9zdmc+');
-}
-
-/* Header Animation */
-.vfrc-chat-title {
-  animation: fadeInDown 0.5s ease-out;
-}
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Agent Image Animation */
-.vfrc-avatar-image {
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-/* Base Animation */
-@keyframes fadeInChat {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Data Stream Element Animation */
-.vf-data-stream {
-  position: absolute;
-  width: 2px;
-  height: 50px;
-  background-color: rgba(0, 255, 170, 0.7);
-  animation: vf-stream 3s linear infinite;
-}
-
-/* Create multiple data stream elements */
-.vfrc-chat-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 20%;
-  width: 1px;
-  height: 100%;
-  background-color: rgba(0, 255, 170, 0.2);
-  animation: vf-stream 7s linear infinite;
-}
-
-.vfrc-chat-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 65%;
-  width: 1px;
-  height: 100%;
-  background-color: rgba(0, 255, 170, 0.2);
-  animation: vf-stream 5s linear infinite;
-  animation-delay: 1s;
-}
-
-/* Accessibility - Reduce Motion */
-@media (prefers-reduced-motion: reduce) {
-  .vfrc-widget, .vfrc-avatar-image, .vfrc-launcher-button,
-  .vfrc-chat-container::before, .vfrc-chat-container::after,
-  .vfrc-system-response .vfrc-message::before,
-  .vfrc-chat-window, .vfrc-system-response .vfrc-message-text {
-    animation: none !important;
-    transition: none !important;
-  }
+  from { background-position: 0 0; }
+  to { background-position: 40px 40px; }
 }
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .vfrc-message--extension-DropdownExtension {
-    max-width: 220px;
-    width: 100%;
+  .vfrc-widget--chat,
+  [class*="vfrc-widget--chat"] {
+    width: 100% !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
   }
   
-  .vfrc-widget--chat {
-    border-radius: 20px;
+  .vfrc-header,
+  [class*="vfrc-header"] {
+    border-radius: 0 !important;
+    position: sticky !important;
+    top: 0 !important;
   }
   
-  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-    width: 100%;
-    height: 150px;
+  .vfrc-chat-input,
+  [class*="vfrc-chat-input"] {
+    position: sticky !important;
+    bottom: 0 !important;
+    padding: 10px !important;
+    background: #ffffff !important;
   }
 }
 
-@media (max-width: 480px) {
-  .c-kIbiaN.c-kIbiaN-eyfkxi-size-large {
-    width: 100%;
-    height: 100px;
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
