@@ -1,160 +1,20 @@
-/* Enhanced Tech-Themed CSS for Voiceflow Chat */
+/* Simplified CSS for Voiceflow Chat - Focus on Launcher and Widget Shape */
 
-/* Base Styles */
-.voiceflow-chat {
-  box-shadow: none !important;
-}
-
+/* Widget Shape */
 .vfrc-widget--chat,
 [class*="vfrc-widget--chat"] {
-  border-radius: 16px !important;
+  border-radius: 20px !important;
   overflow: hidden !important;
-  background: rgba(255, 255, 255, 0.98) !important;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.12),
-    0 2px 4px rgba(0, 0, 0, 0.05) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Avatar Styles - Enhanced with Tech Effect */
-.vfrc-avatar,
-[class*="vfrc-avatar"],
-.vfrc-assistant-info img,
-img.vfrc-avatar {
-  position: relative !important;
-  transition: all 0.3s ease !important;
-  z-index: 1 !important;
-}
-
-.vfrc-avatar::before,
-[class*="vfrc-avatar"]::before,
-.vfrc-assistant-info img::before,
-img.vfrc-avatar::before {
-  content: '' !important;
-  position: absolute !important;
-  inset: -2px !important;
-  border-radius: 50% !important;
-  padding: 2px !important;
-  background: linear-gradient(45deg, #000000, transparent, #000000) !important;
-  -webkit-mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0) !important;
-  mask: 
-    linear-gradient(#fff 0 0) content-box, 
-    linear-gradient(#fff 0 0) !important;
-  -webkit-mask-composite: xor !important;
-  mask-composite: exclude !important;
-  animation: rotateGradient 4s linear infinite !important;
-  z-index: -1 !important;
-}
-
-/* Message Styles */
-.vfrc-message,
-[class*="vfrc-message"] {
-  animation: messageIn 0.3s ease-out forwards !important;
-  max-width: 85% !important;
-  margin: 8px 12px !important;
-}
-
-.c-PJLV-gJqBfM-from-user,
-[class*="from-user"] {
-  background: linear-gradient(135deg, #000000, #1a1a1a) !important;
-  color: #ffffff !important;
-  border-radius: 16px 16px 4px 16px !important;
-  padding: 12px 16px !important;
-  margin: 4px 0 !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-  position: relative !important;
-  margin-left: auto !important;
-}
-
-.c-PJLV-jueArD-from-system,
-[class*="from-system"] {
-  background: #ffffff !important; /* White background for agent messages */
-  color: #000000 !important;
-  font-size: 15px !important;
-  border-radius: 16px 16px 16px 4px !important;
-  padding: 12px 16px !important;
-  margin: 4px 0 !important;
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
-  position: relative !important;
-  margin-right: auto !important;
-}
-
-/* Button Styles */
-.vfrc-button--primary,
-[class*="vfrc-button--primary"],
-.vfrc-button--secondary,
-[class*="vfrc-button--secondary"],
-.vfrc-button--danger,
-[class*="vfrc-button--danger"] {
-  background: linear-gradient(135deg, #000000, #1a1a1a) !important;
-  color: #ffffff !important;
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 3px 8px rgba(0, 0, 0, 0.1) !important;
   border: none !important;
-  border-radius: 12px !important;
-  padding: 12px 24px !important;
-  transition: all 0.3s ease !important;
-  font-weight: 600 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+  will-change: transform !important;
 }
 
-.vfrc-button--primary:hover,
-[class*="vfrc-button--primary"]:hover,
-.vfrc-button--secondary:hover,
-[class*="vfrc-button--secondary"]:hover,
-.vfrc-button--danger:hover,
-[class*="vfrc-button--danger"]:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-  background: linear-gradient(135deg, #1a1a1a, #000000) !important;
-}
-
-/* Close Button (Down Arrow) */
-.vfrc-close-button,
-[class*="vfrc-close-button"],
-.vfrc-widget--close,
-[class*="vfrc-widget--close"],
-button[aria-label="Close"],
-.vfrc-widget--chat button[aria-label="Close"] {
-  background-color: #000000 !important;
-  border-radius: 50% !important;
-  width: 36px !important;
-  height: 36px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  position: absolute !important;
-  bottom: -18px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
-  z-index: 1000 !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
-}
-
-.vfrc-close-button svg,
-[class*="vfrc-close-button"] svg,
-.vfrc-widget--close svg,
-[class*="vfrc-widget--close"] svg,
-button[aria-label="Close"] svg {
-  fill: white !important;
-  width: 16px !important;
-  height: 16px !important;
-}
-
-.vfrc-close-button:hover,
-[class*="vfrc-close-button"]:hover,
-.vfrc-widget--close:hover,
-[class*="vfrc-widget--close"]:hover,
-button[aria-label="Close"]:hover {
-  transform: translateX(-50%) scale(1.1) !important;
-  background-color: #333333 !important;
-}
-
-/* Launcher Styles */
+/* Enhanced Launcher Animations */
 .vfrc-launcher,
 [class*="vfrc-launcher"] {
   background-color: transparent !important;
@@ -162,6 +22,7 @@ button[aria-label="Close"]:hover {
   border: none !important;
   bottom: 20px !important;
   right: 20px !important;
+  z-index: 9999 !important;
 }
 
 .vfrc-launcher img,
@@ -171,77 +32,94 @@ button[aria-label="Close"]:hover {
   border-radius: 30px !important;
   border: 2px solid #000000 !important;
   background: transparent !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
-  transition: all 0.3s ease !important;
-  animation: pulse 3s infinite !important;
+  box-shadow: 
+    0 6px 16px rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important; /* Bouncy effect */
+  animation: launcherAnimation 6s infinite !important;
+  transform-style: preserve-3d !important;
+  perspective: 1000px !important;
 }
 
 .vfrc-launcher img:hover,
 [class*="vfrc-launcher"] img:hover {
-  transform: scale(1.1) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+  transform: 
+    scale(1.15) 
+    rotate(10deg) 
+    translateZ(5px) !important;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.25),
+    0 0 0 4px rgba(0, 0, 0, 0.1) !important;
   animation: none !important;
 }
 
-/* Proactive Message Styling */
-.vfrc-proactive,
-[class*="vfrc-proactive"],
-.vfrc-proactive-message,
-[class*="vfrc-proactive-message"] {
-  bottom: 90px !important; /* Increased spacing from launcher */
-  right: 20px !important;
-  max-width: 260px !important;
-  background: transparent !important; /* Transparent background */
-  border-radius: 12px !important;
-  padding: 10px 15px !important;
+/* Launcher Glow Effect */
+.vfrc-launcher::before,
+[class*="vfrc-launcher"]::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: -10px !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.1) 0%, transparent 70%) !important;
+  filter: blur(5px) !important;
+  animation: glowPulse 3s ease-in-out infinite !important;
+  z-index: -1 !important;
 }
 
-/* Simple Animations */
-@keyframes rotateGradient {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Launcher Animations */
+@keyframes launcherAnimation {
+  0% { 
+    transform: translateY(0) rotate(0deg); 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  20% { 
+    transform: translateY(-8px) rotate(5deg); 
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+  }
+  40% { 
+    transform: translateY(0) rotate(0deg); 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  60% { 
+    transform: translateY(-4px) rotate(-5deg); 
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+  }
+  80% { 
+    transform: translateY(0) rotate(0deg); 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+  100% { 
+    transform: translateY(0) rotate(0deg); 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
-  50% { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); }
-  100% { transform: scale(1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+@keyframes glowPulse {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
 }
 
-@keyframes messageIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive Styles */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   .vfrc-widget--chat,
   [class*="vfrc-widget--chat"] {
-    width: 100% !important;
-    height: 100vh !important;
-    margin: 0 !important;
     border-radius: 0 !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-  }
-  
-  /* Adjust proactive message position on mobile */
-  .vfrc-proactive,
-  [class*="vfrc-proactive"],
-  .vfrc-proactive-message,
-  [class*="vfrc-proactive-message"] {
-    bottom: 80px !important;
-    right: 10px !important;
-    max-width: 220px !important;
   }
 }
 
+/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  .vfrc-launcher img,
+  [class*="vfrc-launcher"] img,
+  .vfrc-launcher::before,
+  [class*="vfrc-launcher"]::before {
+    animation: none !important;
+    transition: none !important;
   }
 }
