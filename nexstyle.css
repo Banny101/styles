@@ -1,53 +1,54 @@
-/* Enhanced CSS for Voiceflow Chat - Bold Widget Shape and Launcher Animations */
+/* Enhanced CSS for Voiceflow Chat - Focus on Header and Proactive Messages */
 
-/* Widget Shape - More Dramatic */
-.vfrc-widget--chat,
-[class*="vfrc-widget--chat"] {
-  border-radius: 24px !important; /* More pronounced rounded corners */
-  overflow: hidden !important;
-  box-shadow: 
-    0 15px 40px rgba(0, 0, 0, 0.2),
-    0 5px 15px rgba(0, 0, 0, 0.15) !important; /* Deeper shadow */
-  border: 2px solid #000000 !important; /* Bold black border */
-  transform: translateZ(0) !important;
-  backface-visibility: hidden !important;
-  will-change: transform !important;
+/* Remove proactive messages when chat is open */
+.vfrc-widget--chat.open ~ .vfrc-proactive,
+.vfrc-widget--chat.open ~ [class*="vfrc-proactive"],
+.vfrc-widget--chat.open ~ div[role="dialog"][aria-live="polite"],
+.voiceflow-chat.visible .vfrc-proactive,
+.voiceflow-chat.visible [class*="vfrc-proactive"],
+.voiceflow-chat.visible div[role="dialog"][aria-live="polite"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-/* Close Button (Down Arrow) - Bold Black */
-.vfrc-close-button,
-[class*="vfrc-close-button"],
-.vfrc-widget--close,
-[class*="vfrc-widget--close"],
-button[aria-label="Close"],
-.vfrc-widget--chat button[aria-label="Close"] {
+/* Thinner Header */
+.vfrc-header,
+[class*="vfrc-header"],
+header[class*="vfrc"] {
+  height: 48px !important; /* Thinner header */
+  min-height: 48px !important;
+  max-height: 48px !important;
   background-color: #000000 !important;
-  border-radius: 50% !important;
-  width: 40px !important; /* Larger button */
-  height: 40px !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  position: absolute !important;
-  bottom: -20px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  padding: 0 16px !important;
+  position: relative !important;
   z-index: 1000 !important;
-  cursor: pointer !important;
-  transition: all 0.3s ease !important;
 }
 
-.vfrc-close-button svg,
-[class*="vfrc-close-button"] svg,
-.vfrc-widget--close svg,
-[class*="vfrc-widget--close"] svg,
-button[aria-label="Close"] svg {
-  fill: white !important;
-  width: 20px !important; /* Larger icon */
-  height: 20px !important;
-  stroke: white !important;
-  stroke-width: 2px !important; /* Bolder lines */
+/* Header Title Styling */
+.vfrc-header--title,
+[class*="vfrc-header--title"],
+.vfrc-assistant-info--title,
+[class*="vfrc-assistant-info--title"] {
+  font-size: 16px !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+
+/* Fix Proactive Message Positioning */
+.vfrc-proactive,
+[class*="vfrc-proactive"],
+.vfrc-proactive-message,
+[class*="vfrc-proactive-message"],
+div[role="dialog"][aria-live="polite"] {
+  bottom: 100px !important; /* Much more space from launcher */
+  right: 20px !important;
+  max-width: 260px !important;
+  position: fixed !important;
+  z-index: 9998 !important; /* Below launcher but above other content */
 }
 
 /* Enhanced Launcher Animations */
@@ -102,17 +103,40 @@ button[aria-label="Close"] svg {
   z-index: -1 !important;
 }
 
-/* Fix Proactive Message Positioning */
-.vfrc-proactive,
-[class*="vfrc-proactive"],
-.vfrc-proactive-message,
-[class*="vfrc-proactive-message"],
-div[role="dialog"][aria-live="polite"] {
-  bottom: 100px !important; /* Much more space from launcher */
-  right: 20px !important;
-  max-width: 260px !important;
-  position: fixed !important;
-  z-index: 9998 !important; /* Below launcher but above other content */
+/* Close Button (Down Arrow) - Bold Black */
+.vfrc-close-button,
+[class*="vfrc-close-button"],
+.vfrc-widget--close,
+[class*="vfrc-widget--close"],
+button[aria-label="Close"],
+.vfrc-widget--chat button[aria-label="Close"] {
+  background-color: #000000 !important;
+  border-radius: 50% !important;
+  width: 40px !important; /* Larger button */
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  bottom: -20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  z-index: 1000 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+.vfrc-close-button svg,
+[class*="vfrc-close-button"] svg,
+.vfrc-widget--close svg,
+[class*="vfrc-widget--close"] svg,
+button[aria-label="Close"] svg {
+  fill: white !important;
+  width: 20px !important; /* Larger icon */
+  height: 20px !important;
+  stroke: white !important;
+  stroke-width: 2px !important; /* Bolder lines */
 }
 
 /* Launcher Animations */
@@ -156,13 +180,6 @@ div[role="dialog"][aria-live="polite"] {
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .vfrc-widget--chat,
-  [class*="vfrc-widget--chat"] {
-    border-radius: 0 !important;
-    border-left: none !important;
-    border-right: none !important;
-  }
-  
   /* Adjust proactive message position on mobile */
   .vfrc-proactive,
   [class*="vfrc-proactive"],
