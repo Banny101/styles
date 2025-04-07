@@ -1662,10 +1662,21 @@ export const TransitionAnimationExtension = {
     const duration = parseInt(trace.payload?.duration) || 2000;
     const completionDelay = 800;
     const actualDuration = duration - completionDelay;
+    const customText = trace.payload?.text || "Processing";
+    const customCompleteText = trace.payload?.completeText || "Complete";
+    const customColor = trace.payload?.color || "#34D399";
     
-    const disableInputs = (disable) => {
+    const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container for more comprehensive control
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
         const elements = {
           textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
           primaryButtons: chatDiv.shadowRoot.querySelectorAll(
@@ -1674,6 +1685,15 @@ export const TransitionAnimationExtension = {
           secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".vfrc-chat-input--button.c-iSWgdS"
           ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
         };
 
         Object.values(elements).forEach(elementList => {
@@ -1681,13 +1701,36 @@ export const TransitionAnimationExtension = {
             el.disabled = disable;
             el.style.pointerEvents = disable ? "none" : "auto";
             el.style.opacity = disable ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = disable ? "#f5f5f5" : "";
+            }
           });
         });
       }
     };
 
+    // Hide any scroll indicators that might be present
+    const hideScrollIndicators = () => {
+      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+        .forEach(el => {
+          el.style.display = 'none';
+        });
+    };
+
     const animationContainer = document.createElement("div");
     animationContainer.className = "_1ddzqsn7";
+
+    // Convert hex to rgba for background
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    // Calculate gradient colors
+    const baseColor = customColor;
+    const darkerColor = baseColor.replace(/[0-9a-f]{2}$/i, '69'); // Darken the color
 
     animationContainer.innerHTML = `
       <style>
@@ -1703,11 +1746,12 @@ export const TransitionAnimationExtension = {
           position: relative;
           height: 36px;
           width: 100%;
-          border-radius: 4px;
+          border-radius: 8px;
           margin: 0;
           padding: 0;
-          background: rgba(52, 211, 153, 0.1);
+          background: ${hexToRgba(baseColor, 0.1)};
           overflow: hidden;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .liquid-fill {
@@ -1716,7 +1760,7 @@ export const TransitionAnimationExtension = {
           left: 0;
           width: 0%;
           height: 100%;
-          background: linear-gradient(90deg, #34D399, #059669);
+          background: linear-gradient(90deg, ${baseColor}, ${darkerColor});
           animation: fillProgress ${actualDuration}ms linear forwards;
         }
 
@@ -1831,7 +1875,7 @@ export const TransitionAnimationExtension = {
         }
 
         .success .liquid-fill {
-          background: linear-gradient(90deg, #059669, #047857);
+          background: linear-gradient(90deg, ${darkerColor}, ${darkerColor.replace(/[0-9a-f]{2}$/i, '57')});
           transition: background 0.3s ease;
         }
 
@@ -1857,6 +1901,12 @@ export const TransitionAnimationExtension = {
             transform: rotate(45deg) scale(1);
           }
         }
+        
+        /* Remove any down arrows that might be added by the chat UI */
+        [class*="scroll-down"],
+        [class*="scroll-button"] {
+          display: none !important;
+        }
       </style>
 
       <div class="processing-container">
@@ -1874,25 +1924,50 @@ export const TransitionAnimationExtension = {
             `).join('')}
           </div>
         </div>
-        <div class="processing-content">Processing</div>
+        <div class="processing-content">${customText}</div>
       </div>
     `;
 
     const container = animationContainer.querySelector('.processing-container');
     const processingText = animationContainer.querySelector('.processing-content');
 
-    disableInputs(true);
+    // Hide scroll indicators
+    hideScrollIndicators();
+    
+    // Disable inputs
+    toggleInputs(true);
+    
+    // Add to DOM
     element.appendChild(animationContainer);
 
+    // Set up cleanup function
+    const cleanup = () => {
+      // Re-enable inputs
+      toggleInputs(false);
+      // Hide scroll indicators again
+      hideScrollIndicators();
+    };
+
+    // Animation completion
     setTimeout(() => {
       container.classList.add('success');
-      processingText.innerHTML = 'Complete <span class="checkmark"></span>';
+      processingText.innerHTML = `${customCompleteText} <span class="checkmark"></span>`;
       
       setTimeout(() => {
-        disableInputs(false);
-        window.voiceflow.chat.interact({ type: "complete" });
+        cleanup();
+        window.voiceflow.chat.interact({ 
+          type: "complete",
+          payload: {
+            completed: true,
+            duration: duration,
+            timestamp: Date.now()
+          }
+        });
       }, completionDelay);
     }, actualDuration);
+
+    // Return cleanup function in case component is removed before animation completes
+    return cleanup;
   }
 };
 
