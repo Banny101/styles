@@ -346,9 +346,17 @@ export const DropdownExtension = {
   match: ({ trace }) =>
     trace.type === "ext_dropdown" || trace.payload?.name === "ext_dropdown",
   render: ({ trace, element }) => {
-    const disableFooterInputs = (isDisabled) => {
+    const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container for more comprehensive control
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
         const elements = {
           textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
           primaryButtons: chatDiv.shadowRoot.querySelectorAll(
@@ -357,15 +365,24 @@ export const DropdownExtension = {
           secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".vfrc-chat-input--button.c-iSWgdS"
           ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
         };
 
         Object.values(elements).forEach(elementList => {
           elementList.forEach(el => {
-            el.disabled = isDisabled;
-            el.style.pointerEvents = isDisabled ? "none" : "auto";
-            el.style.opacity = isDisabled ? "0.5" : "1";
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
             if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+              el.style.backgroundColor = disable ? "#f5f5f5" : "";
             }
           });
         });
@@ -539,7 +556,6 @@ export const DropdownExtension = {
     </div>
   `;  
 
-    // Rest of your code stays the same...
     const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
     const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
     const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
@@ -670,8 +686,8 @@ export const DropdownExtension = {
       // Disable submit button
       submitButton.disabled = true;
       
-      // Re-enable Voiceflow's footer first
-      disableFooterInputs(false);
+      // Re-enable Voiceflow's inputs
+      toggleInputs(false);
       
       // Remove submit button with a slight delay
       setTimeout(() => {
@@ -691,6 +707,9 @@ export const DropdownExtension = {
       dropdownSearch.removeEventListener("click", showDropup);
       dropdownSearch.removeEventListener("input", handleInput);
       dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
+      
+      // Make sure inputs are re-enabled when component is removed
+      toggleInputs(false);
     };
 
     // Adjust size when the window is resized
@@ -705,7 +724,9 @@ export const DropdownExtension = {
     resizeObserver.observe(element);
 
     element.appendChild(formContainer);
-    disableFooterInputs(true);
+    
+    // Disable inputs when component is mounted
+    toggleInputs(true);
 
     return () => {
       cleanup();
