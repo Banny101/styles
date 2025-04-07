@@ -1486,9 +1486,17 @@ export const DelayEffectExtension = {
       );
 
       // Function to disable/enable chat inputs
-      const disableInputs = (isDisabled) => {
+      const toggleInputs = (disable) => {
         const chatDiv = document.getElementById("voiceflow-chat");
         if (chatDiv?.shadowRoot) {
+          // Disable/enable the entire input container for more comprehensive control
+          const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+          if (inputContainer) {
+            inputContainer.style.opacity = disable ? "0.5" : "1";
+            inputContainer.style.pointerEvents = disable ? "none" : "auto";
+          }
+
+          // Disable/enable specific elements
           const elements = {
             textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
             primaryButtons: chatDiv.shadowRoot.querySelectorAll(
@@ -1497,15 +1505,24 @@ export const DelayEffectExtension = {
             secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
               ".vfrc-chat-input--button.c-iSWgdS"
             ),
+            voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+              "[aria-label='Voice input']"
+            ),
+            sendButtons: chatDiv.shadowRoot.querySelectorAll(
+              "[aria-label='Send message']"
+            ),
+            attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+              "[aria-label='Add attachment']"
+            )
           };
 
           Object.values(elements).forEach(elementList => {
             elementList.forEach(el => {
-              el.disabled = isDisabled;
-              el.style.pointerEvents = isDisabled ? "none" : "auto";
-              el.style.opacity = isDisabled ? "0.5" : "1";
+              el.disabled = disable;
+              el.style.pointerEvents = disable ? "none" : "auto";
+              el.style.opacity = disable ? "0.5" : "1";
               if (el.tagName.toLowerCase() === "textarea") {
-                el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+                el.style.backgroundColor = disable ? "#f5f5f5" : "";
               }
             });
           });
@@ -1520,28 +1537,117 @@ export const DelayEffectExtension = {
           });
       };
 
+      // Show optional visual indicator
+      const showDelayIndicator = (duration) => {
+        const chatContainer = document.querySelector('.vfrc-chat-messages');
+        if (!chatContainer) return null;
+        
+        const indicatorElement = document.createElement('div');
+        indicatorElement.className = 'delay-indicator';
+        indicatorElement.innerHTML = `
+          <style>
+            .delay-indicator {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 8px 12px;
+              margin: 8px 0;
+              background: rgba(84, 88, 87, 0.05);
+              border-radius: 8px;
+              font-family: 'Montserrat', sans-serif;
+              font-size: 13px;
+              color: #72727a;
+            }
+            
+            .delay-progress {
+              width: 100%;
+              height: 3px;
+              background: #e2e8f0;
+              border-radius: 2px;
+              margin-top: 6px;
+              overflow: hidden;
+            }
+            
+            .delay-progress-bar {
+              height: 100%;
+              background: #72727a;
+              width: 100%;
+              transition: width linear;
+              transform-origin: left;
+            }
+            
+            @keyframes pulse {
+              0% { opacity: 0.6; }
+              50% { opacity: 1; }
+              100% { opacity: 0.6; }
+            }
+            
+            .delay-indicator-text {
+              animation: pulse 2s infinite;
+            }
+          </style>
+          <div>
+            <div class="delay-indicator-text">Processing...</div>
+            <div class="delay-progress">
+              <div class="delay-progress-bar"></div>
+            </div>
+          </div>
+        `;
+        
+        chatContainer.appendChild(indicatorElement);
+        
+        // Animate progress bar
+        const progressBar = indicatorElement.querySelector('.delay-progress-bar');
+        if (progressBar) {
+          progressBar.style.width = '100%';
+          setTimeout(() => {
+            progressBar.style.width = '0%';
+            progressBar.style.transition = `width ${duration}ms linear`;
+          }, 50);
+        }
+        
+        return indicatorElement;
+      };
+
       // Initial cleanup and disable inputs
       hideScrollIndicators();
-      disableInputs(true);
+      toggleInputs(true);
+      
+      // Show delay indicator if delay is significant (over 1 second)
+      const indicator = delay > 1000 ? showDelayIndicator(delay) : null;
 
       // Execute delay
       await new Promise(resolve => setTimeout(resolve, delay));
       
+      // Remove indicator if it exists
+      if (indicator) {
+        indicator.remove();
+      }
+      
       // Cleanup and re-enable inputs
       hideScrollIndicators();
-      disableInputs(false);
+      toggleInputs(false);
 
       // Move to next block
       window.voiceflow.chat.interact({ 
         type: "complete",
-        payload: { delay: delay }
+        payload: { 
+          delay: delay,
+          completed_at: new Date().toISOString()
+        }
       });
 
     } catch (error) {
       console.error('DelayEffect Extension Error:', error);
       // Re-enable inputs even if there's an error
-      disableInputs(false);
-      window.voiceflow.chat.interact({ type: "complete" });
+      toggleInputs(false);
+      window.voiceflow.chat.interact({ 
+        type: "complete",
+        payload: {
+          error: true,
+          message: error.message
+        }
+      });
     }
   }
 };
