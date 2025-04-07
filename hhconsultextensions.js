@@ -745,9 +745,17 @@ export const MultiSelectExtension = {
     const options = trace.payload?.options || [];
     const maxSelections = trace.payload?.maxSelections || options.length;
 
-    const disableFooterInputs = (isDisabled) => {
+    const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container for more comprehensive control
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
         const elements = {
           textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
           primaryButtons: chatDiv.shadowRoot.querySelectorAll(
@@ -756,15 +764,24 @@ export const MultiSelectExtension = {
           secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".vfrc-chat-input--button.c-iSWgdS"
           ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
         };
 
         Object.values(elements).forEach(elementList => {
           elementList.forEach(el => {
-            el.disabled = isDisabled;
-            el.style.pointerEvents = isDisabled ? "none" : "auto";
-            el.style.opacity = isDisabled ? "0.5" : "1";
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
             if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+              el.style.backgroundColor = disable ? "#f5f5f5" : "";
             }
           });
         });
@@ -954,6 +971,7 @@ export const MultiSelectExtension = {
     let isSubmitted = false;
     const errorMessage = multiSelectContainer.querySelector(".error-message");
     const submitButton = multiSelectContainer.querySelector(".submit-button");
+    const cancelButton = multiSelectContainer.querySelector(".cancel-button");
     const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
 
     const updateSubmitButton = () => {
@@ -998,7 +1016,7 @@ export const MultiSelectExtension = {
 
       isSubmitted = true;
       
-      // Disable all inputs
+      // Disable all inputs in the component
       checkboxes.forEach(checkbox => {
         checkbox.disabled = true;
         checkbox.parentElement.style.opacity = "0.7";
@@ -1007,8 +1025,11 @@ export const MultiSelectExtension = {
       
       submitButton.disabled = true;
       submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
       
-      disableFooterInputs(false);
+      // Re-enable chat inputs
+      toggleInputs(false);
 
       window.voiceflow.chat.interact({
         type: "complete",
@@ -1016,10 +1037,23 @@ export const MultiSelectExtension = {
       });
     });
 
-    multiSelectContainer.querySelector(".cancel-button").addEventListener("click", () => {
+    cancelButton.addEventListener("click", () => {
       if (isSubmitted) return;
       
-      disableFooterInputs(false);
+      // Disable component inputs
+      checkboxes.forEach(checkbox => {
+        checkbox.disabled = true;
+        checkbox.parentElement.style.opacity = "0.7";
+        checkbox.parentElement.style.cursor = "not-allowed";
+      });
+      
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
+      
+      // Re-enable chat inputs
+      toggleInputs(false);
       
       window.voiceflow.chat.interact({
         type: "cancel",
@@ -1027,9 +1061,20 @@ export const MultiSelectExtension = {
       });
     });
 
+    // Cleanup function to ensure inputs are re-enabled
+    const cleanup = () => {
+      // Make sure inputs are re-enabled when component is removed
+      toggleInputs(false);
+    };
+
     element.innerHTML = '';
     element.appendChild(multiSelectContainer);
-    disableFooterInputs(true);
+    
+    // Disable inputs when component is mounted
+    toggleInputs(true);
+
+    // Return cleanup function
+    return cleanup;
   },
 };
 
