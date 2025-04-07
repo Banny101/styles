@@ -1086,9 +1086,17 @@ export const RankOptionsExtension = {
   render: ({ trace, element }) => {
     const options = trace.payload?.options || [];
 
-    const disableFooterInputs = (isDisabled) => {
+    const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container for more comprehensive control
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
         const elements = {
           textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
           primaryButtons: chatDiv.shadowRoot.querySelectorAll(
@@ -1097,19 +1105,36 @@ export const RankOptionsExtension = {
           secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".vfrc-chat-input--button.c-iSWgdS"
           ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
         };
 
         Object.values(elements).forEach(elementList => {
           elementList.forEach(el => {
-            el.disabled = isDisabled;
-            el.style.pointerEvents = isDisabled ? "none" : "auto";
-            el.style.opacity = isDisabled ? "0.5" : "1";
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
             if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+              el.style.backgroundColor = disable ? "#f5f5f5" : "";
             }
           });
         });
       }
+    };
+
+    // Hide any scroll indicators that might be present
+    const hideScrollIndicators = () => {
+      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+        .forEach(el => {
+          el.style.display = 'none';
+        });
     };
 
     const createForm = () => {
@@ -1309,6 +1334,12 @@ export const RankOptionsExtension = {
             margin-top: 12px;
             font-style: italic;
           }
+          
+          /* Remove any down arrows that might be added by the chat UI */
+          [class*="scroll-down"],
+          [class*="scroll-button"] {
+            display: none !important;
+          }
         </style>
         
         <div class="rank-options-container">
@@ -1370,7 +1401,12 @@ export const RankOptionsExtension = {
 
         isSubmitted = true;
         disableRanking();
-        disableFooterInputs(false);
+        
+        // Hide any scroll indicators
+        hideScrollIndicators();
+        
+        // Re-enable chat inputs
+        toggleInputs(false);
 
         window.voiceflow.chat.interact({
           type: "complete",
@@ -1389,19 +1425,50 @@ export const RankOptionsExtension = {
           disabled: isSubmitted
         });
       }
+      
+      // Return cleanup function
+      return () => {
+        if (sortableInstance) {
+          sortableInstance.destroy();
+        }
+        // Make sure inputs are re-enabled when component is removed
+        toggleInputs(false);
+      };
     };
 
+    // Hide any scroll indicators that might be present
+    hideScrollIndicators();
+    
+    // Disable inputs when component is mounted
+    toggleInputs(true);
+
+    let cleanup = null;
+    
     if (typeof Sortable === 'undefined') {
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
-      script.onload = createForm;
-      script.onerror = () => console.error('Failed to load Sortable.js');
+      script.onload = () => {
+        cleanup = createForm();
+      };
+      script.onerror = () => {
+        console.error('Failed to load Sortable.js');
+        // Re-enable inputs if script fails to load
+        toggleInputs(false);
+      };
       document.head.appendChild(script);
     } else {
-      createForm();
+      cleanup = createForm();
     }
 
-    disableFooterInputs(true);
+    // Return cleanup function
+    return () => {
+      if (typeof cleanup === 'function') {
+        cleanup();
+      } else {
+        // Fallback cleanup if createForm wasn't called
+        toggleInputs(false);
+      }
+    };
   },
 };
 
