@@ -1666,14 +1666,14 @@ export const TransitionAnimationExtension = {
       text: trace.payload?.text || "Processing",
       completeText: trace.payload?.completeText || "Complete",
       primaryColor: trace.payload?.color || "#34D399",
-      theme: trace.payload?.theme || "liquid", // liquid, pulse, blocks, glow, minimal
-      style: trace.payload?.style || "standard", // standard, slim, bold
+      theme: trace.payload?.theme || "liquid",
+      style: trace.payload?.style || "standard",
       showPercentage: trace.payload?.showPercentage !== false,
-      interactive: trace.payload?.interactive || false, // Allow clicking to complete early
-      sound: trace.payload?.sound || false, // Enable sound effects
-      vibration: trace.payload?.vibration || false, // Enable haptic feedback
+      interactive: trace.payload?.interactive || false,
+      sound: trace.payload?.sound || false,
+      vibration: trace.payload?.vibration || false,
       darkMode: trace.payload?.darkMode || false,
-      fullWidth: trace.payload?.fullWidth !== false // Default to true
+      fullWidth: trace.payload?.fullWidth !== false
     };
     
     // Calculate actual duration and create unique ID
@@ -1966,6 +1966,12 @@ export const TransitionAnimationExtension = {
     
     // Create style tag with all needed styles
     const styleContent = `
+      /* Fix for container width */
+      ._1ddzqsn7 {
+        display: block !important;
+        width: 100% !important;
+      }
+      
       /* Base styles */
       #${instanceId} {
         display: block;
@@ -1983,7 +1989,7 @@ export const TransitionAnimationExtension = {
         height: ${config.style === 'slim' ? '24px' : config.style === 'bold' ? '48px' : '36px'};
         width: 100%;
         border-radius: ${config.fullWidth ? '0' : '8px'};
-        margin: ${config.fullWidth ? '-8px 0' : '12px 0'};
+        margin: ${config.fullWidth ? '0' : '12px 0'};
         padding: 0;
         background: ${bgColor};
         overflow: hidden;
@@ -2101,15 +2107,6 @@ export const TransitionAnimationExtension = {
       [class*="scroll-button"] {
         display: none !important;
       }
-      
-      /* Full width styles */
-      ${config.fullWidth ? `
-        #${instanceId} {
-          width: calc(100% + 16px);
-          left: -8px;
-          position: relative;
-        }
-      ` : ''}
     `;
     
     // Generate HTML
