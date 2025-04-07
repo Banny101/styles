@@ -1672,7 +1672,8 @@ export const TransitionAnimationExtension = {
       interactive: trace.payload?.interactive || false, // Allow clicking to complete early
       sound: trace.payload?.sound || false, // Enable sound effects
       vibration: trace.payload?.vibration || false, // Enable haptic feedback
-      darkMode: trace.payload?.darkMode || false
+      darkMode: trace.payload?.darkMode || false,
+      fullWidth: trace.payload?.fullWidth !== false // Default to true
     };
     
     // Calculate actual duration and create unique ID
@@ -1973,14 +1974,16 @@ export const TransitionAnimationExtension = {
         padding: 0;
         background: none;
         font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 1;
       }
       
       .processing-container {
         position: relative;
         height: ${config.style === 'slim' ? '24px' : config.style === 'bold' ? '48px' : '36px'};
         width: 100%;
-        border-radius: 8px;
-        margin: 12px 0;
+        border-radius: ${config.fullWidth ? '0' : '8px'};
+        margin: ${config.fullWidth ? '-8px 0' : '12px 0'};
         padding: 0;
         background: ${bgColor};
         overflow: hidden;
@@ -1990,12 +1993,15 @@ export const TransitionAnimationExtension = {
       }
       
       ${config.interactive ? `
-        .processing-container:hover {
+        .processing-container:not(.completed):hover {
           transform: translateY(-1px);
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
-        .processing-container:active {
+        .processing-container:not(.completed):active {
           transform: translateY(0);
+        }
+        .processing-container.completed {
+          cursor: default;
         }
       ` : ''}
       
@@ -2005,7 +2011,7 @@ export const TransitionAnimationExtension = {
         left: 0;
         width: 0%;
         height: 100%;
-        border-radius: 8px;
+        border-radius: ${config.fullWidth ? '0' : '8px'};
       }
       
       @keyframes fillProgress-${instanceId} {
@@ -2052,7 +2058,7 @@ export const TransitionAnimationExtension = {
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 8px;
+        border-radius: ${config.fullWidth ? '0' : '8px'};
         pointer-events: none;
         z-index: 4;
         opacity: 0;
@@ -2095,6 +2101,15 @@ export const TransitionAnimationExtension = {
       [class*="scroll-button"] {
         display: none !important;
       }
+      
+      /* Full width styles */
+      ${config.fullWidth ? `
+        #${instanceId} {
+          width: calc(100% + 16px);
+          left: -8px;
+          position: relative;
+        }
+      ` : ''}
     `;
     
     // Generate HTML
@@ -2120,20 +2135,23 @@ export const TransitionAnimationExtension = {
     const percentageElement = animationContainer.querySelector('.progress-percentage');
     const completionEffect = animationContainer.querySelector('.completion-effect');
     
+    // Completion state flag to track if animation is done
+    let isCompleted = false;
+    
     // Update percentage if enabled
     let animationFrame;
     let startTime = null;
     
     const updatePercentage = (timestamp) => {
       if (!startTime) startTime = timestamp;
-      if (!percentageElement) return;
+      if (!percentageElement || isCompleted) return;
       
       const elapsed = timestamp - startTime;
       const progress = Math.min(Math.floor((elapsed / actualDuration) * 100), 99);
       
       percentageElement.textContent = `${progress}%`;
       
-      if (progress < 99) {
+      if (progress < 99 && !isCompleted) {
         animationFrame = requestAnimationFrame(updatePercentage);
       }
     };
@@ -2196,8 +2214,37 @@ export const TransitionAnimationExtension = {
         });
     };
     
+    // Event handler function for click/keyboard
+    const handleInteraction = (event) => {
+      // Prevent executing if already completed
+      if (isCompleted) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
+      
+      completeAnimation(true);
+      playSound('click');
+      return false;
+    };
+    
+    // Add event listeners if interactive
+    if (config.interactive) {
+      container.addEventListener('click', handleInteraction);
+      container.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleInteraction(e);
+        }
+      });
+    }
+    
     // Completion function
     const completeAnimation = (userTriggered = false) => {
+      // Set completed state
+      isCompleted = true;
+      container.classList.add('completed');
+      
       // Clear any timers
       if (animationContainer.dataset.completionTimer) {
         clearTimeout(parseInt(animationContainer.dataset.completionTimer));
@@ -2248,22 +2295,6 @@ export const TransitionAnimationExtension = {
       }, config.completionDelay);
     };
     
-    // Set up interactive mode if enabled
-    if (config.interactive) {
-      container.addEventListener('click', () => {
-        completeAnimation(true);
-        playSound('click');
-      });
-      
-      container.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          completeAnimation(true);
-          playSound('click');
-        }
-      });
-    }
-    
     // Initial setup
     hideScrollIndicators();
     toggleInputs(true);
@@ -2271,6 +2302,11 @@ export const TransitionAnimationExtension = {
 
     // Set up cleanup function
     const cleanup = () => {
+      // Remove event listeners to prevent further clicks
+      if (config.interactive) {
+        container.removeEventListener('click', handleInteraction);
+      }
+      
       toggleInputs(false);
       hideScrollIndicators();
     };
@@ -2290,6 +2326,9 @@ export const TransitionAnimationExtension = {
       }
       if (animationFrame) {
         cancelAnimationFrame(animationFrame);
+      }
+      if (config.interactive) {
+        container.removeEventListener('click', handleInteraction);
       }
       cleanup();
     };
