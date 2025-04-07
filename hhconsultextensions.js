@@ -1984,10 +1984,20 @@ export const StripePaymentExtension = {
     const autoRedirect = trace.payload?.autoRedirect || false;
     const redirectDelay = trace.payload?.redirectDelay || 5000;
     const autoRedirectText = trace.payload?.autoRedirectText || "Redirecting to secure payment in";
+    const customColor = trace.payload?.color || "#635bff"; // Stripe purple by default
+    const customTitle = trace.payload?.title || "Complete your payment to proceed";
 
-    const disableFooterInputs = (isDisabled) => {
+    const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container for more comprehensive control
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
         const elements = {
           textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
           primaryButtons: chatDiv.shadowRoot.querySelectorAll(
@@ -1996,19 +2006,36 @@ export const StripePaymentExtension = {
           secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
             ".vfrc-chat-input--button.c-iSWgdS"
           ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
         };
 
         Object.values(elements).forEach(elementList => {
           elementList.forEach(el => {
-            el.disabled = isDisabled;
-            el.style.pointerEvents = isDisabled ? "none" : "auto";
-            el.style.opacity = isDisabled ? "0.5" : "1";
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
             if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = isDisabled ? "#f5f5f5" : "";
+              el.style.backgroundColor = disable ? "#f5f5f5" : "";
             }
           });
         });
       }
+    };
+
+    // Hide any scroll indicators that might be present
+    const hideScrollIndicators = () => {
+      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+        .forEach(el => {
+          el.style.display = 'none';
+        });
     };
 
     const paymentContainer = document.createElement("div");
@@ -2027,12 +2054,14 @@ export const StripePaymentExtension = {
           border-radius: 12px;
           border: 1px solid rgba(0, 0, 0, 0.1);
           margin: 8px 0;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .payment-title {
           font-size: 14px;
           color: #303235;
           margin-bottom: 12px;
+          font-weight: 500;
         }
 
         .button-group {
@@ -2053,7 +2082,7 @@ export const StripePaymentExtension = {
           align-items: center;
           justify-content: center;
           gap: 8px;
-          background: #635bff;
+          background: ${customColor};
           color: white;
           border: none;
           padding: 12px 20px;
@@ -2066,8 +2095,13 @@ export const StripePaymentExtension = {
         }
 
         .payment-button:hover {
-          background: #5851e9;
+          filter: brightness(1.05);
           transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-button:active {
+          transform: translateY(0);
         }
 
         .later-button {
@@ -2078,6 +2112,7 @@ export const StripePaymentExtension = {
 
         .later-button:hover {
           background: rgba(114, 114, 122, 0.1);
+          box-shadow: none;
         }
 
         .redirect-countdown {
@@ -2088,11 +2123,12 @@ export const StripePaymentExtension = {
           font-size: 13px;
           color: #4a5568;
           text-align: center;
+          animation: fadeIn 0.3s ease;
         }
 
         .countdown-number {
           font-weight: 600;
-          color: #635bff;
+          color: ${customColor};
           margin: 0 4px;
         }
 
@@ -2107,7 +2143,7 @@ export const StripePaymentExtension = {
 
         .redirect-progress-bar {
           height: 100%;
-          background: #635bff;
+          background: ${customColor};
           width: 100%;
           transition: width linear;
         }
@@ -2123,7 +2159,7 @@ export const StripePaymentExtension = {
           display: none;
           opacity: 0;
           transition: opacity 0.3s ease;
-          border: 1px solid rgba(99, 91, 255, 0.1);
+          border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .backup-link.visible {
@@ -2132,16 +2168,17 @@ export const StripePaymentExtension = {
           justify-content: center;
           gap: 8px;
           opacity: 1;
+          animation: fadeIn 0.5s ease;
         }
 
         .backup-link svg {
           width: 16px;
           height: 16px;
-          color: #635bff;
+          color: ${customColor};
         }
 
         .backup-link a {
-          color: #635bff;
+          color: ${customColor};
           text-decoration: none;
           font-weight: 500;
           display: inline-flex;
@@ -2158,6 +2195,12 @@ export const StripePaymentExtension = {
           to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes pulse {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+
         .payment-status {
           display: none;
           align-items: center;
@@ -2170,10 +2213,33 @@ export const StripePaymentExtension = {
           color: #4a5568;
           animation: fadeIn 0.3s ease;
         }
+        
+        /* Remove any down arrows that might be added by the chat UI */
+        [class*="scroll-down"],
+        [class*="scroll-button"] {
+          display: none !important;
+        }
+        
+        .secure-badge {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          color: #72727a;
+          margin-top: 12px;
+          padding-top: 12px;
+          border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .secure-badge svg {
+          width: 14px;
+          height: 14px;
+          color: #72727a;
+        }
       </style>
 
       <div class="payment-container">
-        <div class="payment-title">Complete your payment to proceed</div>
+        <div class="payment-title">${customTitle}</div>
         
         ${autoRedirect ? `
           <div class="redirect-countdown">
@@ -2209,6 +2275,14 @@ export const StripePaymentExtension = {
           </svg>
           <span>Payment page not opening? <a href="${paymentUrl}" target="_blank" rel="noopener noreferrer">Click here to open it</a></span>
         </div>
+        
+        <div class="secure-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>Secure payment powered by Stripe</span>
+        </div>
       </div>
     `;
 
@@ -2232,9 +2306,12 @@ export const StripePaymentExtension = {
         backupLink.classList.add('visible');
       }, 1500);
 
+      // Hide scroll indicators
+      hideScrollIndicators();
+
       // Re-enable chat input after a short delay
       setTimeout(() => {
-        disableFooterInputs(false);
+        toggleInputs(false);
       }, 500);
 
       // Complete the interaction
@@ -2243,26 +2320,44 @@ export const StripePaymentExtension = {
           type: "complete",
           payload: { 
             status: "payment_initiated",
-            paymentUrl 
+            paymentUrl,
+            timestamp: new Date().toISOString()
           }
         });
       }, 1000);
     };
 
     const handlePayLater = () => {
+      // Disable buttons to prevent multiple clicks
+      const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
+      const laterButton = paymentContainer.querySelector('#payLaterBtn');
+      
+      paymentLink.style.pointerEvents = 'none';
+      paymentLink.style.opacity = '0.7';
+      laterButton.disabled = true;
+      laterButton.style.opacity = '0.7';
+      laterButton.style.pointerEvents = 'none';
+      
+      // Hide scroll indicators
+      hideScrollIndicators();
+      
       // Re-enable chat input before completing
-      disableFooterInputs(false);
+      toggleInputs(false);
       
       window.voiceflow.chat.interact({
         type: "cancel",
         payload: { 
-          status: "payment_delayed"
+          status: "payment_delayed",
+          timestamp: new Date().toISOString()
         }
       });
     };
 
     // Disable inputs immediately when extension starts
-    disableFooterInputs(true);
+    toggleInputs(true);
+    
+    // Hide scroll indicators
+    hideScrollIndicators();
 
     const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
     const laterButton = paymentContainer.querySelector('#payLaterBtn');
@@ -2271,6 +2366,7 @@ export const StripePaymentExtension = {
     laterButton.addEventListener('click', handlePayLater);
 
     // Handle auto-redirect
+    let countdownInterval = null;
     if (autoRedirect && paymentUrl) {
       const countdownElement = paymentContainer.querySelector('.countdown-number');
       const progressBar = paymentContainer.querySelector('.redirect-progress-bar');
@@ -2286,32 +2382,40 @@ export const StripePaymentExtension = {
       }
 
       // Start countdown
-      const countdown = setInterval(() => {
+      countdownInterval = setInterval(() => {
         timeLeft -= 1;
         if (countdownElement) {
           countdownElement.textContent = timeLeft;
         }
         
         if (timeLeft <= 0) {
-          clearInterval(countdown);
+          clearInterval(countdownInterval);
           paymentLink.click();
-          // Show backup link after auto-redirect
-          setTimeout(() => {
-            paymentContainer.querySelector('#backupLink').classList.add('visible');
-          }, 1500);
-          // Re-enable chat input
-          setTimeout(() => {
-            disableFooterInputs(false);
-          }, 500);
         }
       }, 1000);
 
       // Allow manual click during countdown
       paymentLink.addEventListener('click', () => {
-        clearInterval(countdown);
+        if (countdownInterval) {
+          clearInterval(countdownInterval);
+        }
       });
     }
 
     element.appendChild(paymentContainer);
+    
+    // Return cleanup function
+    return () => {
+      // Clear any intervals
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+      
+      // Re-enable inputs if component is removed
+      toggleInputs(false);
+      
+      // Hide scroll indicators
+      hideScrollIndicators();
+    };
   },
 };
