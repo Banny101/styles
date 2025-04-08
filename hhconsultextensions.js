@@ -2790,7 +2790,7 @@ export const CalendarDatePickerExtension = {
   render: ({ trace, element }) => {
     // Configuration with defaults
     const config = {
-      title: trace.payload?.title || "Select your birthdate",
+      title: trace.payload?.title || "",
       confirmText: trace.payload?.confirmText || "Confirm",
       cancelText: trace.payload?.cancelText || "Cancel",
       primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
@@ -2798,8 +2798,7 @@ export const CalendarDatePickerExtension = {
       minYear: parseInt(trace.payload?.minYear) || 1900,
       ageLabel: trace.payload?.ageLabel || "Your age", 
       darkMode: trace.payload?.darkMode || false,
-      preventFutureDates: trace.payload?.preventFutureDates !== false, // Default true
-      yearFirst: trace.payload?.yearFirst !== false // Default true
+      preventFutureDates: trace.payload?.preventFutureDates !== false // Default true
     };
     
     // Create a unique ID for this instance
@@ -2818,8 +2817,9 @@ export const CalendarDatePickerExtension = {
       return age;
     };
     
-    const isFutureDate = (date) => {
+    const isFutureDate = (year, month, day) => {
       if (!config.preventFutureDates) return false;
+      const date = new Date(year, month, day);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       return date > today;
@@ -2855,8 +2855,6 @@ export const CalendarDatePickerExtension = {
     // Month names
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                      'July', 'August', 'September', 'October', 'November', 'December'];
-    const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     // Style
     const styles = `
@@ -2869,7 +2867,7 @@ export const CalendarDatePickerExtension = {
         box-shadow: 0 4px 20px rgba(0, 0, 0, ${config.darkMode ? 0.4 : 0.08});
         overflow: hidden;
         width: 100%;
-        max-width: 325px;
+        max-width: 300px;
         margin: 0 auto;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid ${colors.border};
@@ -2879,13 +2877,13 @@ export const CalendarDatePickerExtension = {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: ${config.title ? '16px 20px' : '12px 16px'};
+        padding: ${config.title ? '14px 16px' : '0'};
         background: ${colors.surface};
-        border-bottom: 1px solid ${colors.border};
+        border-bottom: ${config.title ? `1px solid ${colors.border}` : 'none'};
       }
       
       .datepicker-title {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
         color: ${colors.text};
         letter-spacing: -0.01em;
@@ -2894,200 +2892,77 @@ export const CalendarDatePickerExtension = {
       .datepicker-body {
         padding: 16px;
         position: relative;
-        overflow: hidden;
       }
       
-      .step-container {
-        margin-bottom: 20px;
+      /* Custom dropdown styling */
+      .select-container {
         position: relative;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        margin-bottom: 16px;
       }
       
-      .step-title {
-        font-size: 14px;
+      .select-label {
+        font-size: 13px;
         font-weight: 500;
         color: ${colors.textSecondary};
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+        display: block;
       }
       
-      .step-content {
-        display: grid;
-        gap: 8px;
-        max-height: 215px;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: ${colors.border} transparent;
-      }
-      
-      .step-content::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      
-      .step-content::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      
-      .step-content::-webkit-scrollbar-thumb {
-        background-color: ${colors.border};
-        border-radius: 10px;
-      }
-      
-      /* Year Step */
-      .year-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
-      }
-      
-      .year-item, .month-item, .day-item {
-        padding: 10px 8px;
-        border-radius: 10px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        position: relative;
-        overflow: hidden;
-        background: ${colors.surface};
-        color: ${colors.text};
-        font-size: 14px;
-        border: 1px solid ${colors.border};
-        -webkit-tap-highlight-color: transparent;
-      }
-      
-      .year-item:hover, .month-item:hover, .day-item:hover {
-        background: ${hexToRgba(config.primaryColor, 0.1)};
-        border-color: ${hexToRgba(config.primaryColor, 0.3)};
-      }
-      
-      .year-item::after, .month-item::after, .day-item::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
+      .custom-select {
         width: 100%;
-        height: 100%;
-        background: ${hexToRgba(config.primaryColor, 0.2)};
-        border-radius: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        transition: transform 0.4s ease-out;
-        pointer-events: none;
-      }
-      
-      .year-item:active::after, .month-item:active::after, .day-item:active::after {
-        transform: translate(-50%, -50%) scale(2);
-        opacity: 0;
-        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
-      }
-      
-      .year-item.selected, .month-item.selected, .day-item.selected {
-        background: ${config.primaryColor};
-        color: white;
-        border-color: ${config.primaryColor};
-        font-weight: 500;
-      }
-      
-      .year-item.current-year, .month-item.current-month, .day-item.current-day {
-        font-weight: 600;
-        border-color: ${hexToRgba(config.primaryColor, 0.4)};
-      }
-      
-      /* Month Step */
-      .month-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-      }
-      
-      /* Day Step */
-      .day-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-      }
-      
-      .day-header {
-        text-align: center;
-        font-size: 12px;
-        color: ${colors.textSecondary};
-        font-weight: 500;
-        padding: 4px 0;
-        grid-column: span 1;
-      }
-      
-      .day-spacer {
-        grid-column: span 1;
-      }
-      
-      .day-item.disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        background: ${colors.surface};
-        border-color: ${colors.border};
-      }
-      
-      .day-item.disabled:hover {
-        background: ${colors.surface};
-        border-color: ${colors.border};
-      }
-      
-      /* Navigation */
-      .step-nav {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 16px;
-      }
-      
-      .nav-button {
-        padding: 10px 16px;
-        border-radius: 10px;
-        border: 1px solid ${colors.border};
-        background: ${colors.surface};
-        color: ${colors.textSecondary};
+        padding: 12px 14px;
         font-size: 14px;
         font-weight: 500;
+        color: ${colors.text};
+        background: ${colors.surface};
+        border: 1px solid ${colors.border};
+        border-radius: 12px;
+        appearance: none;
         cursor: pointer;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.2s ease;
         font-family: 'Inter', system-ui, sans-serif;
       }
       
-      .nav-button:hover {
-        background: ${colors.hover};
-      }
-      
-      .nav-button.primary {
-        background: ${config.primaryColor};
-        color: white;
+      .custom-select:focus {
+        outline: none;
         border-color: ${config.primaryColor};
+        box-shadow: 0 0 0 2px ${hexToRgba(config.primaryColor, 0.2)};
       }
       
-      .nav-button.primary:hover {
-        opacity: 0.9;
+      .select-container::after {
+        content: '';
+        position: absolute;
+        right: 16px;
+        top: calc(50% + 10px);
+        width: 10px;
+        height: 6px;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+        background-repeat: no-repeat;
+        pointer-events: none;
       }
       
-      .nav-button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-      
-      /* Footer */
-      .datepicker-footer {
-        padding: 0 16px 16px;
+      /* Dropdowns layout */
+      .dropdowns-container {
         display: flex;
-        flex-direction: column;
-        gap: 14px;
+        gap: 10px;
       }
       
+      .dropdown-col {
+        flex: 1;
+      }
+      
+      /* Results display */
       .date-summary {
-        text-align: center;
-        padding: 12px;
         background: ${colors.surface};
-        border-radius: 12px;
-        font-size: 14px;
-        color: ${colors.text};
         border: 1px solid ${colors.border};
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 12px;
+        padding: 12px;
+        margin: 16px 0;
+        text-align: center;
+        font-size: 14px;
         font-weight: 500;
+        color: ${colors.text};
+        transition: all 0.2s ease;
       }
       
       .date-summary.has-date {
@@ -3104,15 +2979,29 @@ export const CalendarDatePickerExtension = {
         font-size: 14px;
         font-weight: 500;
         display: none;
-        animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        animation: fadeIn 0.3s ease;
         border: 1px solid ${hexToRgba(config.primaryColor, 0.15)};
+        margin-bottom: 16px;
       }
       
+      .error-text {
+        text-align: center;
+        padding: 12px;
+        background: ${colors.errorLight};
+        color: ${colors.error};
+        border-radius: 12px;
+        font-size: 14px;
+        margin-bottom: 16px;
+        border: 1px solid ${colors.errorBorder};
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      /* Buttons */
       .buttons {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-top: 4px;
+        gap: 10px;
       }
       
       .btn {
@@ -3181,68 +3070,18 @@ export const CalendarDatePickerExtension = {
         transform: none;
       }
       
-      .error-text {
-        text-align: center;
-        padding: 12px;
-        background: ${colors.errorLight};
-        color: ${colors.error};
-        border-radius: 12px;
-        font-size: 14px;
-        margin-bottom: 4px;
-        border: 1px solid ${colors.errorBorder};
-        display: none;
-        animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      
-      /* Animation keyframes */
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(4px); }
         to { opacity: 1; transform: translateY(0); }
       }
       
-      @keyframes slideInRight {
-        from { opacity: 0; transform: translateX(10%); }
-        to { opacity: 1; transform: translateX(0); }
-      }
-      
-      @keyframes slideInLeft {
-        from { opacity: 0; transform: translateX(-10%); }
-        to { opacity: 1; transform: translateX(0); }
-      }
-      
-      @keyframes slideOutLeft {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(-10%); }
-      }
-      
-      @keyframes slideOutRight {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(10%); }
-      }
-      
-      .slide-in-right {
-        animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-      
-      .slide-in-left {
-        animation: slideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-      
-      .slide-out-left {
-        animation: slideOutLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      }
-      
-      .slide-out-right {
-        animation: slideOutRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      .highlight-animation {
+        animation: highlight 0.5s ease;
       }
       
       @keyframes highlight {
         0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
-        100% { background: ${colors.surface}; }
-      }
-      
-      .highlight-animation {
-        animation: highlight 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        100% { background: ${hexToRgba(config.primaryColor, 0.05)}; }
       }
     `;
     
@@ -3252,7 +3091,6 @@ export const CalendarDatePickerExtension = {
     
     // Set initial state
     const today = new Date();
-    let currentStep = 0; // 0: year, 1: month, 2: day
     let selectedYear = null;
     let selectedMonth = null;
     let selectedDay = null;
@@ -3274,15 +3112,40 @@ export const CalendarDatePickerExtension = {
         ` : ''}
         
         <div class="datepicker-body">
-          <div id="step-container" class="step-container">
-            <!-- Step content will be rendered dynamically -->
+          <!-- Month Dropdown -->
+          <div class="select-container">
+            <label for="month-select" class="select-label">Month</label>
+            <select id="month-select" class="custom-select">
+              <option value="" disabled selected>Select month</option>
+              ${monthNames.map((month, index) => 
+                `<option value="${index}">${month}</option>`
+              ).join('')}
+            </select>
           </div>
-        </div>
-        
-        <div class="datepicker-footer">
+          
+          <!-- Day Dropdown -->
+          <div class="select-container">
+            <label for="day-select" class="select-label">Day</label>
+            <select id="day-select" class="custom-select" disabled>
+              <option value="" disabled selected>Select day</option>
+            </select>
+          </div>
+          
+          <!-- Year Dropdown -->
+          <div class="select-container">
+            <label for="year-select" class="select-label">Year</label>
+            <select id="year-select" class="custom-select">
+              <option value="" disabled selected>Select year</option>
+              ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
+                .map(year => `<option value="${year}">${year}</option>`)
+                .join('')}
+            </select>
+          </div>
+          
           <div class="date-summary">No date selected</div>
           <div class="age-display"></div>
-          <div class="error-text">Please complete all steps</div>
+          <div class="error-text">Please complete your selection</div>
+          
           <div class="buttons">
             <button class="btn btn-cancel">${config.cancelText}</button>
             <button class="btn btn-confirm" disabled>${config.confirmText}</button>
@@ -3295,12 +3158,52 @@ export const CalendarDatePickerExtension = {
     element.appendChild(container);
     
     // Get DOM elements
-    const stepContainer = container.querySelector('#step-container');
+    const monthSelect = container.querySelector('#month-select');
+    const daySelect = container.querySelector('#day-select');
+    const yearSelect = container.querySelector('#year-select');
     const dateSummary = container.querySelector('.date-summary');
     const ageDisplay = container.querySelector('.age-display');
     const errorText = container.querySelector('.error-text');
     const cancelButton = container.querySelector('.btn-cancel');
     const confirmButton = container.querySelector('.btn-confirm');
+    
+    // Update day options based on selected month and year
+    const updateDayOptions = () => {
+      if (selectedMonth === null || selectedYear === null) {
+        daySelect.disabled = true;
+        return;
+      }
+      
+      daySelect.disabled = false;
+      
+      const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
+      
+      // Clear existing options except the placeholder
+      daySelect.innerHTML = '<option value="" disabled selected>Select day</option>';
+      
+      // Add day options
+      for (let day = 1; day <= daysInMonth; day++) {
+        const option = document.createElement('option');
+        option.value = day;
+        option.textContent = day;
+        
+        // Check if this day would create a future date
+        if (isFutureDate(selectedYear, selectedMonth, day)) {
+          option.disabled = true;
+        }
+        
+        daySelect.appendChild(option);
+      }
+      
+      // If we had a previously selected day, try to restore it
+      if (selectedDay !== null) {
+        if (selectedDay <= daysInMonth) {
+          daySelect.value = selectedDay;
+        } else {
+          selectedDay = null;
+        }
+      }
+    };
     
     // Update date summary
     const updateDateSummary = () => {
@@ -3308,6 +3211,10 @@ export const CalendarDatePickerExtension = {
         const formattedDate = formatDate(selectedYear, selectedMonth + 1, selectedDay);
         dateSummary.textContent = formattedDate;
         dateSummary.classList.add('has-date');
+        dateSummary.classList.add('highlight-animation');
+        setTimeout(() => {
+          dateSummary.classList.remove('highlight-animation');
+        }, 500);
         
         // Calculate age
         selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
@@ -3319,6 +3226,9 @@ export const CalendarDatePickerExtension = {
         
         // Enable confirm button
         confirmButton.disabled = false;
+        
+        // Hide error if shown
+        errorText.style.display = 'none';
       } else {
         dateSummary.textContent = 'No date selected';
         dateSummary.classList.remove('has-date');
@@ -3327,212 +3237,24 @@ export const CalendarDatePickerExtension = {
       }
     };
     
-    // Render year selection
-    const renderYearStep = () => {
-      stepContainer.innerHTML = `
-        <div class="step-title">Select Year</div>
-        <div class="year-grid step-content">
-          ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
-            .map(year => `
-              <div class="year-item ${year === today.getFullYear() ? 'current-year' : ''} ${year === selectedYear ? 'selected' : ''}" 
-                   data-year="${year}">
-                ${year}
-              </div>
-            `).join('')}
-        </div>
-      `;
-      
-      // Add event listeners to year items
-      stepContainer.querySelectorAll('.year-item').forEach(item => {
-        item.addEventListener('click', () => {
-          selectedYear = parseInt(item.dataset.year);
-          
-          // Remove selected class from all items
-          stepContainer.querySelectorAll('.year-item').forEach(y => y.classList.remove('selected'));
-          
-          // Add selected class to clicked item
-          item.classList.add('selected');
-          
-          // Move to next step
-          setTimeout(() => {
-            goToStep(1);
-          }, 200);
-        });
-      });
-      
-      // Scroll to selected year or current year
-      setTimeout(() => {
-        const targetYear = selectedYear || Math.min(today.getFullYear(), config.maxYear);
-        const targetElement = stepContainer.querySelector(`.year-item[data-year="${targetYear}"]`);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-    };
+    // Event Listeners
+    monthSelect.addEventListener('change', (e) => {
+      selectedMonth = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
     
-    // Render month selection
-    const renderMonthStep = () => {
-      stepContainer.innerHTML = `
-        <div class="step-title">Select Month</div>
-        <div class="month-grid step-content">
-          ${monthNames.map((month, index) => `
-            <div class="month-item ${index === today.getMonth() && selectedYear === today.getFullYear() ? 'current-month' : ''} ${index === selectedMonth ? 'selected' : ''}" 
-                 data-month="${index}">
-              ${month}
-            </div>
-          `).join('')}
-        </div>
-        <div class="step-nav">
-          <button class="nav-button" id="back-to-year">Back</button>
-        </div>
-      `;
-      
-      // Add event listeners to month items
-      stepContainer.querySelectorAll('.month-item').forEach(item => {
-        item.addEventListener('click', () => {
-          selectedMonth = parseInt(item.dataset.month);
-          
-          // Remove selected class from all items
-          stepContainer.querySelectorAll('.month-item').forEach(m => m.classList.remove('selected'));
-          
-          // Add selected class to clicked item
-          item.classList.add('selected');
-          
-          // Move to next step
-          setTimeout(() => {
-            goToStep(2);
-          }, 200);
-        });
-      });
-      
-      // Back button event listener
-      stepContainer.querySelector('#back-to-year').addEventListener('click', () => {
-        goToStep(0, 'right');
-      });
-      
-      // Scroll to selected month
-      if (selectedMonth !== null) {
-        setTimeout(() => {
-          const targetElement = stepContainer.querySelector(`.month-item[data-month="${selectedMonth}"]`);
-          if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
-      }
-    };
+    daySelect.addEventListener('change', (e) => {
+      selectedDay = parseInt(e.target.value);
+      updateDateSummary();
+    });
     
-    // Render day selection
-    const renderDayStep = () => {
-      const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
-      const firstDayOfMonth = new Date(selectedYear, selectedMonth, 1).getDay();
-      
-      // Week day headers
-      const weekDayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => 
-        `<div class="day-header">${day}</div>`
-      ).join('');
-      
-      // Previous month spacers
-      let spacers = '';
-      for (let i = 0; i < firstDayOfMonth; i++) {
-        spacers += `<div class="day-spacer"></div>`;
-      }
-      
-      // Current month days
-      let days = '';
-      for (let day = 1; day <= daysInMonth; day++) {
-        const date = new Date(selectedYear, selectedMonth, day);
-        const isFuture = isFutureDate(date);
-        const isToday = day === today.getDate() && 
-                       selectedMonth === today.getMonth() && 
-                       selectedYear === today.getFullYear();
-        const isSelected = day === selectedDay && 
-                          selectedMonth !== null && 
-                          selectedYear !== null;
-        
-        days += `
-          <div class="day-item ${isToday ? 'current-day' : ''} 
-                             ${isSelected ? 'selected' : ''} 
-                             ${isFuture ? 'disabled' : ''}" 
-               data-day="${day}">
-            ${day}
-          </div>
-        `;
-      }
-      
-      stepContainer.innerHTML = `
-        <div class="step-title">Select Day</div>
-        <div class="day-grid step-content">
-          ${weekDayHeaders}
-          ${spacers}
-          ${days}
-        </div>
-        <div class="step-nav">
-          <button class="nav-button" id="back-to-month">Back</button>
-        </div>
-      `;
-      
-      // Add event listeners to day items
-      stepContainer.querySelectorAll('.day-item:not(.disabled)').forEach(item => {
-        item.addEventListener('click', () => {
-          selectedDay = parseInt(item.dataset.day);
-          
-          // Remove selected class from all items
-          stepContainer.querySelectorAll('.day-item').forEach(d => d.classList.remove('selected'));
-          
-          // Add selected class to clicked item
-          item.classList.add('selected');
-          
-          // Update date summary
-          updateDateSummary();
-        });
-      });
-      
-      // Back button event listener
-      stepContainer.querySelector('#back-to-month').addEventListener('click', () => {
-        goToStep(1, 'right');
-      });
-      
-      // Scroll to selected day
-      if (selectedDay) {
-        setTimeout(() => {
-          const targetElement = stepContainer.querySelector(`.day-item[data-day="${selectedDay}"]`);
-          if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }, 100);
-      }
-    };
+    yearSelect.addEventListener('change', (e) => {
+      selectedYear = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
     
-    // Navigate between steps
-    const goToStep = (step, direction = 'left') => {
-      // Apply exit animation to current step
-      stepContainer.classList.add(`slide-out-${direction}`);
-      
-      setTimeout(() => {
-        // Change step
-        currentStep = step;
-        
-        // Reset animation classes
-        stepContainer.classList.remove(`slide-out-${direction}`);
-        stepContainer.classList.add(`slide-in-${direction === 'left' ? 'right' : 'left'}`);
-        
-        // Render the new step
-        if (step === 0) {
-          renderYearStep();
-        } else if (step === 1) {
-          renderMonthStep();
-        } else if (step === 2) {
-          renderDayStep();
-        }
-        
-        // Reset animation class
-        setTimeout(() => {
-          stepContainer.classList.remove(`slide-in-${direction === 'left' ? 'right' : 'left'}`);
-        }, 300);
-      }, 300);
-    };
-    
-    // Event listeners
     cancelButton.addEventListener('click', () => {
       // Send cancel event to Voiceflow
       window.voiceflow.chat.interact({
@@ -3545,17 +3267,15 @@ export const CalendarDatePickerExtension = {
     });
     
     confirmButton.addEventListener('click', () => {
-      if (!selectedDate) {
+      if (!selectedYear || selectedMonth === null || !selectedDay) {
         // Show error message
         errorText.style.display = 'block';
         return;
       }
       
       // Format the date
-      const month = selectedDate.getMonth() + 1;
-      const day = selectedDate.getDate();
-      const year = selectedDate.getFullYear();
-      const formattedDate = formatDate(year, month, day);
+      const month = selectedMonth + 1;
+      const formattedDate = formatDate(selectedYear, month, selectedDay);
       
       // Calculate age
       const age = calculateAge(selectedDate);
@@ -3566,9 +3286,9 @@ export const CalendarDatePickerExtension = {
         payload: {
           date: formattedDate,
           age: age,
-          year: year,
+          year: selectedYear,
           month: month,
-          day: day,
+          day: selectedDay,
           timestamp: Date.now()
         }
       });
@@ -3589,9 +3309,6 @@ export const CalendarDatePickerExtension = {
     
     // Disable inputs
     toggleInputs(true);
-    
-    // Initial render
-    renderYearStep();
     
     // Return cleanup function
     return () => {
