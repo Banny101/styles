@@ -2780,3 +2780,1161 @@ export const StripePaymentExtension = {
     };
   },
 };
+
+export const CalendarDatePickerExtension = {
+  name: "CalendarDatePicker",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_calendarDatePicker" || 
+    trace.payload?.name === "ext_calendarDatePicker",
+  render: ({ trace, element }) => {
+    // Configuration with defaults
+    const config = {
+      title: trace.payload?.title || "Select your birthdate",
+      subtitle: trace.payload?.subtitle || "Please select your date of birth",
+      confirmText: trace.payload?.confirmText || "Confirm",
+      cancelText: trace.payload?.cancelText || "Cancel",
+      dateFormat: trace.payload?.dateFormat || "MM/DD/YYYY",
+      minYear: trace.payload?.minYear || 1900,
+      maxYear: trace.payload?.maxYear || new Date().getFullYear(),
+      initialDate: trace.payload?.initialDate || null,
+      primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
+      darkMode: trace.payload?.darkMode || false,
+      showAge: trace.payload?.showAge !== false, // Default to true
+      required: trace.payload?.required !== false, // Default to true
+      preventFutureDates: trace.payload?.preventFutureDates !== false, // Default to true
+      ageLabel: trace.payload?.ageLabel || "Age" // Label for age display
+    };
+    
+    // Create unique ID for this instance
+    const instanceId = `calendar-picker-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    
+    // Color utilities for theming
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Date utilities
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                  'July', 'August', 'September', 'October', 'November', 'December'];
+    const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+    
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentDay = currentDate.getDate();
+    
+    // Set up initial state
+    let selectedDate = null;
+    let viewMonth = currentMonth;
+    let viewYear = currentYear;
+    let focusedDay = null;
+    let focusedMonth = viewMonth;
+    let focusedYear = viewYear;
+    
+    // Parse initialDate if provided
+    if (config.initialDate) {
+      try {
+        const parts = config.initialDate.split('/');
+        if (parts.length === 3) {
+          const month = parseInt(parts[0]) - 1;
+          const day = parseInt(parts[1]);
+          const year = parseInt(parts[2]);
+          
+          if (!isNaN(month) && !isNaN(day) && !isNaN(year)) {
+            selectedDate = new Date(year, month, day);
+            viewMonth = month;
+            viewYear = year;
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse initialDate', e);
+      }
+    }
+    
+    // Generate years array for the year selector
+    const years = [];
+    for (let year = config.maxYear; year >= config.minYear; year--) {
+      years.push(year);
+    }
+    
+    // Format a date according to the specified format
+    const formatDate = (date) => {
+      if (!date) return '';
+      
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const year = date.getFullYear();
+      
+      if (config.dateFormat === "MM/DD/YYYY") {
+        return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+      } else if (config.dateFormat === "DD/MM/YYYY") {
+        return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+      } else if (config.dateFormat === "YYYY-MM-DD") {
+        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      } else if (config.dateFormat === "MMMM DD, YYYY") {
+        return `${months[month - 1]} ${day}, ${year}`;
+      }
+      
+      // Default format
+      return `${month}/${day}/${year}`;
+    };
+    
+    // Calculate age given a birthdate
+    const calculateAge = (birthdate) => {
+      if (!birthdate) return null;
+      
+      const today = new Date();
+      let age = today.getFullYear() - birthdate.getFullYear();
+      const monthDiff = today.getMonth() - birthdate.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+        age--;
+      }
+      
+      return age;
+    };
+    
+    // Check if a date is in the future
+    const isFutureDate = (day, month, year) => {
+      if (!config.preventFutureDates) return false;
+      
+      const date = new Date(year, month, day);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time part for fair comparison
+      
+      return date > today;
+    };
+    
+    // Generate the calendar for a given month and year
+    const generateCalendar = (month, year) => {
+      // First day of the month
+      const firstDay = new Date(year, month, 1).getDay();
+      // Last day of the month
+      const lastDay = new Date(year, month + 1, 0).getDate();
+      
+      // Get days from previous month to fill the first row
+      const prevMonthLastDay = new Date(year, month, 0).getDate();
+      const prevMonthDays = [];
+      for (let i = firstDay - 1; i >= 0; i--) {
+        prevMonthDays.push(prevMonthLastDay - i);
+      }
+      
+      // Current month days
+      const currentMonthDays = [];
+      for (let i = 1; i <= lastDay; i++) {
+        currentMonthDays.push(i);
+      }
+      
+      // Next month days to fill the last row
+      const nextMonthDays = [];
+      const totalCells = 42; // 6 rows of 7 days
+      const remainingCells = totalCells - (prevMonthDays.length + currentMonthDays.length);
+      for (let i = 1; i <= remainingCells; i++) {
+        nextMonthDays.push(i);
+      }
+      
+      return { prevMonthDays, currentMonthDays, nextMonthDays };
+    };
+    
+    // Navigate to previous month
+    const goToPrevMonth = () => {
+      if (viewMonth === 0) {
+        viewMonth = 11;
+        viewYear--;
+      } else {
+        viewMonth--;
+      }
+      renderCalendar();
+    };
+    
+    // Navigate to next month
+    const goToNextMonth = () => {
+      if (viewMonth === 11) {
+        viewMonth = 0;
+        viewYear++;
+      } else {
+        viewMonth++;
+      }
+      renderCalendar();
+    };
+    
+    // Check if a date is today
+    const isToday = (day, month, year) => {
+      const today = new Date();
+      return day === today.getDate() && 
+             month === today.getMonth() && 
+             year === today.getFullYear();
+    };
+    
+    // Check if a date is the selected date
+    const isSelectedDate = (day, month, year) => {
+      if (!selectedDate) return false;
+      return day === selectedDate.getDate() && 
+             month === selectedDate.getMonth() && 
+             year === selectedDate.getFullYear();
+    };
+    
+    // Toggle inputs function
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+          inputContainer.style.transition = "opacity 0.3s ease";
+        }
+
+        // Disable/enable specific elements
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+            el.style.transition = "opacity 0.3s ease";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = disable ? "#f5f5f5" : "";
+            }
+          });
+        });
+      }
+    };
+    
+    // Hide scroll indicators
+    const hideScrollIndicators = () => {
+      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+        .forEach(el => {
+          el.style.display = 'none';
+        });
+    };
+    
+    // Scroll the calendar into view
+    const scrollIntoView = () => {
+      setTimeout(() => {
+        calendarContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    };
+    
+    // Confirmation handler
+    const confirmSelection = () => {
+      if (!selectedDate && config.required) {
+        // Show validation error
+        const errorMsg = calendarContainer.querySelector('.calendar-error');
+        if (errorMsg) {
+          errorMsg.textContent = 'Please select a date';
+          errorMsg.style.display = 'block';
+          
+          // Add a little shake animation to the error message
+          errorMsg.style.animation = 'shake 0.5s ease';
+          setTimeout(() => {
+            errorMsg.style.animation = '';
+          }, 500);
+        }
+        
+        // Scroll error into view
+        scrollIntoView();
+        return;
+      }
+      
+      // Check if the date is in the future
+      if (selectedDate && config.preventFutureDates) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time part for fair comparison
+        
+        if (selectedDate > today) {
+          // Show validation error
+          const errorMsg = calendarContainer.querySelector('.calendar-error');
+          if (errorMsg) {
+            errorMsg.textContent = 'Please select a date in the past';
+            errorMsg.style.display = 'block';
+            
+            // Add a little shake animation to the error message
+            errorMsg.style.animation = 'shake 0.5s ease';
+            setTimeout(() => {
+              errorMsg.style.animation = '';
+            }, 500);
+          }
+          
+          // Scroll error into view
+          scrollIntoView();
+          return;
+        }
+      }
+      
+      // Calculate age if date is selected
+      const age = selectedDate ? calculateAge(selectedDate) : null;
+      
+      // Format the date for return
+      const formattedDate = formatDate(selectedDate);
+      
+      // Send the result back to Voiceflow
+      window.voiceflow.chat.interact({
+        type: "complete",
+        payload: {
+          date: formattedDate,
+          age: age,
+          year: selectedDate ? selectedDate.getFullYear() : null,
+          month: selectedDate ? selectedDate.getMonth() + 1 : null,
+          day: selectedDate ? selectedDate.getDate() : null,
+          timestamp: Date.now()
+        }
+      });
+      
+      // Re-enable inputs
+      toggleInputs(false);
+      hideScrollIndicators();
+    };
+    
+    // Cancel handler
+    const cancelSelection = () => {
+      // Send cancel event
+      window.voiceflow.chat.interact({
+        type: "cancel",
+        payload: { 
+          cancelled: true,
+          timestamp: Date.now()
+        }
+      });
+      
+      // Re-enable inputs
+      toggleInputs(false);
+      hideScrollIndicators();
+    };
+    
+    // Date selection handler
+    const selectDate = (day, month, year) => {
+      // Check if date is in the future
+      if (config.preventFutureDates && isFutureDate(day, month, year)) {
+        // Show validation error
+        const errorMsg = calendarContainer.querySelector('.calendar-error');
+        if (errorMsg) {
+          errorMsg.textContent = 'Please select a date in the past';
+          errorMsg.style.display = 'block';
+          
+          // Add a little shake animation to the error message
+          errorMsg.style.animation = 'shake 0.5s ease';
+          setTimeout(() => {
+            errorMsg.style.animation = '';
+          }, 500);
+        }
+        
+        // Don't set the date
+        return;
+      }
+      
+      selectedDate = new Date(year, month, day);
+      
+      // Update UI
+      renderCalendar();
+      
+      // Update age display if enabled
+      if (config.showAge) {
+        const age = calculateAge(selectedDate);
+        const ageDisplay = calendarContainer.querySelector('.calendar-age-display');
+        if (ageDisplay) {
+          ageDisplay.textContent = age !== null ? `${config.ageLabel}: ${age} years` : '';
+          ageDisplay.style.display = age !== null ? 'block' : 'none';
+        }
+      }
+      
+      // Hide validation error if present
+      const errorMsg = calendarContainer.querySelector('.calendar-error');
+      if (errorMsg) {
+        errorMsg.style.display = 'none';
+      }
+    };
+    
+    // Set up keyboard navigation focus
+    const setFocusedDay = (day, month, year) => {
+      focusedDay = day;
+      focusedMonth = month;
+      focusedYear = year;
+      renderCalendar();
+    };
+    
+    // Handle keyboard navigation
+    const handleKeyDown = (e) => {
+      // If no day is focused yet, focus on the first day of the current month
+      if (focusedDay === null) {
+        setFocusedDay(1, viewMonth, viewYear);
+        return;
+      }
+      
+      const daysInMonth = new Date(focusedYear, focusedMonth + 1, 0).getDate();
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          if (focusedDay > 1) {
+            setFocusedDay(focusedDay - 1, focusedMonth, focusedYear);
+          } else {
+            // Go to previous month
+            const prevMonth = focusedMonth === 0 ? 11 : focusedMonth - 1;
+            const prevYear = focusedMonth === 0 ? focusedYear - 1 : focusedYear;
+            const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
+            setFocusedDay(daysInPrevMonth, prevMonth, prevYear);
+            
+            // Update view
+            viewMonth = prevMonth;
+            viewYear = prevYear;
+            renderCalendar();
+          }
+          break;
+          
+        case 'ArrowRight':
+          e.preventDefault();
+          if (focusedDay < daysInMonth) {
+            setFocusedDay(focusedDay + 1, focusedMonth, focusedYear);
+          } else {
+            // Go to next month
+            const nextMonth = focusedMonth === 11 ? 0 : focusedMonth + 1;
+            const nextYear = focusedMonth === 11 ? focusedYear + 1 : focusedYear;
+            setFocusedDay(1, nextMonth, nextYear);
+            
+            // Update view
+            viewMonth = nextMonth;
+            viewYear = nextYear;
+            renderCalendar();
+          }
+          break;
+          
+        case 'ArrowUp':
+          e.preventDefault();
+          {
+            // Go up a week (7 days)
+            const newDate = new Date(focusedYear, focusedMonth, focusedDay - 7);
+            setFocusedDay(newDate.getDate(), newDate.getMonth(), newDate.getFullYear());
+            
+            // Update view if month changed
+            if (newDate.getMonth() !== viewMonth || newDate.getFullYear() !== viewYear) {
+              viewMonth = newDate.getMonth();
+              viewYear = newDate.getFullYear();
+              renderCalendar();
+            }
+          }
+          break;
+          
+        case 'ArrowDown':
+          e.preventDefault();
+          {
+            // Go down a week (7 days)
+            const newDate = new Date(focusedYear, focusedMonth, focusedDay + 7);
+            setFocusedDay(newDate.getDate(), newDate.getMonth(), newDate.getFullYear());
+            
+            // Update view if month changed
+            if (newDate.getMonth() !== viewMonth || newDate.getFullYear() !== viewYear) {
+              viewMonth = newDate.getMonth();
+              viewYear = newDate.getFullYear();
+              renderCalendar();
+            }
+          }
+          break;
+          
+        case 'Enter':
+        case ' ': // Space
+          e.preventDefault();
+          selectDate(focusedDay, focusedMonth, focusedYear);
+          break;
+          
+        case 'Home':
+          e.preventDefault();
+          setFocusedDay(1, focusedMonth, focusedYear);
+          break;
+          
+        case 'End':
+          e.preventDefault();
+          setFocusedDay(daysInMonth, focusedMonth, focusedYear);
+          break;
+      }
+    };
+    
+    // Handle touch events for swipe gestures
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    const handleTouchStart = (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    };
+    
+    const handleTouchEnd = (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    };
+    
+    const handleSwipe = () => {
+      const swipeThreshold = 50;
+      
+      if (touchEndX < touchStartX - swipeThreshold) {
+        // Swipe left, go to next month
+        goToNextMonth();
+      }
+      
+      if (touchEndX > touchStartX + swipeThreshold) {
+        // Swipe right, go to previous month
+        goToPrevMonth();
+      }
+    };
+    
+    // Create container for our calendar
+    const calendarContainer = document.createElement("div");
+    calendarContainer.id = instanceId;
+    calendarContainer.className = "_calendar-picker";
+    
+    // Create styles
+    const styles = `
+      /* Base styles */
+      #${instanceId} {
+        display: block;
+        width: 100%;
+        font-family: 'Montserrat', sans-serif;
+        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
+        background: ${config.darkMode ? '#1f2937' : '#ffffff'};
+        border-radius: 10px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        margin: 16px 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      
+      /* Calendar container */
+      .calendar-container {
+        padding: 16px;
+      }
+      
+      /* Calendar header */
+      .calendar-header {
+        text-align: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid ${config.darkMode ? '#374151' : '#e5e7eb'};
+      }
+      
+      .calendar-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: ${config.darkMode ? '#f3f4f6' : '#1f2937'};
+      }
+      
+      .calendar-subtitle {
+        font-size: 14px;
+        color: ${config.darkMode ? '#9ca3af' : '#6b7280'};
+      }
+      
+      /* Month navigation */
+      .calendar-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      
+      .calendar-month-year {
+        font-size: 16px;
+        font-weight: 500;
+      }
+      
+      .calendar-nav-button {
+        background: ${hexToRgba(config.primaryColor, 0.1)};
+        color: ${config.primaryColor};
+        border: none;
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      
+      .calendar-nav-button:hover {
+        background: ${hexToRgba(config.primaryColor, 0.2)};
+      }
+      
+      .calendar-nav-button:focus {
+        outline: 2px solid ${config.primaryColor};
+        outline-offset: 2px;
+      }
+      
+      /* Calendar grid */
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+      }
+      
+      .calendar-day-header {
+        text-align: center;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 8px 0;
+        color: ${config.darkMode ? '#9ca3af' : '#6b7280'};
+      }
+      
+      .calendar-day {
+        text-align: center;
+        padding: 8px 0;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+      
+      .calendar-day:hover:not(.future-date) {
+        background: ${hexToRgba(config.primaryColor, 0.1)};
+      }
+      
+      .calendar-day.current-month {
+        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
+      }
+      
+      .calendar-day.prev-month,
+      .calendar-day.next-month {
+        color: ${config.darkMode ? '#6b7280' : '#9ca3af'};
+      }
+      
+      .calendar-day.today {
+        font-weight: 600;
+        border: 1px solid ${config.primaryColor};
+      }
+      
+      .calendar-day.selected {
+        background: ${config.primaryColor};
+        color: white;
+        font-weight: 500;
+      }
+      
+      .calendar-day.selected:hover {
+        background: ${config.primaryColor};
+        opacity: 0.9;
+      }
+      
+      .calendar-day.focused {
+        outline: 2px solid ${config.primaryColor};
+        outline-offset: 1px;
+        z-index: 2;
+      }
+      
+      .calendar-day.future-date {
+        color: ${config.darkMode ? '#4b5563' : '#d1d5db'};
+        cursor: not-allowed;
+        position: relative;
+      }
+      
+      .calendar-day.future-date::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: ${config.darkMode ? '#4b5563' : '#d1d5db'};
+        opacity: 0.5;
+      }
+      
+      /* Year selector */
+      .calendar-year-selector {
+        margin-top: 16px;
+      }
+      
+      .year-selector-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: ${config.darkMode ? '#9ca3af' : '#6b7280'};
+      }
+      
+      .year-selector {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 8px;
+        border: 1px solid ${config.darkMode ? '#4b5563' : '#d1d5db'};
+        background: ${config.darkMode ? '#374151' : '#f3f4f6'};
+        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
+      }
+      
+      .year-selector:focus {
+        outline: 2px solid ${config.primaryColor};
+        outline-offset: 2px;
+      }
+      
+      /* Footer section */
+      .calendar-footer {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .calendar-selected-date {
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: 500;
+        background: ${config.darkMode ? '#374151' : '#f3f4f6'};
+        border-radius: 8px;
+        text-align: center;
+      }
+      
+      .calendar-age-display {
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: 500;
+        background: ${hexToRgba(config.primaryColor, 0.1)};
+        color: ${config.primaryColor};
+        border-radius: 8px;
+        text-align: center;
+        display: none;
+      }
+      
+      .calendar-error {
+        padding: 8px 12px;
+        font-size: 14px;
+        font-weight: 500;
+        background: #fecaca;
+        color: #dc2626;
+        border-radius: 8px;
+        text-align: center;
+        display: none;
+      }
+      
+      .calendar-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      
+      .calendar-button {
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      
+      .calendar-button:focus {
+        outline: 2px solid ${config.primaryColor};
+        outline-offset: 2px;
+      }
+      
+      .calendar-button.primary {
+        background: ${config.primaryColor};
+        color: white;
+      }
+      
+      .calendar-button.primary:hover {
+        opacity: 0.9;
+      }
+      
+      .calendar-button.secondary {
+        background: ${config.darkMode ? '#4b5563' : '#e5e7eb'};
+        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
+      }
+      
+      .calendar-button.secondary:hover {
+        background: ${config.darkMode ? '#6b7280' : '#d1d5db'};
+      }
+      
+      /* Responsive adjustments */
+      @media (max-width: 500px) {
+        .calendar-container {
+          padding: 12px;
+        }
+        
+        .calendar-grid {
+          gap: 4px;
+        }
+        
+        .calendar-day {
+          padding: 6px 0;
+          font-size: 13px;
+        }
+        
+        .calendar-actions {
+          grid-template-columns: 1fr;
+        }
+      }
+      
+      /* Animation for month transitions */
+      .calendar-grid.transition-prev {
+        animation: slideInFromLeft 0.3s ease-in-out;
+      }
+      
+      .calendar-grid.transition-next {
+        animation: slideInFromRight 0.3s ease-in-out;
+      }
+      
+      @keyframes slideInFromLeft {
+        0% { transform: translateX(-20px); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideInFromRight {
+        0% { transform: translateX(20px); opacity: 0; }
+        100% { transform: translateX(0); opacity: 1; }
+      }
+      
+      /* Animation for error shake */
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+    `;
+    
+    // Render the calendar UI
+    const renderCalendar = () => {
+      const calendarGrid = calendarContainer.querySelector('.calendar-grid');
+      if (!calendarGrid) return;
+      
+      // Update month and year display
+      const monthYearDisplay = calendarContainer.querySelector('.calendar-month-year');
+      if (monthYearDisplay) {
+        monthYearDisplay.textContent = `${months[viewMonth]} ${viewYear}`;
+      }
+      
+      // Update year select if it exists
+      const yearSelect = calendarContainer.querySelector(`#${instanceId}-year-select`);
+      if (yearSelect && parseInt(yearSelect.value) !== viewYear) {
+        yearSelect.value = viewYear.toString();
+      }
+      
+      // Generate calendar for current view
+      const { prevMonthDays, currentMonthDays, nextMonthDays } = generateCalendar(viewMonth, viewYear);
+      
+      // Clear existing calendar
+      calendarGrid.innerHTML = '';
+      
+      // Add day headers
+      daysOfWeek.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'calendar-day-header';
+        dayHeader.textContent = day;
+        calendarGrid.appendChild(dayHeader);
+      });
+      
+      // Add previous month days (grayed out)
+      const prevMonth = viewMonth === 0 ? 11 : viewMonth - 1;
+      const prevYear = viewMonth === 0 ? viewYear - 1 : viewYear;
+      
+      prevMonthDays.forEach(day => {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'calendar-day prev-month';
+        dayCell.textContent = day;
+        
+        // Check if this is the focused day
+        if (focusedDay === day && focusedMonth === prevMonth && focusedYear === prevYear) {
+          dayCell.classList.add('focused');
+          dayCell.setAttribute('tabindex', '0');
+        } else {
+          dayCell.setAttribute('tabindex', '-1');
+        }
+        
+        // Check if future date
+        if (isFutureDate(day, prevMonth, prevYear)) {
+          dayCell.classList.add('future-date');
+        }
+        
+        // Add event listener
+        dayCell.addEventListener('click', () => {
+          selectDate(day, prevMonth, prevYear);
+          // If we selected a day from prev month, update the view
+          viewMonth = prevMonth;
+          viewYear = prevYear;
+          renderCalendar();
+        });
+        
+        // Keyboard focus event
+        dayCell.addEventListener('focus', () => {
+          setFocusedDay(day, prevMonth, prevYear);
+        });
+        
+        calendarGrid.appendChild(dayCell);
+      });
+      
+      // Add current month days
+      currentMonthDays.forEach(day => {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'calendar-day current-month';
+        
+        // Check if this is today
+        if (isToday(day, viewMonth, viewYear)) {
+          dayCell.classList.add('today');
+        }
+        
+        // Check if this is the selected date
+        if (isSelectedDate(day, viewMonth, viewYear)) {
+          dayCell.classList.add('selected');
+        }
+        
+        // Check if this is the focused day
+        if (focusedDay === day && focusedMonth === viewMonth && focusedYear === viewYear) {
+          dayCell.classList.add('focused');
+          dayCell.setAttribute('tabindex', '0');
+          
+          // Scroll to focused element if needed
+          setTimeout(() => {
+            dayCell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 100);
+        } else {
+          dayCell.setAttribute('tabindex', '-1');
+        }
+        
+        // Check if future date
+        if (isFutureDate(day, viewMonth, viewYear)) {
+          dayCell.classList.add('future-date');
+        }
+        
+        dayCell.textContent = day;
+        
+        // Add event listener
+        dayCell.addEventListener('click', () => {
+          selectDate(day, viewMonth, viewYear);
+        });
+        
+        // Keyboard focus event
+        dayCell.addEventListener('focus', () => {
+          setFocusedDay(day, viewMonth, viewYear);
+        });
+        
+        calendarGrid.appendChild(dayCell);
+      });
+      
+      // Add next month days (grayed out)
+      const nextMonth = viewMonth === 11 ? 0 : viewMonth + 1;
+      const nextYear = viewMonth === 11 ? viewYear + 1 : viewYear;
+      
+      nextMonthDays.forEach(day => {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'calendar-day next-month';
+        dayCell.textContent = day;
+        
+        // Check if this is the focused day
+        if (focusedDay === day && focusedMonth === nextMonth && focusedYear === nextYear) {
+          dayCell.classList.add('focused');
+          dayCell.setAttribute('tabindex', '0');
+        } else {
+          dayCell.setAttribute('tabindex', '-1');
+        }
+        
+        // Check if future date
+        if (isFutureDate(day, nextMonth, nextYear)) {
+          dayCell.classList.add('future-date');
+        }
+        
+        // Add event listener
+        dayCell.addEventListener('click', () => {
+          selectDate(day, nextMonth, nextYear);
+          // If we selected a day from next month, update the view
+          viewMonth = nextMonth;
+          viewYear = nextYear;
+          renderCalendar();
+        });
+        
+        // Keyboard focus event
+        dayCell.addEventListener('focus', () => {
+          setFocusedDay(day, nextMonth, nextYear);
+        });
+        
+        calendarGrid.appendChild(dayCell);
+      });
+      
+      // Update the selected date display if there is one
+      const selectedDateDisplay = calendarContainer.querySelector('.calendar-selected-date');
+      if (selectedDateDisplay) {
+        selectedDateDisplay.textContent = selectedDate ? formatDate(selectedDate) : 'No date selected';
+      }
+      
+      // Update age display if enabled
+      if (config.showAge && selectedDate) {
+        const age = calculateAge(selectedDate);
+        const ageDisplay = calendarContainer.querySelector('.calendar-age-display');
+        if (ageDisplay) {
+          ageDisplay.textContent = age !== null ? `${config.ageLabel}: ${age} years` : '';
+          ageDisplay.style.display = age !== null ? 'block' : 'none';
+        }
+      }
+    };
+    
+    // Build the HTML structure
+    calendarContainer.innerHTML = `
+      <style>${styles}</style>
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <div class="calendar-title">${config.title}</div>
+          <div class="calendar-subtitle">${config.subtitle}</div>
+        </div>
+        
+        <div class="calendar-nav">
+          <button class="calendar-nav-button" id="${instanceId}-prev-month" aria-label="Previous month">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <div class="calendar-month-year">
+            ${months[viewMonth]} ${viewYear}
+          </div>
+          <button class="calendar-nav-button" id="${instanceId}-next-month" aria-label="Next month">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="calendar-grid" role="grid" aria-labelledby="calendar-month-year" tabindex="0">
+          <!-- Will be populated by renderCalendar() -->
+        </div>
+        
+        <div class="calendar-year-selector">
+          <label class="year-selector-label" for="${instanceId}-year-select">Jump to year:</label>
+          <select class="year-selector" id="${instanceId}-year-select" aria-label="Select Year">
+            ${years.map(year => `<option value="${year}" ${year === viewYear ? 'selected' : ''}>${year}</option>`).join('')}
+          </select>
+        </div>
+        
+        <div class="calendar-footer">
+          <div class="calendar-selected-date" aria-live="polite">${selectedDate ? formatDate(selectedDate) : 'No date selected'}</div>
+          <div class="calendar-age-display" style="display: none;" aria-live="polite"></div>
+          <div class="calendar-error" style="display: none;" role="alert"></div>
+          
+          <div class="calendar-actions">
+            <button class="calendar-button secondary" id="${instanceId}-cancel">${config.cancelText}</button>
+            <button class="calendar-button primary" id="${instanceId}-confirm">${config.confirmText}</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Add to DOM
+    element.appendChild(calendarContainer);
+    
+    // Add event listeners
+    const calendarGrid = calendarContainer.querySelector('.calendar-grid');
+    
+    // Add keyboard event listener to grid
+    if (calendarGrid) {
+      calendarGrid.addEventListener('keydown', handleKeyDown);
+      
+      // Add touch events for swipe
+      calendarGrid.addEventListener('touchstart', handleTouchStart);
+      calendarGrid.addEventListener('touchend', handleTouchEnd);
+    }
+    
+    const prevMonthButton = calendarContainer.querySelector(`#${instanceId}-prev-month`);
+    if (prevMonthButton) {
+      prevMonthButton.addEventListener('click', () => {
+        if (calendarGrid) {
+          calendarGrid.classList.add('transition-prev');
+          setTimeout(() => {
+            calendarGrid.classList.remove('transition-prev');
+          }, 300);
+        }
+        goToPrevMonth();
+      });
+    }
+    
+    const nextMonthButton = calendarContainer.querySelector(`#${instanceId}-next-month`);
+    if (nextMonthButton) {
+      nextMonthButton.addEventListener('click', () => {
+        if (calendarGrid) {
+          calendarGrid.classList.add('transition-next');
+          setTimeout(() => {
+            calendarGrid.classList.remove('transition-next');
+          }, 300);
+        }
+        goToNextMonth();
+      });
+    }
+    
+    const yearSelect = calendarContainer.querySelector(`#${instanceId}-year-select`);
+    if (yearSelect) {
+      yearSelect.addEventListener('change', (e) => {
+        viewYear = parseInt(e.target.value);
+        renderCalendar();
+      });
+    }
+    
+    const confirmButton = calendarContainer.querySelector(`#${instanceId}-confirm`);
+    if (confirmButton) {
+      confirmButton.addEventListener('click', confirmSelection);
+    }
+    
+    const cancelButton = calendarContainer.querySelector(`#${instanceId}-cancel`);
+    if (cancelButton) {
+      cancelButton.addEventListener('click', cancelSelection);
+    }
+    
+    // Initial render
+    renderCalendar();
+    
+    // Scroll into view
+    scrollIntoView();
+    
+    // Disable inputs and hide scroll indicators
+    toggleInputs(true);
+    hideScrollIndicators();
+    
+    // Return cleanup function
+    return () => {
+      // Remove event listeners
+      if (calendarGrid) {
+        calendarGrid.removeEventListener('keydown', handleKeyDown);
+        calendarGrid.removeEventListener('touchstart', handleTouchStart);
+        calendarGrid.removeEventListener('touchend', handleTouchEnd);
+      }
+      
+      if (prevMonthButton) {
+        prevMonthButton.removeEventListener('click', goToPrevMonth);
+      }
+      
+      if (nextMonthButton) {
+        nextMonthButton.removeEventListener('click', goToNextMonth);
+      }
+      
+      if (confirmButton) {
+        confirmButton.removeEventListener('click', confirmSelection);
+      }
+      
+      if (cancelButton) {
+        cancelButton.removeEventListener('click', cancelSelection);
+      }
+      
+      if (yearSelect) {
+        yearSelect.removeEventListener('change', () => {});
+      }
+      
+      // Re-enable inputs
+      toggleInputs(false);
+      hideScrollIndicators();
+    };
+  }
+};
