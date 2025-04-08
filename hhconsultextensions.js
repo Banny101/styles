@@ -2791,103 +2791,19 @@ export const CalendarDatePickerExtension = {
     // Configuration with defaults
     const config = {
       title: trace.payload?.title || "Select your birthdate",
-      subtitle: trace.payload?.subtitle || "Please select your date of birth",
       confirmText: trace.payload?.confirmText || "Confirm",
       cancelText: trace.payload?.cancelText || "Cancel",
-      dateFormat: trace.payload?.dateFormat || "MM/DD/YYYY",
-      minYear: trace.payload?.minYear || 1900,
-      maxYear: trace.payload?.maxYear || new Date().getFullYear(),
-      initialDate: trace.payload?.initialDate || null,
       primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
-      darkMode: trace.payload?.darkMode || false,
-      showAge: trace.payload?.showAge !== false, // Default to true
-      required: trace.payload?.required !== false, // Default to true
-      preventFutureDates: trace.payload?.preventFutureDates !== false, // Default to true
-      ageLabel: trace.payload?.ageLabel || "Age" // Label for age display
+      maxYear: trace.payload?.maxYear || new Date().getFullYear(),
+      minYear: trace.payload?.minYear || 1900,
+      ageLabel: trace.payload?.ageLabel || "Age"
     };
     
-    // Create unique ID for this instance
-    const instanceId = `calendar-picker-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    // Create a unique ID for this instance
+    const instanceId = `calendar-${Date.now()}`;
     
-    // Color utilities for theming
-    const hexToRgba = (hex, alpha = 1) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-    
-    // Date utilities
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 
-                  'July', 'August', 'September', 'October', 'November', 'December'];
-    const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-    
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const currentDay = currentDate.getDate();
-    
-    // Set up initial state
-    let selectedDate = null;
-    let viewMonth = currentMonth;
-    let viewYear = currentYear;
-    let focusedDay = null;
-    let focusedMonth = viewMonth;
-    let focusedYear = viewYear;
-    
-    // Parse initialDate if provided
-    if (config.initialDate) {
-      try {
-        const parts = config.initialDate.split('/');
-        if (parts.length === 3) {
-          const month = parseInt(parts[0]) - 1;
-          const day = parseInt(parts[1]);
-          const year = parseInt(parts[2]);
-          
-          if (!isNaN(month) && !isNaN(day) && !isNaN(year)) {
-            selectedDate = new Date(year, month, day);
-            viewMonth = month;
-            viewYear = year;
-          }
-        }
-      } catch (e) {
-        console.warn('Failed to parse initialDate', e);
-      }
-    }
-    
-    // Generate years array for the year selector
-    const years = [];
-    for (let year = config.maxYear; year >= config.minYear; year--) {
-      years.push(year);
-    }
-    
-    // Format a date according to the specified format
-    const formatDate = (date) => {
-      if (!date) return '';
-      
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const year = date.getFullYear();
-      
-      if (config.dateFormat === "MM/DD/YYYY") {
-        return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-      } else if (config.dateFormat === "DD/MM/YYYY") {
-        return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
-      } else if (config.dateFormat === "YYYY-MM-DD") {
-        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-      } else if (config.dateFormat === "MMMM DD, YYYY") {
-        return `${months[month - 1]} ${day}, ${year}`;
-      }
-      
-      // Default format
-      return `${month}/${day}/${year}`;
-    };
-    
-    // Calculate age given a birthdate
+    // Helper functions
     const calculateAge = (birthdate) => {
-      if (!birthdate) return null;
-      
       const today = new Date();
       let age = today.getFullYear() - birthdate.getFullYear();
       const monthDiff = today.getMonth() - birthdate.getMonth();
@@ -2899,234 +2815,403 @@ export const CalendarDatePickerExtension = {
       return age;
     };
     
-    // Check if a date is in the future
-    const isFutureDate = (day, month, year) => {
-      if (!config.preventFutureDates) return false;
-      
-      const date = new Date(year, month, day);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Reset time part for fair comparison
-      
-      return date > today;
+    const formatDate = (year, month, day) => {
+      return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
     };
     
-    // Generate the calendar for a given month and year
-    const generateCalendar = (month, year) => {
-      // First day of the month
-      const firstDay = new Date(year, month, 1).getDay();
-      // Last day of the month
-      const lastDay = new Date(year, month + 1, 0).getDate();
-      
-      // Get days from previous month to fill the first row
-      const prevMonthLastDay = new Date(year, month, 0).getDate();
-      const prevMonthDays = [];
-      for (let i = firstDay - 1; i >= 0; i--) {
-        prevMonthDays.push(prevMonthLastDay - i);
+    // Style
+    const styles = `
+      .calendar-container {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
       }
       
-      // Current month days
-      const currentMonthDays = [];
-      for (let i = 1; i <= lastDay; i++) {
-        currentMonthDays.push(i);
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
       }
       
-      // Next month days to fill the last row
-      const nextMonthDays = [];
+      .calendar-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+      }
+      
+      .month-nav {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      .month-nav button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #666;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .month-nav button:hover {
+        background: #f0f0f0;
+      }
+      
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        padding: 10px;
+      }
+      
+      .weekday {
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        color: #777;
+        padding: 5px 0;
+      }
+      
+      .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 14px;
+        color: #333;
+        position: relative;
+      }
+      
+      .calendar-day:hover:not(.outside-month):not(.selected) {
+        background: #f0f0f0;
+      }
+      
+      .calendar-day.outside-month {
+        color: #ccc;
+      }
+      
+      .calendar-day.selected {
+        background-color: ${config.primaryColor};
+        color: white;
+      }
+      
+      .calendar-footer {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .year-select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      
+      .status-text {
+        text-align: center;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+      
+      .error-text {
+        text-align: center;
+        padding: 10px;
+        background: #fee2e2;
+        color: #ef4444;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 14px;
+      }
+      
+      .age-display {
+        text-align: center;
+        padding: 10px;
+        background: ${config.primaryColor}20;
+        color: ${config.primaryColor};
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+      }
+      
+      .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      
+      .btn {
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+      }
+      
+      .btn-cancel {
+        background: #f1f5f9;
+        color: #64748b;
+      }
+      
+      .btn-confirm {
+        background: ${config.primaryColor};
+        color: white;
+      }
+      
+      .btn-confirm:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    `;
+    
+    // Create the container element
+    const container = document.createElement('div');
+    container.id = instanceId;
+    
+    // Set initial state
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+    let selectedDate = null;
+    
+    // Create the HTML structure
+    container.innerHTML = `
+      <style>${styles}</style>
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <div class="calendar-title">${config.title}</div>
+          <div class="month-nav">
+            <button class="prev-month" aria-label="Previous month">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              </svg>
+            </button>
+            <span class="current-month"></span>
+            <button class="next-month" aria-label="Next month">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="calendar-grid">
+          <!-- Will be populated dynamically -->
+        </div>
+        <div class="calendar-footer">
+          <div>
+            <label for="year-select">Jump to year:</label>
+            <select id="year-select" class="year-select">
+              ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
+                .map(year => `<option value="${year}">${year}</option>`)
+                .join('')}
+            </select>
+          </div>
+          <div class="status-text">No date selected</div>
+          <div class="error-text" style="display:none">Please select a date</div>
+          <div class="age-display"></div>
+          <div class="buttons">
+            <button class="btn btn-cancel">${config.cancelText}</button>
+            <button class="btn btn-confirm">${config.confirmText}</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Append to the element
+    element.appendChild(container);
+    
+    // Get DOM elements
+    const calendarGrid = container.querySelector('.calendar-grid');
+    const currentMonthDisplay = container.querySelector('.current-month');
+    const prevMonthButton = container.querySelector('.prev-month');
+    const nextMonthButton = container.querySelector('.next-month');
+    const yearSelect = container.querySelector('#year-select');
+    const statusText = container.querySelector('.status-text');
+    const errorText = container.querySelector('.error-text');
+    const ageDisplay = container.querySelector('.age-display');
+    const cancelButton = container.querySelector('.btn-cancel');
+    const confirmButton = container.querySelector('.btn-confirm');
+    
+    // Get month name
+    const getMonthName = (month) => {
+      return new Date(2000, month, 1).toLocaleString('default', { month: 'long' });
+    };
+    
+    // Render the calendar
+    const renderCalendar = () => {
+      // Update current month display
+      currentMonthDisplay.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
+      yearSelect.value = currentYear;
+      
+      // Clear the grid
+      calendarGrid.innerHTML = '';
+      
+      // Add weekday headers
+      ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'weekday';
+        dayElement.textContent = day;
+        calendarGrid.appendChild(dayElement);
+      });
+      
+      // Get first day of the month
+      const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+      
+      // Get number of days in current month
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      
+      // Get number of days in previous month
+      const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+      
+      // Add days from previous month
+      for (let i = firstDayOfMonth - 1; i >= 0; i--) {
+        const day = daysInPrevMonth - i;
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day outside-month';
+        dayElement.textContent = day;
+        
+        // Calculate previous month and year
+        let prevMonth = currentMonth - 1;
+        let prevYear = currentYear;
+        if (prevMonth < 0) {
+          prevMonth = 11;
+          prevYear = currentYear - 1;
+        }
+        
+        dayElement.addEventListener('click', () => {
+          selectDate(prevYear, prevMonth, day);
+          currentMonth = prevMonth;
+          currentYear = prevYear;
+          renderCalendar();
+        });
+        
+        calendarGrid.appendChild(dayElement);
+      }
+      
+      // Add days for current month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day';
+        dayElement.textContent = day;
+        
+        // Check if this is the selected date
+        if (selectedDate && 
+            selectedDate.getDate() === day && 
+            selectedDate.getMonth() === currentMonth && 
+            selectedDate.getFullYear() === currentYear) {
+          dayElement.classList.add('selected');
+        }
+        
+        dayElement.addEventListener('click', () => {
+          selectDate(currentYear, currentMonth, day);
+        });
+        
+        calendarGrid.appendChild(dayElement);
+      }
+      
+      // Calculate how many days to show from next month
       const totalCells = 42; // 6 rows of 7 days
-      const remainingCells = totalCells - (prevMonthDays.length + currentMonthDays.length);
-      for (let i = 1; i <= remainingCells; i++) {
-        nextMonthDays.push(i);
-      }
+      const remainingCells = totalCells - (firstDayOfMonth + daysInMonth);
       
-      return { prevMonthDays, currentMonthDays, nextMonthDays };
+      // Add days from next month
+      for (let day = 1; day <= remainingCells; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'calendar-day outside-month';
+        dayElement.textContent = day;
+        
+        // Calculate next month and year
+        let nextMonth = currentMonth + 1;
+        let nextYear = currentYear;
+        if (nextMonth > 11) {
+          nextMonth = 0;
+          nextYear = currentYear + 1;
+        }
+        
+        dayElement.addEventListener('click', () => {
+          selectDate(nextYear, nextMonth, day);
+          currentMonth = nextMonth;
+          currentYear = nextYear;
+          renderCalendar();
+        });
+        
+        calendarGrid.appendChild(dayElement);
+      }
     };
     
-    // Navigate to previous month
-    const goToPrevMonth = () => {
-      if (viewMonth === 0) {
-        viewMonth = 11;
-        viewYear--;
-      } else {
-        viewMonth--;
-      }
+    // Function to select a date
+    const selectDate = (year, month, day) => {
+      // Create the date object
+      selectedDate = new Date(year, month, day);
+      
+      // Calculate age
+      const age = calculateAge(selectedDate);
+      
+      // Update status text
+      statusText.textContent = formatDate(year, month + 1, day);
+      
+      // Update age display
+      ageDisplay.textContent = `${config.ageLabel}: ${age} years`;
+      ageDisplay.style.display = 'block';
+      
+      // Hide error if shown
+      errorText.style.display = 'none';
+      
+      // Re-render calendar to show selection
       renderCalendar();
     };
     
-    // Navigate to next month
-    const goToNextMonth = () => {
-      if (viewMonth === 11) {
-        viewMonth = 0;
-        viewYear++;
-      } else {
-        viewMonth++;
+    // Initial render
+    renderCalendar();
+    
+    // Event listeners
+    prevMonthButton.addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
       }
       renderCalendar();
-    };
+    });
     
-    // Check if a date is today
-    const isToday = (day, month, year) => {
-      const today = new Date();
-      return day === today.getDate() && 
-             month === today.getMonth() && 
-             year === today.getFullYear();
-    };
-    
-    // Check if a date is the selected date
-    const isSelectedDate = (day, month, year) => {
-      if (!selectedDate) return false;
-      return day === selectedDate.getDate() && 
-             month === selectedDate.getMonth() && 
-             year === selectedDate.getFullYear();
-    };
-    
-    // Toggle inputs function
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-          inputContainer.style.transition = "opacity 0.3s ease";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            el.style.transition = "opacity 0.3s ease";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? "#f5f5f5" : "";
-            }
-          });
-        });
+    nextMonthButton.addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
       }
-    };
+      renderCalendar();
+    });
     
-    // Hide scroll indicators
-    const hideScrollIndicators = () => {
-      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
-        .forEach(el => {
-          el.style.display = 'none';
-        });
-    };
+    yearSelect.addEventListener('change', (e) => {
+      currentYear = parseInt(e.target.value);
+      renderCalendar();
+    });
     
-    // Scroll the calendar into view
-    const scrollIntoView = () => {
-      setTimeout(() => {
-        calendarContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 100);
-    };
-    
-    // Confirmation handler
-    const confirmSelection = () => {
-      // Hide any previous error
-      const errorMsg = calendarContainer.querySelector('.calendar-error');
-      if (errorMsg) {
-        errorMsg.style.display = 'none';
-      }
-      
-      console.log("Confirming selection:", selectedDate);
-      
-      if (!selectedDate && config.required) {
-        // Show validation error
-        if (errorMsg) {
-          errorMsg.textContent = 'Please select a date';
-          errorMsg.style.display = 'block';
-          
-          // Add a little shake animation to the error message
-          errorMsg.style.animation = 'shake 0.5s ease';
-          setTimeout(() => {
-            errorMsg.style.animation = '';
-          }, 500);
-        }
-        
-        // Scroll error into view
-        scrollIntoView();
-        return;
-      }
-      
-      // Check if the date is in the future
-      if (selectedDate && config.preventFutureDates) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Reset time part for fair comparison
-        
-        if (selectedDate > today) {
-          // Show validation error
-          if (errorMsg) {
-            errorMsg.textContent = 'Please select a date in the past';
-            errorMsg.style.display = 'block';
-            
-            // Add a little shake animation to the error message
-            errorMsg.style.animation = 'shake 0.5s ease';
-            setTimeout(() => {
-              errorMsg.style.animation = '';
-            }, 500);
-          }
-          
-          // Scroll error into view
-          scrollIntoView();
-          return;
-        }
-      }
-      
-      // Calculate age if date is selected
-      const age = selectedDate ? calculateAge(selectedDate) : null;
-      
-      // Format the date for return
-      const formattedDate = formatDate(selectedDate);
-      
-      console.log("Sending data to Voiceflow:", {
-        date: formattedDate,
-        age: age,
-        year: selectedDate ? selectedDate.getFullYear() : null,
-        month: selectedDate ? selectedDate.getMonth() + 1 : null,
-        day: selectedDate ? selectedDate.getDate() : null
-      });
-      
-      // Send the result back to Voiceflow
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: {
-          date: formattedDate,
-          age: age,
-          year: selectedDate ? selectedDate.getFullYear() : null,
-          month: selectedDate ? selectedDate.getMonth() + 1 : null,
-          day: selectedDate ? selectedDate.getDate() : null,
-          timestamp: Date.now()
-        }
-      });
-      
-      // Re-enable inputs
-      toggleInputs(false);
-      hideScrollIndicators();
-    };
-    
-    // Cancel handler
-    const cancelSelection = () => {
-      // Send cancel event
+    cancelButton.addEventListener('click', () => {
+      // Send cancel event to Voiceflow
       window.voiceflow.chat.interact({
         type: "cancel",
         payload: { 
@@ -3134,868 +3219,56 @@ export const CalendarDatePickerExtension = {
           timestamp: Date.now()
         }
       });
-      
-      // Re-enable inputs
-      toggleInputs(false);
-      hideScrollIndicators();
-    };
+    });
     
-    // Date selection handler - FIXED
-    const selectDate = (day, month, year) => {
-      // Create a new Date object for the selected date
-      const newSelectedDate = new Date(year, month, day);
-      
-      // Check if date is in the future
-      if (config.preventFutureDates && isFutureDate(day, month, year)) {
-        // Show validation error
-        const errorMsg = calendarContainer.querySelector('.calendar-error');
-        if (errorMsg) {
-          errorMsg.textContent = 'Please select a date in the past';
-          errorMsg.style.display = 'block';
-          
-          // Add a little shake animation to the error message
-          errorMsg.style.animation = 'shake 0.5s ease';
-          setTimeout(() => {
-            errorMsg.style.animation = '';
-          }, 500);
-        }
-        
-        // Don't set the date
+    confirmButton.addEventListener('click', () => {
+      if (!selectedDate) {
+        // Show error message
+        errorText.style.display = 'block';
         return;
       }
       
-      // Set the selected date
-      selectedDate = newSelectedDate;
+      // Format the date
+      const month = selectedDate.getMonth() + 1;
+      const day = selectedDate.getDate();
+      const year = selectedDate.getFullYear();
+      const formattedDate = formatDate(year, month, day);
       
-      console.log("Date selected:", selectedDate);
+      // Calculate age
+      const age = calculateAge(selectedDate);
       
-      // Update UI
-      renderCalendar();
-      
-      // Update selected date display
-      const selectedDateDisplay = calendarContainer.querySelector('.calendar-selected-date');
-      if (selectedDateDisplay) {
-        selectedDateDisplay.textContent = formatDate(selectedDate);
-        // Add a highlight effect
-        selectedDateDisplay.style.animation = 'highlight 0.5s ease';
-        setTimeout(() => {
-          selectedDateDisplay.style.animation = '';
-        }, 500);
-      }
-      
-      // Update age display if enabled
-      if (config.showAge) {
-        const age = calculateAge(selectedDate);
-        const ageDisplay = calendarContainer.querySelector('.calendar-age-display');
-        if (ageDisplay) {
-          ageDisplay.textContent = age !== null ? `${config.ageLabel}: ${age} years` : '';
-          ageDisplay.style.display = age !== null ? 'block' : 'none';
-          
-          // Add a highlight effect
-          if (age !== null) {
-            ageDisplay.style.animation = 'highlight 0.5s ease';
-            setTimeout(() => {
-              ageDisplay.style.animation = '';
-            }, 500);
-          }
+      // Send data to Voiceflow
+      window.voiceflow.chat.interact({
+        type: "complete",
+        payload: {
+          date: formattedDate,
+          age: age,
+          year: year,
+          month: month,
+          day: day,
+          timestamp: Date.now()
         }
-      }
-      
-      // Hide validation error if present
-      const errorMsg = calendarContainer.querySelector('.calendar-error');
-      if (errorMsg) {
-        errorMsg.style.display = 'none';
-      }
-    };
-    
-    // Set up keyboard navigation focus
-    const setFocusedDay = (day, month, year) => {
-      focusedDay = day;
-      focusedMonth = month;
-      focusedYear = year;
-      renderCalendar();
-    };
-    
-    // Handle keyboard navigation
-    const handleKeyDown = (e) => {
-      // If no day is focused yet, focus on the first day of the current month
-      if (focusedDay === null) {
-        setFocusedDay(1, viewMonth, viewYear);
-        return;
-      }
-      
-      const daysInMonth = new Date(focusedYear, focusedMonth + 1, 0).getDate();
-      
-      switch (e.key) {
-        case 'ArrowLeft':
-          e.preventDefault();
-          if (focusedDay > 1) {
-            setFocusedDay(focusedDay - 1, focusedMonth, focusedYear);
-          } else {
-            // Go to previous month
-            const prevMonth = focusedMonth === 0 ? 11 : focusedMonth - 1;
-            const prevYear = focusedMonth === 0 ? focusedYear - 1 : focusedYear;
-            const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
-            setFocusedDay(daysInPrevMonth, prevMonth, prevYear);
-            
-            // Update view
-            viewMonth = prevMonth;
-            viewYear = prevYear;
-            renderCalendar();
-          }
-          break;
-          
-        case 'ArrowRight':
-          e.preventDefault();
-          if (focusedDay < daysInMonth) {
-            setFocusedDay(focusedDay + 1, focusedMonth, focusedYear);
-          } else {
-            // Go to next month
-            const nextMonth = focusedMonth === 11 ? 0 : focusedMonth + 1;
-            const nextYear = focusedMonth === 11 ? focusedYear + 1 : focusedYear;
-            setFocusedDay(1, nextMonth, nextYear);
-            
-            // Update view
-            viewMonth = nextMonth;
-            viewYear = nextYear;
-            renderCalendar();
-          }
-          break;
-          
-        case 'ArrowUp':
-          e.preventDefault();
-          {
-            // Go up a week (7 days)
-            const newDate = new Date(focusedYear, focusedMonth, focusedDay - 7);
-            setFocusedDay(newDate.getDate(), newDate.getMonth(), newDate.getFullYear());
-            
-            // Update view if month changed
-            if (newDate.getMonth() !== viewMonth || newDate.getFullYear() !== viewYear) {
-              viewMonth = newDate.getMonth();
-              viewYear = newDate.getFullYear();
-              renderCalendar();
-            }
-          }
-          break;
-          
-        case 'ArrowDown':
-          e.preventDefault();
-          {
-            // Go down a week (7 days)
-            const newDate = new Date(focusedYear, focusedMonth, focusedDay + 7);
-            setFocusedDay(newDate.getDate(), newDate.getMonth(), newDate.getFullYear());
-            
-            // Update view if month changed
-            if (newDate.getMonth() !== viewMonth || newDate.getFullYear() !== viewYear) {
-              viewMonth = newDate.getMonth();
-              viewYear = newDate.getFullYear();
-              renderCalendar();
-            }
-          }
-          break;
-          
-        case 'Enter':
-        case ' ': // Space
-          e.preventDefault();
-          selectDate(focusedDay, focusedMonth, focusedYear);
-          break;
-          
-        case 'Home':
-          e.preventDefault();
-          setFocusedDay(1, focusedMonth, focusedYear);
-          break;
-          
-        case 'End':
-          e.preventDefault();
-          setFocusedDay(daysInMonth, focusedMonth, focusedYear);
-          break;
-      }
-    };
-    
-    // Handle touch events for swipe gestures
-    let touchStartX = 0;
-    let touchEndX = 0;
-    
-    const handleTouchStart = (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    };
-    
-    const handleTouchEnd = (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    };
-    
-    const handleSwipe = () => {
-      const swipeThreshold = 50;
-      
-      if (touchEndX < touchStartX - swipeThreshold) {
-        // Swipe left, go to next month
-        goToNextMonth();
-      }
-      
-      if (touchEndX > touchStartX + swipeThreshold) {
-        // Swipe right, go to previous month
-        goToPrevMonth();
-      }
-    };
-    
-    // Create container for our calendar
-    const calendarContainer = document.createElement("div");
-    calendarContainer.id = instanceId;
-    calendarContainer.className = "_calendar-picker";
-    
-    // Create styles
-    const styles = `
-      /* Base styles */
-      #${instanceId} {
-        display: block;
-        width: 100%;
-        font-family: 'Montserrat', sans-serif;
-        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
-        background: ${config.darkMode ? '#1f2937' : '#ffffff'};
-        border-radius: 10px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        margin: 16px 0;
-        overflow: hidden;
-        transition: all 0.3s ease;
-      }
-      
-      /* Calendar container */
-      .calendar-container {
-        padding: 16px;
-      }
-      
-      /* Calendar header */
-      .calendar-header {
-        text-align: center;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid ${config.darkMode ? '#374151' : '#e5e7eb'};
-      }
-      
-      .calendar-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: ${config.darkMode ? '#f3f4f6' : '#1f2937'};
-      }
-      
-      .calendar-subtitle {
-        font-size: 14px;
-        color: ${config.darkMode ? '#9ca3af' : '#6b7280'};
-      }
-      
-      /* Month navigation */
-      .calendar-nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-      }
-      
-      .calendar-month-year {
-        font-size: 16px;
-        font-weight: 500;
-      }
-      
-      .calendar-nav-button {
-        background: ${hexToRgba(config.primaryColor, 0.1)};
-        color: ${config.primaryColor};
-        border: none;
-        border-radius: 8px;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      
-      .calendar-nav-button:hover {
-        background: ${hexToRgba(config.primaryColor, 0.2)};
-      }
-      
-      .calendar-nav-button:focus {
-        outline: 2px solid ${config.primaryColor};
-        outline-offset: 2px;
-      }
-      
-      /* Calendar grid */
-      .calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-      }
-      
-      .calendar-day-header {
-        text-align: center;
-        font-weight: 500;
-        font-size: 14px;
-        padding: 8px 0;
-        color: ${config.darkMode ? '#9ca3af' : '#6b7280'};
-      }
-      
-      .calendar-day {
-        text-align: center;
-        padding: 8px 0;
-        font-size: 14px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-      }
-      
-      .calendar-day:hover:not(.future-date) {
-        background: ${hexToRgba(config.primaryColor, 0.1)};
-      }
-      
-      .calendar-day.current-month {
-        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
-      }
-      
-      .calendar-day.prev-month,
-      .calendar-day.next-month {
-        color: ${config.darkMode ? '#6b7280' : '#9ca3af'};
-      }
-      
-      .calendar-day.today {
-        font-weight: 600;
-        border: 1px solid ${config.primaryColor};
-      }
-      
-      .calendar-day.selected {
-        background: ${config.primaryColor};
-        color: white;
-        font-weight: 500;
-      }
-      
-      .calendar-day.selected:hover {
-        background: ${config.primaryColor};
-        opacity: 0.9;
-      }
-      
-      .calendar-day.focused {
-        outline: 2px solid ${config.primaryColor};
-        outline-offset: 1px;
-        z-index: 2;
-      }
-      
-      .calendar-day.future-date {
-        color: ${config.darkMode ? '#4b5563' : '#d1d5db'};
-        cursor: not-allowed;
-        position: relative;
-      }
-      
-      .calendar-day.future-date::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        width: 100%;
-        height: 1px;
-        background: ${config.darkMode ? '#4b5563' : '#d1d5db'};
-        opacity: 0.5;
-      }
-      
-      /* Year selector */
-      .calendar-year-selector {
-        margin-top: 16px;
-      }
-      
-      .year-selector-label {
-        display: block;
-        margin-bottom: 8px;
-        font-size: 14px;
-        color: ${config.darkMode ? '#9ca3af' : '#6b7280'};
-      }
-      
-      .year-selector {
-        width: 100%;
-        padding: 8px 12px;
-        font-size: 14px;
-        border-radius: 8px;
-        border: 1px solid ${config.darkMode ? '#4b5563' : '#d1d5db'};
-        background: ${config.darkMode ? '#374151' : '#f3f4f6'};
-        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
-      }
-      
-      .year-selector:focus {
-        outline: 2px solid ${config.primaryColor};
-        outline-offset: 2px;
-      }
-      
-      /* Footer section */
-      .calendar-footer {
-        margin-top: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-      
-      .calendar-selected-date {
-        padding: 8px 12px;
-        font-size: 14px;
-        font-weight: 500;
-        background: ${config.darkMode ? '#374151' : '#f3f4f6'};
-        border-radius: 8px;
-        text-align: center;
-      }
-      
-      .calendar-age-display {
-        padding: 8px 12px;
-        font-size: 14px;
-        font-weight: 500;
-        background: ${hexToRgba(config.primaryColor, 0.1)};
-        color: ${config.primaryColor};
-        border-radius: 8px;
-        text-align: center;
-        display: none;
-      }
-      
-      .calendar-error {
-        padding: 8px 12px;
-        font-size: 14px;
-        font-weight: 500;
-        background: #fecaca;
-        color: #dc2626;
-        border-radius: 8px;
-        text-align: center;
-        display: none;
-      }
-      
-      .calendar-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-      
-      .calendar-button {
-        padding: 10px 16px;
-        font-size: 14px;
-        font-weight: 500;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      
-      .calendar-button:focus {
-        outline: 2px solid ${config.primaryColor};
-        outline-offset: 2px;
-      }
-      
-      .calendar-button.primary {
-        background: ${config.primaryColor};
-        color: white;
-      }
-      
-      .calendar-button.primary:hover {
-        opacity: 0.9;
-      }
-      
-      .calendar-button.secondary {
-        background: ${config.darkMode ? '#4b5563' : '#e5e7eb'};
-        color: ${config.darkMode ? '#f3f4f6' : '#374151'};
-      }
-      
-      .calendar-button.secondary:hover {
-        background: ${config.darkMode ? '#6b7280' : '#d1d5db'};
-      }
-      
-      /* Responsive adjustments */
-      @media (max-width: 500px) {
-        .calendar-container {
-          padding: 12px;
-        }
-        
-        .calendar-grid {
-          gap: 4px;
-        }
-        
-        .calendar-day {
-          padding: 6px 0;
-          font-size: 13px;
-        }
-        
-        .calendar-actions {
-          grid-template-columns: 1fr;
-        }
-      }
-      
-      /* Animation for month transitions */
-      .calendar-grid.transition-prev {
-        animation: slideInFromLeft 0.3s ease-in-out;
-      }
-      
-      .calendar-grid.transition-next {
-        animation: slideInFromRight 0.3s ease-in-out;
-      }
-      
-      /* Animation for highlights */
-      @keyframes highlight {
-        0%, 100% { background-color: ${hexToRgba(config.primaryColor, 0.1)}; }
-        50% { background-color: ${hexToRgba(config.primaryColor, 0.3)}; }
-      }
-      
-      @keyframes slideInFromLeft {
-        0% { transform: translateX(-20px); opacity: 0; }
-        100% { transform: translateX(0); opacity: 1; }
-      }
-      
-      @keyframes slideInFromRight {
-        0% { transform: translateX(20px); opacity: 0; }
-        100% { transform: translateX(0); opacity: 1; }
-      }
-      
-      /* Animation for error shake */
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-        20%, 40%, 60%, 80% { transform: translateX(5px); }
-      }
-    `;
-    
-    // Render the calendar UI
-    const renderCalendar = () => {
-      const calendarGrid = calendarContainer.querySelector('.calendar-grid');
-      if (!calendarGrid) return;
-      
-      // Update month and year display
-      const monthYearDisplay = calendarContainer.querySelector('.calendar-month-year');
-      if (monthYearDisplay) {
-        monthYearDisplay.textContent = `${months[viewMonth]} ${viewYear}`;
-      }
-      
-      // Update year select if it exists
-      const yearSelect = calendarContainer.querySelector(`#${instanceId}-year-select`);
-      if (yearSelect && parseInt(yearSelect.value) !== viewYear) {
-        yearSelect.value = viewYear.toString();
-      }
-      
-      // Generate calendar for current view
-      const { prevMonthDays, currentMonthDays, nextMonthDays } = generateCalendar(viewMonth, viewYear);
-      
-      // Clear existing calendar
-      calendarGrid.innerHTML = '';
-      
-      // Add day headers
-      daysOfWeek.forEach(day => {
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'calendar-day-header';
-        dayHeader.textContent = day;
-        calendarGrid.appendChild(dayHeader);
       });
-      
-      // Add previous month days (grayed out)
-      const prevMonth = viewMonth === 0 ? 11 : viewMonth - 1;
-      const prevYear = viewMonth === 0 ? viewYear - 1 : viewYear;
-      
-      prevMonthDays.forEach(day => {
-        const dayCell = document.createElement('div');
-        dayCell.className = 'calendar-day prev-month';
-        dayCell.textContent = day;
-        
-        // Check if this is the selected date
-        if (isSelectedDate(day, prevMonth, prevYear)) {
-          dayCell.classList.add('selected');
-        }
-        
-        // Check if this is the focused day
-        if (focusedDay === day && focusedMonth === prevMonth && focusedYear === prevYear) {
-          dayCell.classList.add('focused');
-          dayCell.setAttribute('tabindex', '0');
-        } else {
-          dayCell.setAttribute('tabindex', '-1');
-        }
-        
-        // Check if future date
-        if (isFutureDate(day, prevMonth, prevYear)) {
-          dayCell.classList.add('future-date');
-        }
-        
-        // Add event listener
-        dayCell.addEventListener('click', () => {
-          if (!dayCell.classList.contains('future-date')) {
-            selectDate(day, prevMonth, prevYear);
-            // If we selected a day from prev month, update the view
-            viewMonth = prevMonth;
-            viewYear = prevYear;
-            renderCalendar();
-          }
-        });
-        
-        // Keyboard focus event
-        dayCell.addEventListener('focus', () => {
-          setFocusedDay(day, prevMonth, prevYear);
-        });
-        
-        calendarGrid.appendChild(dayCell);
-      });
-      
-      // Add current month days
-      currentMonthDays.forEach(day => {
-        const dayCell = document.createElement('div');
-        dayCell.className = 'calendar-day current-month';
-        
-        // Check if this is today
-        if (isToday(day, viewMonth, viewYear)) {
-          dayCell.classList.add('today');
-        }
-        
-        // Check if this is the selected date
-        if (isSelectedDate(day, viewMonth, viewYear)) {
-          dayCell.classList.add('selected');
-        }
-        
-        // Check if this is the focused day
-        if (focusedDay === day && focusedMonth === viewMonth && focusedYear === viewYear) {
-          dayCell.classList.add('focused');
-          dayCell.setAttribute('tabindex', '0');
-          
-          // Scroll to focused element if needed
-          setTimeout(() => {
-            dayCell.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }, 100);
-        } else {
-          dayCell.setAttribute('tabindex', '-1');
-        }
-        
-        // Check if future date
-        if (isFutureDate(day, viewMonth, viewYear)) {
-          dayCell.classList.add('future-date');
-        }
-        
-        dayCell.textContent = day;
-        
-        // Add event listener
-        dayCell.addEventListener('click', () => {
-          if (!dayCell.classList.contains('future-date')) {
-            selectDate(day, viewMonth, viewYear);
-          }
-        });
-        
-        // Keyboard focus event
-        dayCell.addEventListener('focus', () => {
-          setFocusedDay(day, viewMonth, viewYear);
-        });
-        
-        calendarGrid.appendChild(dayCell);
-      });
-      
-      // Add next month days (grayed out)
-      const nextMonth = viewMonth === 11 ? 0 : viewMonth + 1;
-      const nextYear = viewMonth === 11 ? viewYear + 1 : viewYear;
-      
-      nextMonthDays.forEach(day => {
-        const dayCell = document.createElement('div');
-        dayCell.className = 'calendar-day next-month';
-        dayCell.textContent = day;
-        
-        // Check if this is the selected date
-        if (isSelectedDate(day, nextMonth, nextYear)) {
-          dayCell.classList.add('selected');
-        }
-        
-        // Check if this is the focused day
-        if (focusedDay === day && focusedMonth === nextMonth && focusedYear === nextYear) {
-          dayCell.classList.add('focused');
-          dayCell.setAttribute('tabindex', '0');
-        } else {
-          dayCell.setAttribute('tabindex', '-1');
-        }
-        
-        // Check if future date
-        if (isFutureDate(day, nextMonth, nextYear)) {
-          dayCell.classList.add('future-date');
-        }
-        
-        // Add event listener
-        dayCell.addEventListener('click', () => {
-          if (!dayCell.classList.contains('future-date')) {
-            selectDate(day, nextMonth, nextYear);
-            // If we selected a day from next month, update the view
-            viewMonth = nextMonth;
-            viewYear = nextYear;
-            renderCalendar();
-          }
-        });
-        
-        // Keyboard focus event
-        dayCell.addEventListener('focus', () => {
-          setFocusedDay(day, nextMonth, nextYear);
-        });
-        
-        calendarGrid.appendChild(dayCell);
-      });
-      
-      // Update the selected date display if there is one
-      const selectedDateDisplay = calendarContainer.querySelector('.calendar-selected-date');
-      if (selectedDateDisplay) {
-        selectedDateDisplay.textContent = selectedDate ? formatDate(selectedDate) : 'No date selected';
-      }
-      
-      // Update age display if enabled
-      if (config.showAge && selectedDate) {
-        const age = calculateAge(selectedDate);
-        const ageDisplay = calendarContainer.querySelector('.calendar-age-display');
-        if (ageDisplay) {
-          ageDisplay.textContent = age !== null ? `${config.ageLabel}: ${age} years` : '';
-          ageDisplay.style.display = age !== null ? 'block' : 'none';
+    });
+    
+    // Disable chat input while calendar is open
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
         }
       }
     };
     
-    // Build the HTML structure
-    calendarContainer.innerHTML = `
-      <style>${styles}</style>
-      <div class="calendar-container">
-        <div class="calendar-header">
-          <div class="calendar-title">${config.title}</div>
-          <div class="calendar-subtitle">${config.subtitle}</div>
-        </div>
-        
-        <div class="calendar-nav">
-          <button class="calendar-nav-button" id="${instanceId}-prev-month" aria-label="Previous month">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-          <div class="calendar-month-year">
-            ${months[viewMonth]} ${viewYear}
-          </div>
-          <button class="calendar-nav-button" id="${instanceId}-next-month" aria-label="Next month">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
-        </div>
-        
-        <div class="calendar-grid" role="grid" aria-labelledby="calendar-month-year" tabindex="0">
-          <!-- Will be populated by renderCalendar() -->
-        </div>
-        
-        <div class="calendar-year-selector">
-          <label class="year-selector-label" for="${instanceId}-year-select">Jump to year:</label>
-          <select class="year-selector" id="${instanceId}-year-select" aria-label="Select Year">
-            ${years.map(year => `<option value="${year}" ${year === viewYear ? 'selected' : ''}>${year}</option>`).join('')}
-          </select>
-        </div>
-        
-        <div class="calendar-footer">
-          <div class="calendar-selected-date" aria-live="polite">${selectedDate ? formatDate(selectedDate) : 'No date selected'}</div>
-          <div class="calendar-age-display" style="display: none;" aria-live="polite"></div>
-          <div class="calendar-error" style="display: none;" role="alert"></div>
-          
-          <div class="calendar-actions">
-            <button class="calendar-button secondary" id="${instanceId}-cancel">${config.cancelText}</button>
-            <button class="calendar-button primary" id="${instanceId}-confirm">${config.confirmText}</button>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // Add to DOM
-    element.appendChild(calendarContainer);
-    
-    // Add event listeners
-    const calendarGrid = calendarContainer.querySelector('.calendar-grid');
-    
-    // Add keyboard event listener to grid
-    if (calendarGrid) {
-      calendarGrid.addEventListener('keydown', handleKeyDown);
-      
-      // Add touch events for swipe
-      calendarGrid.addEventListener('touchstart', handleTouchStart);
-      calendarGrid.addEventListener('touchend', handleTouchEnd);
-    }
-    
-    const prevMonthButton = calendarContainer.querySelector(`#${instanceId}-prev-month`);
-    if (prevMonthButton) {
-      prevMonthButton.addEventListener('click', () => {
-        if (calendarGrid) {
-          calendarGrid.classList.add('transition-prev');
-          setTimeout(() => {
-            calendarGrid.classList.remove('transition-prev');
-          }, 300);
-        }
-        goToPrevMonth();
-      });
-    }
-    
-    const nextMonthButton = calendarContainer.querySelector(`#${instanceId}-next-month`);
-    if (nextMonthButton) {
-      nextMonthButton.addEventListener('click', () => {
-        if (calendarGrid) {
-          calendarGrid.classList.add('transition-next');
-          setTimeout(() => {
-            calendarGrid.classList.remove('transition-next');
-          }, 300);
-        }
-        goToNextMonth();
-      });
-    }
-    
-    const yearSelect = calendarContainer.querySelector(`#${instanceId}-year-select`);
-    if (yearSelect) {
-      yearSelect.addEventListener('change', (e) => {
-        viewYear = parseInt(e.target.value);
-        renderCalendar();
-      });
-    }
-    
-    const confirmButton = calendarContainer.querySelector(`#${instanceId}-confirm`);
-    if (confirmButton) {
-      confirmButton.addEventListener('click', confirmSelection);
-    }
-    
-    const cancelButton = calendarContainer.querySelector(`#${instanceId}-cancel`);
-    if (cancelButton) {
-      cancelButton.addEventListener('click', cancelSelection);
-    }
-    
-    // Initial render
-    renderCalendar();
-    
-    // Scroll into view
-    scrollIntoView();
-    
-    // Disable inputs and hide scroll indicators
+    // Disable inputs
     toggleInputs(true);
-    hideScrollIndicators();
     
     // Return cleanup function
     return () => {
-      // Remove event listeners
-      if (calendarGrid) {
-        calendarGrid.removeEventListener('keydown', handleKeyDown);
-        calendarGrid.removeEventListener('touchstart', handleTouchStart);
-        calendarGrid.removeEventListener('touchend', handleTouchEnd);
-      }
-      
-      if (prevMonthButton) {
-        prevMonthButton.removeEventListener('click', goToPrevMonth);
-      }
-      
-      if (nextMonthButton) {
-        nextMonthButton.removeEventListener('click', goToNextMonth);
-      }
-      
-      if (confirmButton) {
-        confirmButton.removeEventListener('click', confirmSelection);
-      }
-      
-      if (cancelButton) {
-        cancelButton.removeEventListener('click', cancelSelection);
-      }
-      
-      if (yearSelect) {
-        yearSelect.removeEventListener('change', () => {});
-      }
-      
-      // Re-enable inputs
       toggleInputs(false);
-      hideScrollIndicators();
     };
   }
 };
