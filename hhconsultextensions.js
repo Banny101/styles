@@ -3042,9 +3042,16 @@ export const CalendarDatePickerExtension = {
     
     // Confirmation handler
     const confirmSelection = () => {
+      // Hide any previous error
+      const errorMsg = calendarContainer.querySelector('.calendar-error');
+      if (errorMsg) {
+        errorMsg.style.display = 'none';
+      }
+      
+      console.log("Confirming selection:", selectedDate);
+      
       if (!selectedDate && config.required) {
         // Show validation error
-        const errorMsg = calendarContainer.querySelector('.calendar-error');
         if (errorMsg) {
           errorMsg.textContent = 'Please select a date';
           errorMsg.style.display = 'block';
@@ -3068,7 +3075,6 @@ export const CalendarDatePickerExtension = {
         
         if (selectedDate > today) {
           // Show validation error
-          const errorMsg = calendarContainer.querySelector('.calendar-error');
           if (errorMsg) {
             errorMsg.textContent = 'Please select a date in the past';
             errorMsg.style.display = 'block';
@@ -3091,6 +3097,14 @@ export const CalendarDatePickerExtension = {
       
       // Format the date for return
       const formattedDate = formatDate(selectedDate);
+      
+      console.log("Sending data to Voiceflow:", {
+        date: formattedDate,
+        age: age,
+        year: selectedDate ? selectedDate.getFullYear() : null,
+        month: selectedDate ? selectedDate.getMonth() + 1 : null,
+        day: selectedDate ? selectedDate.getDate() : null
+      });
       
       // Send the result back to Voiceflow
       window.voiceflow.chat.interact({
@@ -3126,8 +3140,11 @@ export const CalendarDatePickerExtension = {
       hideScrollIndicators();
     };
     
-    // Date selection handler
+    // Date selection handler - FIXED
     const selectDate = (day, month, year) => {
+      // Create a new Date object for the selected date
+      const newSelectedDate = new Date(year, month, day);
+      
       // Check if date is in the future
       if (config.preventFutureDates && isFutureDate(day, month, year)) {
         // Show validation error
@@ -3147,10 +3164,24 @@ export const CalendarDatePickerExtension = {
         return;
       }
       
-      selectedDate = new Date(year, month, day);
+      // Set the selected date
+      selectedDate = newSelectedDate;
+      
+      console.log("Date selected:", selectedDate);
       
       // Update UI
       renderCalendar();
+      
+      // Update selected date display
+      const selectedDateDisplay = calendarContainer.querySelector('.calendar-selected-date');
+      if (selectedDateDisplay) {
+        selectedDateDisplay.textContent = formatDate(selectedDate);
+        // Add a highlight effect
+        selectedDateDisplay.style.animation = 'highlight 0.5s ease';
+        setTimeout(() => {
+          selectedDateDisplay.style.animation = '';
+        }, 500);
+      }
       
       // Update age display if enabled
       if (config.showAge) {
@@ -3159,6 +3190,14 @@ export const CalendarDatePickerExtension = {
         if (ageDisplay) {
           ageDisplay.textContent = age !== null ? `${config.ageLabel}: ${age} years` : '';
           ageDisplay.style.display = age !== null ? 'block' : 'none';
+          
+          // Add a highlight effect
+          if (age !== null) {
+            ageDisplay.style.animation = 'highlight 0.5s ease';
+            setTimeout(() => {
+              ageDisplay.style.animation = '';
+            }, 500);
+          }
         }
       }
       
@@ -3593,6 +3632,12 @@ export const CalendarDatePickerExtension = {
         animation: slideInFromRight 0.3s ease-in-out;
       }
       
+      /* Animation for highlights */
+      @keyframes highlight {
+        0%, 100% { background-color: ${hexToRgba(config.primaryColor, 0.1)}; }
+        50% { background-color: ${hexToRgba(config.primaryColor, 0.3)}; }
+      }
+      
       @keyframes slideInFromLeft {
         0% { transform: translateX(-20px); opacity: 0; }
         100% { transform: translateX(0); opacity: 1; }
@@ -3651,6 +3696,11 @@ export const CalendarDatePickerExtension = {
         dayCell.className = 'calendar-day prev-month';
         dayCell.textContent = day;
         
+        // Check if this is the selected date
+        if (isSelectedDate(day, prevMonth, prevYear)) {
+          dayCell.classList.add('selected');
+        }
+        
         // Check if this is the focused day
         if (focusedDay === day && focusedMonth === prevMonth && focusedYear === prevYear) {
           dayCell.classList.add('focused');
@@ -3666,11 +3716,13 @@ export const CalendarDatePickerExtension = {
         
         // Add event listener
         dayCell.addEventListener('click', () => {
-          selectDate(day, prevMonth, prevYear);
-          // If we selected a day from prev month, update the view
-          viewMonth = prevMonth;
-          viewYear = prevYear;
-          renderCalendar();
+          if (!dayCell.classList.contains('future-date')) {
+            selectDate(day, prevMonth, prevYear);
+            // If we selected a day from prev month, update the view
+            viewMonth = prevMonth;
+            viewYear = prevYear;
+            renderCalendar();
+          }
         });
         
         // Keyboard focus event
@@ -3718,7 +3770,9 @@ export const CalendarDatePickerExtension = {
         
         // Add event listener
         dayCell.addEventListener('click', () => {
-          selectDate(day, viewMonth, viewYear);
+          if (!dayCell.classList.contains('future-date')) {
+            selectDate(day, viewMonth, viewYear);
+          }
         });
         
         // Keyboard focus event
@@ -3738,6 +3792,11 @@ export const CalendarDatePickerExtension = {
         dayCell.className = 'calendar-day next-month';
         dayCell.textContent = day;
         
+        // Check if this is the selected date
+        if (isSelectedDate(day, nextMonth, nextYear)) {
+          dayCell.classList.add('selected');
+        }
+        
         // Check if this is the focused day
         if (focusedDay === day && focusedMonth === nextMonth && focusedYear === nextYear) {
           dayCell.classList.add('focused');
@@ -3753,11 +3812,13 @@ export const CalendarDatePickerExtension = {
         
         // Add event listener
         dayCell.addEventListener('click', () => {
-          selectDate(day, nextMonth, nextYear);
-          // If we selected a day from next month, update the view
-          viewMonth = nextMonth;
-          viewYear = nextYear;
-          renderCalendar();
+          if (!dayCell.classList.contains('future-date')) {
+            selectDate(day, nextMonth, nextYear);
+            // If we selected a day from next month, update the view
+            viewMonth = nextMonth;
+            viewYear = nextYear;
+            renderCalendar();
+          }
         });
         
         // Keyboard focus event
