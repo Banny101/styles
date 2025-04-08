@@ -2794,9 +2794,11 @@ export const CalendarDatePickerExtension = {
       confirmText: trace.payload?.confirmText || "Confirm",
       cancelText: trace.payload?.cancelText || "Cancel",
       primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
+      secondaryColor: trace.payload?.secondaryColor || "#E0E7FF", // Light indigo
       maxYear: trace.payload?.maxYear || new Date().getFullYear(),
       minYear: trace.payload?.minYear || 1900,
-      ageLabel: trace.payload?.ageLabel || "Age"
+      ageLabel: trace.payload?.ageLabel || "Age", 
+      darkMode: trace.payload?.darkMode || false
     };
     
     // Create a unique ID for this instance
@@ -2819,171 +2821,301 @@ export const CalendarDatePickerExtension = {
       return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
     };
     
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Set color scheme based on dark mode preference
+    const colors = {
+      background: config.darkMode ? '#1E293B' : '#FFFFFF',
+      surface: config.darkMode ? '#334155' : '#F8FAFC',
+      text: config.darkMode ? '#F1F5F9' : '#1E293B',
+      textSecondary: config.darkMode ? '#94A3B8' : '#64748B',
+      border: config.darkMode ? '#475569' : '#E2E8F0',
+      primary: config.primaryColor,
+      primaryLight: hexToRgba(config.primaryColor, 0.15),
+      hover: config.darkMode ? '#475569' : '#F1F5F9'
+    };
+    
     // Style
     const styles = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      
       .calendar-container {
-        font-family: system-ui, -apple-system, sans-serif;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        font-family: 'Inter', system-ui, sans-serif;
+        background: ${colors.background};
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, ${config.darkMode ? 0.4 : 0.08});
         overflow: hidden;
         width: 100%;
         max-width: 350px;
         margin: 0 auto;
+        transition: all 0.3s ease;
+        border: 1px solid ${colors.border};
       }
       
       .calendar-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 15px;
-        background: #f8f9fa;
-        border-bottom: 1px solid #eee;
+        padding: 16px 20px;
+        background: ${colors.surface};
       }
       
       .calendar-title {
         font-size: 16px;
         font-weight: 600;
-        color: #333;
+        color: ${colors.text};
+        letter-spacing: -0.01em;
       }
       
       .month-nav {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 16px;
+      }
+      
+      .month-nav-text {
+        font-size: 15px;
+        font-weight: 500;
+        color: ${colors.text};
+        min-width: 110px;
+        text-align: center;
       }
       
       .month-nav button {
-        background: none;
+        background: ${colors.hover};
         border: none;
         cursor: pointer;
-        color: #666;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
+        color: ${colors.textSecondary};
+        border-radius: 8px;
+        width: 32px;
+        height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: all 0.2s ease;
       }
       
       .month-nav button:hover {
-        background: #f0f0f0;
+        background: ${hexToRgba(config.primaryColor, 0.1)};
+        color: ${config.primaryColor};
+      }
+      
+      .month-nav button:active {
+        transform: scale(0.95);
+      }
+      
+      .calendar-body {
+        padding: 12px 16px 16px;
       }
       
       .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        padding: 10px;
+        gap: 8px;
+        margin-bottom: 16px;
       }
       
       .weekday {
         text-align: center;
         font-size: 12px;
-        font-weight: 600;
-        color: #777;
-        padding: 5px 0;
+        font-weight: 500;
+        color: ${colors.textSecondary};
+        padding: 8px 0;
+        text-transform: uppercase;
       }
       
       .calendar-day {
-        aspect-ratio: 1;
+        height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        border-radius: 50%;
+        border-radius: 10px;
         font-size: 14px;
-        color: #333;
+        color: ${colors.text};
         position: relative;
+        transition: all 0.15s ease;
+        font-weight: 400;
       }
       
       .calendar-day:hover:not(.outside-month):not(.selected) {
-        background: #f0f0f0;
+        background: ${colors.hover};
       }
       
       .calendar-day.outside-month {
-        color: #ccc;
+        color: ${colors.textSecondary};
+        opacity: 0.5;
+      }
+      
+      .calendar-day.today {
+        font-weight: 600;
+        border: 1.5px solid ${config.primaryColor};
       }
       
       .calendar-day.selected {
         background-color: ${config.primaryColor};
         color: white;
+        font-weight: 500;
+        box-shadow: 0 2px 8px ${hexToRgba(config.primaryColor, 0.4)};
+      }
+      
+      .calendar-day.selected:hover {
+        background-color: ${config.primaryColor};
+        opacity: 0.9;
       }
       
       .calendar-footer {
-        padding: 15px;
+        padding: 0 16px 16px;
         display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 14px;
+      }
+      
+      .year-select-container {
+        position: relative;
       }
       
       .year-select {
         width: 100%;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
+        padding: 10px 12px;
+        border: 1px solid ${colors.border};
+        border-radius: 10px;
         font-size: 14px;
+        background: ${colors.surface};
+        color: ${colors.text};
+        font-family: 'Inter', system-ui, sans-serif;
+        cursor: pointer;
+        appearance: none;
+        transition: all 0.2s;
+      }
+      
+      .year-select:focus {
+        outline: none;
+        border-color: ${config.primaryColor};
+        box-shadow: 0 0 0 2px ${hexToRgba(config.primaryColor, 0.2)};
+      }
+      
+      .year-select-container::after {
+        content: '';
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 6px;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+        background-repeat: no-repeat;
+        pointer-events: none;
       }
       
       .status-text {
         text-align: center;
-        padding: 10px;
-        background: #f8f9fa;
-        border-radius: 5px;
-        margin-bottom: 10px;
+        padding: 12px;
+        background: ${colors.surface};
+        border-radius: 10px;
         font-size: 14px;
+        color: ${colors.text};
+        border: 1px solid ${colors.border};
+        transition: all 0.3s ease;
       }
       
       .error-text {
         text-align: center;
-        padding: 10px;
-        background: #fee2e2;
-        color: #ef4444;
-        border-radius: 5px;
-        margin-bottom: 10px;
+        padding: 12px;
+        background: ${hexToRgba("#EF4444", 0.1)};
+        color: #EF4444;
+        border-radius: 10px;
         font-size: 14px;
+        margin-bottom: 4px;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        display: none;
+        animation: fadeIn 0.3s ease;
       }
       
       .age-display {
         text-align: center;
-        padding: 10px;
-        background: ${config.primaryColor}20;
+        padding: 12px;
+        background: ${hexToRgba(config.primaryColor, 0.1)};
         color: ${config.primaryColor};
-        border-radius: 5px;
-        margin-bottom: 10px;
+        border-radius: 10px;
         font-size: 14px;
         font-weight: 500;
         display: none;
+        animation: fadeIn 0.3s ease;
+        border: 1px solid ${hexToRgba(config.primaryColor, 0.15)};
       }
       
       .buttons {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        gap: 12px;
+        margin-top: 4px;
       }
       
       .btn {
-        padding: 10px;
+        padding: 12px;
         border: none;
-        border-radius: 5px;
+        border-radius: 10px;
         cursor: pointer;
         font-size: 14px;
         font-weight: 500;
         text-align: center;
+        font-family: 'Inter', system-ui, sans-serif;
+        transition: all 0.2s ease;
       }
       
       .btn-cancel {
-        background: #f1f5f9;
-        color: #64748b;
+        background: ${colors.surface};
+        color: ${colors.textSecondary};
+        border: 1px solid ${colors.border};
+      }
+      
+      .btn-cancel:hover {
+        background: ${config.darkMode ? '#475569' : '#E2E8F0'};
       }
       
       .btn-confirm {
         background: ${config.primaryColor};
         color: white;
+        box-shadow: 0 2px 4px ${hexToRgba(config.primaryColor, 0.4)};
+      }
+      
+      .btn-confirm:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px ${hexToRgba(config.primaryColor, 0.5)};
+      }
+      
+      .btn-confirm:active {
+        transform: translateY(0);
       }
       
       .btn-confirm:disabled {
-        opacity: 0.7;
+        opacity: 0.6;
         cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+      
+      .selected-animation {
+        animation: pulse 0.4s ease;
       }
     `;
     
@@ -3005,32 +3137,35 @@ export const CalendarDatePickerExtension = {
           <div class="calendar-title">${config.title}</div>
           <div class="month-nav">
             <button class="prev-month" aria-label="Previous month">
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
               </svg>
             </button>
-            <span class="current-month"></span>
+            <span class="month-nav-text"></span>
             <button class="next-month" aria-label="Next month">
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
               </svg>
             </button>
           </div>
         </div>
-        <div class="calendar-grid">
-          <!-- Will be populated dynamically -->
-        </div>
-        <div class="calendar-footer">
-          <div>
-            <label for="year-select">Jump to year:</label>
+        <div class="calendar-body">
+          <div class="calendar-grid">
+            <!-- Will be populated dynamically -->
+          </div>
+          
+          <div class="year-select-container">
             <select id="year-select" class="year-select">
               ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
                 .map(year => `<option value="${year}">${year}</option>`)
                 .join('')}
             </select>
           </div>
+        </div>
+        
+        <div class="calendar-footer">
           <div class="status-text">No date selected</div>
-          <div class="error-text" style="display:none">Please select a date</div>
+          <div class="error-text">Please select a date</div>
           <div class="age-display"></div>
           <div class="buttons">
             <button class="btn btn-cancel">${config.cancelText}</button>
@@ -3045,7 +3180,7 @@ export const CalendarDatePickerExtension = {
     
     // Get DOM elements
     const calendarGrid = container.querySelector('.calendar-grid');
-    const currentMonthDisplay = container.querySelector('.current-month');
+    const currentMonthDisplay = container.querySelector('.month-nav-text');
     const prevMonthButton = container.querySelector('.prev-month');
     const nextMonthButton = container.querySelector('.next-month');
     const yearSelect = container.querySelector('#year-select');
@@ -3070,7 +3205,7 @@ export const CalendarDatePickerExtension = {
       calendarGrid.innerHTML = '';
       
       // Add weekday headers
-      ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(day => {
+      ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => {
         const dayElement = document.createElement('div');
         dayElement.className = 'weekday';
         dayElement.textContent = day;
@@ -3117,6 +3252,13 @@ export const CalendarDatePickerExtension = {
         dayElement.className = 'calendar-day';
         dayElement.textContent = day;
         
+        // Check if this is today
+        if (currentYear === today.getFullYear() && 
+            currentMonth === today.getMonth() && 
+            day === today.getDate()) {
+          dayElement.classList.add('today');
+        }
+        
         // Check if this is the selected date
         if (selectedDate && 
             selectedDate.getDate() === day && 
@@ -3127,14 +3269,15 @@ export const CalendarDatePickerExtension = {
         
         dayElement.addEventListener('click', () => {
           selectDate(currentYear, currentMonth, day);
+          dayElement.classList.add('selected-animation');
         });
         
         calendarGrid.appendChild(dayElement);
       }
       
       // Calculate how many days to show from next month
-      const totalCells = 42; // 6 rows of 7 days
-      const remainingCells = totalCells - (firstDayOfMonth + daysInMonth);
+      const totalDaysShown = firstDayOfMonth + daysInMonth;
+      const remainingCells = totalDaysShown % 7 === 0 ? 0 : 7 - (totalDaysShown % 7);
       
       // Add days from next month
       for (let day = 1; day <= remainingCells; day++) {
@@ -3171,6 +3314,8 @@ export const CalendarDatePickerExtension = {
       
       // Update status text
       statusText.textContent = formatDate(year, month + 1, day);
+      statusText.style.borderColor = hexToRgba(config.primaryColor, 0.3);
+      statusText.style.background = hexToRgba(config.primaryColor, 0.05);
       
       // Update age display
       ageDisplay.textContent = `${config.ageLabel}: ${age} years`;
@@ -3225,6 +3370,10 @@ export const CalendarDatePickerExtension = {
       if (!selectedDate) {
         // Show error message
         errorText.style.display = 'block';
+        errorText.style.animation = 'none';
+        setTimeout(() => {
+          errorText.style.animation = 'fadeIn 0.3s ease';
+        }, 10);
         return;
       }
       
@@ -3259,6 +3408,7 @@ export const CalendarDatePickerExtension = {
         if (inputContainer) {
           inputContainer.style.opacity = disable ? "0.5" : "1";
           inputContainer.style.pointerEvents = disable ? "none" : "auto";
+          inputContainer.style.transition = "opacity 0.3s ease";
         }
       }
     };
