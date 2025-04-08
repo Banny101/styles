@@ -2790,15 +2790,16 @@ export const CalendarDatePickerExtension = {
   render: ({ trace, element }) => {
     // Configuration with defaults
     const config = {
-      title: trace.payload?.title || "Select your birthdate",
+      title: trace.payload?.title || "",
       confirmText: trace.payload?.confirmText || "Confirm",
       cancelText: trace.payload?.cancelText || "Cancel",
       primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
-      secondaryColor: trace.payload?.secondaryColor || "#E0E7FF", // Light indigo
-      maxYear: trace.payload?.maxYear || new Date().getFullYear(),
-      minYear: trace.payload?.minYear || 1900,
-      ageLabel: trace.payload?.ageLabel || "Age", 
-      darkMode: trace.payload?.darkMode || false
+      maxYear: parseInt(trace.payload?.maxYear) || new Date().getFullYear(),
+      minYear: parseInt(trace.payload?.minYear) || 1900,
+      ageLabel: trace.payload?.ageLabel || "Your age", 
+      darkMode: trace.payload?.darkMode || false,
+      preventFutureDates: trace.payload?.preventFutureDates !== false, // Default true
+      monthAnimations: trace.payload?.monthAnimations !== false // Default true
     };
     
     // Create a unique ID for this instance
@@ -2815,6 +2816,13 @@ export const CalendarDatePickerExtension = {
       }
       
       return age;
+    };
+    
+    const isFutureDate = (date) => {
+      if (!config.preventFutureDates) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date > today;
     };
     
     const formatDate = (year, month, day) => {
@@ -2838,7 +2846,10 @@ export const CalendarDatePickerExtension = {
       border: config.darkMode ? '#475569' : '#E2E8F0',
       primary: config.primaryColor,
       primaryLight: hexToRgba(config.primaryColor, 0.15),
-      hover: config.darkMode ? '#475569' : '#F1F5F9'
+      hover: config.darkMode ? '#475569' : '#F1F5F9',
+      error: '#EF4444',
+      errorLight: hexToRgba('#EF4444', 0.1),
+      errorBorder: hexToRgba('#EF4444', 0.2)
     };
     
     // Style
@@ -2854,7 +2865,7 @@ export const CalendarDatePickerExtension = {
         width: 100%;
         max-width: 350px;
         margin: 0 auto;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid ${colors.border};
       }
       
@@ -2862,7 +2873,7 @@ export const CalendarDatePickerExtension = {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 16px 20px;
+        padding: ${config.title ? '16px 20px' : '12px 16px'};
         background: ${colors.surface};
       }
       
@@ -2877,11 +2888,12 @@ export const CalendarDatePickerExtension = {
         display: flex;
         align-items: center;
         gap: 16px;
+        ${!config.title ? 'width: 100%; justify-content: space-between;' : ''}
       }
       
       .month-nav-text {
         font-size: 15px;
-        font-weight: 500;
+        font-weight: 600;
         color: ${colors.text};
         min-width: 110px;
         text-align: center;
@@ -2892,13 +2904,15 @@ export const CalendarDatePickerExtension = {
         border: none;
         cursor: pointer;
         color: ${colors.textSecondary};
-        border-radius: 8px;
+        border-radius: 10px;
         width: 32px;
         height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
       }
       
       .month-nav button:hover {
@@ -2907,27 +2921,79 @@ export const CalendarDatePickerExtension = {
       }
       
       .month-nav button:active {
-        transform: scale(0.95);
+        transform: scale(0.92);
+      }
+      
+      .month-nav button::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background: ${hexToRgba(config.primaryColor, 0.2)};
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.4s ease-out;
+        pointer-events: none;
+      }
+      
+      .month-nav button:active::after {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
       }
       
       .calendar-body {
         padding: 12px 16px 16px;
+        position: relative;
+        overflow: hidden;
       }
       
       .calendar-grid {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 16px;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      
+      .calendar-grid.slide-left-enter {
+        transform: translateX(-10%);
+        opacity: 0;
+      }
+      
+      .calendar-grid.slide-right-enter {
+        transform: translateX(10%);
+        opacity: 0;
+      }
+      
+      .calendar-grid.slide-left-exit {
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        right: 16px;
+        transform: translateX(10%);
+        opacity: 0;
+        pointer-events: none;
+      }
+      
+      .calendar-grid.slide-right-exit {
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        right: 16px;
+        transform: translateX(-10%);
+        opacity: 0;
+        pointer-events: none;
       }
       
       .weekday {
         text-align: center;
         font-size: 12px;
-        font-weight: 500;
+        font-weight: 600;
         color: ${colors.textSecondary};
         padding: 8px 0;
-        text-transform: uppercase;
       }
       
       .calendar-day {
@@ -2940,12 +3006,28 @@ export const CalendarDatePickerExtension = {
         font-size: 14px;
         color: ${colors.text};
         position: relative;
-        transition: all 0.15s ease;
+        transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
         font-weight: 400;
+        -webkit-tap-highlight-color: transparent;
       }
       
-      .calendar-day:hover:not(.outside-month):not(.selected) {
+      .calendar-day:hover:not(.outside-month):not(.selected):not(.future-date) {
         background: ${colors.hover};
+      }
+      
+      .calendar-day::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0.7);
+        background: ${config.primaryColor};
+        opacity: 0;
+        z-index: -1;
+        transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       }
       
       .calendar-day.outside-month {
@@ -2953,28 +3035,48 @@ export const CalendarDatePickerExtension = {
         opacity: 0.5;
       }
       
+      .calendar-day.future-date {
+        color: ${config.darkMode ? hexToRgba(colors.textSecondary, 0.5) : hexToRgba(colors.textSecondary, 0.4)};
+        cursor: not-allowed;
+        position: relative;
+      }
+      
+      .calendar-day.future-date::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 20%;
+        width: 60%;
+        height: 1px;
+        background: ${config.darkMode ? hexToRgba(colors.textSecondary, 0.4) : hexToRgba(colors.textSecondary, 0.3)};
+        transform: rotate(-10deg);
+      }
+      
       .calendar-day.today {
+        position: relative;
         font-weight: 600;
-        border: 1.5px solid ${config.primaryColor};
+      }
+      
+      .calendar-day.today::after {
+        content: '';
+        position: absolute;
+        bottom: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: ${config.primaryColor};
       }
       
       .calendar-day.selected {
-        background-color: ${config.primaryColor};
         color: white;
         font-weight: 500;
-        box-shadow: 0 2px 8px ${hexToRgba(config.primaryColor, 0.4)};
       }
       
-      .calendar-day.selected:hover {
-        background-color: ${config.primaryColor};
-        opacity: 0.9;
-      }
-      
-      .calendar-footer {
-        padding: 0 16px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
+      .calendar-day.selected::before {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
       }
       
       .year-select-container {
@@ -2983,9 +3085,9 @@ export const CalendarDatePickerExtension = {
       
       .year-select {
         width: 100%;
-        padding: 10px 12px;
+        padding: 12px 14px;
         border: 1px solid ${colors.border};
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 14px;
         background: ${colors.surface};
         color: ${colors.text};
@@ -3012,30 +3114,43 @@ export const CalendarDatePickerExtension = {
         background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
         background-repeat: no-repeat;
         pointer-events: none;
+        transition: transform 0.2s ease;
+      }
+      
+      .year-select:focus + .year-select-container::after {
+        transform: translateY(-50%) rotate(180deg);
+      }
+      
+      .calendar-footer {
+        padding: 0 16px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
       }
       
       .status-text {
         text-align: center;
         padding: 12px;
         background: ${colors.surface};
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 14px;
         color: ${colors.text};
         border: 1px solid ${colors.border};
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        font-weight: 500;
       }
       
       .error-text {
         text-align: center;
         padding: 12px;
-        background: ${hexToRgba("#EF4444", 0.1)};
-        color: #EF4444;
-        border-radius: 10px;
+        background: ${colors.errorLight};
+        color: ${colors.error};
+        border-radius: 12px;
         font-size: 14px;
         margin-bottom: 4px;
-        border: 1px solid rgba(239, 68, 68, 0.2);
+        border: 1px solid ${colors.errorBorder};
         display: none;
-        animation: fadeIn 0.3s ease;
+        animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       }
       
       .age-display {
@@ -3043,11 +3158,11 @@ export const CalendarDatePickerExtension = {
         padding: 12px;
         background: ${hexToRgba(config.primaryColor, 0.1)};
         color: ${config.primaryColor};
-        border-radius: 10px;
+        border-radius: 12px;
         font-size: 14px;
         font-weight: 500;
         display: none;
-        animation: fadeIn 0.3s ease;
+        animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid ${hexToRgba(config.primaryColor, 0.15)};
       }
       
@@ -3061,13 +3176,35 @@ export const CalendarDatePickerExtension = {
       .btn {
         padding: 12px;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         cursor: pointer;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
         text-align: center;
         font-family: 'Inter', system-ui, sans-serif;
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.4s ease-out;
+        pointer-events: none;
+      }
+      
+      .btn:active::after {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
       }
       
       .btn-cancel {
@@ -3083,11 +3220,10 @@ export const CalendarDatePickerExtension = {
       .btn-confirm {
         background: ${config.primaryColor};
         color: white;
-        box-shadow: 0 2px 4px ${hexToRgba(config.primaryColor, 0.4)};
+        box-shadow: 0 2px 5px ${hexToRgba(config.primaryColor, 0.4)};
       }
       
       .btn-confirm:hover {
-        opacity: 0.9;
         transform: translateY(-1px);
         box-shadow: 0 4px 8px ${hexToRgba(config.primaryColor, 0.5)};
       }
@@ -3096,11 +3232,8 @@ export const CalendarDatePickerExtension = {
         transform: translateY(0);
       }
       
-      .btn-confirm:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        box-shadow: none;
-        transform: none;
+      .highlight-animation {
+        animation: highlight 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       }
       
       @keyframes fadeIn {
@@ -3108,14 +3241,35 @@ export const CalendarDatePickerExtension = {
         to { opacity: 1; transform: translateY(0); }
       }
       
+      @keyframes highlight {
+        0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
+        100% { background: ${colors.surface}; }
+      }
+      
       @keyframes pulse {
         0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
+        50% { transform: scale(1.03); }
         100% { transform: scale(1); }
       }
       
-      .selected-animation {
-        animation: pulse 0.4s ease;
+      .selected-pulse {
+        animation: pulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      
+      @keyframes slideInFromLeft {
+        from { transform: translateX(-10%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideInFromRight {
+        from { transform: translateX(10%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+        20%, 40%, 60%, 80% { transform: translateX(4px); }
       }
     `;
     
@@ -3126,15 +3280,16 @@ export const CalendarDatePickerExtension = {
     // Set initial state
     const today = new Date();
     let currentMonth = today.getMonth();
-    let currentYear = today.getFullYear();
+    let currentYear = Math.min(today.getFullYear(), config.maxYear);
     let selectedDate = null;
+    let animatingDirection = '';
     
     // Create the HTML structure
     container.innerHTML = `
       <style>${styles}</style>
       <div class="calendar-container">
         <div class="calendar-header">
-          <div class="calendar-title">${config.title}</div>
+          ${config.title ? `<div class="calendar-title">${config.title}</div>` : ''}
           <div class="month-nav">
             <button class="prev-month" aria-label="Previous month">
               <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -3195,21 +3350,48 @@ export const CalendarDatePickerExtension = {
       return new Date(2000, month, 1).toLocaleString('default', { month: 'long' });
     };
     
-    // Render the calendar
-    const renderCalendar = () => {
+    // Render the calendar with animation direction
+    const renderCalendar = (animationDirection = '') => {
       // Update current month display
       currentMonthDisplay.textContent = `${getMonthName(currentMonth)} ${currentYear}`;
-      yearSelect.value = currentYear;
+      yearSelect.value = currentYear.toString();
       
-      // Clear the grid
-      calendarGrid.innerHTML = '';
+      // If we're animating, we'll create a new grid and replace the old one
+      let newGrid;
+      if (config.monthAnimations && animationDirection) {
+        newGrid = document.createElement('div');
+        newGrid.className = `calendar-grid slide-${animationDirection}-enter`;
+        
+        // Add the new grid
+        const calendarBody = container.querySelector('.calendar-body');
+        
+        // Mark the old grid for exit animation
+        calendarGrid.className = `calendar-grid slide-${animationDirection === 'left' ? 'right' : 'left'}-exit`;
+        
+        // Add the new grid
+        calendarBody.appendChild(newGrid);
+        
+        // Trigger animation
+        setTimeout(() => {
+          newGrid.classList.remove(`slide-${animationDirection}-enter`);
+          
+          // Remove the old grid after animation
+          setTimeout(() => {
+            calendarGrid.remove();
+          }, 300);
+        }, 10);
+      } else {
+        // No animation, just clear the existing grid
+        newGrid = calendarGrid;
+        newGrid.innerHTML = '';
+      }
       
       // Add weekday headers
       ['S', 'M', 'T', 'W', 'T', 'F', 'S'].forEach(day => {
         const dayElement = document.createElement('div');
         dayElement.className = 'weekday';
         dayElement.textContent = day;
-        calendarGrid.appendChild(dayElement);
+        newGrid.appendChild(dayElement);
       });
       
       // Get first day of the month
@@ -3236,14 +3418,21 @@ export const CalendarDatePickerExtension = {
           prevYear = currentYear - 1;
         }
         
-        dayElement.addEventListener('click', () => {
-          selectDate(prevYear, prevMonth, day);
-          currentMonth = prevMonth;
-          currentYear = prevYear;
-          renderCalendar();
-        });
+        // Check if this date would be in the future
+        const prevMonthDate = new Date(prevYear, prevMonth, day);
+        if (isFutureDate(prevMonthDate)) {
+          dayElement.classList.add('future-date');
+        } else if (prevYear >= config.minYear) {
+          // Only add click handler if year is within range
+          dayElement.addEventListener('click', () => {
+            selectDate(prevYear, prevMonth, day);
+            currentMonth = prevMonth;
+            currentYear = prevYear;
+            renderCalendar();
+          });
+        }
         
-        calendarGrid.appendChild(dayElement);
+        newGrid.appendChild(dayElement);
       }
       
       // Add days for current month
@@ -3267,12 +3456,18 @@ export const CalendarDatePickerExtension = {
           dayElement.classList.add('selected');
         }
         
-        dayElement.addEventListener('click', () => {
-          selectDate(currentYear, currentMonth, day);
-          dayElement.classList.add('selected-animation');
-        });
+        // Check if this date would be in the future
+        const thisDate = new Date(currentYear, currentMonth, day);
+        if (isFutureDate(thisDate)) {
+          dayElement.classList.add('future-date');
+        } else {
+          dayElement.addEventListener('click', () => {
+            selectDate(currentYear, currentMonth, day);
+            dayElement.classList.add('selected-pulse');
+          });
+        }
         
-        calendarGrid.appendChild(dayElement);
+        newGrid.appendChild(dayElement);
       }
       
       // Calculate how many days to show from next month
@@ -3293,14 +3488,21 @@ export const CalendarDatePickerExtension = {
           nextYear = currentYear + 1;
         }
         
-        dayElement.addEventListener('click', () => {
-          selectDate(nextYear, nextMonth, day);
-          currentMonth = nextMonth;
-          currentYear = nextYear;
-          renderCalendar();
-        });
+        // Check if this date would be in the future
+        const nextMonthDate = new Date(nextYear, nextMonth, day);
+        if (isFutureDate(nextMonthDate)) {
+          dayElement.classList.add('future-date');
+        } else if (nextYear <= config.maxYear) {
+          // Only add click handler if year is within range
+          dayElement.addEventListener('click', () => {
+            selectDate(nextYear, nextMonth, day);
+            currentMonth = nextMonth;
+            currentYear = nextYear;
+            renderCalendar();
+          });
+        }
         
-        calendarGrid.appendChild(dayElement);
+        newGrid.appendChild(dayElement);
       }
     };
     
@@ -3309,6 +3511,20 @@ export const CalendarDatePickerExtension = {
       // Create the date object
       selectedDate = new Date(year, month, day);
       
+      // Check if this date is in the future
+      if (isFutureDate(selectedDate)) {
+        // Show error message
+        errorText.textContent = 'Please select a date in the past';
+        errorText.style.display = 'block';
+        errorText.style.animation = 'none';
+        setTimeout(() => {
+          errorText.style.animation = 'shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97)';
+        }, 10);
+        
+        // Don't update selection
+        return;
+      }
+      
       // Calculate age
       const age = calculateAge(selectedDate);
       
@@ -3316,6 +3532,10 @@ export const CalendarDatePickerExtension = {
       statusText.textContent = formatDate(year, month + 1, day);
       statusText.style.borderColor = hexToRgba(config.primaryColor, 0.3);
       statusText.style.background = hexToRgba(config.primaryColor, 0.05);
+      statusText.classList.add('highlight-animation');
+      setTimeout(() => {
+        statusText.classList.remove('highlight-animation');
+      }, 500);
       
       // Update age display
       ageDisplay.textContent = `${config.ageLabel}: ${age} years`;
@@ -3333,26 +3553,39 @@ export const CalendarDatePickerExtension = {
     
     // Event listeners
     prevMonthButton.addEventListener('click', () => {
+      // Check if we can go to the previous month/year
+      if (currentMonth === 0 && currentYear === config.minYear) {
+        return; // Don't go below min year
+      }
+      
       currentMonth--;
       if (currentMonth < 0) {
         currentMonth = 11;
         currentYear--;
       }
-      renderCalendar();
+      renderCalendar('left');
     });
     
     nextMonthButton.addEventListener('click', () => {
+      // Check if we can go to the next month/year
+      if (currentMonth === 11 && currentYear === config.maxYear) {
+        return; // Don't go above max year
+      }
+      
       currentMonth++;
       if (currentMonth > 11) {
         currentMonth = 0;
         currentYear++;
       }
-      renderCalendar();
+      renderCalendar('right');
     });
     
     yearSelect.addEventListener('change', (e) => {
-      currentYear = parseInt(e.target.value);
-      renderCalendar();
+      const newYear = parseInt(e.target.value);
+      // Calculate animation direction
+      const direction = newYear < currentYear ? 'left' : 'right';
+      currentYear = newYear;
+      renderCalendar(direction);
     });
     
     cancelButton.addEventListener('click', () => {
@@ -3369,10 +3602,11 @@ export const CalendarDatePickerExtension = {
     confirmButton.addEventListener('click', () => {
       if (!selectedDate) {
         // Show error message
+        errorText.textContent = 'Please select a date';
         errorText.style.display = 'block';
         errorText.style.animation = 'none';
         setTimeout(() => {
-          errorText.style.animation = 'fadeIn 0.3s ease';
+          errorText.style.animation = 'shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97)';
         }, 10);
         return;
       }
