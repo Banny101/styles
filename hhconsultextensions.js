@@ -2847,9 +2847,8 @@ export const CalendarDatePickerExtension = {
       primary: config.primaryColor,
       primaryLight: hexToRgba(config.primaryColor, 0.15),
       hover: config.darkMode ? '#475569' : '#F1F5F9',
-      error: '#EF4444',
-      errorLight: hexToRgba('#EF4444', 0.1),
-      errorBorder: hexToRgba('#EF4444', 0.2)
+      success: '#10B981',
+      successLight: hexToRgba('#10B981', 0.1)
     };
     
     // Month names
@@ -2929,6 +2928,11 @@ export const CalendarDatePickerExtension = {
         box-shadow: 0 0 0 2px ${hexToRgba(config.primaryColor, 0.2)};
       }
       
+      .custom-select:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
       .select-container::after {
         content: '';
         position: absolute;
@@ -2939,16 +2943,6 @@ export const CalendarDatePickerExtension = {
         background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
         background-repeat: no-repeat;
         pointer-events: none;
-      }
-      
-      /* Dropdowns layout */
-      .dropdowns-container {
-        display: flex;
-        gap: 10px;
-      }
-      
-      .dropdown-col {
-        flex: 1;
       }
       
       /* Results display */
@@ -2987,14 +2981,100 @@ export const CalendarDatePickerExtension = {
       .error-text {
         text-align: center;
         padding: 12px;
-        background: ${colors.errorLight};
-        color: ${colors.error};
+        background: ${hexToRgba('#EF4444', 0.1)};
+        color: #EF4444;
         border-radius: 12px;
         font-size: 14px;
         margin-bottom: 16px;
-        border: 1px solid ${colors.errorBorder};
+        border: 1px solid ${hexToRgba('#EF4444', 0.2)};
         display: none;
         animation: fadeIn 0.3s ease;
+      }
+      
+      /* Success state */
+      .success-state {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${colors.background};
+        animation: fadeIn 0.3s ease;
+        padding: 16px;
+        box-sizing: border-box;
+      }
+      
+      .success-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      
+      .success-icon {
+        width: 48px;
+        height: 48px;
+        background: ${colors.successLight};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.1s;
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      
+      .success-message {
+        font-size: 16px;
+        font-weight: 600;
+        color: ${colors.text};
+        margin-bottom: 8px;
+        animation: fadeUp 0.3s ease forwards 0.2s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      .success-details {
+        font-size: 14px;
+        color: ${colors.textSecondary};
+        animation: fadeUp 0.3s ease forwards 0.3s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      /* Processing overlay */
+      .processing-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${hexToRgba(colors.background, 0.8)};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      
+      .processing-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      
+      .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid ${hexToRgba(config.primaryColor, 0.2)};
+        border-radius: 50%;
+        border-top-color: ${config.primaryColor};
+        animation: spin 1s linear infinite;
       }
       
       /* Buttons */
@@ -3071,8 +3151,22 @@ export const CalendarDatePickerExtension = {
       }
       
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(4px); }
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes scaleIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
       }
       
       .highlight-animation {
@@ -3095,6 +3189,8 @@ export const CalendarDatePickerExtension = {
     let selectedMonth = null;
     let selectedDay = null;
     let selectedDate = null;
+    let isProcessing = false;
+    let isCompleted = false;
     
     // Get days in month
     const getDaysInMonth = (year, month) => {
@@ -3150,6 +3246,24 @@ export const CalendarDatePickerExtension = {
             <button class="btn btn-cancel">${config.cancelText}</button>
             <button class="btn btn-confirm" disabled>${config.confirmText}</button>
           </div>
+          
+          <!-- Processing overlay -->
+          <div class="processing-overlay">
+            <div class="spinner"></div>
+          </div>
+          
+          <!-- Success state -->
+          <div class="success-state">
+            <div class="success-content">
+              <div class="success-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 13L9 17L19 7" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="success-message">Date confirmed</div>
+              <div class="success-details"></div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -3166,6 +3280,9 @@ export const CalendarDatePickerExtension = {
     const errorText = container.querySelector('.error-text');
     const cancelButton = container.querySelector('.btn-cancel');
     const confirmButton = container.querySelector('.btn-confirm');
+    const processingOverlay = container.querySelector('.processing-overlay');
+    const successState = container.querySelector('.success-state');
+    const successDetails = container.querySelector('.success-details');
     
     // Update day options based on selected month and year
     const updateDayOptions = () => {
@@ -3237,41 +3354,85 @@ export const CalendarDatePickerExtension = {
       }
     };
     
+    // Disable all controls
+    const disableAllControls = () => {
+      monthSelect.disabled = true;
+      daySelect.disabled = true;
+      yearSelect.disabled = true;
+      confirmButton.disabled = true;
+      cancelButton.disabled = true;
+    };
+    
+    // Show success state
+    const showSuccessState = (date, age) => {
+      // Update success details
+      successDetails.textContent = `${formatDate(selectedYear, selectedMonth + 1, selectedDay)} (Age: ${age})`;
+      
+      // Show success state
+      successState.style.display = 'block';
+      
+      // Hide processing overlay
+      processingOverlay.classList.remove('active');
+      
+      // Disable all controls
+      disableAllControls();
+    };
+    
     // Event Listeners
     monthSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
       selectedMonth = parseInt(e.target.value);
       updateDayOptions();
       updateDateSummary();
     });
     
     daySelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
       selectedDay = parseInt(e.target.value);
       updateDateSummary();
     });
     
     yearSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
       selectedYear = parseInt(e.target.value);
       updateDayOptions();
       updateDateSummary();
     });
     
     cancelButton.addEventListener('click', () => {
-      // Send cancel event to Voiceflow
-      window.voiceflow.chat.interact({
-        type: "cancel",
-        payload: { 
-          cancelled: true,
-          timestamp: Date.now()
-        }
-      });
+      if (isCompleted || isProcessing) return;
+      
+      // Disable controls to prevent further interaction
+      disableAllControls();
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
+      
+      // Send cancel event to Voiceflow with a slight delay for visual feedback
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "cancel",
+          payload: { 
+            cancelled: true,
+            timestamp: Date.now()
+          }
+        });
+      }, 500);
     });
     
     confirmButton.addEventListener('click', () => {
+      if (isCompleted || isProcessing) return;
+      
       if (!selectedYear || selectedMonth === null || !selectedDay) {
         // Show error message
         errorText.style.display = 'block';
         return;
       }
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
       
       // Format the date
       const month = selectedMonth + 1;
@@ -3280,18 +3441,39 @@ export const CalendarDatePickerExtension = {
       // Calculate age
       const age = calculateAge(selectedDate);
       
-      // Send data to Voiceflow
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: {
-          date: formattedDate,
-          age: age,
-          year: selectedYear,
-          month: month,
-          day: selectedDay,
-          timestamp: Date.now()
-        }
-      });
+      // Show success state after a brief delay for better UX
+      setTimeout(() => {
+        isCompleted = true;
+        showSuccessState(formattedDate, age);
+        
+        // Send data to Voiceflow after showing success state
+        setTimeout(() => {
+          window.voiceflow.chat.interact({
+            type: "complete",
+            payload: {
+              date: formattedDate,
+              age: age,
+              year: selectedYear,
+              month: month,
+              day: selectedDay,
+              timestamp: Date.now()
+            }
+          });
+        }, 1000);
+      }, 800);
+    });
+    
+    // Implement keyboard navigation
+    container.addEventListener('keydown', (e) => {
+      if (isCompleted || isProcessing) return;
+      
+      if (e.key === 'Enter' && !confirmButton.disabled) {
+        e.preventDefault();
+        confirmButton.click();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        cancelButton.click();
+      }
     });
     
     // Disable chat input while picker is open
