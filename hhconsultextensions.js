@@ -2037,54 +2037,78 @@ export const DelayEffectExtension = {
     trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
   effect: async ({ trace }) => {
     try {
-      // Get delay value with validation
-      const delay = Math.max(
-        0,
-        parseInt(trace.payload?.delay) || 1000
-      );
+      // Configuration options
+      const delay = Math.max(0, parseInt(trace.payload?.delay) || 1000);
+      const showIndicator = trace.payload?.showIndicator !== false;
+      const indicatorText = trace.payload?.indicatorText || "Processing...";
+      const primaryColor = trace.payload?.color || "#545857";
+      const darkMode = trace.payload?.darkMode || false;
+      
+      // Color utility functions
+      const hexToRgba = (hex, alpha = 1) => {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      };
+      
+      // Set colors based on mode
+      const colors = {
+        primary: primaryColor,
+        background: darkMode ? "#1E293B" : "rgba(84, 88, 87, 0.05)",
+        text: darkMode ? "#94A3B8" : "#72727a",
+        progress: darkMode ? "#334155" : "#e2e8f0",
+        progressBar: primaryColor
+      };
 
-      // Function to disable/enable chat inputs
+      // Improved function to disable/enable chat inputs while preserving scrolling
       const toggleInputs = (disable) => {
         const chatDiv = document.getElementById("voiceflow-chat");
-        if (chatDiv?.shadowRoot) {
-          // Disable/enable the entire input container for more comprehensive control
-          const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-          if (inputContainer) {
-            inputContainer.style.opacity = disable ? "0.5" : "1";
-            inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        if (!chatDiv?.shadowRoot) return;
+        
+        // FIRST: Ensure message container remains scrollable
+        const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
+        if (messageContainer) {
+          // Always keep messages scrollable
+          messageContainer.style.pointerEvents = "auto";
+          messageContainer.style.overflow = "auto"; 
+          messageContainer.style.touchAction = "auto"; // Important for mobile
+        }
+        
+        // Also ensure any parent scrollable containers remain functional
+        const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
+        scrollContainers.forEach(container => {
+          if (container) {
+            container.style.pointerEvents = "auto";
+            container.style.overflow = "auto";
+            container.style.touchAction = "auto";
           }
+        });
+        
+        // Only disable the input controls
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+          inputContainer.style.transition = "opacity 0.3s ease";
+        }
 
-          // Disable/enable specific elements
-          const elements = {
-            textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-            primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-              ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-            ),
-            secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-              ".vfrc-chat-input--button.c-iSWgdS"
-            ),
-            voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-              "[aria-label='Voice input']"
-            ),
-            sendButtons: chatDiv.shadowRoot.querySelectorAll(
-              "[aria-label='Send message']"
-            ),
-            attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-              "[aria-label='Add attachment']"
-            )
-          };
+        // Disable specific input elements
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          buttons: chatDiv.shadowRoot.querySelectorAll("button"),
+          inputs: chatDiv.shadowRoot.querySelectorAll("input")
+        };
 
-          Object.values(elements).forEach(elementList => {
-            elementList.forEach(el => {
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            if (inputContainer && inputContainer.contains(el)) {
               el.disabled = disable;
               el.style.pointerEvents = disable ? "none" : "auto";
               el.style.opacity = disable ? "0.5" : "1";
-              if (el.tagName.toLowerCase() === "textarea") {
-                el.style.backgroundColor = disable ? "#f5f5f5" : "";
-              }
-            });
+            }
           });
-        }
+        });
       };
 
       // Hide any existing scroll indicators
@@ -2104,48 +2128,96 @@ export const DelayEffectExtension = {
         indicatorElement.className = 'delay-indicator';
         indicatorElement.innerHTML = `
           <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+            
             .delay-indicator {
               display: flex;
               align-items: center;
               justify-content: center;
-              padding: 8px 12px;
-              margin: 8px 0;
-              background: rgba(84, 88, 87, 0.05);
-              border-radius: 8px;
-              font-family: 'Montserrat', sans-serif;
-              font-size: 13px;
-              color: #72727a;
+              padding: 12px 16px;
+              margin: 12px 0;
+              background: ${colors.background};
+              border-radius: 10px;
+              font-family: 'Inter', system-ui, sans-serif;
+              font-size: 14px;
+              color: ${colors.text};
+              animation: fadeIn 0.3s ease;
+              width: auto;
+              max-width: 300px;
+            }
+            
+            .delay-indicator-content {
+              width: 100%;
             }
             
             .delay-progress {
               width: 100%;
-              height: 3px;
-              background: #e2e8f0;
+              height: 4px;
+              background: ${colors.progress};
               border-radius: 2px;
-              margin-top: 6px;
+              margin-top: 8px;
               overflow: hidden;
             }
             
             .delay-progress-bar {
               height: 100%;
-              background: #72727a;
+              background: ${colors.progressBar};
               width: 100%;
               transition: width linear;
               transform-origin: left;
+              border-radius: 2px;
             }
             
             @keyframes pulse {
-              0% { opacity: 0.6; }
+              0% { opacity: 0.7; }
               50% { opacity: 1; }
-              100% { opacity: 0.6; }
+              100% { opacity: 0.7; }
+            }
+            
+            @keyframes fadeIn {
+              from { opacity: 0; transform: translateY(5px); }
+              to { opacity: 1; transform: translateY(0); }
             }
             
             .delay-indicator-text {
               animation: pulse 2s infinite;
+              font-weight: 500;
+              display: flex;
+              align-items: center;
+            }
+            
+            .delay-indicator-dots {
+              display: inline-flex;
+              margin-left: 4px;
+            }
+            
+            .dot {
+              width: 4px;
+              height: 4px;
+              border-radius: 50%;
+              background: ${colors.text};
+              margin: 0 2px;
+              opacity: 0.7;
+            }
+            
+            .dot:nth-child(1) { animation: bounce 1.5s infinite 0s; }
+            .dot:nth-child(2) { animation: bounce 1.5s infinite 0.2s; }
+            .dot:nth-child(3) { animation: bounce 1.5s infinite 0.4s; }
+            
+            @keyframes bounce {
+              0%, 60%, 100% { transform: translateY(0); }
+              30% { transform: translateY(-4px); }
             }
           </style>
-          <div>
-            <div class="delay-indicator-text">Processing...</div>
+          <div class="delay-indicator-content">
+            <div class="delay-indicator-text">
+              ${indicatorText}
+              <div class="delay-indicator-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+            </div>
             <div class="delay-progress">
               <div class="delay-progress-bar"></div>
             </div>
@@ -2171,15 +2243,21 @@ export const DelayEffectExtension = {
       hideScrollIndicators();
       toggleInputs(true);
       
-      // Show delay indicator if delay is significant (over 1 second)
-      const indicator = delay > 1000 ? showDelayIndicator(delay) : null;
+      // Show delay indicator if enabled and delay is significant
+      const indicator = showIndicator && delay > 500 ? showDelayIndicator(delay) : null;
 
       // Execute delay
       await new Promise(resolve => setTimeout(resolve, delay));
       
-      // Remove indicator if it exists
+      // Remove indicator with a fade-out animation if it exists
       if (indicator) {
-        indicator.remove();
+        indicator.style.opacity = '0';
+        indicator.style.transition = 'opacity 0.3s ease';
+        
+        // Remove from DOM after animation completes
+        setTimeout(() => {
+          indicator.remove();
+        }, 300);
       }
       
       // Cleanup and re-enable inputs
@@ -2198,7 +2276,15 @@ export const DelayEffectExtension = {
     } catch (error) {
       console.error('DelayEffect Extension Error:', error);
       // Re-enable inputs even if there's an error
-      toggleInputs(false);
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = "1";
+          inputContainer.style.pointerEvents = "auto";
+        }
+      }
+      
       window.voiceflow.chat.interact({ 
         type: "complete",
         payload: {
