@@ -355,10 +355,12 @@ export const DropdownExtension = {
   match: ({ trace }) =>
     trace.type === "ext_dropdown" || trace.payload?.name === "ext_dropdown",
   render: ({ trace, element }) => {
-    // Get color configuration from Voiceflow
+    // Configuration options
     const primaryColor = trace.payload?.color || "#545857";
     const buttonText = trace.payload?.buttonText || "Submit";
     const placeholder = trace.payload?.placeholder || "Search or select...";
+    const maxHeight = trace.payload?.maxHeight || 200; // Max height of dropdown options
+    const darkMode = trace.payload?.darkMode || false;
     
     // Color utility functions
     const hexToRgba = (hex, alpha = 1) => {
@@ -384,26 +386,46 @@ export const DropdownExtension = {
       ).toString(16).slice(1);
     };
     
-    // Derived colors
-    const hoverColor = adjustColor(primaryColor, 10);
-    const borderColor = hexToRgba(primaryColor, 0.2);
-    const focusShadowColor = hexToRgba(primaryColor, 0.1);
-    const hoverBgColor = hexToRgba(primaryColor, 0.08);
+    // Set colors based on mode
+    const colors = {
+      primary: primaryColor,
+      hover: adjustColor(primaryColor, 10),
+      border: hexToRgba(primaryColor, 0.2),
+      focusShadow: hexToRgba(primaryColor, 0.1),
+      hoverBg: hexToRgba(primaryColor, 0.08),
+      background: darkMode ? "#1E293B" : "white",
+      surface: darkMode ? "#334155" : "white",
+      text: darkMode ? "#F1F5F9" : primaryColor,
+      textSecondary: darkMode ? "#94A3B8" : hexToRgba(primaryColor, 0.7),
+      inputBg: darkMode ? "#475569" : "white",
+      scrollThumb: hexToRgba(primaryColor, 0.4),
+      scrollTrack: darkMode ? "#334155" : "#f1f1f1"
+    };
     
     // Improved input disabling that preserves scrolling
     const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (!chatDiv?.shadowRoot) return;
       
-      // IMPORTANT: Ensure message container remains scrollable
+      // FIRST: Ensure all chat message containers remain scrollable
       const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
       if (messageContainer) {
-        // Always keep messages scrollable
         messageContainer.style.pointerEvents = "auto";
-        messageContainer.style.overflow = "auto";
+        messageContainer.style.overflow = "auto"; 
+        messageContainer.style.touchAction = "auto"; // Important for mobile
       }
       
-      // Disable/enable the input container
+      // Also ensure any parent scrollable containers remain functional
+      const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
+      scrollContainers.forEach(container => {
+        if (container) {
+          container.style.pointerEvents = "auto";
+          container.style.overflow = "auto";
+          container.style.touchAction = "auto";
+        }
+      });
+      
+      // Only disable the input controls
       const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
       if (inputContainer) {
         inputContainer.style.opacity = disable ? "0.5" : "1";
@@ -411,40 +433,27 @@ export const DropdownExtension = {
         inputContainer.style.transition = "opacity 0.3s ease";
       }
 
-      // Disable/enable specific elements
+      // Disable specific input elements
       const elements = {
         textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-        primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-          ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-        ),
-        secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-          ".vfrc-chat-input--button.c-iSWgdS"
-        ),
-        voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-          "[aria-label='Voice input']"
-        ),
-        sendButtons: chatDiv.shadowRoot.querySelectorAll(
-          "[aria-label='Send message']"
-        ),
-        attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-          "[aria-label='Add attachment']"
-        )
+        buttons: chatDiv.shadowRoot.querySelectorAll("button"),
+        inputs: chatDiv.shadowRoot.querySelectorAll("input")
       };
 
       Object.values(elements).forEach(elementList => {
         elementList.forEach(el => {
-          el.disabled = disable;
-          el.style.pointerEvents = disable ? "none" : "auto";
-          el.style.opacity = disable ? "0.5" : "1";
-          if (el.tagName.toLowerCase() === "textarea") {
-            el.style.backgroundColor = disable ? "#f5f5f5" : "";
+          // Don't disable elements outside the input container
+          if (inputContainer && inputContainer.contains(el)) {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
           }
         });
       });
     };
 
     const formContainer = document.createElement("form");
-    formContainer.className = "_1ddzqsn7";
+    formContainer.className = "dropdown-ext-form";
     formContainer.style.display = "inline-block";
     formContainer.style.maxWidth = "100%";
     formContainer.style.width = "auto";
@@ -454,16 +463,16 @@ export const DropdownExtension = {
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
       
-      ._1ddzqsn7 {
+      .dropdown-ext-form {
         display: inline-block !important;
         width: auto;
         max-width: 100%;
         min-width: 250px;
+        font-family: 'Inter', system-ui, sans-serif;
       }
       
       .dropdown-wrapper {
         width: 100%;
-        font-family: 'Inter', system-ui, sans-serif;
       }
       
       .dropdown-extension-container {
@@ -474,32 +483,33 @@ export const DropdownExtension = {
       
       .dropdown-extension-input[type="text"] {
         width: 100%;
-        padding: 8px 12px;
-        border: 1px solid ${borderColor};
-        border-radius: 6px;
-        background: white;
-        color: ${primaryColor};
+        padding: 10px 14px;
+        border: 1px solid ${colors.border};
+        border-radius: 8px;
+        background: ${colors.inputBg};
+        color: ${colors.text};
         font-family: 'Inter', system-ui, sans-serif;
-        font-size: 13px;
+        font-size: 14px;
         transition: all 0.2s ease;
         cursor: pointer;
         margin: 0;
         box-sizing: border-box;
+        -webkit-appearance: none;
       }
 
       .dropdown-extension-input[type="text"]:focus {
         outline: none;
-        border-color: ${primaryColor};
-        box-shadow: 0 0 0 2px ${focusShadowColor};
+        border-color: ${colors.primary};
+        box-shadow: 0 0 0 2px ${colors.focusShadow};
       }
 
       .dropdown-extension-input[type="text"]::placeholder {
-        color: ${hexToRgba(primaryColor, 0.7)};
+        color: ${colors.textSecondary};
         opacity: 0.7;
       }
 
       .dropdown-extension-input[type="text"]:disabled {
-        background-color: #f5f5f5;
+        background-color: ${darkMode ? "#1E293B" : "#f5f5f5"};
         cursor: not-allowed;
         opacity: 0.7;
       }
@@ -510,44 +520,71 @@ export const DropdownExtension = {
         left: 0;
         right: 0;
         width: 100%;
-        max-height: 200px;
+        max-height: ${maxHeight}px;
         overflow-y: auto;
-        background: white;
-        border-radius: 6px;
-        border: 1px solid ${borderColor};
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+        overflow-x: hidden;
+        background: ${colors.surface};
+        border-radius: 8px;
+        border: 1px solid ${colors.border};
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, ${darkMode ? 0.3 : 0.1});
         display: none;
         z-index: 1000;
-        scrollbar-width: thin;
-        scrollbar-color: ${hexToRgba(primaryColor, 0.5)} transparent;
         box-sizing: border-box;
+        scrollbar-width: thin;
+        scrollbar-color: ${colors.scrollThumb} ${colors.scrollTrack};
+        -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+      }
+      
+      /* Scrollbar styling */
+      .dropdown-extension-options::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      
+      .dropdown-extension-options::-webkit-scrollbar-track {
+        background: ${colors.scrollTrack};
+        border-radius: 10px;
+      }
+      
+      .dropdown-extension-options::-webkit-scrollbar-thumb {
+        background: ${colors.scrollThumb};
+        border-radius: 10px;
+      }
+      
+      .dropdown-extension-options::-webkit-scrollbar-thumb:hover {
+        background: ${colors.primary};
       }
 
       .dropdown-extension-options div {
-        padding: 8px 12px;
-        font-size: 13px;
-        color: ${primaryColor};
+        padding: 10px 14px;
+        font-size: 14px;
+        color: ${colors.text};
         cursor: pointer;
-        transition: background-color 0.2s ease;
+        transition: background-color 0.15s ease;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        border-bottom: 1px solid ${hexToRgba(colors.border, 0.5)};
+      }
+      
+      .dropdown-extension-options div:last-child {
+        border-bottom: none;
       }
 
       .dropdown-extension-options div:hover,
       .dropdown-extension-options div.highlighted {
-        background-color: ${hoverBgColor};
+        background-color: ${colors.hoverBg};
       }
 
       .dropdown-extension-submit {
         width: 100%;
-        padding: 8px 16px;
-        background-color: ${primaryColor};
+        padding: 10px 16px;
+        background-color: ${colors.primary};
         color: white;
         border: none;
-        border-radius: 6px;
+        border-radius: 8px;
         font-family: 'Inter', system-ui, sans-serif;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 500;
         cursor: pointer;
         opacity: 0.5;
@@ -563,7 +600,12 @@ export const DropdownExtension = {
       }
 
       .dropdown-extension-submit.enabled:hover {
-        background-color: ${hoverColor};
+        background-color: ${colors.hover};
+        transform: translateY(-1px);
+      }
+      
+      .dropdown-extension-submit.enabled:active {
+        transform: translateY(0);
       }
 
       .dropdown-extension-invalid {
@@ -571,14 +613,25 @@ export const DropdownExtension = {
       }
 
       .dropdown-extension-input[type="text"] {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='${encodeURIComponent(primaryColor)}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='${encodeURIComponent(colors.text)}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 12px center;
         padding-right: 32px;
       }
       
+      /* Animation classes */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .dropdown-fade-in {
+        animation: fadeIn 0.2s ease forwards;
+      }
+      
+      /* Mobile adjustments */
       @media screen and (max-width: 480px) {
-        ._1ddzqsn7 {
+        .dropdown-ext-form {
           width: 100%;
           min-width: 0;
         }
@@ -593,10 +646,11 @@ export const DropdownExtension = {
           placeholder="${placeholder}" 
           autocomplete="off"
           spellcheck="false"
+          aria-label="Dropdown search field"
         >
-        <div class="dropdown-extension-options">
+        <div class="dropdown-extension-options" role="listbox" aria-label="Dropdown options">
           ${dropdownOptions
-            .map((option) => `<div data-value="${option}">${option}</div>`)
+            .map((option) => `<div data-value="${option}" role="option">${option}</div>`)
             .join("")}
         </div>
         <input 
@@ -615,6 +669,7 @@ export const DropdownExtension = {
     const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
     const submitButton = formContainer.querySelector(".dropdown-extension-submit");
     let highlightedIndex = -1;
+    let isDropdownVisible = false;
 
     const enableSubmitButton = () => {
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
@@ -623,10 +678,25 @@ export const DropdownExtension = {
 
     const showDropup = (e) => {
       if (e) e.stopPropagation();
+      if (isDropdownVisible) return;
+      
+      isDropdownVisible = true;
       dropdownOptionsDiv.style.display = "block";
+      dropdownOptionsDiv.classList.add("dropdown-fade-in");
+      
+      // Scroll to selected option if exists
+      const selectedOption = dropdownOptionsDiv.querySelector(`div[data-value="${hiddenDropdownInput.value}"]`);
+      if (selectedOption) {
+        highlightedIndex = Array.from(dropdownOptionsDiv.querySelectorAll("div")).indexOf(selectedOption);
+        updateHighlight();
+        setTimeout(() => {
+          selectedOption.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }, 50);
+      }
     };
 
     const hideDropup = () => {
+      isDropdownVisible = false;
       dropdownOptionsDiv.style.display = "none";
       highlightedIndex = -1;
       updateHighlight();
@@ -636,7 +706,13 @@ export const DropdownExtension = {
       const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
       options.forEach((option, index) => {
         option.classList.toggle("highlighted", index === highlightedIndex);
+        option.setAttribute("aria-selected", index === highlightedIndex ? "true" : "false");
       });
+      
+      // Scroll highlighted option into view
+      if (highlightedIndex >= 0 && options[highlightedIndex]) {
+        options[highlightedIndex].scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
     };
 
     const handleOptionSelection = (selectedValue) => {
@@ -650,13 +726,22 @@ export const DropdownExtension = {
       e.stopPropagation();
       const filter = dropdownSearch.value.toLowerCase();
       const options = dropdownOptionsDiv.querySelectorAll("div");
+      let hasVisibleOptions = false;
       
       options.forEach((option) => {
         const text = option.textContent.toLowerCase();
-        option.style.display = text.includes(filter) ? "" : "none";
+        const isVisible = text.includes(filter);
+        option.style.display = isVisible ? "" : "none";
+        if (isVisible) hasVisibleOptions = true;
       });
       
-      showDropup();
+      // Only show dropdown if there are matching options
+      if (hasVisibleOptions) {
+        showDropup();
+      } else {
+        hideDropup();
+      }
+      
       hiddenDropdownInput.value = "";
       enableSubmitButton();
       highlightedIndex = -1;
@@ -669,33 +754,50 @@ export const DropdownExtension = {
       switch(e.key) {
         case "ArrowDown":
           e.preventDefault();
-          if (!dropdownOptionsDiv.style.display === "block") {
+          if (!isDropdownVisible) {
             showDropup();
-          } else {
+          } else if (visibleOptions.length > 0) {
             highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
             updateHighlight();
           }
           break;
+          
         case "ArrowUp":
           e.preventDefault();
-          if (highlightedIndex > -1) {
+          if (highlightedIndex > 0) {
             highlightedIndex = Math.max(highlightedIndex - 1, 0);
             updateHighlight();
           }
           break;
+          
         case "Enter":
           e.preventDefault();
           if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
             const selectedValue = visibleOptions[highlightedIndex].getAttribute("data-value");
             handleOptionSelection(selectedValue);
+          } else if (submitButton.classList.contains("enabled")) {
+            submitButton.click(); // Submit form if valid
           }
           break;
+          
         case "Escape":
+          e.preventDefault();
           hideDropup();
           dropdownSearch.blur();
           break;
+          
+        case "Tab":
+          hideDropup();
+          break;
       }
     };
+
+    // Prevent form submission on enter key while typing
+    formContainer.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && document.activeElement === dropdownSearch) {
+        e.preventDefault();
+      }
+    });
 
     // Add event listeners
     dropdownSearch.addEventListener("focus", showDropup);
@@ -703,6 +805,7 @@ export const DropdownExtension = {
     dropdownSearch.addEventListener("input", handleInput);
     dropdownSearch.addEventListener("keydown", handleKeyNavigation);
 
+    // Make options dropdown properly scrollable
     dropdownOptionsDiv.addEventListener("click", (e) => {
       e.stopPropagation();
       if (e.target.tagName === "DIV") {
@@ -710,24 +813,44 @@ export const DropdownExtension = {
         handleOptionSelection(selectedValue);
       }
     });
-
-    document.addEventListener("click", (e) => {
-      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
-        hideDropup();
+    
+    // Handle mousewheel/touch scrolling properly
+    dropdownOptionsDiv.addEventListener("wheel", (e) => {
+      // Only stop propagation if we're at the boundary and would scroll the page
+      const { scrollTop, scrollHeight, clientHeight } = dropdownOptionsDiv;
+      const isAtTop = scrollTop === 0 && e.deltaY < 0;
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
+      
+      if (isAtTop || isAtBottom) {
+        e.stopPropagation();
+      } else {
+        // Let the dropdown scroll internally
+        e.stopPropagation();
       }
     });
 
+    // Close dropdown when clicking outside
+    const handleOutsideClick = (e) => {
+      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
+        hideDropup();
+      }
+    };
+    
+    document.addEventListener("click", handleOutsideClick);
+
+    // Form submission
     formContainer.addEventListener("submit", (e) => {
       e.preventDefault();
       const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
       if (!isValidOption) {
         dropdownSearch.classList.add("dropdown-extension-invalid");
+        setTimeout(() => dropdownSearch.classList.remove("dropdown-extension-invalid"), 1500);
         return;
       }
 
       // Disable input and prevent changes after submission
       dropdownSearch.disabled = true;
-      dropdownSearch.style.backgroundColor = "#f5f5f5";
+      dropdownSearch.style.backgroundColor = darkMode ? "#1E293B" : "#f5f5f5";
       dropdownSearch.style.cursor = "not-allowed";
       dropdownSearch.style.opacity = "0.7";
       
@@ -739,16 +862,13 @@ export const DropdownExtension = {
       
       // Disable submit button
       submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      submitButton.style.pointerEvents = "none";
       
       // Re-enable Voiceflow's inputs
       toggleInputs(false);
       
-      // Remove submit button with a slight delay
-      setTimeout(() => {
-        submitButton.style.opacity = "0";
-        submitButton.remove();
-      }, 50);
-
+      // Send data back to Voiceflow
       window.voiceflow.chat.interact({
         type: "complete",
         payload: { dropdown: hiddenDropdownInput.value },
@@ -756,7 +876,7 @@ export const DropdownExtension = {
     });
 
     const cleanup = () => {
-      document.removeEventListener("click", hideDropup);
+      document.removeEventListener("click", handleOutsideClick);
       dropdownSearch.removeEventListener("focus", showDropup);
       dropdownSearch.removeEventListener("click", showDropup);
       dropdownSearch.removeEventListener("input", handleInput);
