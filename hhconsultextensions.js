@@ -1454,49 +1454,99 @@ export const RankOptionsExtension = {
   match: ({ trace }) => 
     trace.type === "ext_rankoptions" || trace.payload?.name === "ext_rankoptions",
   render: ({ trace, element }) => {
+    // Configuration from Voiceflow
     const options = trace.payload?.options || [];
+    const primaryColor = trace.payload?.color || "#545857";
+    const title = trace.payload?.title || "Drag and drop to rank in order of preference";
+    const submitText = trace.payload?.submitText || "Submit";
+    const darkMode = trace.payload?.darkMode || false;
+    const submitMessage = trace.payload?.submitMessage || "Rankings submitted";
+    
+    // Color utility functions
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Lighten/darken a hex color
+    const adjustColor = (hex, percent) => {
+      const num = parseInt(hex.slice(1), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) + amt;
+      const G = (num >> 8 & 0x00FF) + amt;
+      const B = (num & 0x0000FF) + amt;
+      
+      return '#' + (
+        0x1000000 + 
+        (R < 255 ? (R < 0 ? 0 : R) : 255) * 0x10000 + 
+        (G < 255 ? (G < 0 ? 0 : G) : 255) * 0x100 + 
+        (B < 255 ? (B < 0 ? 0 : B) : 255)
+      ).toString(16).slice(1);
+    };
+    
+    // Set colors based on mode
+    const colors = {
+      primary: primaryColor,
+      hover: adjustColor(primaryColor, 10),
+      background: darkMode ? "#1E293B" : "white",
+      surface: darkMode ? "#334155" : "white", 
+      text: darkMode ? "#F1F5F9" : "#303235",
+      textSecondary: darkMode ? "#94A3B8" : "#666666",
+      border: darkMode ? "#475569" : "rgba(0, 0, 0, 0.08)",
+      borderHover: hexToRgba(primaryColor, 0.3),
+      shadow: darkMode ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 0.1)"
+    };
 
+    // Improved input disabling that preserves scrolling
     const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container for more comprehensive control
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+      if (!chatDiv?.shadowRoot) return;
+      
+      // FIRST: Ensure message container remains scrollable
+      const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
+      if (messageContainer) {
+        // Always keep messages scrollable
+        messageContainer.style.pointerEvents = "auto";
+        messageContainer.style.overflow = "auto"; 
+        messageContainer.style.touchAction = "auto"; // Important for mobile
+      }
+      
+      // Also ensure any parent scrollable containers remain functional
+      const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
+      scrollContainers.forEach(container => {
+        if (container) {
+          container.style.pointerEvents = "auto";
+          container.style.overflow = "auto";
+          container.style.touchAction = "auto";
         }
+      });
+      
+      // Only disable the input controls
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.opacity = disable ? "0.5" : "1";
+        inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        inputContainer.style.transition = "opacity 0.3s ease";
+      }
 
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
+      // Disable specific input elements
+      const elements = {
+        textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+        buttons: chatDiv.shadowRoot.querySelectorAll("button"),
+        inputs: chatDiv.shadowRoot.querySelectorAll("input")
+      };
 
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
+      Object.values(elements).forEach(elementList => {
+        elementList.forEach(el => {
+          if (inputContainer && inputContainer.contains(el)) {
             el.disabled = disable;
             el.style.pointerEvents = disable ? "none" : "auto";
             el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? "#f5f5f5" : "";
-            }
-          });
+          }
         });
-      }
+      });
     };
 
     // Hide any scroll indicators that might be present
@@ -1509,16 +1559,19 @@ export const RankOptionsExtension = {
 
     const createForm = () => {
       const formContainer = document.createElement("form");
-      formContainer.className = "_1ddzqsn7";
+      formContainer.className = "rank-options-form";
 
       formContainer.innerHTML = `
         <style>
-          ._1ddzqsn7 {
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+          
+          .rank-options-form {
             display: block;
+            width: 100%;
           }
           
           .rank-options-container {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             padding: 0;
             width: 100%;
           }
@@ -1526,8 +1579,8 @@ export const RankOptionsExtension = {
           .rank-title {
             font-size: 14px;
             margin-bottom: 12px;
-            color: #303235;
-            opacity: 0.8;
+            color: ${colors.text};
+            font-weight: 500;
           }
           
           .rank-options-list {
@@ -1535,6 +1588,31 @@ export const RankOptionsExtension = {
             padding: 0;
             margin: 0;
             width: 100%;
+            max-height: 350px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: ${hexToRgba(colors.primary, 0.4)} ${darkMode ? "#334155" : "#f1f1f1"};
+            -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+          }
+          
+          /* Scrollbar styles */
+          .rank-options-list::-webkit-scrollbar {
+            width: 6px;
+          }
+          
+          .rank-options-list::-webkit-scrollbar-track {
+            background: ${darkMode ? "#334155" : "#f1f1f1"};
+            border-radius: 8px;
+          }
+          
+          .rank-options-list::-webkit-scrollbar-thumb {
+            background: ${hexToRgba(colors.primary, 0.4)};
+            border-radius: 8px;
+          }
+          
+          .rank-options-list::-webkit-scrollbar-thumb:hover {
+            background: ${colors.primary};
           }
           
           .rank-options-list li {
@@ -1542,17 +1620,19 @@ export const RankOptionsExtension = {
             align-items: center;
             padding: 12px 14px;
             margin-bottom: 8px;
-            background-color: white;
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            background-color: ${colors.surface};
+            border: 1px solid ${colors.border};
             border-radius: 8px;
             cursor: grab;
             font-size: 14px;
-            color: #303235;
+            color: ${colors.text};
             width: 100%;
             box-sizing: border-box;
             transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
+            user-select: none;
+            touch-action: none; /* Necessary for mobile drag */
           }
           
           .rank-options-list li:before {
@@ -1562,14 +1642,14 @@ export const RankOptionsExtension = {
             top: 0;
             height: 100%;
             width: 4px;
-            background: #545857;
+            background: ${colors.primary};
             opacity: 0;
             transition: opacity 0.2s ease;
           }
           
           .rank-options-list li:hover {
-            border-color: rgba(84, 88, 87, 0.3);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-color: ${colors.borderHover};
+            box-shadow: 0 2px 4px ${hexToRgba(colors.shadow, 0.1)};
             transform: translateX(2px);
           }
           
@@ -1579,44 +1659,49 @@ export const RankOptionsExtension = {
           
           .rank-options-list li:active {
             cursor: grabbing;
-            background-color: #f8f9fa;
+            background-color: ${darkMode ? "#2C3E50" : "#f8f9fa"};
             transform: scale(1.02);
           }
 
           .rank-options-list.disabled li {
             cursor: not-allowed;
             opacity: 0.7;
+            transform: none;
             pointer-events: none;
           }
 
           .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             min-width: 24px;
-            color: #666;
+            height: 24px;
+            color: ${colors.textSecondary};
             font-size: 14px;
-            font-weight: 500;
-            margin-right: 10px;
+            font-weight: 600;
+            margin-right: 12px;
             user-select: none;
             transition: color 0.2s ease;
           }
           
           li:hover .rank-number {
-            color: #545857;
+            color: ${colors.primary};
           }
           
           .rank-text {
             flex: 1;
-            padding-right: 4px;
+            padding-right: 8px;
             line-height: 1.4;
           }
           
           .submit-button {
             width: 100%;
             padding: 12px 16px;
-            background-color: #545857;
+            background-color: ${colors.primary};
             color: white;
             border: none;
             border-radius: 8px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
@@ -1627,9 +1712,9 @@ export const RankOptionsExtension = {
           }
           
           .submit-button:not(:disabled):hover {
-            background-color: #72727a;
+            background-color: ${colors.hover};
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px ${hexToRgba(colors.shadow, 0.2)};
           }
           
           .submit-button:not(:disabled):active {
@@ -1639,20 +1724,19 @@ export const RankOptionsExtension = {
           .submit-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background-color: #72727a;
           }
           
           .sortable-ghost {
             opacity: 0.3;
-            background: #f5f5f5;
-            border: 2px dashed #545857;
+            background: ${darkMode ? "#2C3E50" : "#f5f5f5"};
+            border: 2px dashed ${colors.primary};
           }
 
           .sortable-drag {
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-color: #545857;
-            transform: rotate(2deg);
+            background-color: ${colors.surface};
+            box-shadow: 0 4px 8px ${hexToRgba(colors.shadow, 0.2)};
+            border-color: ${colors.primary};
+            transform: rotate(2deg) !important;
           }
 
           @keyframes slideIn {
@@ -1673,36 +1757,49 @@ export const RankOptionsExtension = {
           }
 
           .rank-handle {
-            width: 8px;
-            height: 14px;
+            width: 14px;
+            height: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 2px;
+            align-items: center;
+            gap: 3px;
             margin-left: auto;
-            opacity: 0.3;
+            opacity: 0.4;
             transition: opacity 0.2s ease;
+            cursor: grab;
+            padding: 0 4px;
           }
-
-          .rank-handle::before,
-          .rank-handle::after {
-            content: '';
+          
+          .rank-handle span {
             width: 100%;
             height: 2px;
-            background: #303235;
+            background: ${colors.text};
             border-radius: 1px;
+            display: block;
           }
 
           li:hover .rank-handle {
-            opacity: 0.6;
+            opacity: 0.7;
+          }
+          
+          li:active .rank-handle {
+            cursor: grabbing;
           }
 
           .submitted-message {
-            color: #72727a;
+            color: ${colors.textSecondary};
             font-size: 13px;
             text-align: center;
             margin-top: 12px;
             font-style: italic;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards 0.2s;
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
           }
           
           /* Remove any down arrows that might be added by the chat UI */
@@ -1710,20 +1807,35 @@ export const RankOptionsExtension = {
           [class*="scroll-button"] {
             display: none !important;
           }
+          
+          /* Make touch friendly on mobile */
+          @media (max-width: 480px) {
+            .rank-options-list li {
+              padding: 14px;
+            }
+            
+            .rank-handle {
+              padding: 8px 4px;
+            }
+          }
         </style>
         
         <div class="rank-options-container">
-          <div class="rank-title">Drag and drop to rank in order of preference</div>
-          <ul class="rank-options-list">
+          <div class="rank-title">${title}</div>
+          <ul class="rank-options-list" aria-label="Sortable list of options to rank">
             ${options.map((option, index) => `
-              <li data-value="${option}" style="--item-index: ${index}">
+              <li data-value="${option}" style="--item-index: ${index}" tabindex="0" role="option" aria-grabbed="false">
                 <span class="rank-number">${index + 1}</span>
                 <span class="rank-text">${option}</span>
-                <div class="rank-handle"></div>
+                <div class="rank-handle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </li>
             `).join('')}
           </ul>
-          <button type="submit" class="submit-button">Submit</button>
+          <button type="submit" class="submit-button">${submitText}</button>
         </div>
       `;
 
@@ -1756,7 +1868,7 @@ export const RankOptionsExtension = {
         // Add submitted message
         const message = document.createElement('div');
         message.className = 'submitted-message';
-        message.textContent = 'Rankings submitted';
+        message.textContent = submitMessage;
         submitButton.insertAdjacentElement('afterend', message);
       };
 
@@ -1783,6 +1895,77 @@ export const RankOptionsExtension = {
           payload: { rankedOptions }
         });
       });
+      
+      // Enable keyboard interaction for list items
+      const listItems = formContainer.querySelectorAll('.rank-options-list li');
+      listItems.forEach((item) => {
+        item.addEventListener('keydown', (e) => {
+          if (isSubmitted) return;
+          
+          // Space or Enter for grabbing/releasing
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            // Toggle grab state
+            const isGrabbed = item.getAttribute('aria-grabbed') === 'true';
+            
+            // If already grabbed, release it
+            if (isGrabbed) {
+              item.setAttribute('aria-grabbed', 'false');
+              return;
+            }
+            
+            // Clear any other grabbed items
+            listItems.forEach(li => li.setAttribute('aria-grabbed', 'false'));
+            
+            // Grab this item
+            item.setAttribute('aria-grabbed', 'true');
+          }
+          
+          // Up/Down arrows for moving grabbed items
+          if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && 
+              item.getAttribute('aria-grabbed') === 'true') {
+            e.preventDefault();
+            
+            const list = item.parentNode;
+            const items = Array.from(list.children);
+            const currentIndex = items.indexOf(item);
+            
+            let newIndex;
+            if (e.key === 'ArrowUp' && currentIndex > 0) {
+              newIndex = currentIndex - 1;
+            } else if (e.key === 'ArrowDown' && currentIndex < items.length - 1) {
+              newIndex = currentIndex + 1;
+            } else {
+              return;
+            }
+            
+            // Move the item
+            if (newIndex >= 0 && newIndex < items.length) {
+              list.insertBefore(item, 
+                newIndex > currentIndex ? items[newIndex].nextSibling : items[newIndex]);
+              updateRankNumbers();
+              item.focus();
+            }
+          }
+        });
+      });
+
+      // Fix touch handling on mobile
+      const optionsList = formContainer.querySelector('.rank-options-list');
+      optionsList.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+      }, { passive: false });
+      
+      // Ensure proper scrolling
+      optionsList.addEventListener('wheel', (e) => {
+        const { scrollTop, scrollHeight, clientHeight } = optionsList;
+        const isAtTop = scrollTop === 0 && e.deltaY < 0;
+        const isAtBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
+        
+        if ((isAtTop || isAtBottom) && e.cancelable) {
+          e.preventDefault();
+        }
+      });
 
       element.appendChild(formContainer);
 
@@ -1792,7 +1975,12 @@ export const RankOptionsExtension = {
           onEnd: updateRankNumbers,
           ghostClass: 'sortable-ghost',
           dragClass: 'sortable-drag',
-          disabled: isSubmitted
+          disabled: isSubmitted,
+          handle: '.rank-handle',
+          forceFallback: true,
+          fallbackTolerance: 3,
+          scroll: true,
+          bubbleScroll: true
         });
       }
       
