@@ -1588,31 +1588,6 @@ export const RankOptionsExtension = {
             padding: 0;
             margin: 0;
             width: 100%;
-            max-height: 350px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            scrollbar-width: thin;
-            scrollbar-color: ${hexToRgba(colors.primary, 0.4)} ${darkMode ? "#334155" : "#f1f1f1"};
-            -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
-          }
-          
-          /* Scrollbar styles */
-          .rank-options-list::-webkit-scrollbar {
-            width: 6px;
-          }
-          
-          .rank-options-list::-webkit-scrollbar-track {
-            background: ${darkMode ? "#334155" : "#f1f1f1"};
-            border-radius: 8px;
-          }
-          
-          .rank-options-list::-webkit-scrollbar-thumb {
-            background: ${hexToRgba(colors.primary, 0.4)};
-            border-radius: 8px;
-          }
-          
-          .rank-options-list::-webkit-scrollbar-thumb:hover {
-            background: ${colors.primary};
           }
           
           .rank-options-list li {
@@ -1955,17 +1930,6 @@ export const RankOptionsExtension = {
       optionsList.addEventListener('touchmove', (e) => {
         e.stopPropagation();
       }, { passive: false });
-      
-      // Ensure proper scrolling
-      optionsList.addEventListener('wheel', (e) => {
-        const { scrollTop, scrollHeight, clientHeight } = optionsList;
-        const isAtTop = scrollTop === 0 && e.deltaY < 0;
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
-        
-        if ((isAtTop || isAtBottom) && e.cancelable) {
-          e.preventDefault();
-        }
-      });
 
       element.appendChild(formContainer);
 
@@ -1978,9 +1942,7 @@ export const RankOptionsExtension = {
           disabled: isSubmitted,
           handle: '.rank-handle',
           forceFallback: true,
-          fallbackTolerance: 3,
-          scroll: true,
-          bubbleScroll: true
+          fallbackTolerance: 3
         });
       }
       
