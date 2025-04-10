@@ -355,47 +355,92 @@ export const DropdownExtension = {
   match: ({ trace }) =>
     trace.type === "ext_dropdown" || trace.payload?.name === "ext_dropdown",
   render: ({ trace, element }) => {
+    // Get color configuration from Voiceflow
+    const primaryColor = trace.payload?.color || "#545857";
+    const buttonText = trace.payload?.buttonText || "Submit";
+    const placeholder = trace.payload?.placeholder || "Search or select...";
+    
+    // Color utility functions
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Lighten/darken a hex color
+    const adjustColor = (hex, percent) => {
+      const num = parseInt(hex.slice(1), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = (num >> 16) + amt;
+      const G = (num >> 8 & 0x00FF) + amt;
+      const B = (num & 0x0000FF) + amt;
+      
+      return '#' + (
+        0x1000000 + 
+        (R < 255 ? (R < 0 ? 0 : R) : 255) * 0x10000 + 
+        (G < 255 ? (G < 0 ? 0 : G) : 255) * 0x100 + 
+        (B < 255 ? (B < 0 ? 0 : B) : 255)
+      ).toString(16).slice(1);
+    };
+    
+    // Derived colors
+    const hoverColor = adjustColor(primaryColor, 10);
+    const borderColor = hexToRgba(primaryColor, 0.2);
+    const focusShadowColor = hexToRgba(primaryColor, 0.1);
+    const hoverBgColor = hexToRgba(primaryColor, 0.08);
+    
+    // Improved input disabling that preserves scrolling
     const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container for more comprehensive control
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? "#f5f5f5" : "";
-            }
-          });
-        });
+      if (!chatDiv?.shadowRoot) return;
+      
+      // IMPORTANT: Ensure message container remains scrollable
+      const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
+      if (messageContainer) {
+        // Always keep messages scrollable
+        messageContainer.style.pointerEvents = "auto";
+        messageContainer.style.overflow = "auto";
       }
+      
+      // Disable/enable the input container
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.opacity = disable ? "0.5" : "1";
+        inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        inputContainer.style.transition = "opacity 0.3s ease";
+      }
+
+      // Disable/enable specific elements
+      const elements = {
+        textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+        primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+          ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+        ),
+        secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+          ".vfrc-chat-input--button.c-iSWgdS"
+        ),
+        voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+          "[aria-label='Voice input']"
+        ),
+        sendButtons: chatDiv.shadowRoot.querySelectorAll(
+          "[aria-label='Send message']"
+        ),
+        attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+          "[aria-label='Add attachment']"
+        )
+      };
+
+      Object.values(elements).forEach(elementList => {
+        elementList.forEach(el => {
+          el.disabled = disable;
+          el.style.pointerEvents = disable ? "none" : "auto";
+          el.style.opacity = disable ? "0.5" : "1";
+          if (el.tagName.toLowerCase() === "textarea") {
+            el.style.backgroundColor = disable ? "#f5f5f5" : "";
+          }
+        });
+      });
     };
 
     const formContainer = document.createElement("form");
@@ -407,7 +452,7 @@ export const DropdownExtension = {
 
     formContainer.innerHTML = `
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
       
       ._1ddzqsn7 {
         display: inline-block !important;
@@ -418,7 +463,7 @@ export const DropdownExtension = {
       
       .dropdown-wrapper {
         width: 100%;
-        font-family: 'Montserrat', sans-serif;
+        font-family: 'Inter', system-ui, sans-serif;
       }
       
       .dropdown-extension-container {
@@ -430,11 +475,11 @@ export const DropdownExtension = {
       .dropdown-extension-input[type="text"] {
         width: 100%;
         padding: 8px 12px;
-        border: 1px solid rgba(84, 88, 87, 0.2);
+        border: 1px solid ${borderColor};
         border-radius: 6px;
         background: white;
-        color: #545857;
-        font-family: 'Montserrat', sans-serif;
+        color: ${primaryColor};
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 13px;
         transition: all 0.2s ease;
         cursor: pointer;
@@ -444,12 +489,12 @@ export const DropdownExtension = {
 
       .dropdown-extension-input[type="text"]:focus {
         outline: none;
-        border-color: #545857;
-        box-shadow: 0 0 0 2px rgba(84, 88, 87, 0.1);
+        border-color: ${primaryColor};
+        box-shadow: 0 0 0 2px ${focusShadowColor};
       }
 
       .dropdown-extension-input[type="text"]::placeholder {
-        color: #72727a;
+        color: ${hexToRgba(primaryColor, 0.7)};
         opacity: 0.7;
       }
 
@@ -469,19 +514,19 @@ export const DropdownExtension = {
         overflow-y: auto;
         background: white;
         border-radius: 6px;
-        border: 1px solid rgba(84, 88, 87, 0.15);
+        border: 1px solid ${borderColor};
         box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
         display: none;
         z-index: 1000;
         scrollbar-width: thin;
-        scrollbar-color: #72727a transparent;
+        scrollbar-color: ${hexToRgba(primaryColor, 0.5)} transparent;
         box-sizing: border-box;
       }
 
       .dropdown-extension-options div {
         padding: 8px 12px;
         font-size: 13px;
-        color: #545857;
+        color: ${primaryColor};
         cursor: pointer;
         transition: background-color 0.2s ease;
         white-space: nowrap;
@@ -491,17 +536,17 @@ export const DropdownExtension = {
 
       .dropdown-extension-options div:hover,
       .dropdown-extension-options div.highlighted {
-        background-color: rgba(84, 88, 87, 0.08);
+        background-color: ${hoverBgColor};
       }
 
       .dropdown-extension-submit {
         width: 100%;
         padding: 8px 16px;
-        background-color: #545857;
+        background-color: ${primaryColor};
         color: white;
         border: none;
         border-radius: 6px;
-        font-family: 'Montserrat', sans-serif;
+        font-family: 'Inter', system-ui, sans-serif;
         font-size: 13px;
         font-weight: 500;
         cursor: pointer;
@@ -518,7 +563,7 @@ export const DropdownExtension = {
       }
 
       .dropdown-extension-submit.enabled:hover {
-        background-color: #72727a;
+        background-color: ${hoverColor};
       }
 
       .dropdown-extension-invalid {
@@ -526,7 +571,7 @@ export const DropdownExtension = {
       }
 
       .dropdown-extension-input[type="text"] {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23545857' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='${encodeURIComponent(primaryColor)}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 12px center;
         padding-right: 32px;
@@ -545,7 +590,7 @@ export const DropdownExtension = {
         <input 
           type="text" 
           class="dropdown-extension-input dropdown-extension-search" 
-          placeholder="Search or select..." 
+          placeholder="${placeholder}" 
           autocomplete="off"
           spellcheck="false"
         >
@@ -561,7 +606,7 @@ export const DropdownExtension = {
           required
         >
       </div>
-      <button type="submit" class="dropdown-extension-submit">Submit</button>
+      <button type="submit" class="dropdown-extension-submit">${buttonText}</button>
     </div>
   `;  
 
