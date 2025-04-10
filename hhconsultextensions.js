@@ -2610,6 +2610,8 @@ export const TransitionAnimationExtension = {
     
     // Create style tag with all needed styles
     const styleContent = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+      
       /* Fix for container width */
       ._1ddzqsn7 {
         display: block !important;
@@ -2623,7 +2625,7 @@ export const TransitionAnimationExtension = {
         margin: 0;
         padding: 0;
         background: none;
-        font-family: 'Montserrat', sans-serif;
+        font-family: 'Inter', system-ui, sans-serif;
         position: relative;
         z-index: 1;
       }
@@ -2801,50 +2803,55 @@ export const TransitionAnimationExtension = {
       animationFrame = requestAnimationFrame(updatePercentage);
     }
     
-    // Toggle inputs function
+    // Improved toggleInputs function that preserves scrolling
     const toggleInputs = (disable) => {
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-          inputContainer.style.transition = "opacity 0.3s ease";
+      if (!chatDiv?.shadowRoot) return;
+      
+      // FIRST: Ensure message container remains scrollable
+      const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
+      if (messageContainer) {
+        // Always keep messages scrollable
+        messageContainer.style.pointerEvents = "auto";
+        messageContainer.style.overflow = "auto"; 
+        messageContainer.style.touchAction = "auto"; // Important for mobile
+      }
+      
+      // Also ensure any parent scrollable containers remain functional
+      const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
+      scrollContainers.forEach(container => {
+        if (container) {
+          container.style.pointerEvents = "auto";
+          container.style.overflow = "auto";
+          container.style.touchAction = "auto";
         }
+      });
+      
+      // Only disable the input controls
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.opacity = disable ? "0.5" : "1";
+        inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        inputContainer.style.transition = "opacity 0.3s ease";
+      }
 
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
+      // Disable specific input elements
+      const elements = {
+        textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+        buttons: chatDiv.shadowRoot.querySelectorAll("button"),
+        inputs: chatDiv.shadowRoot.querySelectorAll("input")
+      };
 
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
+      Object.values(elements).forEach(elementList => {
+        elementList.forEach(el => {
+          if (inputContainer && inputContainer.contains(el)) {
             el.disabled = disable;
             el.style.pointerEvents = disable ? "none" : "auto";
             el.style.opacity = disable ? "0.5" : "1";
             el.style.transition = "opacity 0.3s ease";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? "#f5f5f5" : "";
-            }
-          });
+          }
         });
-      }
+      });
     };
 
     // Hide scroll indicators
