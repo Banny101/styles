@@ -3157,3 +3157,427 @@ export const MultiSelectExtension = {
     return cleanup;
   },
 };
+
+export const RankOptionsExtension = {
+  name: "RankOptions",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_rankoptions" || trace.payload?.name === "ext_rankoptions",
+  render: ({ trace, element }) => {
+    // Configuration options with defaults
+    const config = {
+      options: trace.payload?.options || [],
+      color: trace.payload?.color || "#545857",
+      title: trace.payload?.title || "Drag and drop to rank in order of preference",
+      submitText: trace.payload?.submitText || "Submit",
+      submitMessage: trace.payload?.submitMessage || "Rankings submitted",
+      darkMode: trace.payload?.darkMode || false
+    };
+    
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Determine colors based on mode and primary color
+    const colors = {
+      primary: config.color,
+      text: config.darkMode ? "#E2E8F0" : "#303235",
+      background: config.darkMode ? "#1E293B" : "#FFFFFF",
+      surface: config.darkMode ? "#334155" : "#FFFFFF",
+      border: config.darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
+      secondaryText: config.darkMode ? "#94A3B8" : "#72727a",
+      buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : "#72727a",
+      shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)"
+    };
+
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
+            }
+          });
+        });
+      }
+    };
+
+    // Hide any scroll indicators that might be present
+    const hideScrollIndicators = () => {
+      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+        .forEach(el => {
+          el.style.display = 'none';
+        });
+    };
+
+    const createForm = () => {
+      const formContainer = document.createElement("form");
+      formContainer.className = "_1ddzqsn7";
+
+      formContainer.innerHTML = `
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+          
+          ._1ddzqsn7 {
+            display: block;
+          }
+          
+          .rank-options-container {
+            font-family: 'Inter', sans-serif;
+            padding: 0;
+            width: 100%;
+          }
+          
+          .rank-title {
+            font-size: 14px;
+            margin-bottom: 12px;
+            color: ${colors.secondaryText};
+            font-weight: 500;
+          }
+          
+          .rank-options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+          }
+          
+          .rank-options-list li {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            background-color: ${colors.surface};
+            border: 1px solid ${colors.border};
+            border-radius: 8px;
+            cursor: grab;
+            font-size: 14px;
+            color: ${colors.text};
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .rank-options-list li:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: ${colors.primary};
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+          
+          .rank-options-list li:hover {
+            border-color: ${hexToRgba(colors.primary, 0.3)};
+            box-shadow: 0 2px 4px ${colors.shadow};
+            transform: translateX(2px);
+          }
+          
+          .rank-options-list li:hover:before {
+            opacity: 1;
+          }
+          
+          .rank-options-list li:active {
+            cursor: grabbing;
+            background-color: ${config.darkMode ? '#2D3748' : '#f8f9fa'};
+            transform: scale(1.02);
+          }
+
+          .rank-options-list.disabled li {
+            cursor: not-allowed;
+            opacity: 0.7;
+            pointer-events: none;
+          }
+
+          .rank-number {
+            min-width: 24px;
+            color: ${colors.secondaryText};
+            font-size: 14px;
+            font-weight: 500;
+            margin-right: 10px;
+            user-select: none;
+            transition: color 0.2s ease;
+          }
+          
+          li:hover .rank-number {
+            color: ${colors.primary};
+          }
+          
+          .rank-text {
+            flex: 1;
+            padding-right: 4px;
+            line-height: 1.4;
+          }
+          
+          .submit-button {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: ${colors.primary};
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .submit-button:not(:disabled):hover {
+            background-color: ${colors.buttonHover};
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px ${colors.shadow};
+          }
+          
+          .submit-button:not(:disabled):active {
+            transform: translateY(0);
+          }
+
+          .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: ${colors.secondaryText};
+          }
+          
+          .sortable-ghost {
+            opacity: 0.3;
+            background: ${config.darkMode ? '#2D3748' : '#f5f5f5'};
+            border: 2px dashed ${colors.primary};
+          }
+
+          .sortable-drag {
+            background-color: ${colors.surface};
+            box-shadow: 0 4px 8px ${colors.shadow};
+            border-color: ${colors.primary};
+            transform: rotate(2deg);
+          }
+
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateY(10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          .rank-options-list li {
+            animation: slideIn 0.3s ease forwards;
+            animation-delay: calc(var(--item-index) * 0.05s);
+            opacity: 0;
+          }
+
+          .rank-handle {
+            width: 8px;
+            height: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 2px;
+            margin-left: auto;
+            opacity: 0.3;
+            transition: opacity 0.2s ease;
+          }
+
+          .rank-handle::before,
+          .rank-handle::after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background: ${colors.text};
+            border-radius: 1px;
+          }
+
+          li:hover .rank-handle {
+            opacity: 0.6;
+          }
+
+          .submitted-message {
+            color: ${colors.secondaryText};
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+            font-style: italic;
+          }
+          
+          /* Remove any down arrows that might be added by the chat UI */
+          [class*="scroll-down"],
+          [class*="scroll-button"] {
+            display: none !important;
+          }
+        </style>
+        
+        <div class="rank-options-container">
+          <div class="rank-title">${config.title}</div>
+          <ul class="rank-options-list">
+            ${config.options.map((option, index) => `
+              <li data-value="${option}" style="--item-index: ${index}">
+                <span class="rank-number">${index + 1}</span>
+                <span class="rank-text">${option}</span>
+                <div class="rank-handle"></div>
+              </li>
+            `).join('')}
+          </ul>
+          <button type="submit" class="submit-button">${config.submitText}</button>
+        </div>
+      `;
+
+      let isSubmitted = false;
+      let sortableInstance = null;
+
+      const updateRankNumbers = () => {
+        if (!isSubmitted) {
+          formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
+            span.textContent = index + 1;
+          });
+        }
+      };
+
+      const disableRanking = () => {
+        const list = formContainer.querySelector('.rank-options-list');
+        const submitButton = formContainer.querySelector('.submit-button');
+        
+        // Disable the list
+        list.classList.add('disabled');
+        
+        // Disable the submit button
+        submitButton.disabled = true;
+        
+        // Destroy sortable instance
+        if (sortableInstance) {
+          sortableInstance.destroy();
+        }
+
+        // Add submitted message
+        const message = document.createElement('div');
+        message.className = 'submitted-message';
+        message.textContent = config.submitMessage;
+        submitButton.insertAdjacentElement('afterend', message);
+      };
+
+      formContainer.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        if (isSubmitted) return;
+        
+        const rankedOptions = Array.from(
+          formContainer.querySelectorAll('.rank-options-list li')
+        ).map(li => li.dataset.value);
+
+        isSubmitted = true;
+        disableRanking();
+        
+        // Hide any scroll indicators
+        hideScrollIndicators();
+        
+        // Re-enable chat inputs
+        toggleInputs(false);
+
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { rankedOptions }
+        });
+      });
+
+      element.appendChild(formContainer);
+
+      if (typeof Sortable !== 'undefined') {
+        sortableInstance = new Sortable(formContainer.querySelector('.rank-options-list'), {
+          animation: 150,
+          onEnd: updateRankNumbers,
+          ghostClass: 'sortable-ghost',
+          dragClass: 'sortable-drag',
+          disabled: isSubmitted
+        });
+      }
+      
+      // Return cleanup function
+      return () => {
+        if (sortableInstance) {
+          sortableInstance.destroy();
+        }
+        // Make sure inputs are re-enabled when component is removed
+        toggleInputs(false);
+      };
+    };
+
+    // Hide any scroll indicators that might be present
+    hideScrollIndicators();
+    
+    // Disable inputs when component is mounted
+    toggleInputs(true);
+
+    let cleanup = null;
+    
+    if (typeof Sortable === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
+      script.onload = () => {
+        cleanup = createForm();
+      };
+      script.onerror = () => {
+        console.error('Failed to load Sortable.js');
+        // Re-enable inputs if script fails to load
+        toggleInputs(false);
+      };
+      document.head.appendChild(script);
+    } else {
+      cleanup = createForm();
+    }
+
+    // Return cleanup function
+    return () => {
+      if (typeof cleanup === 'function') {
+        cleanup();
+      } else {
+        // Fallback cleanup if createForm wasn't called
+        toggleInputs(false);
+      }
+    };
+  },
+};
