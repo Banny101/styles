@@ -2768,3 +2768,392 @@ export const DropdownExtension = {
     };
   },
 };
+
+export const MultiSelectExtension = {
+  name: "MultiSelect",
+  type: "response",
+  match: ({ trace }) =>
+    trace.type === "ext_multiselect" ||
+    trace.payload?.name === "ext_multiselect",
+  render: ({ trace, element }) => {
+    // Configuration options with defaults
+    const config = {
+      options: trace.payload?.options || [],
+      maxSelections: trace.payload?.maxSelections || trace.payload?.options?.length || 0,
+      color: trace.payload?.color || "#545857",
+      title: trace.payload?.title || "Select your options",
+      submitText: trace.payload?.submitText || "Submit",
+      cancelText: trace.payload?.cancelText || "Cancel",
+      darkMode: trace.payload?.darkMode || false
+    };
+
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Function to adjust color brightness
+    function adjustBrightness(hex, percent) {
+      let r = parseInt(hex.slice(1, 3), 16);
+      let g = parseInt(hex.slice(3, 5), 16);
+      let b = parseInt(hex.slice(5, 7), 16);
+      
+      r = Math.max(0, Math.min(255, r + percent));
+      g = Math.max(0, Math.min(255, g + percent));
+      b = Math.max(0, Math.min(255, b + percent));
+      
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+    
+    // Set color scheme based on dark mode preference
+    const colors = {
+      primary: config.color,
+      primaryHover: adjustBrightness(config.color, config.darkMode ? 20 : -15),
+      background: config.darkMode ? '#1E293B' : '#FFFFFF',
+      surface: config.darkMode ? '#334155' : '#FFFFFF',
+      text: config.darkMode ? '#F1F5F9' : '#303235',
+      textSecondary: config.darkMode ? '#94A3B8' : '#72727a',
+      border: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.08)',
+      hoverBg: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.04)',
+      error: '#FF4444'
+    };
+
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
+            }
+          });
+        });
+      }
+    };
+
+    const multiSelectContainer = document.createElement("form");
+    multiSelectContainer.className = "_1ddzqsn7";
+
+    multiSelectContainer.innerHTML = `
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        
+        ._1ddzqsn7 {
+          display: block;
+        }
+        
+        .multi-select-container {
+          font-family: 'Inter', sans-serif;
+          width: 100%;
+        }
+        
+        .multi-select-title {
+          font-size: 14px;
+          color: ${colors.textSecondary};
+          margin-bottom: 12px;
+          font-weight: 500;
+        }
+        
+        .multi-select-subtitle {
+          font-size: 13px;
+          color: ${colors.textSecondary};
+          margin-bottom: 16px;
+          opacity: 0.8;
+        }
+        
+        .multi-select-options {
+          display: grid;
+          gap: 8px;
+          margin-bottom: 16px;
+        }
+        
+        .option-label {
+          display: flex;
+          align-items: center;
+          padding: 12px;
+          background: ${colors.surface};
+          border: 1px solid ${colors.border};
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          user-select: none;
+        }
+        
+        .option-label:hover {
+          border-color: ${colors.primary};
+          transform: translateX(2px);
+          background: ${colors.hoverBg};
+        }
+        
+        .checkbox-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          margin-right: 12px;
+          border: 2px solid ${colors.textSecondary};
+          border-radius: 4px;
+          transition: all 0.2s ease;
+          flex-shrink: 0;
+        }
+        
+        .option-label:hover .checkbox-wrapper {
+          border-color: ${colors.primary};
+        }
+        
+        .checkbox-input {
+          display: none;
+        }
+        
+        .checkbox-input:checked + .checkbox-wrapper {
+          background: ${colors.primary};
+          border-color: ${colors.primary};
+        }
+        
+        .checkbox-input:checked + .checkbox-wrapper:after {
+          content: '';
+          width: 6px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg) translate(-1px, -1px);
+          display: block;
+        }
+        
+        .option-text {
+          font-size: 14px;
+          color: ${colors.text};
+          line-height: 1.4;
+        }
+        
+        .error-message {
+          color: ${colors.error};
+          font-size: 13px;
+          margin: -8px 0 12px;
+          display: none;
+          animation: slideIn 0.3s ease;
+        }
+        
+        .button-group {
+          display: grid;
+          gap: 8px;
+        }
+        
+        .submit-button, .cancel-button {
+          width: 100%;
+          padding: 12px;
+          border: none;
+          border-radius: 8px;
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .submit-button {
+          background: ${colors.primary};
+          color: white;
+        }
+        
+        .submit-button:not(:disabled):hover {
+          background: ${colors.primaryHover};
+          transform: translateY(-1px);
+        }
+        
+        .submit-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        
+        .cancel-button {
+          background: transparent;
+          color: ${colors.textSecondary};
+          border: 1px solid ${hexToRgba(colors.textSecondary, 0.2)};
+        }
+        
+        .cancel-button:hover {
+          background: ${hexToRgba(colors.textSecondary, 0.1)};
+        }
+        
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          75% { transform: translateX(4px); }
+        }
+        
+        .shake {
+          animation: shake 0.3s ease;
+        }
+      </style>
+      
+      <div class="multi-select-container">
+        <div class="multi-select-title">${config.title}</div>
+        ${config.maxSelections < config.options.length ? 
+          `<div class="multi-select-subtitle">Choose up to ${config.maxSelections} options</div>` : 
+          ''}
+        <div class="multi-select-options">
+          ${config.options.map((option, index) => `
+            <label class="option-label" style="animation-delay: ${index * 0.05}s">
+              <input type="checkbox" class="checkbox-input" name="options" value="${option}">
+              <div class="checkbox-wrapper"></div>
+              <span class="option-text">${option}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div class="error-message"></div>
+        <div class="button-group">
+          <button type="submit" class="submit-button" disabled>${config.submitText}</button>
+          <button type="button" class="cancel-button">${config.cancelText}</button>
+        </div>
+      </div>
+    `;
+
+    let isSubmitted = false;
+    const errorMessage = multiSelectContainer.querySelector(".error-message");
+    const submitButton = multiSelectContainer.querySelector(".submit-button");
+    const cancelButton = multiSelectContainer.querySelector(".cancel-button");
+    const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
+
+    const updateSubmitButton = () => {
+      if (isSubmitted) return;
+      const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
+      submitButton.disabled = selectedCount === 0;
+    };
+
+    const showError = (message) => {
+      errorMessage.textContent = message;
+      errorMessage.style.display = "block";
+      multiSelectContainer.querySelector('.multi-select-options').classList.add('shake');
+      setTimeout(() => {
+        multiSelectContainer.querySelector('.multi-select-options').classList.remove('shake');
+      }, 300);
+    };
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", () => {
+        if (isSubmitted) return;
+        
+        const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
+        
+        if (selectedCount > config.maxSelections) {
+          checkbox.checked = false;
+          showError(`You can select up to ${config.maxSelections} options`);
+        } else {
+          errorMessage.style.display = "none";
+        }
+        
+        updateSubmitButton();
+      });
+    });
+
+    multiSelectContainer.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (isSubmitted) return;
+
+      const selectedOptions = Array.from(
+        multiSelectContainer.querySelectorAll('input[name="options"]:checked')
+      ).map(input => input.value);
+
+      isSubmitted = true;
+      
+      // Disable all inputs in the component
+      checkboxes.forEach(checkbox => {
+        checkbox.disabled = true;
+        checkbox.parentElement.style.opacity = "0.7";
+        checkbox.parentElement.style.cursor = "not-allowed";
+      });
+      
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
+      
+      // Re-enable chat inputs
+      toggleInputs(false);
+
+      window.voiceflow.chat.interact({
+        type: "complete",
+        payload: { options: selectedOptions }
+      });
+    });
+
+    cancelButton.addEventListener("click", () => {
+      if (isSubmitted) return;
+      
+      // Disable component inputs
+      checkboxes.forEach(checkbox => {
+        checkbox.disabled = true;
+        checkbox.parentElement.style.opacity = "0.7";
+        checkbox.parentElement.style.cursor = "not-allowed";
+      });
+      
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
+      
+      // Re-enable chat inputs
+      toggleInputs(false);
+      
+      window.voiceflow.chat.interact({
+        type: "cancel",
+        payload: { options: [] }
+      });
+    });
+
+    // Cleanup function to ensure inputs are re-enabled
+    const cleanup = () => {
+      // Make sure inputs are re-enabled when component is removed
+      toggleInputs(false);
+    };
+
+    element.innerHTML = '';
+    element.appendChild(multiSelectContainer);
+    
+    // Disable inputs when component is mounted
+    toggleInputs(true);
+
+    // Return cleanup function
+    return cleanup;
+  },
+};
