@@ -4,10 +4,10 @@ export const DelayEffectExtension = {
   match: ({ trace }) => trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
   effect: async ({ trace }) => {
     try {
-      // Get delay value (default: 9000ms)
+      // Get delay value with default of 9000ms
       const delay = Math.max(0, parseInt(trace.payload?.delay) || 9000);
       
-      // Disable chat inputs during delay
+      // Simple function to disable/enable inputs during delay
       const toggleInputs = (disable) => {
         const chatDiv = document.getElementById("voiceflow-chat");
         if (!chatDiv?.shadowRoot) return;
@@ -16,129 +16,33 @@ export const DelayEffectExtension = {
         if (inputContainer) {
           inputContainer.style.opacity = disable ? "0.5" : "1";
           inputContainer.style.pointerEvents = disable ? "none" : "auto";
-          
-          // Disable interactive elements
-          chatDiv.shadowRoot.querySelectorAll("button, input, textarea").forEach(el => {
-            if (inputContainer.contains(el)) el.disabled = disable;
-          });
         }
-      };
 
-      // Create and show processing indicator
-      const createIndicator = () => {
-        const chatContainer = document.querySelector('.vfrc-chat-messages');
-        if (!chatContainer) return null;
-        
-        const indicator = document.createElement('div');
-        indicator.innerHTML = `
-          <style>
-            .delay-indicator {
-              padding: 14px 16px;
-              margin: 10px 0;
-              background: rgba(84, 88, 87, 0.05);
-              border-radius: 12px;
-              font-family: system-ui, sans-serif;
-              font-size: 14px;
-              color: #555;
-              max-width: 240px;
-            }
-            
-            .delay-text {
-              display: flex;
-              align-items: center;
-              font-weight: 500;
-            }
-            
-            .typing-dots {
-              display: flex;
-              margin-left: 4px;
-            }
-            
-            .dot {
-              width: 4px;
-              height: 4px;
-              margin: 0 2px;
-              border-radius: 50%;
-              background: currentColor;
-            }
-            
-            .dot:nth-child(1) { animation: bounce 1.4s infinite 0s; }
-            .dot:nth-child(2) { animation: bounce 1.4s infinite 0.2s; }
-            .dot:nth-child(3) { animation: bounce 1.4s infinite 0.4s; }
-            
-            @keyframes bounce {
-              0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
-              30% { transform: translateY(-4px); opacity: 1; }
-            }
-            
-            .progress-container {
-              width: 100%;
-              height: 3px;
-              margin-top: 8px;
-              background: #eee;
-              border-radius: 3px;
-              overflow: hidden;
-            }
-            
-            .progress-bar {
-              height: 100%;
-              width: 0%;
-              background: #555;
-              border-radius: 3px;
-            }
-          </style>
-          <div class="delay-indicator">
-            <div class="delay-text">
-              Processing
-              <div class="typing-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-            <div class="progress-container">
-              <div class="progress-bar"></div>
-            </div>
-          </div>
-        `;
-        
-        chatContainer.appendChild(indicator);
-        
-        // Start progress animation
-        const progressBar = indicator.querySelector('.progress-bar');
-        setTimeout(() => {
-          progressBar.style.transition = `width ${delay}ms linear`;
-          progressBar.style.width = '100%';
-        }, 10);
-        
-        // Auto-scroll to show indicator
-        setTimeout(() => {
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }, 50);
-        
-        return indicator;
+        // Disable specific input elements
+        const elements = chatDiv.shadowRoot.querySelectorAll("textarea, button, input");
+        elements.forEach(el => {
+          el.disabled = disable;
+        });
       };
-
-      // Disable inputs and show indicator
+      
+      // Disable inputs
       toggleInputs(true);
-      const indicator = createIndicator();
       
-      // Wait for specified delay
+      // Execute delay (no visual indicators)
       await new Promise(resolve => setTimeout(resolve, delay));
-      
-      // Remove indicator
-      if (indicator) indicator.remove();
       
       // Re-enable inputs
       toggleInputs(false);
       
       // Continue to next block
-      window.voiceflow.chat.interact({ type: "complete" });
+      window.voiceflow.chat.interact({ 
+        type: "complete" 
+      });
       
     } catch (error) {
       console.error('DelayEffect Extension Error:', error);
       
-      // Clean up on error
+      // Ensure inputs are re-enabled on error
       const chatDiv = document.getElementById("voiceflow-chat");
       if (chatDiv?.shadowRoot) {
         const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
@@ -149,7 +53,9 @@ export const DelayEffectExtension = {
       }
       
       // Continue to next block even if there's an error
-      window.voiceflow.chat.interact({ type: "complete" });
+      window.voiceflow.chat.interact({ 
+        type: "complete" 
+      });
     }
   }
 };
