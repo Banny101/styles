@@ -1611,3 +1611,721 @@ export const TransitionAnimationExtension = {
     };
   }
 };
+
+export const CalendarDatePickerExtension = {
+  name: "CalendarDatePicker",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_calendarDatePicker" || 
+    trace.payload?.name === "ext_calendarDatePicker",
+  render: ({ trace, element }) => {
+    // Configuration with defaults
+    const config = {
+      title: trace.payload?.title || "",
+      confirmText: trace.payload?.confirmText || "Confirm",
+      cancelText: trace.payload?.cancelText || "Cancel",
+      primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
+      maxYear: parseInt(trace.payload?.maxYear) || new Date().getFullYear(),
+      minYear: parseInt(trace.payload?.minYear) || 1900,
+      ageLabel: trace.payload?.ageLabel || "Your age", 
+      darkMode: trace.payload?.darkMode || false,
+      preventFutureDates: trace.payload?.preventFutureDates !== false // Default true
+    };
+    
+    // Create a unique ID for this instance
+    const instanceId = `datepicker-${Date.now()}`;
+    
+    // Helper functions
+    const calculateAge = (birthdate) => {
+      const today = new Date();
+      let age = today.getFullYear() - birthdate.getFullYear();
+      const monthDiff = today.getMonth() - birthdate.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+        age--;
+      }
+      
+      return age;
+    };
+    
+    const isFutureDate = (year, month, day) => {
+      if (!config.preventFutureDates) return false;
+      const date = new Date(year, month, day);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date > today;
+    };
+    
+    const formatDate = (year, month, day) => {
+      return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+    };
+    
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Set color scheme based on dark mode preference
+    const colors = {
+      background: config.darkMode ? '#1E293B' : '#FFFFFF',
+      surface: config.darkMode ? '#334155' : '#F8FAFC',
+      text: config.darkMode ? '#F1F5F9' : '#1E293B',
+      textSecondary: config.darkMode ? '#94A3B8' : '#64748B',
+      border: config.darkMode ? '#475569' : '#E2E8F0',
+      primary: config.primaryColor,
+      primaryLight: hexToRgba(config.primaryColor, 0.15),
+      hover: config.darkMode ? '#475569' : '#F1F5F9',
+      success: '#10B981',
+      successLight: hexToRgba('#10B981', 0.1)
+    };
+    
+    // Month names
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                     'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    // Style
+    const styles = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      
+      .datepicker-container {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: ${colors.background};
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, ${config.darkMode ? 0.4 : 0.08});
+        overflow: hidden;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid ${colors.border};
+      }
+      
+      .datepicker-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: ${config.title ? '14px 16px' : '0'};
+        background: ${colors.surface};
+        border-bottom: ${config.title ? `1px solid ${colors.border}` : 'none'};
+      }
+      
+      .datepicker-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: ${colors.text};
+        letter-spacing: -0.01em;
+      }
+      
+      .datepicker-body {
+        padding: 16px;
+        position: relative;
+      }
+      
+      /* Custom dropdown styling */
+      .select-container {
+        position: relative;
+        margin-bottom: 16px;
+      }
+      
+      .select-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: ${colors.textSecondary};
+        margin-bottom: 6px;
+        display: block;
+      }
+      
+      .custom-select {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 500;
+        color: ${colors.text};
+        background: ${colors.surface};
+        border: 1px solid ${colors.border};
+        border-radius: 12px;
+        appearance: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      
+      .custom-select:focus {
+        outline: none;
+        border-color: ${config.primaryColor};
+        box-shadow: 0 0 0 2px ${hexToRgba(config.primaryColor, 0.2)};
+      }
+      
+      .custom-select:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
+      .select-container::after {
+        content: '';
+        position: absolute;
+        right: 16px;
+        top: calc(50% + 10px);
+        width: 10px;
+        height: 6px;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+        background-repeat: no-repeat;
+        pointer-events: none;
+      }
+      
+      /* Results display */
+      .date-summary {
+        background: ${colors.surface};
+        border: 1px solid ${colors.border};
+        border-radius: 12px;
+        padding: 12px;
+        margin: 16px 0;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        color: ${colors.text};
+        transition: all 0.2s ease;
+      }
+      
+      .date-summary.has-date {
+        border-color: ${hexToRgba(config.primaryColor, 0.3)};
+        background: ${hexToRgba(config.primaryColor, 0.05)};
+      }
+      
+      .age-display {
+        text-align: center;
+        padding: 12px;
+        background: ${hexToRgba(config.primaryColor, 0.1)};
+        color: ${config.primaryColor};
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+        animation: fadeIn 0.3s ease;
+        border: 1px solid ${hexToRgba(config.primaryColor, 0.15)};
+        margin-bottom: 16px;
+      }
+      
+      .error-text {
+        text-align: center;
+        padding: 12px;
+        background: ${hexToRgba('#EF4444', 0.1)};
+        color: #EF4444;
+        border-radius: 12px;
+        font-size: 14px;
+        margin-bottom: 16px;
+        border: 1px solid ${hexToRgba('#EF4444', 0.2)};
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      /* Success state */
+      .success-state {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${colors.background};
+        animation: fadeIn 0.3s ease;
+        padding: 16px;
+        box-sizing: border-box;
+      }
+      
+      .success-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      
+      .success-icon {
+        width: 48px;
+        height: 48px;
+        background: ${colors.successLight};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.1s;
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      
+      .success-message {
+        font-size: 16px;
+        font-weight: 600;
+        color: ${colors.text};
+        margin-bottom: 8px;
+        animation: fadeUp 0.3s ease forwards 0.2s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      .success-details {
+        font-size: 14px;
+        color: ${colors.textSecondary};
+        animation: fadeUp 0.3s ease forwards 0.3s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      /* Processing overlay */
+      .processing-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${hexToRgba(colors.background, 0.8)};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      
+      .processing-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      
+      .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid ${hexToRgba(config.primaryColor, 0.2)};
+        border-radius: 50%;
+        border-top-color: ${config.primaryColor};
+        animation: spin 1s linear infinite;
+      }
+      
+      /* Buttons */
+      .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      
+      .btn {
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        font-family: 'Inter', system-ui, sans-serif;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.4s ease-out;
+        pointer-events: none;
+      }
+      
+      .btn:active::after {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+      }
+      
+      .btn-cancel {
+        background: ${colors.surface};
+        color: ${colors.textSecondary};
+        border: 1px solid ${colors.border};
+      }
+      
+      .btn-cancel:hover {
+        background: ${config.darkMode ? '#475569' : '#E2E8F0'};
+      }
+      
+      .btn-confirm {
+        background: ${config.primaryColor};
+        color: white;
+        box-shadow: 0 2px 5px ${hexToRgba(config.primaryColor, 0.4)};
+      }
+      
+      .btn-confirm:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px ${hexToRgba(config.primaryColor, 0.5)};
+      }
+      
+      .btn-confirm:active {
+        transform: translateY(0);
+      }
+      
+      .btn-confirm:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes scaleIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      .highlight-animation {
+        animation: highlight 0.5s ease;
+      }
+      
+      @keyframes highlight {
+        0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
+        100% { background: ${hexToRgba(config.primaryColor, 0.05)}; }
+      }
+    `;
+    
+    // Create the container element
+    const container = document.createElement('div');
+    container.id = instanceId;
+    
+    // Set initial state
+    const today = new Date();
+    let selectedYear = null;
+    let selectedMonth = null;
+    let selectedDay = null;
+    let selectedDate = null;
+    let isProcessing = false;
+    let isCompleted = false;
+    
+    // Get days in month
+    const getDaysInMonth = (year, month) => {
+      return new Date(year, month + 1, 0).getDate();
+    };
+    
+    // Create the HTML structure
+    container.innerHTML = `
+      <style>${styles}</style>
+      <div class="datepicker-container">
+        ${config.title ? `
+        <div class="datepicker-header">
+          <div class="datepicker-title">${config.title}</div>
+        </div>
+        ` : ''}
+        
+        <div class="datepicker-body">
+          <!-- Month Dropdown -->
+          <div class="select-container">
+            <label for="month-select" class="select-label">Month</label>
+            <select id="month-select" class="custom-select">
+              <option value="" disabled selected>Select month</option>
+              ${monthNames.map((month, index) => 
+                `<option value="${index}">${month}</option>`
+              ).join('')}
+            </select>
+          </div>
+          
+          <!-- Day Dropdown -->
+          <div class="select-container">
+            <label for="day-select" class="select-label">Day</label>
+            <select id="day-select" class="custom-select" disabled>
+              <option value="" disabled selected>Select day</option>
+            </select>
+          </div>
+          
+          <!-- Year Dropdown -->
+          <div class="select-container">
+            <label for="year-select" class="select-label">Year</label>
+            <select id="year-select" class="custom-select">
+              <option value="" disabled selected>Select year</option>
+              ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
+                .map(year => `<option value="${year}">${year}</option>`)
+                .join('')}
+            </select>
+          </div>
+          
+          <div class="date-summary">No date selected</div>
+          <div class="age-display"></div>
+          <div class="error-text">Please complete your selection</div>
+          
+          <div class="buttons">
+            <button class="btn btn-cancel">${config.cancelText}</button>
+            <button class="btn btn-confirm" disabled>${config.confirmText}</button>
+          </div>
+          
+          <!-- Processing overlay -->
+          <div class="processing-overlay">
+            <div class="spinner"></div>
+          </div>
+          
+          <!-- Success state -->
+          <div class="success-state">
+            <div class="success-content">
+              <div class="success-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 13L9 17L19 7" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="success-message">Date confirmed</div>
+              <div class="success-details"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Append to the element
+    element.appendChild(container);
+    
+    // Get DOM elements
+    const monthSelect = container.querySelector('#month-select');
+    const daySelect = container.querySelector('#day-select');
+    const yearSelect = container.querySelector('#year-select');
+    const dateSummary = container.querySelector('.date-summary');
+    const ageDisplay = container.querySelector('.age-display');
+    const errorText = container.querySelector('.error-text');
+    const cancelButton = container.querySelector('.btn-cancel');
+    const confirmButton = container.querySelector('.btn-confirm');
+    const processingOverlay = container.querySelector('.processing-overlay');
+    const successState = container.querySelector('.success-state');
+    const successDetails = container.querySelector('.success-details');
+    
+    // Update day options based on selected month and year
+    const updateDayOptions = () => {
+      if (selectedMonth === null || selectedYear === null) {
+        daySelect.disabled = true;
+        return;
+      }
+      
+      daySelect.disabled = false;
+      
+      const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
+      
+      // Clear existing options except the placeholder
+      daySelect.innerHTML = '<option value="" disabled selected>Select day</option>';
+      
+      // Add day options
+      for (let day = 1; day <= daysInMonth; day++) {
+        const option = document.createElement('option');
+        option.value = day;
+        option.textContent = day;
+        
+        // Check if this day would create a future date
+        if (isFutureDate(selectedYear, selectedMonth, day)) {
+          option.disabled = true;
+        }
+        
+        daySelect.appendChild(option);
+      }
+      
+      // If we had a previously selected day, try to restore it
+      if (selectedDay !== null) {
+        if (selectedDay <= daysInMonth) {
+          daySelect.value = selectedDay;
+        } else {
+          selectedDay = null;
+        }
+      }
+    };
+    
+    // Update date summary
+    const updateDateSummary = () => {
+      if (selectedYear && selectedMonth !== null && selectedDay) {
+        const formattedDate = formatDate(selectedYear, selectedMonth + 1, selectedDay);
+        dateSummary.textContent = formattedDate;
+        dateSummary.classList.add('has-date');
+        dateSummary.classList.add('highlight-animation');
+        setTimeout(() => {
+          dateSummary.classList.remove('highlight-animation');
+        }, 500);
+        
+        // Calculate age
+        selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
+        const age = calculateAge(selectedDate);
+        
+        // Update age display
+        ageDisplay.textContent = `${config.ageLabel}: ${age} years`;
+        ageDisplay.style.display = 'block';
+        
+        // Enable confirm button
+        confirmButton.disabled = false;
+        
+        // Hide error if shown
+        errorText.style.display = 'none';
+      } else {
+        dateSummary.textContent = 'No date selected';
+        dateSummary.classList.remove('has-date');
+        ageDisplay.style.display = 'none';
+        confirmButton.disabled = true;
+      }
+    };
+    
+    // Disable all controls
+    const disableAllControls = () => {
+      monthSelect.disabled = true;
+      daySelect.disabled = true;
+      yearSelect.disabled = true;
+      confirmButton.disabled = true;
+      cancelButton.disabled = true;
+    };
+    
+    // Show success state
+    const showSuccessState = (date, age) => {
+      // Update success details
+      successDetails.textContent = `${formatDate(selectedYear, selectedMonth + 1, selectedDay)} (Age: ${age})`;
+      
+      // Show success state
+      successState.style.display = 'block';
+      
+      // Hide processing overlay
+      processingOverlay.classList.remove('active');
+      
+      // Disable all controls
+      disableAllControls();
+    };
+    
+    // Event Listeners
+    monthSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedMonth = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
+    
+    daySelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedDay = parseInt(e.target.value);
+      updateDateSummary();
+    });
+    
+    yearSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedYear = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
+    
+    cancelButton.addEventListener('click', () => {
+      if (isCompleted || isProcessing) return;
+      
+      // Disable controls to prevent further interaction
+      disableAllControls();
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
+      
+      // Send cancel event to Voiceflow with a slight delay for visual feedback
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "cancel",
+          payload: { 
+            cancelled: true,
+            timestamp: Date.now()
+          }
+        });
+      }, 500);
+    });
+    
+    confirmButton.addEventListener('click', () => {
+      if (isCompleted || isProcessing) return;
+      
+      if (!selectedYear || selectedMonth === null || !selectedDay) {
+        // Show error message
+        errorText.style.display = 'block';
+        return;
+      }
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
+      
+      // Format the date
+      const month = selectedMonth + 1;
+      const formattedDate = formatDate(selectedYear, month, selectedDay);
+      
+      // Calculate age
+      const age = calculateAge(selectedDate);
+      
+      // Show success state after a brief delay for better UX
+      setTimeout(() => {
+        isCompleted = true;
+        showSuccessState(formattedDate, age);
+        
+        // Send data to Voiceflow after showing success state
+        setTimeout(() => {
+          window.voiceflow.chat.interact({
+            type: "complete",
+            payload: {
+              date: formattedDate,
+              age: age,
+              year: selectedYear,
+              month: month,
+              day: selectedDay,
+              timestamp: Date.now()
+            }
+          });
+        }, 1000);
+      }, 800);
+    });
+    
+    // Implement keyboard navigation
+    container.addEventListener('keydown', (e) => {
+      if (isCompleted || isProcessing) return;
+      
+      if (e.key === 'Enter' && !confirmButton.disabled) {
+        e.preventDefault();
+        confirmButton.click();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        cancelButton.click();
+      }
+    });
+    
+    // Disable chat input while picker is open
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+          inputContainer.style.transition = "opacity 0.3s ease";
+        }
+      }
+    };
+    
+    // Disable inputs
+    toggleInputs(true);
+    
+    // Return cleanup function
+    return () => {
+      toggleInputs(false);
+    };
+  }
+};
