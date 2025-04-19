@@ -2329,3 +2329,442 @@ export const CalendarDatePickerExtension = {
     };
   }
 };
+
+export const DropdownExtension = {
+  name: "DropdownExtension",
+  type: "response",
+  match: ({ trace }) =>
+    trace.type === "ext_dropdown" || trace.payload?.name === "ext_dropdown",
+  render: ({ trace, element }) => {
+    // Configuration options with defaults
+    const config = {
+      options: trace.payload?.options || [],
+      color: trace.payload?.color || "#545857",
+      buttonText: trace.payload?.buttonText || "Submit",
+      placeholder: trace.payload?.placeholder || "Search or select...",
+      maxHeight: trace.payload?.maxHeight || 200,
+      darkMode: trace.payload?.darkMode || false
+    };
+    
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Set color scheme based on dark mode preference
+    const colors = {
+      primary: config.color,
+      primaryLight: hexToRgba(config.color, 0.1),
+      background: config.darkMode ? '#1E293B' : '#FFFFFF',
+      surface: config.darkMode ? '#334155' : '#FFFFFF',
+      inputBg: config.darkMode ? '#293548' : '#FFFFFF',
+      disabledBg: config.darkMode ? '#374151' : '#f5f5f5',
+      text: config.darkMode ? '#F1F5F9' : '#545857',
+      placeholder: config.darkMode ? '#94A3B8' : '#72727a',
+      border: config.darkMode ? '#475569' : 'rgba(84, 88, 87, 0.2)',
+      borderFocus: config.darkMode ? '#64748B' : config.color,
+      hover: config.darkMode ? '#374151' : 'rgba(84, 88, 87, 0.08)',
+      error: '#FF4444'
+    };
+
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        }
+
+        // Disable/enable specific elements
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          )
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = disable ? colors.disabledBg : "";
+            }
+          });
+        });
+      }
+    };
+
+    const formContainer = document.createElement("form");
+    formContainer.className = "_1ddzqsn7";
+    formContainer.style.display = "inline-block";
+    formContainer.style.maxWidth = "100%";
+    formContainer.style.width = "auto";
+    const dropdownOptions = config.options;
+
+    // Create a chevron SVG with the custom color
+    const chevronSvg = `
+      <svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='${colors.text}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <polyline points='18 15 12 9 6 15'></polyline>
+      </svg>
+    `;
+
+    const chevronDataUrl = `data:image/svg+xml,${encodeURIComponent(chevronSvg)}`;
+
+    formContainer.innerHTML = `
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+      
+      ._1ddzqsn7 {
+        display: inline-block !important;
+        width: auto;
+        max-width: 100%;
+        min-width: 250px;
+      }
+      
+      .dropdown-wrapper {
+        width: 100%;
+        font-family: 'Inter', sans-serif;
+      }
+      
+      .dropdown-extension-container {
+        position: relative;
+        width: 100%;
+        margin-bottom: 8px;
+      }
+      
+      .dropdown-extension-input[type="text"] {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid ${colors.border};
+        border-radius: 6px;
+        background: ${colors.inputBg};
+        color: ${colors.text};
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        letter-spacing: -0.01em;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      .dropdown-extension-input[type="text"]:focus {
+        outline: none;
+        border-color: ${colors.borderFocus};
+        box-shadow: 0 0 0 2px ${hexToRgba(config.color, 0.1)};
+      }
+
+      .dropdown-extension-input[type="text"]::placeholder {
+        color: ${colors.placeholder};
+        opacity: 0.7;
+      }
+
+      .dropdown-extension-input[type="text"]:disabled {
+        background-color: ${colors.disabledBg};
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+
+      .dropdown-extension-options {
+        position: absolute;
+        bottom: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-height: ${config.maxHeight}px;
+        overflow-y: auto;
+        background: ${colors.surface};
+        border-radius: 6px;
+        border: 1px solid ${colors.border};
+        box-shadow: 0 -2px 8px rgba(0, 0, 0, ${config.darkMode ? '0.25' : '0.08'});
+        display: none;
+        z-index: 1000;
+        scrollbar-width: thin;
+        scrollbar-color: ${colors.placeholder} transparent;
+        box-sizing: border-box;
+      }
+
+      .dropdown-extension-options div {
+        padding: 8px 12px;
+        font-size: 13px;
+        color: ${colors.text};
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .dropdown-extension-options div:hover,
+      .dropdown-extension-options div.highlighted {
+        background-color: ${colors.hover};
+      }
+
+      .dropdown-extension-submit {
+        width: 100%;
+        padding: 8px 16px;
+        background-color: ${colors.primary};
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        opacity: 0.5;
+        pointer-events: none;
+        transition: all 0.2s ease;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      .dropdown-extension-submit.enabled {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .dropdown-extension-submit.enabled:hover {
+        background-color: ${hexToRgba(colors.primary, 0.85)};
+      }
+
+      .dropdown-extension-invalid {
+        border-color: ${colors.error} !important;
+      }
+
+      .dropdown-extension-input[type="text"] {
+        background-image: url("${chevronDataUrl}");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 32px;
+      }
+      
+      @media screen and (max-width: 480px) {
+        ._1ddzqsn7 {
+          width: 100%;
+          min-width: 0;
+        }
+      }
+    </style>
+  
+    <div class="dropdown-wrapper">
+      <div class="dropdown-extension-container">
+        <input 
+          type="text" 
+          class="dropdown-extension-input dropdown-extension-search" 
+          placeholder="${config.placeholder}" 
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <div class="dropdown-extension-options">
+          ${dropdownOptions
+            .map((option) => `<div data-value="${option}">${option}</div>`)
+            .join("")}
+        </div>
+        <input 
+          type="hidden" 
+          class="dropdown-extension-input dropdown-extension-hidden" 
+          name="dropdown" 
+          required
+        >
+      </div>
+      <button type="submit" class="dropdown-extension-submit">${config.buttonText}</button>
+    </div>
+  `;  
+
+    const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
+    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
+    const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
+    const submitButton = formContainer.querySelector(".dropdown-extension-submit");
+    let highlightedIndex = -1;
+
+    const enableSubmitButton = () => {
+      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
+      submitButton.classList.toggle("enabled", isValidOption);
+    };
+
+    const showDropup = (e) => {
+      if (e) e.stopPropagation();
+      dropdownOptionsDiv.style.display = "block";
+    };
+
+    const hideDropup = () => {
+      dropdownOptionsDiv.style.display = "none";
+      highlightedIndex = -1;
+      updateHighlight();
+    };
+
+    const updateHighlight = () => {
+      const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
+      options.forEach((option, index) => {
+        option.classList.toggle("highlighted", index === highlightedIndex);
+      });
+    };
+
+    const handleOptionSelection = (selectedValue) => {
+      dropdownSearch.value = selectedValue;
+      hiddenDropdownInput.value = selectedValue;
+      hideDropup();
+      enableSubmitButton();
+    };
+
+    const handleInput = (e) => {
+      e.stopPropagation();
+      const filter = dropdownSearch.value.toLowerCase();
+      const options = dropdownOptionsDiv.querySelectorAll("div");
+      
+      options.forEach((option) => {
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(filter) ? "" : "none";
+      });
+      
+      showDropup();
+      hiddenDropdownInput.value = "";
+      enableSubmitButton();
+      highlightedIndex = -1;
+      updateHighlight();
+    };
+
+    const handleKeyNavigation = (e) => {
+      const visibleOptions = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
+      
+      switch(e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          if (!dropdownOptionsDiv.style.display === "block") {
+            showDropup();
+          } else {
+            highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
+            updateHighlight();
+          }
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          if (highlightedIndex > -1) {
+            highlightedIndex = Math.max(highlightedIndex - 1, 0);
+            updateHighlight();
+          }
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
+            const selectedValue = visibleOptions[highlightedIndex].getAttribute("data-value");
+            handleOptionSelection(selectedValue);
+          }
+          break;
+        case "Escape":
+          hideDropup();
+          dropdownSearch.blur();
+          break;
+      }
+    };
+
+    // Add event listeners
+    dropdownSearch.addEventListener("focus", showDropup);
+    dropdownSearch.addEventListener("click", showDropup);
+    dropdownSearch.addEventListener("input", handleInput);
+    dropdownSearch.addEventListener("keydown", handleKeyNavigation);
+
+    dropdownOptionsDiv.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (e.target.tagName === "DIV") {
+        const selectedValue = e.target.getAttribute("data-value");
+        handleOptionSelection(selectedValue);
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
+        hideDropup();
+      }
+    });
+
+    formContainer.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
+      if (!isValidOption) {
+        dropdownSearch.classList.add("dropdown-extension-invalid");
+        return;
+      }
+
+      // Disable input and prevent changes after submission
+      dropdownSearch.disabled = true;
+      dropdownSearch.style.backgroundColor = colors.disabledBg;
+      dropdownSearch.style.cursor = "not-allowed";
+      dropdownSearch.style.opacity = "0.7";
+      
+      // Remove all event listeners to prevent any interaction
+      dropdownSearch.removeEventListener("focus", showDropup);
+      dropdownSearch.removeEventListener("click", showDropup);
+      dropdownSearch.removeEventListener("input", handleInput);
+      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
+      
+      // Disable submit button
+      submitButton.disabled = true;
+      
+      // Re-enable Voiceflow's inputs
+      toggleInputs(false);
+      
+      // Remove submit button with a slight delay
+      setTimeout(() => {
+        submitButton.style.opacity = "0";
+        submitButton.remove();
+      }, 50);
+
+      window.voiceflow.chat.interact({
+        type: "complete",
+        payload: { dropdown: hiddenDropdownInput.value },
+      });
+    });
+
+    const cleanup = () => {
+      document.removeEventListener("click", hideDropup);
+      dropdownSearch.removeEventListener("focus", showDropup);
+      dropdownSearch.removeEventListener("click", showDropup);
+      dropdownSearch.removeEventListener("input", handleInput);
+      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
+      
+      // Make sure inputs are re-enabled when component is removed
+      toggleInputs(false);
+    };
+
+    // Adjust size when the window is resized
+    const resizeObserver = new ResizeObserver(() => {
+      const parentWidth = element.offsetWidth;
+      if (parentWidth > 0) {
+        // Allow the form to size properly but not bigger than container
+        formContainer.style.maxWidth = `${parentWidth}px`;
+      }
+    });
+    
+    resizeObserver.observe(element);
+
+    element.appendChild(formContainer);
+    
+    // Disable inputs when component is mounted
+    toggleInputs(true);
+
+    return () => {
+      cleanup();
+      resizeObserver.disconnect();
+    };
+  },
+};
