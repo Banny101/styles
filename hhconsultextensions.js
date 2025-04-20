@@ -3722,6 +3722,62 @@ export const CalendarDatePickerExtension = {
       disableAllControls();
     };
     
+    // Enhanced toggleInputs function to disable ALL input types
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        // Disable/enable the entire input container
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          inputContainer.style.opacity = disable ? "0.5" : "1";
+          inputContainer.style.pointerEvents = disable ? "none" : "auto";
+          inputContainer.style.transition = "opacity 0.3s ease";
+        }
+
+        // Disable/enable specific elements
+        const elements = {
+          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
+          ),
+          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
+            ".vfrc-chat-input--button.c-iSWgdS"
+          ),
+          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Voice input']"
+          ),
+          sendButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Send message']"
+          ),
+          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
+            "[aria-label='Add attachment']"
+          ),
+          inputs: chatDiv.shadowRoot.querySelectorAll("input"),
+          allButtons: chatDiv.shadowRoot.querySelectorAll("button")
+        };
+
+        Object.values(elements).forEach(elementList => {
+          elementList.forEach(el => {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+            el.style.transition = "opacity 0.3s ease";
+            if (el.tagName.toLowerCase() === "textarea") {
+              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
+            }
+          });
+        });
+        
+        // Additionally, try to find and disable any voice input overlay that might be active
+        const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
+        if (voiceOverlay) {
+          if (disable) {
+            voiceOverlay.style.display = "none";
+          }
+        }
+      }
+    };
+    
     // Event Listeners
     monthSelect.addEventListener('change', (e) => {
       if (isCompleted || isProcessing) return;
@@ -3820,23 +3876,10 @@ export const CalendarDatePickerExtension = {
       }
     });
     
-    // Disable chat input while picker is open
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-          inputContainer.style.transition = "opacity 0.3s ease";
-        }
-      }
-    };
-    
-    // Disable inputs
+    // Disable ALL chat inputs while picker is open
     toggleInputs(true);
     
-    // Return cleanup function
+    // Return cleanup function that re-enables all inputs
     return () => {
       toggleInputs(false);
     };
