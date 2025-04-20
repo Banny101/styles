@@ -295,110 +295,860 @@ export const BrowserDataExtension = {
   }
 };
 
-export const EnableInputsExtension = {
-  name: "EnableInputs",
-  type: "effect",
+export const RankOptionsExtension = {
+  name: "RankOptions",
+  type: "response",
   match: ({ trace }) => 
-    trace.type === "ext_enableInputs" || 
-    trace.payload?.name === "ext_enableInputs",
-  effect: async ({ trace }) => {
-    try {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv?.shadowRoot) {
-        window.voiceflow.chat.interact({ type: "complete" });
-        return;
-      }
-      
-      // Get the input container and make it visible again
-      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-      if (inputContainer) {
-        inputContainer.style.display = ""; // Remove the display:none if it was set
-        inputContainer.style.opacity = "1";
-        inputContainer.style.pointerEvents = "auto";
-        inputContainer.style. = "opacity 0.3s ease";
-      }
+    trace.type === "ext_rankoptions" || trace.payload?.name === "ext_rankoptions",
+  render: ({ trace, element }) => {
+    // Configuration options with defaults
+    const config = {
+      options: trace.payload?.options || [],
+      color: trace.payload?.color || "#545857",
+      title: trace.payload?.title || "Rank these items in order of importance",
+      submitText: trace.payload?.submitText || "Submit",
+      submitMessage: trace.payload?.submitMessage || "Rankings submitted",
+      darkMode: trace.payload?.darkMode || false,
+      slantTitle: trace.payload?.slantTitle || false, // New option for slanted title
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10 // Control skew angle
+    };
+    
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Determine colors based on mode and primary color
+    const colors = {
+      primary: config.color,
+      text: config.darkMode ? "#E2E8F0" : "#303235",
+      background: config.darkMode ? "#1E293B" : "#FFFFFF",
+      surface: config.darkMode ? "#334155" : "#FFFFFF",
+      border: config.darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
+      secondaryText: config.darkMode ? "#94A3B8" : "#72727a",
+      buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : hexToRgba(config.color, 0.9),
+      shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)",
+      accent: hexToRgba(config.color, 0.15)
+    };
 
-      // Enable all interactive elements
-      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
-      elements.forEach(el => {
-        el.disabled = false;
-        el.style.pointerEvents = "auto";
-        el.style.opacity = "1";
+    // Hide any scroll indicators that might be present
+    const hideScrollIndicators = () => {
+      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+        .forEach(el => {
+          el.style.display = 'none';
+        });
+    };
+
+    const createForm = () => {
+      const formContainer = document.createElement("form");
+      formContainer.className = "rank-options-form";
+
+      formContainer.innerHTML = `
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+          
+          .rank-options-form {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            max-width: 450px;
+            margin: 0 auto;
+          }
+          
+          .rank-options-container {
+            padding: 0;
+            width: 100%;
+          }
+          
+          .rank-title {
+            font-size: 15px;
+            margin-bottom: 16px;
+            color: ${colors.secondaryText};
+            font-weight: 500;
+            user-select: none;
+            ${config.slantTitle ? `
+              font-style: italic;
+              transform: skewX(${config.titleSkewDegree}deg);
+              display: inline-block;
+              background: ${hexToRgba(config.color, 0.08)};
+              padding: 6px 12px;
+              border-radius: 4px;
+              color: ${config.color};
+              margin-left: -4px;
+            ` : ''}
+          }
+          
+          .rank-options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+          }
+          
+          .rank-options-list li {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            background-color: ${colors.surface};
+            border: 1px solid ${colors.border};
+            border-radius: 10px;
+            cursor: grab;
+            font-size: 14px;
+            color: ${colors.text};
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+            user-select: none;
+            box-shadow: 0 1px 2px ${hexToRgba('#000000', 0.05)};
+            will-change: transform, box-shadow, border-color, background-color;
+          }
+          
+          .rank-options-list li:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: ${colors.primary};
+            opacity: 0;
+            transition: opacity 0.2s ease;
+          }
+          
+          .rank-options-list li:hover {
+            border-color: ${hexToRgba(colors.primary, 0.3)};
+            box-shadow: 0 3px 6px ${colors.shadow};
+            transform: translateY(-1px);
+          }
+          
+          .rank-options-list li:hover:before {
+            opacity: 1;
+          }
+          
+          .rank-options-list li:active {
+            cursor: grabbing;
+            background-color: ${colors.accent};
+            transform: scale(1.01);
+          }
+
+          .rank-options-list.disabled li {
+            cursor: not-allowed;
+            opacity: 0.7;
+            pointer-events: none;
+          }
+
+          .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 24px;
+            background: ${hexToRgba(colors.primary, 0.12)};
+            color: ${colors.primary};
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 12px;
+            user-select: none;
+            transition: all 0.2s ease;
+            border-radius: 50%;
+            padding: 0 2px;
+          }
+          
+          li:hover .rank-number {
+            background: ${colors.primary};
+            color: white;
+          }
+          
+          .rank-text {
+            flex: 1;
+            padding-right: 4px;
+            line-height: 1.4;
+          }
+          
+          .submit-button {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: ${colors.primary};
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
+          }
+          
+          .submit-button:not(:disabled):hover {
+            background-color: ${colors.buttonHover};
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
+          }
+          
+          .submit-button:not(:disabled):active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px ${hexToRgba(colors.primary, 0.3)};
+          }
+
+          .submit-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: ${colors.secondaryText};
+            box-shadow: none;
+          }
+          
+          .sortable-ghost {
+            opacity: 0.3;
+            background: ${colors.accent};
+            border: 2px dashed ${colors.primary};
+            box-shadow: none !important;
+          }
+
+          .sortable-drag {
+            background-color: ${colors.accent};
+            box-shadow: 0 8px 16px ${colors.shadow};
+            border-color: ${colors.primary};
+            z-index: 1000;
+            opacity: 0.9;
+          }
+
+          @keyframes slideIn {
+            from {
+              opacity: 0;
+              transform: translateY(15px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          .rank-options-list li {
+            animation: slideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: calc(var(--item-index) * 0.08s);
+            opacity: 0;
+          }
+
+          .rank-handle {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 3px;
+            margin-left: auto;
+            padding: 8px;
+            opacity: 0.4;
+            transition: opacity 0.2s ease;
+            border-radius: 6px;
+          }
+          
+          .rank-handle:hover {
+            background: ${hexToRgba('#000000', config.darkMode ? 0.2 : 0.05)};
+          }
+
+          .rank-handle span {
+            width: 25px;
+            height: 2px;
+            background: ${colors.text};
+            border-radius: 1px;
+          }
+
+          li:hover .rank-handle {
+            opacity: 0.7;
+          }
+
+          .submitted-message {
+            color: ${colors.primary};
+            font-size: 14px;
+            text-align: center;
+            margin-top: 16px;
+            font-weight: 500;
+            padding: 12px;
+            background: ${colors.accent};
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease;
+          }
+          
+          /* Sortable animations */
+          .sortable-chosen {
+            background-color: ${colors.accent} !important;
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          [class*="scroll-down"],
+          [class*="scroll-button"] {
+            display: none !important;
+          }
+        </style>
         
-        if (el.tagName.toLowerCase() === "textarea") {
-          el.style.backgroundColor = "";
+        <div class="rank-options-container">
+          <div class="rank-title">${config.title}</div>
+          <ul class="rank-options-list">
+            ${config.options.map((option, index) => `
+              <li data-value="${option}" style="--item-index: ${index}" aria-label="Item ${index + 1}: ${option}">
+                <span class="rank-number">${index + 1}</span>
+                <span class="rank-text">${option}</span>
+                <div class="rank-handle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </li>
+            `).join('')}
+          </ul>
+          <button type="submit" class="submit-button">${config.submitText}</button>
+        </div>
+      `;
+
+      let isSubmitted = false;
+      let sortableInstance = null;
+
+      const updateRankNumbers = () => {
+        if (!isSubmitted) {
+          formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
+            span.textContent = index + 1;
+            span.parentElement.setAttribute('aria-label', `Item ${index + 1}: ${span.parentElement.dataset.value}`);
+          });
         }
+      };
+
+      const disableRanking = () => {
+        const list = formContainer.querySelector('.rank-options-list');
+        const submitButton = formContainer.querySelector('.submit-button');
+        
+        // Disable the list
+        list.classList.add('disabled');
+        
+        // Disable the submit button
+        submitButton.disabled = true;
+        
+        // Destroy sortable instance
+        if (sortableInstance) {
+          sortableInstance.destroy();
+        }
+
+        // Add submitted message
+        const message = document.createElement('div');
+        message.className = 'submitted-message';
+        message.textContent = config.submitMessage;
+        submitButton.insertAdjacentElement('afterend', message);
+      };
+
+      formContainer.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        if (isSubmitted) return;
+        
+        const rankedOptions = Array.from(
+          formContainer.querySelectorAll('.rank-options-list li')
+        ).map(li => li.dataset.value);
+
+        isSubmitted = true;
+        disableRanking();
+        
+        // Hide any scroll indicators
+        hideScrollIndicators();
+        
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { rankedOptions }
+        });
       });
+
+      element.appendChild(formContainer);
+
+      if (typeof Sortable !== 'undefined') {
+        sortableInstance = new Sortable(formContainer.querySelector('.rank-options-list'), {
+          animation: 150,
+          easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+          handle: "li",  // Make the entire li element draggable
+          ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
+          dragClass: 'sortable-drag',
+          onEnd: updateRankNumbers,
+          disabled: isSubmitted,
+          delay: 50, // Small delay to improve experience on touch devices
+          delayOnTouchOnly: true, // Only delay for touch devices
+          forceFallback: false, // Better performance
+          fallbackTolerance: 5, // Small threshold to start drag
+          touchStartThreshold: 5,
+          // Better performance on mobile
+          supportPointer: true,  
+          // Enhanced animation settings for smoothness
+          animation: 150, 
+          scroll: true,
+          scrollSensitivity: 80,
+          scrollSpeed: 20
+        });
+      }
       
-      window.voiceflow.chat.interact({ type: "complete" });
-      
-    } catch (error) {
-      console.error('EnableInputs Extension Error:', error);
-      window.voiceflow.chat.interact({ type: "complete" });
+      // Return cleanup function
+      return () => {
+        if (sortableInstance) {
+          sortableInstance.destroy();
+        }
+      };
+    };
+
+    // Hide any scroll indicators that might be present
+    hideScrollIndicators();
+
+    let cleanup = null;
+    
+    if (typeof Sortable === 'undefined') {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
+      script.onload = () => {
+        cleanup = createForm();
+      };
+      script.onerror = () => {
+        console.error('Failed to load Sortable.js');
+      };
+      document.head.appendChild(script);
+    } else {
+      cleanup = createForm();
     }
-  }
+
+    // Return cleanup function
+    return () => {
+      if (typeof cleanup === 'function') {
+        cleanup();
+      }
+    };
+  },
 };
 
-export const DisableInputsExtension = {
-  name: "DisableInputs",
-  type: "effect",
-  match: ({ trace }) => 
-    trace.type === "ext_disableInputs" || 
-    trace.payload?.name === "ext_disableInputs",
-  effect: async ({ trace }) => {
-    try {
-      // Configuration option
-      const hideCompletely = trace.payload?.hideCompletely || false;
-      
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv?.shadowRoot) {
-        window.voiceflow.chat.interact({ type: "complete" });
-        return;
-      }
-      
-      // Get the input container
-      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-      
-      if (inputContainer) {
-        if (hideCompletely) {
-          // Completely hide the input container
-          inputContainer.style.display = "none";
-        } else {
-          // Just disable it
-          inputContainer.style.opacity = "0.5";
-          inputContainer.style.pointerEvents = "none";
-          inputContainer.style. = "opacity 0.3s ease";
-        }
-      }
+export const MultiSelectExtension = {
+  name: "MultiSelect",
+  type: "response",
+  match: ({ trace }) =>
+    trace.type === "ext_multiselect" ||
+    trace.payload?.name === "ext_multiselect",
+  render: ({ trace, element }) => {
+    // Configuration options with defaults
+    const config = {
+      options: trace.payload?.options || [],
+      maxSelections: trace.payload?.maxSelections || trace.payload?.options?.length || 0,
+      color: trace.payload?.color || "#545857",
+      title: trace.payload?.title || "Select your options",
+      submitText: trace.payload?.submitText || "Submit",
+      cancelText: trace.payload?.cancelText || "Cancel",
+      darkMode: trace.payload?.darkMode || false,
+      successMessage: trace.payload?.successMessage || "Your selection has been saved",
+      slantTitle: trace.payload?.slantTitle || false,
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10
+    };
 
-      // Disable all interactive elements
-      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
-      elements.forEach(el => {
-        el.disabled = true;
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    // Function to adjust color brightness
+    function adjustBrightness(hex, percent) {
+      let r = parseInt(hex.slice(1, 3), 16);
+      let g = parseInt(hex.slice(3, 5), 16);
+      let b = parseInt(hex.slice(5, 7), 16);
+      
+      r = Math.max(0, Math.min(255, r + percent));
+      g = Math.max(0, Math.min(255, g + percent));
+      b = Math.max(0, Math.min(255, b + percent));
+      
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+    
+    // Set color scheme based on dark mode preference
+    const colors = {
+      primary: config.color,
+      primaryHover: adjustBrightness(config.color, config.darkMode ? 20 : -15),
+      background: config.darkMode ? '#1E293B' : '#FFFFFF',
+      surface: config.darkMode ? '#334155' : '#FFFFFF',
+      text: config.darkMode ? '#F1F5F9' : '#303235',
+      textSecondary: config.darkMode ? '#94A3B8' : '#72727a',
+      border: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.08)',
+      hoverBg: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.04)',
+      error: '#FF4444'
+    };
+
+    const multiSelectContainer = document.createElement("form");
+    multiSelectContainer.className = "_1ddzqsn7";
+
+    multiSelectContainer.innerHTML = `
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
         
-        if (!hideCompletely) {
-          el.style.pointerEvents = "none";
-          el.style.opacity = "0.5";
-          
-          if (el.tagName.toLowerCase() === "textarea") {
-            el.style.backgroundColor = "#f5f5f5";
-          }
+        ._1ddzqsn7 {
+          display: block;
         }
+        
+        .multi-select-container {
+          font-family: 'Inter', sans-serif;
+          width: 100%;
+          max-width: 450px;
+          margin: 0 auto;
+        }
+        
+        .multi-select-title {
+          font-size: 15px;
+          color: ${colors.textSecondary};
+          margin-bottom: 14px;
+          font-weight: 500;
+          ${config.slantTitle ? `
+            font-style: italic;
+            transform: skewX(${config.titleSkewDegree}deg);
+            display: inline-block;
+            background: ${hexToRgba(config.color, 0.08)};
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: ${config.color};
+            margin-left: -4px;
+          ` : ''}
+        }
+        
+        .multi-select-subtitle {
+          font-size: 13px;
+          color: ${colors.textSecondary};
+          margin-bottom: 16px;
+          opacity: 0.8;
+        }
+        
+        .multi-select-options {
+          display: grid;
+          gap: 8px;
+          margin-bottom: 16px;
+        }
+        
+        .option-label {
+          display: flex;
+          align-items: center;
+          padding: 12px;
+          background: ${colors.surface};
+          border: 1px solid ${colors.border};
+          border-radius: 8px;
+          cursor: pointer;
+          : all 0.2s ease;
+          user-select: none;
+          opacity: 0;
+          animation: slideIn 0.3s forwards;
+        }
+        
+        .option-label:hover {
+          border-color: ${colors.primary};
+          transform: translateX(2px);
+          background: ${colors.hoverBg};
+        }
+        
+        .checkbox-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 20px;
+          height: 20px;
+          margin-right: 12px;
+          border: 2px solid ${colors.textSecondary};
+          border-radius: 4px;
+          : all 0.2s ease;
+          flex-shrink: 0;
+        }
+        
+        .option-label:hover .checkbox-wrapper {
+          border-color: ${colors.primary};
+        }
+        
+        .checkbox-input {
+          display: none;
+        }
+        
+        .checkbox-input:checked + .checkbox-wrapper {
+          background: ${colors.primary};
+          border-color: ${colors.primary};
+        }
+        
+        .checkbox-input:checked + .checkbox-wrapper:after {
+          content: '';
+          width: 6px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg) translate(-1px, -1px);
+          display: block;
+        }
+        
+        .option-text {
+          font-size: 14px;
+          color: ${colors.text};
+          line-height: 1.4;
+        }
+        
+        .error-message {
+          color: ${colors.error};
+          font-size: 13px;
+          margin: -8px 0 12px;
+          display: none;
+          animation: slideIn 0.3s ease;
+          padding: 10px;
+          background: ${hexToRgba(colors.error, 0.1)};
+          border-radius: 6px;
+          text-align: center;
+        }
+        
+        .button-group {
+          display: grid;
+          gap: 8px;
+        }
+        
+        .submit-button, .cancel-button {
+          width: 100%;
+          padding: 12px;
+          border: none;
+          border-radius: 8px;
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          : all 0.2s ease;
+        }
+        
+        .submit-button {
+          background: ${colors.primary};
+          color: white;
+          box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
+        }
+        
+        .submit-button:not(:disabled):hover {
+          background: ${colors.primaryHover};
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
+        }
+        
+        .submit-button:not(:disabled):active {
+          transform: translateY(0);
+        }
+        
+        .submit-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+        
+        .cancel-button {
+          background: transparent;
+          color: ${colors.textSecondary};
+          border: 1px solid ${hexToRgba(colors.textSecondary, 0.2)};
+        }
+        
+        .cancel-button:hover {
+          background: ${hexToRgba(colors.textSecondary, 0.1)};
+        }
+        
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          75% { transform: translateX(4px); }
+        }
+        
+        .shake {
+          animation: shake 0.3s ease;
+        }
+        
+        /* Success state styling */
+        .success-message {
+          text-align: center;
+          padding: 16px;
+          margin-top: 16px;
+          background: ${hexToRgba(colors.primary, 0.1)};
+          border-radius: 8px;
+          font-size: 14px;
+          color: ${colors.text};
+          border: 1px solid ${hexToRgba(colors.primary, 0.2)};
+          display: none;
+          animation: fadeIn 0.5s ease;
+        }
+        
+        .success-icon {
+          display: block;
+          width: 36px;
+          height: 36px;
+          margin: 0 auto 12px;
+          background: ${colors.primary};
+          border-radius: 50%;
+          position: relative;
+          animation: scaleIn 0.4s cubic-bezier(0.18, 1.25, 0.6, 1.25) forwards;
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        
+        .success-icon:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 16px;
+          height: 8px;
+          border: solid white;
+          border-width: 0 0 2px 2px;
+          transform: translate(-50%, -60%) rotate(-45deg);
+        }
+        
+        .success-text {
+          display: block;
+          animation: fadeIn 0.5s ease forwards 0.2s;
+          opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.5); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+      </style>
+      
+      <div class="multi-select-container">
+        <div class="multi-select-title">${config.title}</div>
+        ${config.maxSelections < config.options.length ? 
+          `<div class="multi-select-subtitle">Choose up to ${config.maxSelections} options</div>` : 
+          ''}
+        <div class="multi-select-options">
+          ${config.options.map((option, index) => `
+            <label class="option-label" style="animation-delay: ${index * 0.05}s">
+              <input type="checkbox" class="checkbox-input" name="options" value="${option}">
+              <div class="checkbox-wrapper"></div>
+              <span class="option-text">${option}</span>
+            </label>
+          `).join('')}
+        </div>
+        <div class="error-message"></div>
+        <div class="button-group">
+          <button type="submit" class="submit-button" disabled>${config.submitText}</button>
+          <button type="button" class="cancel-button">${config.cancelText}</button>
+        </div>
+        <div class="success-message">
+          <div class="success-icon"></div>
+          <span class="success-text">${config.successMessage}</span>
+        </div>
+      </div>
+    `;
+
+    let isSubmitted = false;
+    const errorMessage = multiSelectContainer.querySelector(".error-message");
+    const submitButton = multiSelectContainer.querySelector(".submit-button");
+    const cancelButton = multiSelectContainer.querySelector(".cancel-button");
+    const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
+    const successMessage = multiSelectContainer.querySelector(".success-message");
+
+    const updateSubmitButton = () => {
+      if (isSubmitted) return;
+      const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
+      submitButton.disabled = selectedCount === 0;
+    };
+
+    const showError = (message) => {
+      errorMessage.textContent = message;
+      errorMessage.style.display = "block";
+      multiSelectContainer.querySelector('.multi-select-options').classList.add('shake');
+      setTimeout(() => {
+        multiSelectContainer.querySelector('.multi-select-options').classList.remove('shake');
+      }, 300);
+    };
+    
+    const disableForm = () => {
+      // Disable all inputs in the component
+      checkboxes.forEach(checkbox => {
+        checkbox.disabled = true;
+        checkbox.parentElement.style.opacity = "0.7";
+        checkbox.parentElement.style.cursor = "not-allowed";
       });
       
-      // Handle voice input overlay
-      const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
-      if (voiceOverlay) {
-        voiceOverlay.style.display = "none";
-      }
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
+    };
+    
+    const showSuccess = () => {
+      successMessage.style.display = "block";
+    };
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", () => {
+        if (isSubmitted) return;
+        
+        const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
+        
+        if (selectedCount > config.maxSelections) {
+          checkbox.checked = false;
+          showError(`You can select up to ${config.maxSelections} options`);
+        } else {
+          errorMessage.style.display = "none";
+        }
+        
+        updateSubmitButton();
+      });
+    });
+
+    multiSelectContainer.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (isSubmitted) return;
+
+      const selectedOptions = Array.from(
+        multiSelectContainer.querySelectorAll('input[name="options"]:checked')
+      ).map(input => input.value);
+
+      isSubmitted = true;
+      disableForm();
+      showSuccess();
       
-      window.voiceflow.chat.interact({ type: "complete" });
+      // Short delay before sending the interaction to allow the success state to be visible
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { options: selectedOptions }
+        });
+      }, 1200);
+    });
+
+    cancelButton.addEventListener("click", () => {
+      if (isSubmitted) return;
       
-    } catch (error) {
-      console.error('DisableInputs Extension Error:', error);
-      window.voiceflow.chat.interact({ type: "complete" });
-    }
-  }
+      disableForm();
+      
+      window.voiceflow.chat.interact({
+        type: "cancel",
+        payload: { options: [] }
+      });
+    });
+
+    element.innerHTML = '';
+    element.appendChild(multiSelectContainer);
+    
+    // No cleanup needed since we're using separate extensions for input control
+    return () => {};
+  },
 };
 
 export const CalendarDatePickerExtension = {
