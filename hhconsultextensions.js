@@ -1861,58 +1861,55 @@ export const DisableInputsExtension = {
     trace.payload?.name === "ext_disableInputs",
   effect: async ({ trace }) => {
     try {
+      // Configuration option
+      const hideCompletely = trace.payload?.hideCompletely || false;
+      
       const chatDiv = document.getElementById("voiceflow-chat");
       if (!chatDiv?.shadowRoot) {
-        // If we can't find the chat div, just continue to the next block
         window.voiceflow.chat.interact({ type: "complete" });
         return;
       }
       
-      // Disable the entire input container
+      // Get the input container
       const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      
       if (inputContainer) {
-        inputContainer.style.opacity = "0.5";
-        inputContainer.style.pointerEvents = "none";
-        inputContainer.style.transition = "opacity 0.3s ease";
+        if (hideCompletely) {
+          // Completely hide the input container
+          inputContainer.style.display = "none";
+        } else {
+          // Just disable it
+          inputContainer.style.opacity = "0.5";
+          inputContainer.style.pointerEvents = "none";
+          inputContainer.style.transition = "opacity 0.3s ease";
+        }
       }
 
       // Disable all interactive elements
-      const selectorsToDisable = [
-        "textarea", 
-        "input",
-        "button",
-        ".c-bXTvXv.c-bXTvXv-lckiv-type-info",
-        ".vfrc-chat-input--button.c-iSWgdS",
-        "[aria-label='Voice input']",
-        "[aria-label='Send message']",
-        "[aria-label='Add attachment']"
-      ];
-      
-      // Combine all selectors and disable them
-      const elements = chatDiv.shadowRoot.querySelectorAll(selectorsToDisable.join(", "));
+      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
       elements.forEach(el => {
         el.disabled = true;
-        el.style.pointerEvents = "none";
-        el.style.opacity = "0.5";
-        el.style.transition = "opacity 0.3s ease";
         
-        if (el.tagName.toLowerCase() === "textarea") {
-          el.style.backgroundColor = "#f5f5f5";
+        if (!hideCompletely) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.5";
+          
+          if (el.tagName.toLowerCase() === "textarea") {
+            el.style.backgroundColor = "#f5f5f5";
+          }
         }
       });
       
-      // Additionally, try to find and disable any voice input overlay
+      // Handle voice input overlay
       const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
       if (voiceOverlay) {
         voiceOverlay.style.display = "none";
       }
       
-      // Continue to the next block
       window.voiceflow.chat.interact({ type: "complete" });
       
     } catch (error) {
       console.error('DisableInputs Extension Error:', error);
-      // Continue to next block even if there's an error
       window.voiceflow.chat.interact({ type: "complete" });
     }
   }
@@ -1928,50 +1925,35 @@ export const EnableInputsExtension = {
     try {
       const chatDiv = document.getElementById("voiceflow-chat");
       if (!chatDiv?.shadowRoot) {
-        // If we can't find the chat div, just continue to the next block
         window.voiceflow.chat.interact({ type: "complete" });
         return;
       }
       
-      // Enable the entire input container
+      // Get the input container and make it visible again
       const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
       if (inputContainer) {
+        inputContainer.style.display = ""; // Remove the display:none if it was set
         inputContainer.style.opacity = "1";
         inputContainer.style.pointerEvents = "auto";
         inputContainer.style.transition = "opacity 0.3s ease";
       }
 
       // Enable all interactive elements
-      const selectorsToEnable = [
-        "textarea", 
-        "input",
-        "button",
-        ".c-bXTvXv.c-bXTvXv-lckiv-type-info",
-        ".vfrc-chat-input--button.c-iSWgdS",
-        "[aria-label='Voice input']",
-        "[aria-label='Send message']",
-        "[aria-label='Add attachment']"
-      ];
-      
-      // Combine all selectors and enable them
-      const elements = chatDiv.shadowRoot.querySelectorAll(selectorsToEnable.join(", "));
+      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
       elements.forEach(el => {
         el.disabled = false;
         el.style.pointerEvents = "auto";
         el.style.opacity = "1";
-        el.style.transition = "opacity 0.3s ease";
         
         if (el.tagName.toLowerCase() === "textarea") {
           el.style.backgroundColor = "";
         }
       });
       
-      // Continue to the next block
       window.voiceflow.chat.interact({ type: "complete" });
       
     } catch (error) {
       console.error('EnableInputs Extension Error:', error);
-      // Continue to next block even if there's an error
       window.voiceflow.chat.interact({ type: "complete" });
     }
   }
