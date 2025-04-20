@@ -1,65 +1,3 @@
-export const DelayEffectExtension = {
-  name: "DelayEffect",
-  type: "effect",
-  match: ({ trace }) => trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
-  effect: async ({ trace }) => {
-    try {
-      // Get delay value with default of 9000ms
-      const delay = Math.max(0, parseInt(trace.payload?.delay) || 9000);
-      
-      // Simple function to disable/enable inputs during delay
-      const toggleInputs = (disable) => {
-        const chatDiv = document.getElementById("voiceflow-chat");
-        if (!chatDiv?.shadowRoot) return;
-        
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable specific input elements
-        const elements = chatDiv.shadowRoot.querySelectorAll("textarea, button, input");
-        elements.forEach(el => {
-          el.disabled = disable;
-        });
-      };
-      
-      // Disable inputs
-      toggleInputs(true);
-      
-      // Execute delay (no visual indicators)
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      // Re-enable inputs
-      toggleInputs(false);
-      
-      // Continue to next block
-      window.voiceflow.chat.interact({ 
-        type: "complete" 
-      });
-      
-    } catch (error) {
-      console.error('DelayEffect Extension Error:', error);
-      
-      // Ensure inputs are re-enabled on error
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = "1";
-          inputContainer.style.pointerEvents = "auto";
-        }
-      }
-      
-      // Continue to next block even if there's an error
-      window.voiceflow.chat.interact({ 
-        type: "complete" 
-      });
-    }
-  }
-};
-
 export const BrowserDataExtension = {
   name: "BrowserData",
   type: "effect",
@@ -67,44 +5,6 @@ export const BrowserDataExtension = {
     trace.type === "ext_browserData" || 
     trace.payload?.name === "ext_browserData",
   effect: async ({ trace }) => {
-    // Disable input while collecting data
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? "#f5f5f5" : "";
-            }
-          });
-        });
-      }
-    };
-
     // Show loading indicator
     const showLoadingIndicator = () => {
       const chatContainer = document.querySelector('.vfrc-chat-messages');
@@ -114,6 +14,8 @@ export const BrowserDataExtension = {
       loadingElement.className = 'browser-data-loading';
       loadingElement.innerHTML = `
         <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+          
           .browser-data-loading {
             display: flex;
             align-items: center;
@@ -122,7 +24,7 @@ export const BrowserDataExtension = {
             margin: 8px 0;
             background: rgba(84, 88, 87, 0.05);
             border-radius: 8px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 13px;
             color: #72727a;
           }
@@ -331,9 +233,6 @@ export const BrowserDataExtension = {
     };
 
     try {
-      // Disable inputs while collecting data
-      toggleInputs(true);
-      
       // Show loading indicator
       const loadingIndicator = showLoadingIndicator();
       
@@ -374,9 +273,6 @@ export const BrowserDataExtension = {
       if (loadingIndicator) {
         loadingIndicator.remove();
       }
-      
-      // Re-enable inputs
-      toggleInputs(false);
 
       // Send data back to chat
       window.voiceflow.chat.interact({
@@ -385,9 +281,6 @@ export const BrowserDataExtension = {
       });
     } catch (error) {
       console.error("BrowserData Extension Error:", error);
-      
-      // Make sure inputs are re-enabled even if there's an error
-      toggleInputs(false);
       
       // Send error back to chat
       window.voiceflow.chat.interact({
@@ -399,1122 +292,6 @@ export const BrowserDataExtension = {
         }
       });
     }
-  }
-};
-
-export const RankOptionsExtension = {
-  name: "RankOptions",
-  type: "response",
-  match: ({ trace }) => 
-    trace.type === "ext_rankoptions" || trace.payload?.name === "ext_rankoptions",
-  render: ({ trace, element }) => {
-    // Get options and configuration from payload
-    const options = trace.payload?.options || [];
-    const primaryColor = trace.payload?.color || "#545857";
-    const title = trace.payload?.title || "Drag and drop to rank in order of preference";
-    const submitText = trace.payload?.submitText || "Submit";
-    const submitMessage = trace.payload?.submitMessage || "Rankings submitted";
-    const darkMode = trace.payload?.darkMode || false;
-    
-    // Determine colors based on mode and primary color
-    const colors = {
-      primary: primaryColor,
-      text: darkMode ? "#E2E8F0" : "#303235",
-      background: darkMode ? "#1E293B" : "#FFFFFF",
-      surface: darkMode ? "#334155" : "#FFFFFF",
-      border: darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
-      secondaryText: darkMode ? "#94A3B8" : "#72727a",
-      buttonHover: adjustColor(primaryColor, 10),
-      shadow: darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)"
-    };
-
-    // Function to lighten/darken a hex color
-    function adjustColor(color, percent) {
-      if (!color.startsWith('#')) return color;
-      
-      // Convert hex to RGB
-      let r = parseInt(color.substring(1, 3), 16);
-      let g = parseInt(color.substring(3, 5), 16);
-      let b = parseInt(color.substring(5, 7), 16);
-      
-      // Lighten or darken
-      r = Math.min(255, Math.max(0, r + percent));
-      g = Math.min(255, Math.max(0, g + percent));
-      b = Math.min(255, Math.max(0, b + percent));
-      
-      // Convert back to hex
-      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-    }
-
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? (darkMode ? "#2D3748" : "#f5f5f5") : "";
-            }
-          });
-        });
-      }
-    };
-
-    // Hide any scroll indicators
-    const hideScrollIndicators = () => {
-      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
-        .forEach(el => {
-          el.style.display = 'none';
-        });
-    };
-
-    const createForm = () => {
-      const formContainer = document.createElement("form");
-      formContainer.className = "_1ddzqsn7";
-
-      formContainer.innerHTML = `
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-          
-          ._1ddzqsn7 {
-            display: block;
-          }
-          
-          .rank-options-container {
-            font-family: 'Inter', sans-serif;
-            padding: 0;
-            width: 100%;
-            color: ${colors.text};
-          }
-          
-          .rank-title {
-            font-size: 14px;
-            margin-bottom: 12px;
-            color: ${colors.secondaryText};
-            font-weight: 500;
-          }
-          
-          .rank-options-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-          }
-          
-          .rank-options-list li {
-            display: flex;
-            align-items: center;
-            padding: 12px 14px;
-            margin-bottom: 8px;
-            background-color: ${colors.surface};
-            border: 1px solid ${colors.border};
-            border-radius: 8px;
-            cursor: grab;
-            font-size: 14px;
-            color: ${colors.text};
-            width: 100%;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-          }
-          
-          .rank-options-list li:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background: ${colors.primary};
-            opacity: 0;
-            transition: opacity 0.2s ease;
-          }
-          
-          .rank-options-list li:hover {
-            border-color: ${colors.primary}40;
-            box-shadow: 0 2px 4px ${colors.shadow};
-            transform: translateX(2px);
-          }
-          
-          .rank-options-list li:hover:before {
-            opacity: 1;
-          }
-          
-          .rank-options-list li:active {
-            cursor: grabbing;
-            background-color: ${darkMode ? '#2D3748' : '#f8f9fa'};
-            transform: scale(1.02);
-          }
-
-          .rank-options-list.disabled li {
-            cursor: not-allowed;
-            opacity: 0.7;
-            pointer-events: none;
-          }
-
-          .rank-number {
-            min-width: 24px;
-            color: ${colors.secondaryText};
-            font-size: 14px;
-            font-weight: 500;
-            margin-right: 10px;
-            user-select: none;
-            transition: color 0.2s ease;
-          }
-          
-          li:hover .rank-number {
-            color: ${colors.primary};
-          }
-          
-          .rank-text {
-            flex: 1;
-            padding-right: 4px;
-            line-height: 1.4;
-          }
-          
-          .submit-button {
-            width: 100%;
-            padding: 12px 16px;
-            background-color: ${colors.primary};
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 16px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-          }
-          
-          .submit-button:not(:disabled):hover {
-            background-color: ${colors.buttonHover};
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px ${colors.shadow};
-          }
-          
-          .submit-button:not(:disabled):active {
-            transform: translateY(0);
-          }
-
-          .submit-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background-color: ${colors.secondaryText};
-          }
-          
-          .sortable-ghost {
-            opacity: 0.3;
-            background: ${darkMode ? '#2D3748' : '#f5f5f5'};
-            border: 2px dashed ${colors.primary};
-          }
-
-          .sortable-drag {
-            background-color: ${colors.surface};
-            box-shadow: 0 4px 8px ${colors.shadow};
-            border-color: ${colors.primary};
-            transform: rotate(2deg);
-          }
-
-          @keyframes slideIn {
-            from {
-              opacity: 0;
-              transform: translateY(10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          .rank-options-list li {
-            animation: slideIn 0.3s ease forwards;
-            animation-delay: calc(var(--item-index) * 0.05s);
-            opacity: 0;
-          }
-
-          .rank-handle {
-            width: 8px;
-            height: 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 2px;
-            margin-left: auto;
-            opacity: 0.3;
-            transition: opacity 0.2s ease;
-          }
-
-          .rank-handle::before,
-          .rank-handle::after {
-            content: '';
-            width: 100%;
-            height: 2px;
-            background: ${colors.text};
-            border-radius: 1px;
-          }
-
-          li:hover .rank-handle {
-            opacity: 0.6;
-          }
-
-          .submitted-message {
-            color: ${colors.secondaryText};
-            font-size: 13px;
-            text-align: center;
-            margin-top: 12px;
-            font-style: italic;
-          }
-          
-          /* Remove any down arrows */
-          [class*="scroll-down"],
-          [class*="scroll-button"] {
-            display: none !important;
-          }
-        </style>
-        
-        <div class="rank-options-container">
-          <div class="rank-title">${title}</div>
-          <ul class="rank-options-list">
-            ${options.map((option, index) => `
-              <li data-value="${option}" style="--item-index: ${index}">
-                <span class="rank-number">${index + 1}</span>
-                <span class="rank-text">${option}</span>
-                <div class="rank-handle"></div>
-              </li>
-            `).join('')}
-          </ul>
-          <button type="submit" class="submit-button">${submitText}</button>
-        </div>
-      `;
-
-      let isSubmitted = false;
-      let sortableInstance = null;
-
-      const updateRankNumbers = () => {
-        if (!isSubmitted) {
-          formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
-            span.textContent = index + 1;
-          });
-        }
-      };
-
-      const disableRanking = () => {
-        const list = formContainer.querySelector('.rank-options-list');
-        const submitButton = formContainer.querySelector('.submit-button');
-        
-        // Disable the list
-        list.classList.add('disabled');
-        
-        // Disable the submit button
-        submitButton.disabled = true;
-        
-        // Destroy sortable instance
-        if (sortableInstance) {
-          sortableInstance.destroy();
-        }
-
-        // Add submitted message
-        const message = document.createElement('div');
-        message.className = 'submitted-message';
-        message.textContent = submitMessage;
-        submitButton.insertAdjacentElement('afterend', message);
-      };
-
-      formContainer.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        if (isSubmitted) return;
-        
-        const rankedOptions = Array.from(
-          formContainer.querySelectorAll('.rank-options-list li')
-        ).map(li => li.dataset.value);
-
-        isSubmitted = true;
-        disableRanking();
-        
-        // Hide any scroll indicators
-        hideScrollIndicators();
-        
-        // Re-enable chat inputs
-        toggleInputs(false);
-
-        window.voiceflow.chat.interact({
-          type: "complete",
-          payload: { rankedOptions }
-        });
-      });
-
-      element.appendChild(formContainer);
-
-      if (typeof Sortable !== 'undefined') {
-        sortableInstance = new Sortable(formContainer.querySelector('.rank-options-list'), {
-          animation: 150,
-          onEnd: updateRankNumbers,
-          ghostClass: 'sortable-ghost',
-          dragClass: 'sortable-drag',
-          disabled: isSubmitted
-        });
-      }
-      
-      // Return cleanup function
-      return () => {
-        if (sortableInstance) {
-          sortableInstance.destroy();
-        }
-        // Make sure inputs are re-enabled when component is removed
-        toggleInputs(false);
-      };
-    };
-
-    // Hide any scroll indicators that might be present
-    hideScrollIndicators();
-    
-    // Disable inputs when component is mounted
-    toggleInputs(true);
-
-    let cleanup = null;
-    
-    if (typeof Sortable === 'undefined') {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
-      script.onload = () => {
-        cleanup = createForm();
-      };
-      script.onerror = () => {
-        console.error('Failed to load Sortable.js');
-        // Re-enable inputs if script fails to load
-        toggleInputs(false);
-      };
-      document.head.appendChild(script);
-    } else {
-      cleanup = createForm();
-    }
-
-    // Return cleanup function
-    return () => {
-      if (typeof cleanup === 'function') {
-        cleanup();
-      } else {
-        // Fallback cleanup if createForm wasn't called
-        toggleInputs(false);
-      }
-    };
-  },
-};
-
-export const TransitionAnimationExtension = {
-  name: "TransitionAnimation",
-  type: "response",
-  match: ({ trace }) => 
-    trace.type === "ext_transitionAnimation" || 
-    trace.payload?.name === "ext_transitionAnimation",
-  render: ({ trace, element }) => {
-    // Extract and validate all parameters with enhanced defaults
-    const config = {
-      duration: parseInt(trace.payload?.duration) || 2000,
-      completionDelay: parseInt(trace.payload?.completionDelay) || 800,
-      text: trace.payload?.text || "Processing",
-      completeText: trace.payload?.completeText || "Complete",
-      primaryColor: trace.payload?.color || "#34D399",
-      theme: trace.payload?.theme || "liquid",
-      style: trace.payload?.style || "standard",
-      showPercentage: trace.payload?.showPercentage !== false,
-      interactive: trace.payload?.interactive || false,
-      sound: trace.payload?.sound || false,
-      vibration: trace.payload?.vibration || false,
-      darkMode: trace.payload?.darkMode || false,
-      fullWidth: trace.payload?.fullWidth !== false
-    };
-    
-    // Calculate actual duration and create unique ID
-    const actualDuration = config.duration - config.completionDelay;
-    const instanceId = `transition-anim-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-    
-    // Color utilities
-    const hexToRgba = (hex, alpha = 1) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-    
-    const darkenColor = (hex) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      
-      const darkenComponent = (c) => Math.max(0, c - 20).toString(16).padStart(2, '0');
-      
-      return `#${darkenComponent(r)}${darkenComponent(g)}${darkenComponent(b)}`;
-    };
-    
-    // Setup colors and theme-specific elements
-    const baseColor = config.primaryColor;
-    const secondaryColor = darkenColor(baseColor);
-    const bgColor = config.darkMode ? hexToRgba('#1F2937', 0.8) : hexToRgba(baseColor, 0.1);
-    const textColor = config.darkMode ? '#FFFFFF' : '#303235';
-    
-    // Theme configurations
-    const themes = {
-      liquid: {
-        container: 'liquid-container',
-        fill: 'liquid-fill',
-        content: 'liquid-content',
-        elements: `
-          <div class="wave"></div>
-          <div class="wave" style="animation-delay: -2s; animation-duration: 7s;"></div>
-          <div class="bubbles">
-            ${Array.from({length: 12}, (_, i) => `
-              <div class="bubble" style="
-                left: ${Math.random() * 100}%;
-                width: ${4 + Math.random() * 4}px;
-                height: ${4 + Math.random() * 4}px;
-                animation-delay: ${Math.random() * 4}s;
-              "></div>
-            `).join('')}
-          </div>
-        `,
-        styles: `
-          .liquid-fill {
-            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
-            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            overflow: hidden;
-          }
-          .liquid-fill::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: 0; width: 100%; height: 200%;
-            background: repeating-linear-gradient(
-              45deg, transparent, transparent 10px,
-              rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px
-            );
-            animation: waterPattern 20s linear infinite;
-          }
-          .wave {
-            position: absolute;
-            top: -100%; right: 0; width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-            border-radius: 45%;
-            animation: rotate 10s linear infinite;
-          }
-          .bubble {
-            position: absolute;
-            background: rgba(255,255,255,0.4);
-            border-radius: 50%;
-            animation: bubble 4s ease-in infinite;
-          }
-          @keyframes waterPattern {
-            0% { transform: translateX(0) translateY(0); }
-            100% { transform: translateX(-100px) translateY(-100px); }
-          }
-          @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-          @keyframes bubble {
-            0% { transform: translateY(100%) scale(0); opacity: 0; }
-            50% { opacity: 0.5; }
-            100% { transform: translateY(-100%) scale(1); opacity: 0; }
-          }
-        `
-      },
-      
-      pulse: {
-        container: 'pulse-container',
-        fill: 'pulse-fill',
-        content: 'pulse-content',
-        elements: `
-          <div class="pulse-rings">
-            ${Array.from({length: 3}, (_, i) => `
-              <div class="pulse-ring" style="animation-delay: ${i * 800}ms;"></div>
-            `).join('')}
-          </div>
-        `,
-        styles: `
-          .pulse-fill {
-            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
-            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-          }
-          .pulse-rings {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden;
-          }
-          .pulse-ring {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            width: 40px; height: 40px;
-            left: calc(100% * 0.2);
-            top: 50%;
-            transform: translate(-50%, -50%);
-            animation: pulseRing 2.5s cubic-bezier(0.1, 0.25, 0.1, 1) infinite;
-          }
-          @keyframes pulseRing {
-            0% { width: 5px; height: 5px; opacity: 0.8; }
-            100% { width: 50px; height: 50px; opacity: 0; }
-          }
-        `
-      },
-      
-      blocks: {
-        container: 'blocks-container',
-        fill: 'blocks-fill',
-        content: 'blocks-content',
-        elements: `
-          <div class="blocks-grid">
-            ${Array.from({length: 12}, (_, i) => `
-              <div class="block" style="animation-delay: ${i * 100}ms;"></div>
-            `).join('')}
-          </div>
-        `,
-        styles: `
-          .blocks-fill {
-            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
-            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-          }
-          .blocks-grid {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            padding: 4px;
-            box-sizing: border-box;
-            gap: 3px;
-          }
-          .block {
-            background: rgba(255,255,255,0.2);
-            border-radius: 2px;
-            animation: blockPulse 1.5s ease-in-out infinite;
-          }
-          @keyframes blockPulse {
-            0% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0.3; transform: scale(0.8); }
-          }
-        `
-      },
-      
-      glow: {
-        container: 'glow-container',
-        fill: 'glow-fill',
-        content: 'glow-content',
-        elements: `
-          <div class="glow-particles">
-            ${Array.from({length: 15}, (_, i) => `
-              <div class="glow-particle" style="
-                left: ${Math.random() * 100}%;
-                top: ${Math.random() * 100}%;
-                width: ${4 + Math.random() * 6}px;
-                height: ${4 + Math.random() * 6}px;
-                animation: floatParticle ${5 + Math.random() * 5}s linear infinite;
-                animation-delay: ${Math.random() * 5}s;
-              "></div>
-            `).join('')}
-          </div>
-        `,
-        styles: `
-          .glow-container {
-            overflow: visible;
-          }
-          .glow-fill {
-            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
-            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            box-shadow: 0 0 15px ${hexToRgba(baseColor, 0.6)};
-          }
-          .glow-particles {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden;
-          }
-          .glow-particle {
-            position: absolute;
-            background: ${hexToRgba(baseColor, 0.6)};
-            border-radius: 50%;
-            filter: blur(1px);
-          }
-          @keyframes floatParticle {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(10px, 10px); }
-            50% { transform: translate(0, 20px); }
-            75% { transform: translate(-10px, 10px); }
-            100% { transform: translate(0, 0); }
-          }
-        `
-      },
-      
-      minimal: {
-        container: 'minimal-container',
-        fill: 'minimal-fill',
-        content: 'minimal-content',
-        elements: ``,
-        styles: `
-          .minimal-container {
-            height: 8px;
-            background: ${config.darkMode ? hexToRgba('#ffffff', 0.1) : hexToRgba('#000000', 0.05)};
-          }
-          .minimal-fill {
-            background: ${baseColor};
-            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-          }
-          .minimal-content {
-            position: absolute;
-            right: 0;
-            top: -24px;
-            font-size: 12px;
-          }
-        `
-      }
-    };
-    
-    // Select theme
-    const theme = themes[config.theme] || themes.liquid;
-    
-    // Sound effect function
-    const playSound = (type) => {
-      if (!config.sound) return;
-      
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = ctx.createOscillator();
-        const gainNode = ctx.createGain();
-        
-        oscillator.type = 'sine';
-        oscillator.frequency.value = type === 'complete' ? 830 : 680;
-        gainNode.gain.value = 0.1;
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
-        
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + (type === 'complete' ? 0.1 : 0.04));
-        
-        setTimeout(() => {
-          oscillator.stop();
-          ctx.close();
-        }, type === 'complete' ? 100 : 40);
-      } catch (e) {
-        console.warn('Web Audio API not supported');
-      }
-    };
-    
-    // Vibration function
-    const vibrate = (pattern) => {
-      if (config.vibration && 'vibrate' in navigator) {
-        try {
-          navigator.vibrate(pattern);
-        } catch (e) {
-          console.warn('Vibration API not supported');
-        }
-      }
-    };
-    
-    // Create animation container
-    const animationContainer = document.createElement("div");
-    animationContainer.id = instanceId;
-    animationContainer.className = "_1ddzqsn7";
-    
-    // Create style tag with all needed styles
-    const styleContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-      
-      /* Fix for container width */
-      ._1ddzqsn7 {
-        display: block !important;
-        width: 100% !important;
-      }
-      
-      /* Base styles */
-      #${instanceId} {
-        display: block;
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        background: none;
-        font-family: 'Inter', sans-serif;
-        position: relative;
-        z-index: 1;
-      }
-      
-      .processing-container {
-        position: relative;
-        height: ${config.style === 'slim' ? '24px' : config.style === 'bold' ? '48px' : '36px'};
-        width: 100%;
-        border-radius: ${config.fullWidth ? '0' : '8px'};
-        margin: ${config.fullWidth ? '0' : '12px 0'};
-        padding: 0;
-        background: ${bgColor};
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        ${config.interactive ? 'cursor: pointer;' : ''}
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      
-      ${config.interactive ? `
-        .processing-container:not(.completed):hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        }
-        .processing-container:not(.completed):active {
-          transform: translateY(0);
-        }
-        .processing-container.completed {
-          cursor: default;
-        }
-      ` : ''}
-      
-      .processing-fill {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 0%;
-        height: 100%;
-        border-radius: ${config.fullWidth ? '0' : '8px'};
-      }
-      
-      @keyframes fillProgress-${instanceId} {
-        0% { width: 0%; }
-        100% { width: 100%; }
-      }
-      
-      .processing-content {
-        position: relative;
-        z-index: 5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        color: ${theme.content === 'minimal-content' ? textColor : 'white'};
-        font-size: ${config.style === 'slim' ? '12px' : config.style === 'bold' ? '16px' : '14px'};
-        font-weight: ${config.style === 'bold' ? '600' : '500'};
-        letter-spacing: -0.01em;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      }
-      
-      .progress-percentage {
-        margin-left: 8px;
-        font-size: 0.9em;
-        opacity: 0.9;
-      }
-      
-      .bubbles {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      }
-      
-      /* Success state */
-      .success .processing-fill {
-        background: linear-gradient(90deg, ${secondaryColor}, ${secondaryColor.replace(/[0-9a-f]{2}$/i, '57')}) !important;
-        transition: background 0.3s ease;
-      }
-      
-      /* Completion animation */
-      .completion-effect {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: ${config.fullWidth ? '0' : '8px'};
-        pointer-events: none;
-        z-index: 4;
-        opacity: 0;
-      }
-      
-      .completion-effect.active {
-        animation: completionPulse 0.6s ease-out;
-      }
-      
-      @keyframes completionPulse {
-        0% { opacity: 0.5; transform: scale(0.95); }
-        50% { opacity: 0.7; transform: scale(1.02); }
-        100% { opacity: 0; transform: scale(1.05); }
-      }
-      
-      /* Checkmark */
-      .checkmark {
-        display: inline-block;
-        transform: rotate(45deg);
-        height: 12px;
-        width: 6px;
-        border-bottom: 2px solid ${theme.content === 'minimal-content' ? baseColor : 'white'};
-        border-right: 2px solid ${theme.content === 'minimal-content' ? baseColor : 'white'};
-        opacity: 0;
-        margin-left: 4px;
-        animation: checkmarkAnimation 0.5s ease forwards;
-      }
-      
-      @keyframes checkmarkAnimation {
-        0% { opacity: 0; transform: rotate(45deg) scale(0.8); }
-        50% { opacity: 1; transform: rotate(45deg) scale(1.2); }
-        100% { opacity: 1; transform: rotate(45deg) scale(1); }
-      }
-      
-      /* Theme-specific styles */
-      ${theme.styles}
-      
-      /* Hide scroll indicators */
-      [class*="scroll-down"],
-      [class*="scroll-button"] {
-        display: none !important;
-      }
-    `;
-    
-    // Generate HTML
-    animationContainer.innerHTML = `
-      <style>${styleContent}</style>
-
-      <div class="processing-container ${theme.container}" 
-           ${config.interactive ? 'tabindex="0" role="button" aria-label="Click to complete processing"' : ''}>
-        <div class="processing-fill ${theme.fill}">
-          ${theme.elements}
-        </div>
-        <div class="processing-content ${theme.content}">
-          <span class="processing-text">${config.text}</span>
-          ${config.showPercentage ? '<span class="progress-percentage">0%</span>' : ''}
-        </div>
-        <div class="completion-effect"></div>
-      </div>
-    `;
-    
-    // DOM references
-    const container = animationContainer.querySelector('.processing-container');
-    const processingText = animationContainer.querySelector('.processing-text');
-    const percentageElement = animationContainer.querySelector('.progress-percentage');
-    const completionEffect = animationContainer.querySelector('.completion-effect');
-    
-    // Completion state flag to track if animation is done
-    let isCompleted = false;
-    
-    // Update percentage if enabled
-    let animationFrame;
-    let startTime = null;
-    
-    const updatePercentage = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      if (!percentageElement || isCompleted) return;
-      
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(Math.floor((elapsed / actualDuration) * 100), 99);
-      
-      percentageElement.textContent = `${progress}%`;
-      
-      if (progress < 99 && !isCompleted) {
-        animationFrame = requestAnimationFrame(updatePercentage);
-      }
-    };
-    
-    if (config.showPercentage) {
-      animationFrame = requestAnimationFrame(updatePercentage);
-    }
-    
-    // Toggle inputs function
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-          inputContainer.style.transition = "opacity 0.3s ease";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            el.style.transition = "opacity 0.3s ease";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
-            }
-          });
-        });
-      }
-    };
-
-    // Hide scroll indicators
-    const hideScrollIndicators = () => {
-      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
-        .forEach(el => {
-          el.style.display = 'none';
-        });
-    };
-    
-    // Event handler function for click/keyboard
-    const handleInteraction = (event) => {
-      // Prevent executing if already completed
-      if (isCompleted) {
-        event.preventDefault();
-        event.stopPropagation();
-        return false;
-      }
-      
-      completeAnimation(true);
-      playSound('click');
-      return false;
-    };
-    
-    // Add event listeners if interactive
-    if (config.interactive) {
-      container.addEventListener('click', handleInteraction);
-      container.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleInteraction(e);
-        }
-      });
-    }
-    
-    // Completion function
-    const completeAnimation = (userTriggered = false) => {
-      // Set completed state
-      isCompleted = true;
-      container.classList.add('completed');
-      
-      // Clear any timers
-      if (animationContainer.dataset.completionTimer) {
-        clearTimeout(parseInt(animationContainer.dataset.completionTimer));
-      }
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-      
-      // Update UI
-      container.classList.add('success');
-      
-      if (percentageElement) {
-        percentageElement.textContent = '100%';
-      }
-      
-      // Show completion text
-      processingText.textContent = config.completeText;
-      
-      // Add checkmark
-      setTimeout(() => {
-        const checkmark = document.createElement('span');
-        checkmark.className = 'checkmark';
-        processingText.parentNode.appendChild(checkmark);
-      }, 100);
-      
-      // Add completion effect
-      completionEffect.style.background = `radial-gradient(circle, ${hexToRgba(baseColor, 0.2)} 0%, transparent 70%)`;
-      completionEffect.classList.add('active');
-      
-      // Haptic feedback
-      vibrate(userTriggered ? [30] : [50, 50, 80]);
-      
-      // Sound effect
-      playSound('complete');
-      
-      // Cleanup and continue
-      setTimeout(() => {
-        cleanup();
-        window.voiceflow.chat.interact({ 
-          type: "complete",
-          payload: {
-            completed: true,
-            duration: userTriggered ? Date.now() - startTime : config.duration,
-            userTriggered: userTriggered,
-            timestamp: Date.now()
-          }
-        });
-      }, config.completionDelay);
-    };
-    
-    // Initial setup
-    hideScrollIndicators();
-    toggleInputs(true);
-    element.appendChild(animationContainer);
-
-    // Set up cleanup function
-    const cleanup = () => {
-      // Remove event listeners to prevent further clicks
-      if (config.interactive) {
-        container.removeEventListener('click', handleInteraction);
-      }
-      
-      toggleInputs(false);
-      hideScrollIndicators();
-    };
-
-    // Schedule animation completion
-    const completionTimer = setTimeout(() => {
-      completeAnimation();
-    }, actualDuration);
-    
-    // Store timer for cleanup
-    animationContainer.dataset.completionTimer = completionTimer;
-
-    // Return cleanup function
-    return () => {
-      if (animationContainer.dataset.completionTimer) {
-        clearTimeout(parseInt(animationContainer.dataset.completionTimer));
-      }
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-      if (config.interactive) {
-        container.removeEventListener('click', handleInteraction);
-      }
-      cleanup();
-    };
   }
 };
 
@@ -1605,7 +382,7 @@ export const CalendarDatePickerExtension = {
         width: 100%;
         max-width: 300px;
         margin: 0 auto;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        : all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid ${colors.border};
       }
       
@@ -1655,7 +432,7 @@ export const CalendarDatePickerExtension = {
         border-radius: 12px;
         appearance: none;
         cursor: pointer;
-        transition: all 0.2s ease;
+        : all 0.2s ease;
         font-family: 'Inter', system-ui, sans-serif;
       }
       
@@ -1693,7 +470,7 @@ export const CalendarDatePickerExtension = {
         font-size: 14px;
         font-weight: 500;
         color: ${colors.text};
-        transition: all 0.2s ease;
+        : all 0.2s ease;
       }
       
       .date-summary.has-date {
@@ -1797,7 +574,7 @@ export const CalendarDatePickerExtension = {
         z-index: 10;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.2s ease;
+        : opacity 0.2s ease;
       }
       
       .processing-overlay.active {
@@ -1830,7 +607,7 @@ export const CalendarDatePickerExtension = {
         font-weight: 600;
         text-align: center;
         font-family: 'Inter', system-ui, sans-serif;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        : all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
         overflow: hidden;
       }
@@ -1845,14 +622,14 @@ export const CalendarDatePickerExtension = {
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         transform: translate(-50%, -50%) scale(0);
-        transition: transform 0.4s ease-out;
+        : transform 0.4s ease-out;
         pointer-events: none;
       }
       
       .btn:active::after {
         transform: translate(-50%, -50%) scale(2);
         opacity: 0;
-        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        : transform 0.4s ease-out, opacity 0.4s ease-out;
       }
       
       .btn-cancel {
@@ -2213,466 +990,9 @@ export const CalendarDatePickerExtension = {
       }
     });
     
-    // Disable chat input while picker is open
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-          inputContainer.style.transition = "opacity 0.3s ease";
-        }
-      }
-    };
-    
-    // Disable inputs
-    toggleInputs(true);
-    
-    // Return cleanup function
-    return () => {
-      toggleInputs(false);
-    };
+    // Empty cleanup function since we're not disabling inputs here
+    return () => {};
   }
-};
-
-export const DropdownExtension = {
-  name: "DropdownExtension",
-  type: "response",
-  match: ({ trace }) =>
-    trace.type === "ext_dropdown" || trace.payload?.name === "ext_dropdown",
-  render: ({ trace, element }) => {
-    // Configuration options with defaults
-    const config = {
-      options: trace.payload?.options || [],
-      color: trace.payload?.color || "#545857",
-      buttonText: trace.payload?.buttonText || "Submit",
-      placeholder: trace.payload?.placeholder || "Search or select...",
-      maxHeight: trace.payload?.maxHeight || 200,
-      darkMode: trace.payload?.darkMode || false
-    };
-    
-    // Color utilities
-    const hexToRgba = (hex, alpha = 1) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-    
-    // Set color scheme based on dark mode preference
-    const colors = {
-      primary: config.color,
-      primaryLight: hexToRgba(config.color, 0.1),
-      background: config.darkMode ? '#1E293B' : '#FFFFFF',
-      surface: config.darkMode ? '#334155' : '#FFFFFF',
-      inputBg: config.darkMode ? '#293548' : '#FFFFFF',
-      disabledBg: config.darkMode ? '#374151' : '#f5f5f5',
-      text: config.darkMode ? '#F1F5F9' : '#545857',
-      placeholder: config.darkMode ? '#94A3B8' : '#72727a',
-      border: config.darkMode ? '#475569' : 'rgba(84, 88, 87, 0.2)',
-      borderFocus: config.darkMode ? '#64748B' : config.color,
-      hover: config.darkMode ? '#374151' : 'rgba(84, 88, 87, 0.08)',
-      error: '#FF4444'
-    };
-
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? colors.disabledBg : "";
-            }
-          });
-        });
-      }
-    };
-
-    const formContainer = document.createElement("form");
-    formContainer.className = "_1ddzqsn7";
-    formContainer.style.display = "inline-block";
-    formContainer.style.maxWidth = "100%";
-    formContainer.style.width = "auto";
-    const dropdownOptions = config.options;
-
-    // Create a chevron SVG with the custom color
-    const chevronSvg = `
-      <svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='${colors.text}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-        <polyline points='18 15 12 9 6 15'></polyline>
-      </svg>
-    `;
-
-    const chevronDataUrl = `data:image/svg+xml,${encodeURIComponent(chevronSvg)}`;
-
-    formContainer.innerHTML = `
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-      
-      ._1ddzqsn7 {
-        display: inline-block !important;
-        width: auto;
-        max-width: 100%;
-        min-width: 250px;
-      }
-      
-      .dropdown-wrapper {
-        width: 100%;
-        font-family: 'Inter', sans-serif;
-      }
-      
-      .dropdown-extension-container {
-        position: relative;
-        width: 100%;
-        margin-bottom: 8px;
-      }
-      
-      .dropdown-extension-input[type="text"] {
-        width: 100%;
-        padding: 8px 12px;
-        border: 1px solid ${colors.border};
-        border-radius: 6px;
-        background: ${colors.inputBg};
-        color: ${colors.text};
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        letter-spacing: -0.01em;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        margin: 0;
-        box-sizing: border-box;
-      }
-
-      .dropdown-extension-input[type="text"]:focus {
-        outline: none;
-        border-color: ${colors.borderFocus};
-        box-shadow: 0 0 0 2px ${hexToRgba(config.color, 0.1)};
-      }
-
-      .dropdown-extension-input[type="text"]::placeholder {
-        color: ${colors.placeholder};
-        opacity: 0.7;
-      }
-
-      .dropdown-extension-input[type="text"]:disabled {
-        background-color: ${colors.disabledBg};
-        cursor: not-allowed;
-        opacity: 0.7;
-      }
-
-      .dropdown-extension-options {
-        position: absolute;
-        bottom: calc(100% + 4px);
-        left: 0;
-        right: 0;
-        width: 100%;
-        max-height: ${config.maxHeight}px;
-        overflow-y: auto;
-        background: ${colors.surface};
-        border-radius: 6px;
-        border: 1px solid ${colors.border};
-        box-shadow: 0 -2px 8px rgba(0, 0, 0, ${config.darkMode ? '0.25' : '0.08'});
-        display: none;
-        z-index: 1000;
-        scrollbar-width: thin;
-        scrollbar-color: ${colors.placeholder} transparent;
-        box-sizing: border-box;
-      }
-
-      .dropdown-extension-options div {
-        padding: 8px 12px;
-        font-size: 13px;
-        color: ${colors.text};
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .dropdown-extension-options div:hover,
-      .dropdown-extension-options div.highlighted {
-        background-color: ${colors.hover};
-      }
-
-      .dropdown-extension-submit {
-        width: 100%;
-        padding: 8px 16px;
-        background-color: ${colors.primary};
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        opacity: 0.5;
-        pointer-events: none;
-        transition: all 0.2s ease;
-        margin: 0;
-        box-sizing: border-box;
-      }
-
-      .dropdown-extension-submit.enabled {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .dropdown-extension-submit.enabled:hover {
-        background-color: ${hexToRgba(colors.primary, 0.85)};
-      }
-
-      .dropdown-extension-invalid {
-        border-color: ${colors.error} !important;
-      }
-
-      .dropdown-extension-input[type="text"] {
-        background-image: url("${chevronDataUrl}");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        padding-right: 32px;
-      }
-      
-      @media screen and (max-width: 480px) {
-        ._1ddzqsn7 {
-          width: 100%;
-          min-width: 0;
-        }
-      }
-    </style>
-  
-    <div class="dropdown-wrapper">
-      <div class="dropdown-extension-container">
-        <input 
-          type="text" 
-          class="dropdown-extension-input dropdown-extension-search" 
-          placeholder="${config.placeholder}" 
-          autocomplete="off"
-          spellcheck="false"
-        >
-        <div class="dropdown-extension-options">
-          ${dropdownOptions
-            .map((option) => `<div data-value="${option}">${option}</div>`)
-            .join("")}
-        </div>
-        <input 
-          type="hidden" 
-          class="dropdown-extension-input dropdown-extension-hidden" 
-          name="dropdown" 
-          required
-        >
-      </div>
-      <button type="submit" class="dropdown-extension-submit">${config.buttonText}</button>
-    </div>
-  `;  
-
-    const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
-    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
-    const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
-    const submitButton = formContainer.querySelector(".dropdown-extension-submit");
-    let highlightedIndex = -1;
-
-    const enableSubmitButton = () => {
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      submitButton.classList.toggle("enabled", isValidOption);
-    };
-
-    const showDropup = (e) => {
-      if (e) e.stopPropagation();
-      dropdownOptionsDiv.style.display = "block";
-    };
-
-    const hideDropup = () => {
-      dropdownOptionsDiv.style.display = "none";
-      highlightedIndex = -1;
-      updateHighlight();
-    };
-
-    const updateHighlight = () => {
-      const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
-      options.forEach((option, index) => {
-        option.classList.toggle("highlighted", index === highlightedIndex);
-      });
-    };
-
-    const handleOptionSelection = (selectedValue) => {
-      dropdownSearch.value = selectedValue;
-      hiddenDropdownInput.value = selectedValue;
-      hideDropup();
-      enableSubmitButton();
-    };
-
-    const handleInput = (e) => {
-      e.stopPropagation();
-      const filter = dropdownSearch.value.toLowerCase();
-      const options = dropdownOptionsDiv.querySelectorAll("div");
-      
-      options.forEach((option) => {
-        const text = option.textContent.toLowerCase();
-        option.style.display = text.includes(filter) ? "" : "none";
-      });
-      
-      showDropup();
-      hiddenDropdownInput.value = "";
-      enableSubmitButton();
-      highlightedIndex = -1;
-      updateHighlight();
-    };
-
-    const handleKeyNavigation = (e) => {
-      const visibleOptions = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
-      
-      switch(e.key) {
-        case "ArrowDown":
-          e.preventDefault();
-          if (!dropdownOptionsDiv.style.display === "block") {
-            showDropup();
-          } else {
-            highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
-            updateHighlight();
-          }
-          break;
-        case "ArrowUp":
-          e.preventDefault();
-          if (highlightedIndex > -1) {
-            highlightedIndex = Math.max(highlightedIndex - 1, 0);
-            updateHighlight();
-          }
-          break;
-        case "Enter":
-          e.preventDefault();
-          if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
-            const selectedValue = visibleOptions[highlightedIndex].getAttribute("data-value");
-            handleOptionSelection(selectedValue);
-          }
-          break;
-        case "Escape":
-          hideDropup();
-          dropdownSearch.blur();
-          break;
-      }
-    };
-
-    // Add event listeners
-    dropdownSearch.addEventListener("focus", showDropup);
-    dropdownSearch.addEventListener("click", showDropup);
-    dropdownSearch.addEventListener("input", handleInput);
-    dropdownSearch.addEventListener("keydown", handleKeyNavigation);
-
-    dropdownOptionsDiv.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (e.target.tagName === "DIV") {
-        const selectedValue = e.target.getAttribute("data-value");
-        handleOptionSelection(selectedValue);
-      }
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
-        hideDropup();
-      }
-    });
-
-    formContainer.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      if (!isValidOption) {
-        dropdownSearch.classList.add("dropdown-extension-invalid");
-        return;
-      }
-
-      // Disable input and prevent changes after submission
-      dropdownSearch.disabled = true;
-      dropdownSearch.style.backgroundColor = colors.disabledBg;
-      dropdownSearch.style.cursor = "not-allowed";
-      dropdownSearch.style.opacity = "0.7";
-      
-      // Remove all event listeners to prevent any interaction
-      dropdownSearch.removeEventListener("focus", showDropup);
-      dropdownSearch.removeEventListener("click", showDropup);
-      dropdownSearch.removeEventListener("input", handleInput);
-      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
-      
-      // Disable submit button
-      submitButton.disabled = true;
-      
-      // Re-enable Voiceflow's inputs
-      toggleInputs(false);
-      
-      // Remove submit button with a slight delay
-      setTimeout(() => {
-        submitButton.style.opacity = "0";
-        submitButton.remove();
-      }, 50);
-
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { dropdown: hiddenDropdownInput.value },
-      });
-    });
-
-    const cleanup = () => {
-      document.removeEventListener("click", hideDropup);
-      dropdownSearch.removeEventListener("focus", showDropup);
-      dropdownSearch.removeEventListener("click", showDropup);
-      dropdownSearch.removeEventListener("input", handleInput);
-      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
-      
-      // Make sure inputs are re-enabled when component is removed
-      toggleInputs(false);
-    };
-
-    // Adjust size when the window is resized
-    const resizeObserver = new ResizeObserver(() => {
-      const parentWidth = element.offsetWidth;
-      if (parentWidth > 0) {
-        // Allow the form to size properly but not bigger than container
-        formContainer.style.maxWidth = `${parentWidth}px`;
-      }
-    });
-    
-    resizeObserver.observe(element);
-
-    element.appendChild(formContainer);
-    
-    // Disable inputs when component is mounted
-    toggleInputs(true);
-
-    return () => {
-      cleanup();
-      resizeObserver.disconnect();
-    };
-  },
 };
 
 export const MultiSelectExtension = {
@@ -2690,7 +1010,10 @@ export const MultiSelectExtension = {
       title: trace.payload?.title || "Select your options",
       submitText: trace.payload?.submitText || "Submit",
       cancelText: trace.payload?.cancelText || "Cancel",
-      darkMode: trace.payload?.darkMode || false
+      darkMode: trace.payload?.darkMode || false,
+      successMessage: trace.payload?.successMessage || "Your selection has been saved",
+      slantTitle: trace.payload?.slantTitle || false,
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10
     };
 
     // Color utilities
@@ -2727,49 +1050,6 @@ export const MultiSelectExtension = {
       error: '#FF4444'
     };
 
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
-            }
-          });
-        });
-      }
-    };
-
     const multiSelectContainer = document.createElement("form");
     multiSelectContainer.className = "_1ddzqsn7";
 
@@ -2784,13 +1064,25 @@ export const MultiSelectExtension = {
         .multi-select-container {
           font-family: 'Inter', sans-serif;
           width: 100%;
+          max-width: 450px;
+          margin: 0 auto;
         }
         
         .multi-select-title {
-          font-size: 14px;
+          font-size: 15px;
           color: ${colors.textSecondary};
-          margin-bottom: 12px;
+          margin-bottom: 14px;
           font-weight: 500;
+          ${config.slantTitle ? `
+            font-style: italic;
+            transform: skewX(${config.titleSkewDegree}deg);
+            display: inline-block;
+            background: ${hexToRgba(config.color, 0.08)};
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: ${config.color};
+            margin-left: -4px;
+          ` : ''}
         }
         
         .multi-select-subtitle {
@@ -2814,8 +1106,10 @@ export const MultiSelectExtension = {
           border: 1px solid ${colors.border};
           border-radius: 8px;
           cursor: pointer;
-          transition: all 0.2s ease;
+          : all 0.2s ease;
           user-select: none;
+          opacity: 0;
+          animation: slideIn 0.3s forwards;
         }
         
         .option-label:hover {
@@ -2833,7 +1127,7 @@ export const MultiSelectExtension = {
           margin-right: 12px;
           border: 2px solid ${colors.textSecondary};
           border-radius: 4px;
-          transition: all 0.2s ease;
+          : all 0.2s ease;
           flex-shrink: 0;
         }
         
@@ -2872,6 +1166,10 @@ export const MultiSelectExtension = {
           margin: -8px 0 12px;
           display: none;
           animation: slideIn 0.3s ease;
+          padding: 10px;
+          background: ${hexToRgba(colors.error, 0.1)};
+          border-radius: 6px;
+          text-align: center;
         }
         
         .button-group {
@@ -2888,22 +1186,29 @@ export const MultiSelectExtension = {
           font-size: 14px;
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.2s ease;
+          : all 0.2s ease;
         }
         
         .submit-button {
           background: ${colors.primary};
           color: white;
+          box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
         }
         
         .submit-button:not(:disabled):hover {
           background: ${colors.primaryHover};
           transform: translateY(-1px);
+          box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
+        }
+        
+        .submit-button:not(:disabled):active {
+          transform: translateY(0);
         }
         
         .submit-button:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+          box-shadow: none;
         }
         
         .cancel-button {
@@ -2917,7 +1222,7 @@ export const MultiSelectExtension = {
         }
         
         @keyframes slideIn {
-          from { opacity: 0; transform: translateY(-10px); }
+          from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
         
@@ -2929,6 +1234,61 @@ export const MultiSelectExtension = {
         
         .shake {
           animation: shake 0.3s ease;
+        }
+        
+        /* Success state styling */
+        .success-message {
+          text-align: center;
+          padding: 16px;
+          margin-top: 16px;
+          background: ${hexToRgba(colors.primary, 0.1)};
+          border-radius: 8px;
+          font-size: 14px;
+          color: ${colors.text};
+          border: 1px solid ${hexToRgba(colors.primary, 0.2)};
+          display: none;
+          animation: fadeIn 0.5s ease;
+        }
+        
+        .success-icon {
+          display: block;
+          width: 36px;
+          height: 36px;
+          margin: 0 auto 12px;
+          background: ${colors.primary};
+          border-radius: 50%;
+          position: relative;
+          animation: scaleIn 0.4s cubic-bezier(0.18, 1.25, 0.6, 1.25) forwards;
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        
+        .success-icon:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 16px;
+          height: 8px;
+          border: solid white;
+          border-width: 0 0 2px 2px;
+          transform: translate(-50%, -60%) rotate(-45deg);
+        }
+        
+        .success-text {
+          display: block;
+          animation: fadeIn 0.5s ease forwards 0.2s;
+          opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.5); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
       </style>
       
@@ -2951,6 +1311,10 @@ export const MultiSelectExtension = {
           <button type="submit" class="submit-button" disabled>${config.submitText}</button>
           <button type="button" class="cancel-button">${config.cancelText}</button>
         </div>
+        <div class="success-message">
+          <div class="success-icon"></div>
+          <span class="success-text">${config.successMessage}</span>
+        </div>
       </div>
     `;
 
@@ -2959,6 +1323,7 @@ export const MultiSelectExtension = {
     const submitButton = multiSelectContainer.querySelector(".submit-button");
     const cancelButton = multiSelectContainer.querySelector(".cancel-button");
     const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
+    const successMessage = multiSelectContainer.querySelector(".success-message");
 
     const updateSubmitButton = () => {
       if (isSubmitted) return;
@@ -2973,6 +1338,24 @@ export const MultiSelectExtension = {
       setTimeout(() => {
         multiSelectContainer.querySelector('.multi-select-options').classList.remove('shake');
       }, 300);
+    };
+    
+    const disableForm = () => {
+      // Disable all inputs in the component
+      checkboxes.forEach(checkbox => {
+        checkbox.disabled = true;
+        checkbox.parentElement.style.opacity = "0.7";
+        checkbox.parentElement.style.cursor = "not-allowed";
+      });
+      
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
+    };
+    
+    const showSuccess = () => {
+      successMessage.style.display = "block";
     };
 
     checkboxes.forEach(checkbox => {
@@ -3001,45 +1384,22 @@ export const MultiSelectExtension = {
       ).map(input => input.value);
 
       isSubmitted = true;
+      disableForm();
+      showSuccess();
       
-      // Disable all inputs in the component
-      checkboxes.forEach(checkbox => {
-        checkbox.disabled = true;
-        checkbox.parentElement.style.opacity = "0.7";
-        checkbox.parentElement.style.cursor = "not-allowed";
-      });
-      
-      submitButton.disabled = true;
-      submitButton.style.opacity = "0.5";
-      cancelButton.disabled = true;
-      cancelButton.style.opacity = "0.5";
-      
-      // Re-enable chat inputs
-      toggleInputs(false);
-
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { options: selectedOptions }
-      });
+      // Short delay before sending the interaction to allow the success state to be visible
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { options: selectedOptions }
+        });
+      }, 1200);
     });
 
     cancelButton.addEventListener("click", () => {
       if (isSubmitted) return;
       
-      // Disable component inputs
-      checkboxes.forEach(checkbox => {
-        checkbox.disabled = true;
-        checkbox.parentElement.style.opacity = "0.7";
-        checkbox.parentElement.style.cursor = "not-allowed";
-      });
-      
-      submitButton.disabled = true;
-      submitButton.style.opacity = "0.5";
-      cancelButton.disabled = true;
-      cancelButton.style.opacity = "0.5";
-      
-      // Re-enable chat inputs
-      toggleInputs(false);
+      disableForm();
       
       window.voiceflow.chat.interact({
         type: "cancel",
@@ -3047,21 +1407,805 @@ export const MultiSelectExtension = {
       });
     });
 
-    // Cleanup function to ensure inputs are re-enabled
-    const cleanup = () => {
-      // Make sure inputs are re-enabled when component is removed
-      toggleInputs(false);
-    };
-
     element.innerHTML = '';
     element.appendChild(multiSelectContainer);
     
-    // Disable inputs when component is mounted
+    // No cleanup needed since we're using separate extensions for input control
+    return () => {};
+  },
+};
+
+export const DisableInputsExtension = {
+  name: "DisableInputs",
+  type: "effect",
+  match: ({ trace }) => 
+    trace.type === "ext_disableInputs" || 
+    trace.payload?.name === "ext_disableInputs",
+  effect: async ({ trace }) => {
+    try {
+      // Configuration option
+      const hideCompletely = trace.payload?.hideCompletely || false;
+      
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) {
+        window.voiceflow.chat.interact({ type: "complete" });
+        return;
+      }
+      
+      // Get the input container
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      
+      if (inputContainer) {
+        if (hideCompletely) {
+          // Completely hide the input container
+          inputContainer.style.display = "none";
+        } else {
+          // Just disable it
+          inputContainer.style.opacity = "0.5";
+          inputContainer.style.pointerEvents = "none";
+          inputContainer.style. = "opacity 0.3s ease";
+        }
+      }
+
+      // Disable all interactive elements
+      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
+      elements.forEach(el => {
+        el.disabled = true;
+        
+        if (!hideCompletely) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.5";
+          
+          if (el.tagName.toLowerCase() === "textarea") {
+            el.style.backgroundColor = "#f5f5f5";
+          }
+        }
+      });
+      
+      // Handle voice input overlay
+      const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
+      if (voiceOverlay) {
+        voiceOverlay.style.display = "none";
+      }
+      
+      window.voiceflow.chat.interact({ type: "complete" });
+      
+    } catch (error) {
+      console.error('DisableInputs Extension Error:', error);
+      window.voiceflow.chat.interact({ type: "complete" });
+    }
+  }
+};
+
+export const EnableInputsExtension = {
+  name: "EnableInputs",
+  type: "effect",
+  match: ({ trace }) => 
+    trace.type === "ext_enableInputs" || 
+    trace.payload?.name === "ext_enableInputs",
+  effect: async ({ trace }) => {
+    try {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) {
+        window.voiceflow.chat.interact({ type: "complete" });
+        return;
+      }
+      
+      // Get the input container and make it visible again
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.display = ""; // Remove the display:none if it was set
+        inputContainer.style.opacity = "1";
+        inputContainer.style.pointerEvents = "auto";
+        inputContainer.style. = "opacity 0.3s ease";
+      }
+
+      // Enable all interactive elements
+      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
+      elements.forEach(el => {
+        el.disabled = false;
+        el.style.pointerEvents = "auto";
+        el.style.opacity = "1";
+        
+        if (el.tagName.toLowerCase() === "textarea") {
+          el.style.backgroundColor = "";
+        }
+      });
+      
+      window.voiceflow.chat.interact({ type: "complete" });
+      
+    } catch (error) {
+      console.error('EnableInputs Extension Error:', error);
+      window.voiceflow.chat.interact({ type: "complete" });
+    }
+  }
+};
+
+export const TransitionAnimationExtension = {
+  name: "TransitionAnimation",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_transitionAnimation" || 
+    trace.payload?.name === "ext_transitionAnimation",
+  render: ({ trace, element }) => {
+    // Extract and validate all parameters with enhanced defaults
+    const config = {
+      duration: parseInt(trace.payload?.duration) || 2000,
+      completionDelay: parseInt(trace.payload?.completionDelay) || 800,
+      text: trace.payload?.text || "Processing",
+      completeText: trace.payload?.completeText || "Complete",
+      primaryColor: trace.payload?.color || "#34D399",
+      theme: trace.payload?.theme || "liquid",
+      style: trace.payload?.style || "standard",
+      showPercentage: trace.payload?.showPercentage !== false,
+      interactive: trace.payload?.interactive || false,
+      sound: trace.payload?.sound || false,
+      vibration: trace.payload?.vibration || false,
+      darkMode: trace.payload?.darkMode || false,
+      fullWidth: trace.payload?.fullWidth !== false
+    };
+    
+    // Calculate actual duration and create unique ID
+    const actualDuration = config.duration - config.completionDelay;
+    const instanceId = `transition-anim-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    const darkenColor = (hex) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      
+      const darkenComponent = (c) => Math.max(0, c - 20).toString(16).padStart(2, '0');
+      
+      return `#${darkenComponent(r)}${darkenComponent(g)}${darkenComponent(b)}`;
+    };
+    
+    // Setup colors and theme-specific elements
+    const baseColor = config.primaryColor;
+    const secondaryColor = darkenColor(baseColor);
+    const bgColor = config.darkMode ? hexToRgba('#1F2937', 0.8) : hexToRgba(baseColor, 0.1);
+    const textColor = config.darkMode ? '#FFFFFF' : '#303235';
+    
+    // Theme configurations
+    const themes = {
+      liquid: {
+        container: 'liquid-container',
+        fill: 'liquid-fill',
+        content: 'liquid-content',
+        elements: `
+          <div class="wave"></div>
+          <div class="wave" style="animation-delay: -2s; animation-duration: 7s;"></div>
+          <div class="bubbles">
+            ${Array.from({length: 12}, (_, i) => `
+              <div class="bubble" style="
+                left: ${Math.random() * 100}%;
+                width: ${4 + Math.random() * 4}px;
+                height: ${4 + Math.random() * 4}px;
+                animation-delay: ${Math.random() * 4}s;
+              "></div>
+            `).join('')}
+          </div>
+        `,
+        styles: `
+          .liquid-fill {
+            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
+            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            overflow: hidden;
+          }
+          .liquid-fill::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: 0; width: 100%; height: 200%;
+            background: repeating-linear-gradient(
+              45deg, transparent, transparent 10px,
+              rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px
+            );
+            animation: waterPattern 20s linear infinite;
+          }
+          .wave {
+            position: absolute;
+            top: -100%; right: 0; width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+            border-radius: 45%;
+            animation: rotate 10s linear infinite;
+          }
+          .bubble {
+            position: absolute;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            animation: bubble 4s ease-in infinite;
+          }
+          @keyframes waterPattern {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-100px) translateY(-100px); }
+          }
+          @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes bubble {
+            0% { transform: translateY(100%) scale(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100%) scale(1); opacity: 0; }
+          }
+        `
+      },
+      
+      pulse: {
+        container: 'pulse-container',
+        fill: 'pulse-fill',
+        content: 'pulse-content',
+        elements: `
+          <div class="pulse-rings">
+            ${Array.from({length: 3}, (_, i) => `
+              <div class="pulse-ring" style="animation-delay: ${i * 800}ms;"></div>
+            `).join('')}
+          </div>
+        `,
+        styles: `
+          .pulse-fill {
+            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
+            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          }
+          .pulse-rings {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+          }
+          .pulse-ring {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            width: 40px; height: 40px;
+            left: calc(100% * 0.2);
+            top: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulseRing 2.5s cubic-bezier(0.1, 0.25, 0.1, 1) infinite;
+          }
+          @keyframes pulseRing {
+            0% { width: 5px; height: 5px; opacity: 0.8; }
+            100% { width: 50px; height: 50px; opacity: 0; }
+          }
+        `
+      },
+      
+      blocks: {
+        container: 'blocks-container',
+        fill: 'blocks-fill',
+        content: 'blocks-content',
+        elements: `
+          <div class="blocks-grid">
+            ${Array.from({length: 12}, (_, i) => `
+              <div class="block" style="animation-delay: ${i * 100}ms;"></div>
+            `).join('')}
+          </div>
+        `,
+        styles: `
+          .blocks-fill {
+            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
+            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          }
+          .blocks-grid {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            padding: 4px;
+            box-sizing: border-box;
+            gap: 3px;
+          }
+          .block {
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            animation: blockPulse 1.5s ease-in-out infinite;
+          }
+          @keyframes blockPulse {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.3; transform: scale(0.8); }
+          }
+        `
+      },
+      
+      glow: {
+        container: 'glow-container',
+        fill: 'glow-fill',
+        content: 'glow-content',
+        elements: `
+          <div class="glow-particles">
+            ${Array.from({length: 15}, (_, i) => `
+              <div class="glow-particle" style="
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                width: ${4 + Math.random() * 6}px;
+                height: ${4 + Math.random() * 6}px;
+                animation: floatParticle ${5 + Math.random() * 5}s linear infinite;
+                animation-delay: ${Math.random() * 5}s;
+              "></div>
+            `).join('')}
+          </div>
+        `,
+        styles: `
+          .glow-container {
+            overflow: visible;
+          }
+          .glow-fill {
+            background: linear-gradient(90deg, ${baseColor}, ${secondaryColor});
+            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            box-shadow: 0 0 15px ${hexToRgba(baseColor, 0.6)};
+          }
+          .glow-particles {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+          }
+          .glow-particle {
+            position: absolute;
+            background: ${hexToRgba(baseColor, 0.6)};
+            border-radius: 50%;
+            filter: blur(1px);
+          }
+          @keyframes floatParticle {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(10px, 10px); }
+            50% { transform: translate(0, 20px); }
+            75% { transform: translate(-10px, 10px); }
+            100% { transform: translate(0, 0); }
+          }
+        `
+      },
+      
+      minimal: {
+        container: 'minimal-container',
+        fill: 'minimal-fill',
+        content: 'minimal-content',
+        elements: ``,
+        styles: `
+          .minimal-container {
+            height: 8px;
+            background: ${config.darkMode ? hexToRgba('#ffffff', 0.1) : hexToRgba('#000000', 0.05)};
+          }
+          .minimal-fill {
+            background: ${baseColor};
+            animation: fillProgress-${instanceId} ${actualDuration}ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          }
+          .minimal-content {
+            position: absolute;
+            right: 0;
+            top: -24px;
+            font-size: 12px;
+          }
+        `
+      }
+    };
+    
+    // Select theme
+    const theme = themes[config.theme] || themes.liquid;
+    
+    // Sound effect function
+    const playSound = (type) => {
+      if (!config.sound) return;
+      
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.value = type === 'complete' ? 830 : 680;
+        gainNode.gain.value = 0.1;
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + (type === 'complete' ? 0.1 : 0.04));
+        
+        setTimeout(() => {
+          oscillator.stop();
+          ctx.close();
+        }, type === 'complete' ? 100 : 40);
+      } catch (e) {
+        console.warn('Web Audio API not supported');
+      }
+    };
+    
+    // Vibration function
+    const vibrate = (pattern) => {
+      if (config.vibration && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(pattern);
+        } catch (e) {
+          console.warn('Vibration API not supported');
+        }
+      }
+    };
+    
+    // Create animation container
+    const animationContainer = document.createElement("div");
+    animationContainer.id = instanceId;
+    animationContainer.className = "_1ddzqsn7";
+    
+    // Create style tag with all needed styles
+    const styleContent = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+      
+      /* Fix for container width */
+      ._1ddzqsn7 {
+        display: block !important;
+        width: 100% !important;
+      }
+      
+      /* Base styles */
+      #${instanceId} {
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: none;
+        font-family: 'Inter', system-ui, sans-serif;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .processing-container {
+        position: relative;
+        height: ${config.style === 'slim' ? '24px' : config.style === 'bold' ? '48px' : '36px'};
+        width: 100%;
+        border-radius: ${config.fullWidth ? '0' : '8px'};
+        margin: ${config.fullWidth ? '0' : '12px 0'};
+        padding: 0;
+        background: ${bgColor};
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        ${config.interactive ? 'cursor: pointer;' : ''}
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      
+      ${config.interactive ? `
+        .processing-container:not(.completed):hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+        .processing-container:not(.completed):active {
+          transform: translateY(0);
+        }
+        .processing-container.completed {
+          cursor: default;
+        }
+      ` : ''}
+      
+      .processing-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 100%;
+        border-radius: ${config.fullWidth ? '0' : '8px'};
+      }
+      
+      @keyframes fillProgress-${instanceId} {
+        0% { width: 0%; }
+        100% { width: 100%; }
+      }
+      
+      .processing-content {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: ${theme.content === 'minimal-content' ? textColor : 'white'};
+        font-size: ${config.style === 'slim' ? '12px' : config.style === 'bold' ? '16px' : '14px'};
+        font-weight: ${config.style === 'bold' ? '600' : '500'};
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      }
+      
+      .progress-percentage {
+        margin-left: 8px;
+        font-size: 0.9em;
+        opacity: 0.9;
+      }
+      
+      .bubbles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      
+      /* Success state */
+      .success .processing-fill {
+        background: linear-gradient(90deg, ${secondaryColor}, ${secondaryColor.replace(/[0-9a-f]{2}$/i, '57')}) !important;
+        transition: background 0.3s ease;
+      }
+      
+      /* Completion animation */
+      .completion-effect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: ${config.fullWidth ? '0' : '8px'};
+        pointer-events: none;
+        z-index: 4;
+        opacity: 0;
+      }
+      
+      .completion-effect.active {
+        animation: completionPulse 0.6s ease-out;
+      }
+      
+      @keyframes completionPulse {
+        0% { opacity: 0.5; transform: scale(0.95); }
+        50% { opacity: 0.7; transform: scale(1.02); }
+        100% { opacity: 0; transform: scale(1.05); }
+      }
+      
+      /* Checkmark */
+      .checkmark {
+        display: inline-block;
+        transform: rotate(45deg);
+        height: 12px;
+        width: 6px;
+        border-bottom: 2px solid ${theme.content === 'minimal-content' ? baseColor : 'white'};
+        border-right: 2px solid ${theme.content === 'minimal-content' ? baseColor : 'white'};
+        opacity: 0;
+        margin-left: 4px;
+        animation: checkmarkAnimation 0.5s ease forwards;
+      }
+      
+      @keyframes checkmarkAnimation {
+        0% { opacity: 0; transform: rotate(45deg) scale(0.8); }
+        50% { opacity: 1; transform: rotate(45deg) scale(1.2); }
+        100% { opacity: 1; transform: rotate(45deg) scale(1); }
+      }
+      
+      /* Theme-specific styles */
+      ${theme.styles}
+      
+      /* Hide scroll indicators */
+      [class*="scroll-down"],
+      [class*="scroll-button"] {
+        display: none !important;
+      }
+    `;
+    
+    // Generate HTML
+    animationContainer.innerHTML = `
+      <style>${styleContent}</style>
+
+      <div class="processing-container ${theme.container}" 
+           ${config.interactive ? 'tabindex="0" role="button" aria-label="Click to complete processing"' : ''}>
+        <div class="processing-fill ${theme.fill}">
+          ${theme.elements}
+        </div>
+        <div class="processing-content ${theme.content}">
+          <span class="processing-text">${config.text}</span>
+          ${config.showPercentage ? '<span class="progress-percentage">0%</span>' : ''}
+        </div>
+        <div class="completion-effect"></div>
+      </div>
+    `;
+    
+    // DOM references
+    const container = animationContainer.querySelector('.processing-container');
+    const processingText = animationContainer.querySelector('.processing-text');
+    const percentageElement = animationContainer.querySelector('.progress-percentage');
+    const completionEffect = animationContainer.querySelector('.completion-effect');
+    
+    // Completion state flag to track if animation is done
+    let isCompleted = false;
+    
+    // Update percentage if enabled
+    let animationFrame;
+    let startTime = null;
+    
+    const updatePercentage = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      if (!percentageElement || isCompleted) return;
+      
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(Math.floor((elapsed / actualDuration) * 100), 99);
+      
+      percentageElement.textContent = `${progress}%`;
+      
+      if (progress < 99 && !isCompleted) {
+        animationFrame = requestAnimationFrame(updatePercentage);
+      }
+    };
+    
+    if (config.showPercentage) {
+      animationFrame = requestAnimationFrame(updatePercentage);
+    }
+    
+    // Improved toggleInputs function that preserves scrolling
+    const toggleInputs = (disable) => {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) return;
+      
+      // FIRST: Ensure message container remains scrollable
+      const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
+      if (messageContainer) {
+        // Always keep messages scrollable
+        messageContainer.style.pointerEvents = "auto";
+        messageContainer.style.overflow = "auto"; 
+        messageContainer.style.touchAction = "auto"; // Important for mobile
+      }
+      
+      // Also ensure any parent scrollable containers remain functional
+      const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
+      scrollContainers.forEach(container => {
+        if (container) {
+          container.style.pointerEvents = "auto";
+          container.style.overflow = "auto";
+          container.style.touchAction = "auto";
+        }
+      });
+      
+      // Only disable the input controls
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.opacity = disable ? "0.5" : "1";
+        inputContainer.style.pointerEvents = disable ? "none" : "auto";
+        inputContainer.style.transition = "opacity 0.3s ease";
+      }
+
+      // Disable specific input elements
+      const elements = {
+        textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
+        buttons: chatDiv.shadowRoot.querySelectorAll("button"),
+        inputs: chatDiv.shadowRoot.querySelectorAll("input")
+      };
+
+      Object.values(elements).forEach(elementList => {
+        elementList.forEach(el => {
+          if (inputContainer && inputContainer.contains(el)) {
+            el.disabled = disable;
+            el.style.pointerEvents = disable ? "none" : "auto";
+            el.style.opacity = disable ? "0.5" : "1";
+            el.style.transition = "opacity 0.3s ease";
+          }
+        });
+      });
+    };
+
+    // Hide scroll indicators
+    const hideScrollIndicators = () => {
+      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+        .forEach(el => {
+          el.style.display = 'none';
+        });
+    };
+    
+    // Event handler function for click/keyboard
+    const handleInteraction = (event) => {
+      // Prevent executing if already completed
+      if (isCompleted) {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      }
+      
+      completeAnimation(true);
+      playSound('click');
+      return false;
+    };
+    
+    // Add event listeners if interactive
+    if (config.interactive) {
+      container.addEventListener('click', handleInteraction);
+      container.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleInteraction(e);
+        }
+      });
+    }
+    
+    // Completion function
+    const completeAnimation = (userTriggered = false) => {
+      // Set completed state
+      isCompleted = true;
+      container.classList.add('completed');
+      
+      // Clear any timers
+      if (animationContainer.dataset.completionTimer) {
+        clearTimeout(parseInt(animationContainer.dataset.completionTimer));
+      }
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+      
+      // Update UI
+      container.classList.add('success');
+      
+      if (percentageElement) {
+        percentageElement.textContent = '100%';
+      }
+      
+      // Show completion text
+      processingText.textContent = config.completeText;
+      
+      // Add checkmark
+      setTimeout(() => {
+        const checkmark = document.createElement('span');
+        checkmark.className = 'checkmark';
+        processingText.parentNode.appendChild(checkmark);
+      }, 100);
+      
+      // Add completion effect
+      completionEffect.style.background = `radial-gradient(circle, ${hexToRgba(baseColor, 0.2)} 0%, transparent 70%)`;
+      completionEffect.classList.add('active');
+      
+      // Haptic feedback
+      vibrate(userTriggered ? [30] : [50, 50, 80]);
+      
+      // Sound effect
+      playSound('complete');
+      
+      // Cleanup and continue
+      setTimeout(() => {
+        cleanup();
+        window.voiceflow.chat.interact({ 
+          type: "complete",
+          payload: {
+            completed: true,
+            duration: userTriggered ? Date.now() - startTime : config.duration,
+            userTriggered: userTriggered,
+            timestamp: Date.now()
+          }
+        });
+      }, config.completionDelay);
+    };
+    
+    // Initial setup
+    hideScrollIndicators();
     toggleInputs(true);
+    element.appendChild(animationContainer);
+
+    // Set up cleanup function
+    const cleanup = () => {
+      // Remove event listeners to prevent further clicks
+      if (config.interactive) {
+        container.removeEventListener('click', handleInteraction);
+      }
+      
+      toggleInputs(false);
+      hideScrollIndicators();
+    };
+
+    // Schedule animation completion
+    const completionTimer = setTimeout(() => {
+      completeAnimation();
+    }, actualDuration);
+    
+    // Store timer for cleanup
+    animationContainer.dataset.completionTimer = completionTimer;
 
     // Return cleanup function
-    return cleanup;
-  },
+    return () => {
+      if (animationContainer.dataset.completionTimer) {
+        clearTimeout(parseInt(animationContainer.dataset.completionTimer));
+      }
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+      if (config.interactive) {
+        container.removeEventListener('click', handleInteraction);
+      }
+      cleanup();
+    };
+  }
 };
 
 export const RankOptionsExtension = {
@@ -3074,10 +2218,12 @@ export const RankOptionsExtension = {
     const config = {
       options: trace.payload?.options || [],
       color: trace.payload?.color || "#545857",
-      title: trace.payload?.title || "Drag and drop to rank in order of preference",
+      title: trace.payload?.title || "Rank these items in order of importance",
       submitText: trace.payload?.submitText || "Submit",
       submitMessage: trace.payload?.submitMessage || "Rankings submitted",
-      darkMode: trace.payload?.darkMode || false
+      darkMode: trace.payload?.darkMode || false,
+      slantTitle: trace.payload?.slantTitle || false, // New option for slanted title
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10 // Control skew angle
     };
     
     // Color utilities
@@ -3096,51 +2242,9 @@ export const RankOptionsExtension = {
       surface: config.darkMode ? "#334155" : "#FFFFFF",
       border: config.darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
       secondaryText: config.darkMode ? "#94A3B8" : "#72727a",
-      buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : "#72727a",
-      shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)"
-    };
-
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
-            }
-          });
-        });
-      }
+      buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : hexToRgba(config.color, 0.9),
+      shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)",
+      accent: hexToRgba(config.color, 0.15)
     };
 
     // Hide any scroll indicators that might be present
@@ -3153,27 +2257,40 @@ export const RankOptionsExtension = {
 
     const createForm = () => {
       const formContainer = document.createElement("form");
-      formContainer.className = "_1ddzqsn7";
+      formContainer.className = "rank-options-form";
 
       formContainer.innerHTML = `
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
           
-          ._1ddzqsn7 {
+          .rank-options-form {
             display: block;
+            font-family: 'Inter', sans-serif;
+            max-width: 450px;
+            margin: 0 auto;
           }
           
           .rank-options-container {
-            font-family: 'Inter', sans-serif;
             padding: 0;
             width: 100%;
           }
           
           .rank-title {
-            font-size: 14px;
-            margin-bottom: 12px;
+            font-size: 15px;
+            margin-bottom: 16px;
             color: ${colors.secondaryText};
             font-weight: 500;
+            user-select: none;
+            ${config.slantTitle ? `
+              font-style: italic;
+              transform: skewX(${config.titleSkewDegree}deg);
+              display: inline-block;
+              background: ${hexToRgba(config.color, 0.08)};
+              padding: 6px 12px;
+              border-radius: 4px;
+              color: ${config.color};
+              margin-left: -4px;
+            ` : ''}
           }
           
           .rank-options-list {
@@ -3186,19 +2303,22 @@ export const RankOptionsExtension = {
           .rank-options-list li {
             display: flex;
             align-items: center;
-            padding: 12px 14px;
-            margin-bottom: 8px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
             background-color: ${colors.surface};
             border: 1px solid ${colors.border};
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: grab;
             font-size: 14px;
             color: ${colors.text};
             width: 100%;
             box-sizing: border-box;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
             overflow: hidden;
+            user-select: none;
+            box-shadow: 0 1px 2px ${hexToRgba('#000000', 0.05)};
+            will-change: transform, box-shadow, border-color, background-color;
           }
           
           .rank-options-list li:before {
@@ -3215,8 +2335,8 @@ export const RankOptionsExtension = {
           
           .rank-options-list li:hover {
             border-color: ${hexToRgba(colors.primary, 0.3)};
-            box-shadow: 0 2px 4px ${colors.shadow};
-            transform: translateX(2px);
+            box-shadow: 0 3px 6px ${colors.shadow};
+            transform: translateY(-1px);
           }
           
           .rank-options-list li:hover:before {
@@ -3225,8 +2345,8 @@ export const RankOptionsExtension = {
           
           .rank-options-list li:active {
             cursor: grabbing;
-            background-color: ${config.darkMode ? '#2D3748' : '#f8f9fa'};
-            transform: scale(1.02);
+            background-color: ${colors.accent};
+            transform: scale(1.01);
           }
 
           .rank-options-list.disabled li {
@@ -3236,17 +2356,25 @@ export const RankOptionsExtension = {
           }
 
           .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             min-width: 24px;
-            color: ${colors.secondaryText};
-            font-size: 14px;
-            font-weight: 500;
-            margin-right: 10px;
+            height: 24px;
+            background: ${hexToRgba(colors.primary, 0.12)};
+            color: ${colors.primary};
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 12px;
             user-select: none;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
+            border-radius: 50%;
+            padding: 0 2px;
           }
           
           li:hover .rank-number {
-            color: ${colors.primary};
+            background: ${colors.primary};
+            color: white;
           }
           
           .rank-text {
@@ -3257,54 +2385,59 @@ export const RankOptionsExtension = {
           
           .submit-button {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background-color: ${colors.primary};
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             margin-top: 16px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
           }
           
           .submit-button:not(:disabled):hover {
             background-color: ${colors.buttonHover};
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px ${colors.shadow};
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
           }
           
           .submit-button:not(:disabled):active {
             transform: translateY(0);
+            box-shadow: 0 2px 4px ${hexToRgba(colors.primary, 0.3)};
           }
 
           .submit-button:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
             background-color: ${colors.secondaryText};
+            box-shadow: none;
           }
           
           .sortable-ghost {
             opacity: 0.3;
-            background: ${config.darkMode ? '#2D3748' : '#f5f5f5'};
+            background: ${colors.accent};
             border: 2px dashed ${colors.primary};
+            box-shadow: none !important;
           }
 
           .sortable-drag {
-            background-color: ${colors.surface};
-            box-shadow: 0 4px 8px ${colors.shadow};
+            background-color: ${colors.accent};
+            box-shadow: 0 8px 16px ${colors.shadow};
             border-color: ${colors.primary};
-            transform: rotate(2deg);
+            z-index: 1000;
+            opacity: 0.9;
           }
 
           @keyframes slideIn {
             from {
               opacity: 0;
-              transform: translateY(10px);
+              transform: translateY(15px);
             }
             to {
               opacity: 1;
@@ -3313,45 +2446,61 @@ export const RankOptionsExtension = {
           }
 
           .rank-options-list li {
-            animation: slideIn 0.3s ease forwards;
-            animation-delay: calc(var(--item-index) * 0.05s);
+            animation: slideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: calc(var(--item-index) * 0.08s);
             opacity: 0;
           }
 
           .rank-handle {
-            width: 8px;
-            height: 14px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 2px;
+            align-items: center;
+            gap: 3px;
             margin-left: auto;
-            opacity: 0.3;
+            padding: 8px;
+            opacity: 0.4;
             transition: opacity 0.2s ease;
+            border-radius: 6px;
+          }
+          
+          .rank-handle:hover {
+            background: ${hexToRgba('#000000', config.darkMode ? 0.2 : 0.05)};
           }
 
-          .rank-handle::before,
-          .rank-handle::after {
-            content: '';
-            width: 100%;
+          .rank-handle span {
+            width: 25px;
             height: 2px;
             background: ${colors.text};
             border-radius: 1px;
           }
 
           li:hover .rank-handle {
-            opacity: 0.6;
+            opacity: 0.7;
           }
 
           .submitted-message {
-            color: ${colors.secondaryText};
-            font-size: 13px;
+            color: ${colors.primary};
+            font-size: 14px;
             text-align: center;
-            margin-top: 12px;
-            font-style: italic;
+            margin-top: 16px;
+            font-weight: 500;
+            padding: 12px;
+            background: ${colors.accent};
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease;
           }
           
-          /* Remove any down arrows that might be added by the chat UI */
+          /* Sortable animations */
+          .sortable-chosen {
+            background-color: ${colors.accent} !important;
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
           [class*="scroll-down"],
           [class*="scroll-button"] {
             display: none !important;
@@ -3362,10 +2511,14 @@ export const RankOptionsExtension = {
           <div class="rank-title">${config.title}</div>
           <ul class="rank-options-list">
             ${config.options.map((option, index) => `
-              <li data-value="${option}" style="--item-index: ${index}">
+              <li data-value="${option}" style="--item-index: ${index}" aria-label="Item ${index + 1}: ${option}">
                 <span class="rank-number">${index + 1}</span>
                 <span class="rank-text">${option}</span>
-                <div class="rank-handle"></div>
+                <div class="rank-handle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </li>
             `).join('')}
           </ul>
@@ -3380,6 +2533,7 @@ export const RankOptionsExtension = {
         if (!isSubmitted) {
           formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
             span.textContent = index + 1;
+            span.parentElement.setAttribute('aria-label', `Item ${index + 1}: ${span.parentElement.dataset.value}`);
           });
         }
       };
@@ -3421,9 +2575,6 @@ export const RankOptionsExtension = {
         // Hide any scroll indicators
         hideScrollIndicators();
         
-        // Re-enable chat inputs
-        toggleInputs(false);
-
         window.voiceflow.chat.interact({
           type: "complete",
           payload: { rankedOptions }
@@ -3435,10 +2586,25 @@ export const RankOptionsExtension = {
       if (typeof Sortable !== 'undefined') {
         sortableInstance = new Sortable(formContainer.querySelector('.rank-options-list'), {
           animation: 150,
-          onEnd: updateRankNumbers,
+          easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+          handle: "li",  // Make the entire li element draggable
           ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
           dragClass: 'sortable-drag',
-          disabled: isSubmitted
+          onEnd: updateRankNumbers,
+          disabled: isSubmitted,
+          delay: 50, // Small delay to improve experience on touch devices
+          delayOnTouchOnly: true, // Only delay for touch devices
+          forceFallback: false, // Better performance
+          fallbackTolerance: 5, // Small threshold to start drag
+          touchStartThreshold: 5,
+          // Better performance on mobile
+          supportPointer: true,  
+          // Enhanced animation settings for smoothness
+          animation: 150, 
+          scroll: true,
+          scrollSensitivity: 80,
+          scrollSpeed: 20
         });
       }
       
@@ -3447,16 +2613,11 @@ export const RankOptionsExtension = {
         if (sortableInstance) {
           sortableInstance.destroy();
         }
-        // Make sure inputs are re-enabled when component is removed
-        toggleInputs(false);
       };
     };
 
     // Hide any scroll indicators that might be present
     hideScrollIndicators();
-    
-    // Disable inputs when component is mounted
-    toggleInputs(true);
 
     let cleanup = null;
     
@@ -3468,8 +2629,6 @@ export const RankOptionsExtension = {
       };
       script.onerror = () => {
         console.error('Failed to load Sortable.js');
-        // Re-enable inputs if script fails to load
-        toggleInputs(false);
       };
       document.head.appendChild(script);
     } else {
@@ -3480,9 +2639,6 @@ export const RankOptionsExtension = {
     return () => {
       if (typeof cleanup === 'function') {
         cleanup();
-      } else {
-        // Fallback cleanup if createForm wasn't called
-        toggleInputs(false);
       }
     };
   },
