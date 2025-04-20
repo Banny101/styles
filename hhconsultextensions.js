@@ -1010,7 +1010,10 @@ export const MultiSelectExtension = {
       title: trace.payload?.title || "Select your options",
       submitText: trace.payload?.submitText || "Submit",
       cancelText: trace.payload?.cancelText || "Cancel",
-      darkMode: trace.payload?.darkMode || false
+      darkMode: trace.payload?.darkMode || false,
+      successMessage: trace.payload?.successMessage || "Your selection has been saved",
+      slantTitle: trace.payload?.slantTitle || false,
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10
     };
 
     // Color utilities
@@ -1044,30 +1047,45 @@ export const MultiSelectExtension = {
       textSecondary: config.darkMode ? '#94A3B8' : '#72727a',
       border: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.08)',
       hoverBg: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.04)',
-      error: '#FF4444'
+      error: '#FF4444',
+      shadow: config.darkMode ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)',
+      accent: hexToRgba(config.color, 0.15)
     };
 
     const multiSelectContainer = document.createElement("form");
-    multiSelectContainer.className = "_1ddzqsn7";
+    multiSelectContainer.className = "multi-select-form";
 
     multiSelectContainer.innerHTML = `
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
         
-        ._1ddzqsn7 {
+        .multi-select-form {
           display: block;
+          font-family: 'Inter', sans-serif;
+          max-width: 450px;
+          margin: 0 auto;
         }
         
         .multi-select-container {
-          font-family: 'Inter', sans-serif;
           width: 100%;
         }
         
         .multi-select-title {
-          font-size: 14px;
+          font-size: 15px;
           color: ${colors.textSecondary};
-          margin-bottom: 12px;
+          margin-bottom: 14px;
           font-weight: 500;
+          user-select: none;
+          ${config.slantTitle ? `
+            font-style: italic;
+            transform: skewX(${config.titleSkewDegree}deg);
+            display: inline-block;
+            background: ${hexToRgba(config.color, 0.08)};
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: ${config.color};
+            margin-left: -4px;
+          ` : ''}
         }
         
         .multi-select-subtitle {
@@ -1075,55 +1093,96 @@ export const MultiSelectExtension = {
           color: ${colors.textSecondary};
           margin-bottom: 16px;
           opacity: 0.8;
+          user-select: none;
         }
         
         .multi-select-options {
           display: grid;
-          gap: 8px;
-          margin-bottom: 16px;
+          gap: 10px;
+          margin-bottom: 20px;
         }
         
         .option-label {
           display: flex;
           align-items: center;
-          padding: 12px;
+          padding: 14px 16px;
           background: ${colors.surface};
           border: 1px solid ${colors.border};
-          border-radius: 8px;
+          border-radius: 10px;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
           user-select: none;
+          position: relative;
+          overflow: hidden;
+          will-change: transform, border-color, box-shadow;
+          box-shadow: 0 1px 2px ${hexToRgba('#000000', 0.05)};
+          animation: slideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          opacity: 0;
+          animation-delay: calc(var(--item-index) * 0.05s);
+        }
+        
+        .option-label:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 4px;
+          background: ${colors.primary};
+          opacity: 0;
+          transition: opacity 0.2s ease;
         }
         
         .option-label:hover {
-          border-color: ${colors.primary};
-          transform: translateX(2px);
-          background: ${colors.hoverBg};
+          border-color: ${hexToRgba(colors.primary, 0.3)};
+          transform: translateY(-1px);
+          box-shadow: 0 3px 6px ${colors.shadow};
+        }
+        
+        .option-label:hover:before {
+          opacity: 1;
+        }
+        
+        .option-label:active {
+          transform: translateY(0);
         }
         
         .checkbox-wrapper {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 20px;
-          height: 20px;
-          margin-right: 12px;
+          width: 22px;
+          height: 22px;
+          margin-right: 14px;
           border: 2px solid ${colors.textSecondary};
-          border-radius: 4px;
-          transition: all 0.2s ease;
+          border-radius: 6px;
+          transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
           flex-shrink: 0;
+          position: relative;
+          background-color: ${hexToRgba(colors.background, 0.5)};
         }
         
         .option-label:hover .checkbox-wrapper {
           border-color: ${colors.primary};
+          box-shadow: 0 0 0 2px ${hexToRgba(colors.primary, 0.15)};
         }
         
         .checkbox-input {
-          display: none;
+          position: absolute;
+          opacity: 0;
+          cursor: pointer;
+          height: 0;
+          width: 0;
         }
         
         .checkbox-input:checked + .checkbox-wrapper {
           background: ${colors.primary};
+          border-color: ${colors.primary};
+          box-shadow: 0 0 0 2px ${hexToRgba(colors.primary, 0.15)};
+        }
+        
+        .checkbox-input:focus + .checkbox-wrapper {
+          box-shadow: 0 0 0 3px ${hexToRgba(colors.primary, 0.3)};
           border-color: ${colors.primary};
         }
         
@@ -1135,6 +1194,18 @@ export const MultiSelectExtension = {
           border-width: 0 2px 2px 0;
           transform: rotate(45deg) translate(-1px, -1px);
           display: block;
+          animation: checkmark 0.2s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        @keyframes checkmark {
+          from { 
+            opacity: 0;
+            transform: rotate(45deg) translate(-1px, -1px) scale(0.8);
+          }
+          to { 
+            opacity: 1;
+            transform: rotate(45deg) translate(-1px, -1px) scale(1);
+          }
         }
         
         .option-text {
@@ -1146,41 +1217,55 @@ export const MultiSelectExtension = {
         .error-message {
           color: ${colors.error};
           font-size: 13px;
-          margin: -8px 0 12px;
+          margin: -12px 0 16px;
           display: none;
           animation: slideIn 0.3s ease;
+          padding: 8px 12px;
+          background: ${hexToRgba(colors.error, 0.1)};
+          border-radius: 6px;
+          border-left: 3px solid ${colors.error};
         }
         
         .button-group {
           display: grid;
-          gap: 8px;
+          gap: 10px;
         }
         
         .submit-button, .cancel-button {
           width: 100%;
-          padding: 12px;
+          padding: 14px 16px;
           border: none;
-          border-radius: 8px;
+          border-radius: 10px;
           font-family: 'Inter', sans-serif;
           font-size: 14px;
-          font-weight: 500;
+          font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s ease;
+          transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+          position: relative;
+          overflow: hidden;
         }
         
         .submit-button {
           background: ${colors.primary};
           color: white;
+          box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.4)};
         }
         
         .submit-button:not(:disabled):hover {
           background: ${colors.primaryHover};
-          transform: translateY(-1px);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.5)};
+        }
+        
+        .submit-button:not(:disabled):active {
+          transform: translateY(0);
+          box-shadow: 0 2px 4px ${hexToRgba(colors.primary, 0.3)};
         }
         
         .submit-button:disabled {
-          opacity: 0.5;
+          opacity: 0.6;
           cursor: not-allowed;
+          box-shadow: none;
         }
         
         .cancel-button {
@@ -1191,81 +1276,153 @@ export const MultiSelectExtension = {
         
         .cancel-button:hover {
           background: ${hexToRgba(colors.textSecondary, 0.1)};
+          transform: translateY(-1px);
+        }
+        
+        .cancel-button:active {
+          transform: translateY(0);
         }
         
         @keyframes slideIn {
-          from { opacity: 0; transform: translateY(-10px); }
+          from { opacity: 0; transform: translateY(15px); }
           to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-4px); }
-          75% { transform: translateX(4px); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
         }
         
         .shake {
-          animation: shake 0.3s ease;
+          animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
         }
         
         /* Success state styling */
         .success-message {
           text-align: center;
-          padding: 16px;
-          margin-top: 16px;
+          padding: 20px;
           background: ${hexToRgba(colors.primary, 0.1)};
-          border-radius: 8px;
+          border-radius: 10px;
           font-size: 14px;
           color: ${colors.text};
           border: 1px solid ${hexToRgba(colors.primary, 0.2)};
           display: none;
+          animation: fadeIn 0.5s ease;
         }
         
         .success-icon {
-          display: block;
-          width: 36px;
-          height: 36px;
-          margin: 0 auto 12px;
-          background: ${colors.primary};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 48px;
+          height: 48px;
+          margin: 0 auto 16px;
+          background: ${hexToRgba(colors.primary, 0.15)};
           border-radius: 50%;
           position: relative;
+          animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.1s;
+          transform: scale(0.5);
+          opacity: 0;
         }
         
-        .success-icon:after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 16px;
-          height: 8px;
-          border: solid white;
-          border-width: 0 0 2px 2px;
-          transform: translate(-50%, -60%) rotate(-45deg);
+        .success-text {
+          font-weight: 500;
+          animation: fadeUp 0.3s ease forwards 0.3s;
+          opacity: 0;
+          transform: translateY(10px);
+          display: block;
+        }
+        
+        .success-icon svg {
+          width: 24px;
+          height: 24px;
+          fill: none;
+          stroke: ${colors.primary};
+          stroke-width: 2px;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+        
+        .selected-count {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 22px;
+          height: 22px;
+          background: ${hexToRgba(colors.primary, 0.12)};
+          color: ${colors.primary};
+          font-size: 12px;
+          font-weight: 600;
+          border-radius: 11px;
+          padding: 0 8px;
+          margin-left: 8px;
+          transition: all 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.5); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Focus styles for keyboard navigation */
+        .option-label:focus-within {
+          outline: none;
+          border-color: ${colors.primary};
+          box-shadow: 0 0 0 3px ${hexToRgba(colors.primary, 0.3)};
+        }
+        
+        .submit-button:focus, .cancel-button:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px ${hexToRgba(colors.primary, 0.3)};
         }
       </style>
       
       <div class="multi-select-container">
-        <div class="multi-select-title">${config.title}</div>
+        <div class="multi-select-title" id="multiselect-title">
+          ${config.title}
+          <span class="selected-count" style="display: none;">0</span>
+        </div>
+        
         ${config.maxSelections < config.options.length ? 
-          `<div class="multi-select-subtitle">Choose up to ${config.maxSelections} options</div>` : 
+          `<div class="multi-select-subtitle" id="multiselect-subtitle">Choose up to ${config.maxSelections} options</div>` : 
           ''}
-        <div class="multi-select-options">
+          
+        <div class="multi-select-options" role="group" aria-labelledby="multiselect-title" aria-describedby="multiselect-subtitle">
           ${config.options.map((option, index) => `
-            <label class="option-label" style="animation-delay: ${index * 0.05}s">
-              <input type="checkbox" class="checkbox-input" name="options" value="${option}">
-              <div class="checkbox-wrapper"></div>
+            <label class="option-label" style="--item-index: ${index}" tabindex="0">
+              <input type="checkbox" class="checkbox-input" name="options" value="${option}" 
+                aria-label="${option}" tabindex="-1">
+              <div class="checkbox-wrapper" aria-hidden="true"></div>
               <span class="option-text">${option}</span>
             </label>
           `).join('')}
         </div>
-        <div class="error-message"></div>
+        
+        <div class="error-message" role="alert"></div>
+        
         <div class="button-group">
           <button type="submit" class="submit-button" disabled>${config.submitText}</button>
           <button type="button" class="cancel-button">${config.cancelText}</button>
         </div>
-        <div class="success-message">
-          <div class="success-icon"></div>
-          <span class="success-text">Your selection has been saved</span>
+        
+        <div class="success-message" role="status">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 13L9 17L19 7"></path>
+            </svg>
+          </div>
+          <span class="success-text">${config.successMessage}</span>
         </div>
       </div>
     `;
@@ -1276,11 +1433,21 @@ export const MultiSelectExtension = {
     const cancelButton = multiSelectContainer.querySelector(".cancel-button");
     const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
     const successMessage = multiSelectContainer.querySelector(".success-message");
+    const selectedCountBadge = multiSelectContainer.querySelector(".selected-count");
+    const optionLabels = multiSelectContainer.querySelectorAll('.option-label');
 
     const updateSubmitButton = () => {
       if (isSubmitted) return;
       const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
       submitButton.disabled = selectedCount === 0;
+      
+      // Update selected count badge
+      if (selectedCount > 0) {
+        selectedCountBadge.textContent = selectedCount;
+        selectedCountBadge.style.display = 'inline-flex';
+      } else {
+        selectedCountBadge.style.display = 'none';
+      }
     };
 
     const showError = (message) => {
@@ -1296,19 +1463,33 @@ export const MultiSelectExtension = {
       // Disable all inputs in the component
       checkboxes.forEach(checkbox => {
         checkbox.disabled = true;
-        checkbox.parentElement.style.opacity = "0.7";
-        checkbox.parentElement.style.cursor = "not-allowed";
+      });
+      
+      optionLabels.forEach(label => {
+        label.style.opacity = "0.7";
+        label.style.cursor = "not-allowed";
+        label.style.pointerEvents = "none";
       });
       
       submitButton.disabled = true;
-      submitButton.style.opacity = "0.5";
       cancelButton.disabled = true;
-      cancelButton.style.opacity = "0.5";
     };
     
     const showSuccess = () => {
       successMessage.style.display = "block";
     };
+
+    // Accessibility - make labels keyboard navigable
+    optionLabels.forEach(label => {
+      label.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const checkbox = label.querySelector('input[type="checkbox"]');
+          checkbox.checked = !checkbox.checked;
+          checkbox.dispatchEvent(new Event('change'));
+        }
+      });
+    });
 
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener("change", () => {
@@ -1345,7 +1526,7 @@ export const MultiSelectExtension = {
           type: "complete",
           payload: { options: selectedOptions }
         });
-      }, 1000);
+      }, 1500);
     });
 
     cancelButton.addEventListener("click", () => {
@@ -1364,442 +1545,6 @@ export const MultiSelectExtension = {
     
     // No cleanup needed since we're using separate extensions for input control
     return () => {};
-  },
-};
-
-export const RankOptionsExtension = {
-  name: "RankOptions",
-  type: "response",
-  match: ({ trace }) => 
-    trace.type === "ext_rankoptions" || trace.payload?.name === "ext_rankoptions",
-  render: ({ trace, element }) => {
-    // Configuration options with defaults
-    const config = {
-      options: trace.payload?.options || [],
-      color: trace.payload?.color || "#545857",
-      title: trace.payload?.title || "Rank these items in order of importance",
-      submitText: trace.payload?.submitText || "Submit",
-      submitMessage: trace.payload?.submitMessage || "Rankings submitted",
-      darkMode: trace.payload?.darkMode || false,
-      slantTitle: trace.payload?.slantTitle || false, // New option for slanted title
-      titleSkewDegree: trace.payload?.titleSkewDegree || -10 // Control skew angle
-    };
-    
-    // Color utilities
-    const hexToRgba = (hex, alpha = 1) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-    
-    // Determine colors based on mode and primary color
-    const colors = {
-      primary: config.color,
-      text: config.darkMode ? "#E2E8F0" : "#303235",
-      background: config.darkMode ? "#1E293B" : "#FFFFFF",
-      surface: config.darkMode ? "#334155" : "#FFFFFF",
-      border: config.darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
-      secondaryText: config.darkMode ? "#94A3B8" : "#72727a",
-      buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : hexToRgba(config.color, 0.9),
-      shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)",
-      accent: hexToRgba(config.color, 0.15)
-    };
-
-    // Hide any scroll indicators that might be present
-    const hideScrollIndicators = () => {
-      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
-        .forEach(el => {
-          el.style.display = 'none';
-        });
-    };
-
-    const createForm = () => {
-      const formContainer = document.createElement("form");
-      formContainer.className = "rank-options-form";
-
-      formContainer.innerHTML = `
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-          
-          .rank-options-form {
-            display: block;
-            font-family: 'Inter', sans-serif;
-            max-width: 450px;
-            margin: 0 auto;
-          }
-          
-          .rank-options-container {
-            padding: 0;
-            width: 100%;
-          }
-          
-          .rank-title {
-            font-size: 15px;
-            margin-bottom: 16px;
-            color: ${colors.secondaryText};
-            font-weight: 500;
-            user-select: none;
-            ${config.slantTitle ? `
-              font-style: italic;
-              transform: skewX(${config.titleSkewDegree}deg);
-              display: inline-block;
-              background: ${hexToRgba(config.color, 0.08)};
-              padding: 6px 12px;
-              border-radius: 4px;
-              color: ${config.color};
-              margin-left: -4px;
-            ` : ''}
-          }
-          
-          .rank-options-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-          }
-          
-          .rank-options-list li {
-            display: flex;
-            align-items: center;
-            padding: 14px 16px;
-            margin-bottom: 10px;
-            background-color: ${colors.surface};
-            border: 1px solid ${colors.border};
-            border-radius: 10px;
-            cursor: grab;
-            font-size: 14px;
-            color: ${colors.text};
-            width: 100%;
-            box-sizing: border-box;
-            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-            position: relative;
-            overflow: hidden;
-            user-select: none;
-            box-shadow: 0 1px 2px ${hexToRgba('#000000', 0.05)};
-            will-change: transform, box-shadow, border-color, background-color;
-          }
-          
-          .rank-options-list li:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background: ${colors.primary};
-            opacity: 0;
-            transition: opacity 0.2s ease;
-          }
-          
-          .rank-options-list li:hover {
-            border-color: ${hexToRgba(colors.primary, 0.3)};
-            box-shadow: 0 3px 6px ${colors.shadow};
-            transform: translateY(-1px);
-          }
-          
-          .rank-options-list li:hover:before {
-            opacity: 1;
-          }
-          
-          .rank-options-list li:active {
-            cursor: grabbing;
-            background-color: ${colors.accent};
-            transform: scale(1.01);
-          }
-
-          .rank-options-list.disabled li {
-            cursor: not-allowed;
-            opacity: 0.7;
-            pointer-events: none;
-          }
-
-          .rank-number {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 24px;
-            height: 24px;
-            background: ${hexToRgba(colors.primary, 0.12)};
-            color: ${colors.primary};
-            font-size: 13px;
-            font-weight: 600;
-            margin-right: 12px;
-            user-select: none;
-            transition: all 0.2s ease;
-            border-radius: 50%;
-            padding: 0 2px;
-          }
-          
-          li:hover .rank-number {
-            background: ${colors.primary};
-            color: white;
-          }
-          
-          .rank-text {
-            flex: 1;
-            padding-right: 4px;
-            line-height: 1.4;
-          }
-          
-          .submit-button {
-            width: 100%;
-            padding: 14px 16px;
-            background-color: ${colors.primary};
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 16px;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
-          }
-          
-          .submit-button:not(:disabled):hover {
-            background-color: ${colors.buttonHover};
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
-          }
-          
-          .submit-button:not(:disabled):active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px ${hexToRgba(colors.primary, 0.3)};
-          }
-
-          .submit-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            background-color: ${colors.secondaryText};
-            box-shadow: none;
-          }
-          
-          .sortable-ghost {
-            opacity: 0.3;
-            background: ${colors.accent};
-            border: 2px dashed ${colors.primary};
-            box-shadow: none !important;
-          }
-
-          .sortable-drag {
-            background-color: ${colors.accent};
-            box-shadow: 0 8px 16px ${colors.shadow};
-            border-color: ${colors.primary};
-            z-index: 1000;
-            opacity: 0.9;
-          }
-
-          @keyframes slideIn {
-            from {
-              opacity: 0;
-              transform: translateY(15px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-
-          .rank-options-list li {
-            animation: slideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            animation-delay: calc(var(--item-index) * 0.08s);
-            opacity: 0;
-          }
-
-          .rank-handle {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 3px;
-            margin-left: auto;
-            padding: 8px;
-            opacity: 0.4;
-            transition: opacity 0.2s ease;
-            border-radius: 6px;
-          }
-          
-          .rank-handle:hover {
-            background: ${hexToRgba('#000000', config.darkMode ? 0.2 : 0.05)};
-          }
-
-          .rank-handle span {
-            width: 25px;
-            height: 2px;
-            background: ${colors.text};
-            border-radius: 1px;
-          }
-
-          li:hover .rank-handle {
-            opacity: 0.7;
-          }
-
-          .submitted-message {
-            color: ${colors.primary};
-            font-size: 14px;
-            text-align: center;
-            margin-top: 16px;
-            font-weight: 500;
-            padding: 12px;
-            background: ${colors.accent};
-            border-radius: 8px;
-            animation: fadeIn 0.5s ease;
-          }
-          
-          /* Sortable animations */
-          .sortable-chosen {
-            background-color: ${colors.accent} !important;
-          }
-          
-          @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-          }
-          
-          [class*="scroll-down"],
-          [class*="scroll-button"] {
-            display: none !important;
-          }
-        </style>
-        
-        <div class="rank-options-container">
-          <div class="rank-title">${config.title}</div>
-          <ul class="rank-options-list">
-            ${config.options.map((option, index) => `
-              <li data-value="${option}" style="--item-index: ${index}" aria-label="Item ${index + 1}: ${option}">
-                <span class="rank-number">${index + 1}</span>
-                <span class="rank-text">${option}</span>
-                <div class="rank-handle" aria-hidden="true">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </li>
-            `).join('')}
-          </ul>
-          <button type="submit" class="submit-button">${config.submitText}</button>
-        </div>
-      `;
-
-      let isSubmitted = false;
-      let sortableInstance = null;
-
-      const updateRankNumbers = () => {
-        if (!isSubmitted) {
-          formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
-            span.textContent = index + 1;
-            span.parentElement.setAttribute('aria-label', `Item ${index + 1}: ${span.parentElement.dataset.value}`);
-          });
-        }
-      };
-
-      const disableRanking = () => {
-        const list = formContainer.querySelector('.rank-options-list');
-        const submitButton = formContainer.querySelector('.submit-button');
-        
-        // Disable the list
-        list.classList.add('disabled');
-        
-        // Disable the submit button
-        submitButton.disabled = true;
-        
-        // Destroy sortable instance
-        if (sortableInstance) {
-          sortableInstance.destroy();
-        }
-
-        // Add submitted message
-        const message = document.createElement('div');
-        message.className = 'submitted-message';
-        message.textContent = config.submitMessage;
-        submitButton.insertAdjacentElement('afterend', message);
-      };
-
-      formContainer.addEventListener("submit", (e) => {
-        e.preventDefault();
-        
-        if (isSubmitted) return;
-        
-        const rankedOptions = Array.from(
-          formContainer.querySelectorAll('.rank-options-list li')
-        ).map(li => li.dataset.value);
-
-        isSubmitted = true;
-        disableRanking();
-        
-        // Hide any scroll indicators
-        hideScrollIndicators();
-        
-        window.voiceflow.chat.interact({
-          type: "complete",
-          payload: { rankedOptions }
-        });
-      });
-
-      element.appendChild(formContainer);
-
-      if (typeof Sortable !== 'undefined') {
-        sortableInstance = new Sortable(formContainer.querySelector('.rank-options-list'), {
-          animation: 150,
-          easing: "cubic-bezier(0.25, 1, 0.5, 1)",
-          handle: "li",  // Make the entire li element draggable
-          ghostClass: 'sortable-ghost',
-          chosenClass: 'sortable-chosen',
-          dragClass: 'sortable-drag',
-          onEnd: updateRankNumbers,
-          disabled: isSubmitted,
-          delay: 50, // Small delay to improve experience on touch devices
-          delayOnTouchOnly: true, // Only delay for touch devices
-          forceFallback: false, // Better performance
-          fallbackTolerance: 5, // Small threshold to start drag
-          touchStartThreshold: 5,
-          // Better performance on mobile
-          supportPointer: true,  
-          // Enhanced animation settings for smoothness
-          animation: 150, 
-          scroll: true,
-          scrollSensitivity: 80,
-          scrollSpeed: 20
-        });
-      }
-      
-      // Return cleanup function
-      return () => {
-        if (sortableInstance) {
-          sortableInstance.destroy();
-        }
-      };
-    };
-
-    // Hide any scroll indicators that might be present
-    hideScrollIndicators();
-
-    let cleanup = null;
-    
-    if (typeof Sortable === 'undefined') {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
-      script.onload = () => {
-        cleanup = createForm();
-      };
-      script.onerror = () => {
-        console.error('Failed to load Sortable.js');
-      };
-      document.head.appendChild(script);
-    } else {
-      cleanup = createForm();
-    }
-
-    // Return cleanup function
-    return () => {
-      if (typeof cleanup === 'function') {
-        cleanup();
-      }
-    };
   },
 };
 
