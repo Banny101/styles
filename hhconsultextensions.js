@@ -1380,7 +1380,9 @@ export const RankOptionsExtension = {
       title: trace.payload?.title || "Rank these items in order of importance",
       submitText: trace.payload?.submitText || "Submit",
       submitMessage: trace.payload?.submitMessage || "Rankings submitted",
-      darkMode: trace.payload?.darkMode || false
+      darkMode: trace.payload?.darkMode || false,
+      slantTitle: trace.payload?.slantTitle || false, // New option for slanted title
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10 // Control skew angle
     };
     
     // Color utilities
@@ -1433,11 +1435,21 @@ export const RankOptionsExtension = {
           }
           
           .rank-title {
-            font-size: 14px;
-            margin-bottom: 14px;
+            font-size: 15px;
+            margin-bottom: 16px;
             color: ${colors.secondaryText};
             font-weight: 500;
             user-select: none;
+            ${config.slantTitle ? `
+              font-style: italic;
+              transform: skewX(${config.titleSkewDegree}deg);
+              display: inline-block;
+              background: ${hexToRgba(config.color, 0.08)};
+              padding: 6px 12px;
+              border-radius: 4px;
+              color: ${config.color};
+              margin-left: -4px;
+            ` : ''}
           }
           
           .rank-options-list {
@@ -1746,7 +1758,7 @@ export const RankOptionsExtension = {
           fallbackTolerance: 5, // Small threshold to start drag
           touchStartThreshold: 5,
           // Better performance on mobile
-          supportPointer: 'ontouchstart' in window,  
+          supportPointer: true,  
           // Enhanced animation settings for smoothness
           animation: 150, 
           scroll: true,
