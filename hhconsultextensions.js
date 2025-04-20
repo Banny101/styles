@@ -1047,49 +1047,6 @@ export const MultiSelectExtension = {
       error: '#FF4444'
     };
 
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
-            }
-          });
-        });
-      }
-    };
-
     const multiSelectContainer = document.createElement("form");
     multiSelectContainer.className = "_1ddzqsn7";
 
@@ -1250,6 +1207,41 @@ export const MultiSelectExtension = {
         .shake {
           animation: shake 0.3s ease;
         }
+        
+        /* Success state styling */
+        .success-message {
+          text-align: center;
+          padding: 16px;
+          margin-top: 16px;
+          background: ${hexToRgba(colors.primary, 0.1)};
+          border-radius: 8px;
+          font-size: 14px;
+          color: ${colors.text};
+          border: 1px solid ${hexToRgba(colors.primary, 0.2)};
+          display: none;
+        }
+        
+        .success-icon {
+          display: block;
+          width: 36px;
+          height: 36px;
+          margin: 0 auto 12px;
+          background: ${colors.primary};
+          border-radius: 50%;
+          position: relative;
+        }
+        
+        .success-icon:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 16px;
+          height: 8px;
+          border: solid white;
+          border-width: 0 0 2px 2px;
+          transform: translate(-50%, -60%) rotate(-45deg);
+        }
       </style>
       
       <div class="multi-select-container">
@@ -1271,6 +1263,10 @@ export const MultiSelectExtension = {
           <button type="submit" class="submit-button" disabled>${config.submitText}</button>
           <button type="button" class="cancel-button">${config.cancelText}</button>
         </div>
+        <div class="success-message">
+          <div class="success-icon"></div>
+          <span class="success-text">Your selection has been saved</span>
+        </div>
       </div>
     `;
 
@@ -1279,6 +1275,7 @@ export const MultiSelectExtension = {
     const submitButton = multiSelectContainer.querySelector(".submit-button");
     const cancelButton = multiSelectContainer.querySelector(".cancel-button");
     const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
+    const successMessage = multiSelectContainer.querySelector(".success-message");
 
     const updateSubmitButton = () => {
       if (isSubmitted) return;
@@ -1293,6 +1290,24 @@ export const MultiSelectExtension = {
       setTimeout(() => {
         multiSelectContainer.querySelector('.multi-select-options').classList.remove('shake');
       }, 300);
+    };
+    
+    const disableForm = () => {
+      // Disable all inputs in the component
+      checkboxes.forEach(checkbox => {
+        checkbox.disabled = true;
+        checkbox.parentElement.style.opacity = "0.7";
+        checkbox.parentElement.style.cursor = "not-allowed";
+      });
+      
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
+    };
+    
+    const showSuccess = () => {
+      successMessage.style.display = "block";
     };
 
     checkboxes.forEach(checkbox => {
@@ -1321,45 +1336,22 @@ export const MultiSelectExtension = {
       ).map(input => input.value);
 
       isSubmitted = true;
+      disableForm();
+      showSuccess();
       
-      // Disable all inputs in the component
-      checkboxes.forEach(checkbox => {
-        checkbox.disabled = true;
-        checkbox.parentElement.style.opacity = "0.7";
-        checkbox.parentElement.style.cursor = "not-allowed";
-      });
-      
-      submitButton.disabled = true;
-      submitButton.style.opacity = "0.5";
-      cancelButton.disabled = true;
-      cancelButton.style.opacity = "0.5";
-      
-      // Re-enable chat inputs
-      toggleInputs(false);
-
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { options: selectedOptions }
-      });
+      // Short delay before sending the interaction to allow the success state to be visible
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { options: selectedOptions }
+        });
+      }, 1000);
     });
 
     cancelButton.addEventListener("click", () => {
       if (isSubmitted) return;
       
-      // Disable component inputs
-      checkboxes.forEach(checkbox => {
-        checkbox.disabled = true;
-        checkbox.parentElement.style.opacity = "0.7";
-        checkbox.parentElement.style.cursor = "not-allowed";
-      });
-      
-      submitButton.disabled = true;
-      submitButton.style.opacity = "0.5";
-      cancelButton.disabled = true;
-      cancelButton.style.opacity = "0.5";
-      
-      // Re-enable chat inputs
-      toggleInputs(false);
+      disableForm();
       
       window.voiceflow.chat.interact({
         type: "cancel",
@@ -1367,20 +1359,11 @@ export const MultiSelectExtension = {
       });
     });
 
-    // Cleanup function to ensure inputs are re-enabled
-    const cleanup = () => {
-      // Make sure inputs are re-enabled when component is removed
-      toggleInputs(false);
-    };
-
     element.innerHTML = '';
     element.appendChild(multiSelectContainer);
     
-    // Disable inputs when component is mounted
-    toggleInputs(true);
-
-    // Return cleanup function
-    return cleanup;
+    // No cleanup needed since we're using separate extensions for input control
+    return () => {};
   },
 };
 
@@ -1395,7 +1378,8 @@ export const RankOptionsExtension = {
       options: trace.payload?.options || [],
       color: trace.payload?.color || "#545857",
       title: trace.payload?.title || "Drag and drop to rank in order of preference",
-      submitText: trace.payload?.submitText || "Submit",
+      subtitle: trace.payload?.subtitle || "Drag items to reorder them based on your preference",
+      submitText: trace.payload?.submitText || "Submit Ranking",
       submitMessage: trace.payload?.submitMessage || "Rankings submitted",
       darkMode: trace.payload?.darkMode || false
     };
@@ -1418,49 +1402,6 @@ export const RankOptionsExtension = {
       secondaryText: config.darkMode ? "#94A3B8" : "#72727a",
       buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : "#72727a",
       shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)"
-    };
-
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-          sendButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Send message']"
-          ),
-          attachmentButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Add attachment']"
-          )
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? (config.darkMode ? "#2D3748" : "#f5f5f5") : "";
-            }
-          });
-        });
-      }
     };
 
     // Hide any scroll indicators that might be present
@@ -1487,38 +1428,50 @@ export const RankOptionsExtension = {
             font-family: 'Inter', sans-serif;
             padding: 0;
             width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
           }
           
           .rank-title {
-            font-size: 14px;
-            margin-bottom: 12px;
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: ${colors.text};
+            font-weight: 600;
+          }
+          
+          .rank-subtitle {
+            font-size: 13px;
+            margin-bottom: 16px;
             color: ${colors.secondaryText};
-            font-weight: 500;
+            font-weight: 400;
+            line-height: 1.4;
           }
           
           .rank-options-list {
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin: 0 0 16px 0;
             width: 100%;
           }
           
           .rank-options-list li {
             display: flex;
             align-items: center;
-            padding: 12px 14px;
-            margin-bottom: 8px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
             background-color: ${colors.surface};
             border: 1px solid ${colors.border};
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: grab;
             font-size: 14px;
             color: ${colors.text};
             width: 100%;
             box-sizing: border-box;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 1px 2px ${hexToRgba(colors.shadow, 0.1)};
+            user-select: none;
           }
           
           .rank-options-list li:before {
@@ -1530,13 +1483,13 @@ export const RankOptionsExtension = {
             width: 4px;
             background: ${colors.primary};
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
           }
           
           .rank-options-list li:hover {
             border-color: ${hexToRgba(colors.primary, 0.3)};
-            box-shadow: 0 2px 4px ${colors.shadow};
-            transform: translateX(2px);
+            box-shadow: 0 3px 6px ${hexToRgba(colors.shadow, 0.15)};
+            transform: translateY(-2px);
           }
           
           .rank-options-list li:hover:before {
@@ -1545,86 +1498,101 @@ export const RankOptionsExtension = {
           
           .rank-options-list li:active {
             cursor: grabbing;
-            background-color: ${config.darkMode ? '#2D3748' : '#f8f9fa'};
-            transform: scale(1.02);
+            background-color: ${hexToRgba(colors.primary, 0.05)};
+            transform: scale(1.01);
           }
 
           .rank-options-list.disabled li {
             cursor: not-allowed;
             opacity: 0.7;
             pointer-events: none;
+            transform: none;
+            box-shadow: none;
           }
 
           .rank-number {
-            min-width: 24px;
-            color: ${colors.secondaryText};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            height: 30px;
+            background: ${hexToRgba(colors.primary, 0.1)};
+            color: ${colors.primary};
             font-size: 14px;
-            font-weight: 500;
-            margin-right: 10px;
+            font-weight: 600;
+            margin-right: 14px;
             user-select: none;
-            transition: color 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 15px;
           }
           
           li:hover .rank-number {
-            color: ${colors.primary};
+            background: ${colors.primary};
+            color: white;
           }
           
           .rank-text {
             flex: 1;
-            padding-right: 4px;
+            padding-right: 8px;
             line-height: 1.4;
+            font-weight: 500;
           }
           
           .submit-button {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background-color: ${colors.primary};
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 16px;
-            transition: all 0.3s ease;
+            margin-top: 8px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 2px 4px ${hexToRgba(colors.primary, 0.3)};
           }
           
           .submit-button:not(:disabled):hover {
             background-color: ${colors.buttonHover};
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px ${colors.shadow};
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
           }
           
           .submit-button:not(:disabled):active {
-            transform: translateY(0);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px ${hexToRgba(colors.primary, 0.3)};
           }
 
           .submit-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            background-color: ${colors.secondaryText};
+            box-shadow: none;
           }
           
           .sortable-ghost {
             opacity: 0.3;
-            background: ${config.darkMode ? '#2D3748' : '#f5f5f5'};
+            background: ${hexToRgba(colors.primary, 0.05)};
             border: 2px dashed ${colors.primary};
+            box-shadow: none !important;
+            transform: none !important;
           }
 
           .sortable-drag {
             background-color: ${colors.surface};
-            box-shadow: 0 4px 8px ${colors.shadow};
+            box-shadow: 0 8px 16px ${hexToRgba(colors.shadow, 0.2)} !important;
             border-color: ${colors.primary};
-            transform: rotate(2deg);
+            transform: scale(1.02) rotate(1deg) !important;
+            z-index: 100;
           }
 
           @keyframes slideIn {
             from {
               opacity: 0;
-              transform: translateY(10px);
+              transform: translateY(15px);
             }
             to {
               opacity: 1;
@@ -1633,42 +1601,94 @@ export const RankOptionsExtension = {
           }
 
           .rank-options-list li {
-            animation: slideIn 0.3s ease forwards;
-            animation-delay: calc(var(--item-index) * 0.05s);
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: calc(var(--item-index) * 0.07s);
+            opacity: 0;
+            transform: translateY(15px);
+          }
+
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+
+          .rank-title, .rank-subtitle {
+            animation: fadeIn 0.5s ease forwards;
+          }
+
+          .submit-button {
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: 0.5s;
             opacity: 0;
           }
 
           .rank-handle {
-            width: 8px;
-            height: 14px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            gap: 2px;
+            width: 24px;
+            height: 24px;
             margin-left: auto;
-            opacity: 0.3;
+            opacity: 0.6;
             transition: opacity 0.2s ease;
           }
 
-          .rank-handle::before,
-          .rank-handle::after {
-            content: '';
-            width: 100%;
-            height: 2px;
-            background: ${colors.text};
-            border-radius: 1px;
+          .rank-handle svg {
+            width: 18px;
+            height: 18px;
+            fill: ${colors.secondaryText};
+            transition: fill 0.2s ease;
           }
 
-          li:hover .rank-handle {
-            opacity: 0.6;
+          li:hover .rank-handle svg {
+            fill: ${colors.primary};
+          }
+
+          .rank-handle-icon {
+            display: block;
           }
 
           .submitted-message {
             color: ${colors.secondaryText};
-            font-size: 13px;
+            font-size: 14px;
             text-align: center;
-            margin-top: 12px;
+            margin-top: 16px;
             font-style: italic;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+          }
+
+          /* Help text */
+          .drag-help {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            background: ${hexToRgba(colors.primary, 0.08)};
+            border-radius: 8px;
+            margin-bottom: 16px;
+            color: ${colors.secondaryText};
+            font-size: 13px;
+          }
+
+          .drag-help svg {
+            margin-right: 8px;
+            fill: ${colors.primary};
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+          }
+
+          /* Improved touch feedback */
+          @media (hover: none) {
+            .rank-options-list li {
+              padding: 16px;
+            }
+            
+            .rank-number {
+              min-width: 32px;
+              height: 32px;
+            }
           }
           
           /* Remove any down arrows that might be added by the chat UI */
@@ -1676,31 +1696,76 @@ export const RankOptionsExtension = {
           [class*="scroll-button"] {
             display: none !important;
           }
+          
+          /* Feedback indicator for reordering */
+          .reorder-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: ${colors.primary};
+            color: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            box-shadow: 0 4px 12px ${hexToRgba(colors.shadow, 0.3)};
+          }
+          
+          .reorder-indicator.active {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+          }
         </style>
         
         <div class="rank-options-container">
           <div class="rank-title">${config.title}</div>
+          <div class="rank-subtitle">${config.subtitle}</div>
+          
+          <div class="drag-help">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14m6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6m0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14"/>
+            </svg>
+            Drag items up or down to set your preference order
+          </div>
+          
           <ul class="rank-options-list">
             ${config.options.map((option, index) => `
               <li data-value="${option}" style="--item-index: ${index}">
                 <span class="rank-number">${index + 1}</span>
                 <span class="rank-text">${option}</span>
-                <div class="rank-handle"></div>
+                <div class="rank-handle">
+                  <svg class="rank-handle-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 3h6v2H9V3zm0 16h6v2H9v-2zM2 9h20v2H2V9zm0 4h20v2H2v-2z"/>
+                  </svg>
+                </div>
               </li>
             `).join('')}
           </ul>
           <button type="submit" class="submit-button">${config.submitText}</button>
+          
+          <div class="reorder-indicator">Order updated!</div>
         </div>
       `;
 
       let isSubmitted = false;
       let sortableInstance = null;
+      const reorderIndicator = formContainer.querySelector('.reorder-indicator');
 
       const updateRankNumbers = () => {
         if (!isSubmitted) {
           formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
             span.textContent = index + 1;
           });
+          
+          // Show reorder indicator briefly
+          reorderIndicator.classList.add('active');
+          setTimeout(() => {
+            reorderIndicator.classList.remove('active');
+          }, 1500);
         }
       };
 
@@ -1740,9 +1805,6 @@ export const RankOptionsExtension = {
         
         // Hide any scroll indicators
         hideScrollIndicators();
-        
-        // Re-enable chat inputs
-        toggleInputs(false);
 
         window.voiceflow.chat.interact({
           type: "complete",
@@ -1754,29 +1816,32 @@ export const RankOptionsExtension = {
 
       if (typeof Sortable !== 'undefined') {
         sortableInstance = new Sortable(formContainer.querySelector('.rank-options-list'), {
-          animation: 150,
+          animation: 200,
+          easing: "cubic-bezier(0.16, 1, 0.3, 1)",
           onEnd: updateRankNumbers,
           ghostClass: 'sortable-ghost',
           dragClass: 'sortable-drag',
-          disabled: isSubmitted
+          disabled: isSubmitted,
+          delay: 50, // For mobile support
+          delayOnTouchOnly: true, // Only delay for touch devices
+          handle: '.rank-handle', // Make the grip handle the drag point
+          forceFallback: false, // Better mobile support when false
+          fallbackClass: 'sortable-fallback',
+          scroll: true, // Allow scrolling when dragging
+          scrollSensitivity: 80,
+          scrollSpeed: 10
         });
       }
       
-      // Return cleanup function
       return () => {
         if (sortableInstance) {
           sortableInstance.destroy();
         }
-        // Make sure inputs are re-enabled when component is removed
-        toggleInputs(false);
       };
     };
 
-    // Hide any scroll indicators that might be present
+    // Hide any scroll indicators
     hideScrollIndicators();
-    
-    // Disable inputs when component is mounted
-    toggleInputs(true);
 
     let cleanup = null;
     
@@ -1788,21 +1853,15 @@ export const RankOptionsExtension = {
       };
       script.onerror = () => {
         console.error('Failed to load Sortable.js');
-        // Re-enable inputs if script fails to load
-        toggleInputs(false);
       };
       document.head.appendChild(script);
     } else {
       cleanup = createForm();
     }
 
-    // Return cleanup function
     return () => {
       if (typeof cleanup === 'function') {
         cleanup();
-      } else {
-        // Fallback cleanup if createForm wasn't called
-        toggleInputs(false);
       }
     };
   },
