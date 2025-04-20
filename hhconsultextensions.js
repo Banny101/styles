@@ -1829,68 +1829,6 @@ export const EnableInputsExtension = {
   }
 };
 
-export const DisableInputsExtension = {
-  name: "DisableInputs",
-  type: "effect",
-  match: ({ trace }) => 
-    trace.type === "ext_disableInputs" || 
-    trace.payload?.name === "ext_disableInputs",
-  effect: async ({ trace }) => {
-    try {
-      // Configuration option
-      const hideCompletely = trace.payload?.hideCompletely || false;
-      
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv?.shadowRoot) {
-        window.voiceflow.chat.interact({ type: "complete" });
-        return;
-      }
-      
-      // Get the input container
-      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-      
-      if (inputContainer) {
-        if (hideCompletely) {
-          // Completely hide the input container
-          inputContainer.style.display = "none";
-        } else {
-          // Just disable it
-          inputContainer.style.opacity = "0.5";
-          inputContainer.style.pointerEvents = "none";
-          inputContainer.style. = "opacity 0.3s ease";
-        }
-      }
-
-      // Disable all interactive elements
-      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
-      elements.forEach(el => {
-        el.disabled = true;
-        
-        if (!hideCompletely) {
-          el.style.pointerEvents = "none";
-          el.style.opacity = "0.5";
-          
-          if (el.tagName.toLowerCase() === "textarea") {
-            el.style.backgroundColor = "#f5f5f5";
-          }
-        }
-      });
-      
-      // Handle voice input overlay
-      const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
-      if (voiceOverlay) {
-        voiceOverlay.style.display = "none";
-      }
-      
-      window.voiceflow.chat.interact({ type: "complete" });
-      
-    } catch (error) {
-      console.error('DisableInputs Extension Error:', error);
-      window.voiceflow.chat.interact({ type: "complete" });
-    }
-  }
-};
-
 export const CalendarDatePickerExtension = {
   name: "CalendarDatePicker",
   type: "response",
