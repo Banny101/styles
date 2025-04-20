@@ -994,3 +994,109 @@ export const CalendarDatePickerExtension = {
     return () => {};
   }
 };
+
+export const DisableInputsExtension = {
+  name: "DisableInputs",
+  type: "effect",
+  match: ({ trace }) => 
+    trace.type === "ext_disableInputs" || 
+    trace.payload?.name === "ext_disableInputs",
+  effect: async ({ trace }) => {
+    try {
+      // Configuration option
+      const hideCompletely = trace.payload?.hideCompletely || false;
+      
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) {
+        window.voiceflow.chat.interact({ type: "complete" });
+        return;
+      }
+      
+      // Get the input container
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      
+      if (inputContainer) {
+        if (hideCompletely) {
+          // Completely hide the input container
+          inputContainer.style.display = "none";
+        } else {
+          // Just disable it
+          inputContainer.style.opacity = "0.5";
+          inputContainer.style.pointerEvents = "none";
+          inputContainer.style. = "opacity 0.3s ease";
+        }
+      }
+
+      // Disable all interactive elements
+      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
+      elements.forEach(el => {
+        el.disabled = true;
+        
+        if (!hideCompletely) {
+          el.style.pointerEvents = "none";
+          el.style.opacity = "0.5";
+          
+          if (el.tagName.toLowerCase() === "textarea") {
+            el.style.backgroundColor = "#f5f5f5";
+          }
+        }
+      });
+      
+      // Handle voice input overlay
+      const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
+      if (voiceOverlay) {
+        voiceOverlay.style.display = "none";
+      }
+      
+      window.voiceflow.chat.interact({ type: "complete" });
+      
+    } catch (error) {
+      console.error('DisableInputs Extension Error:', error);
+      window.voiceflow.chat.interact({ type: "complete" });
+    }
+  }
+};
+
+export const EnableInputsExtension = {
+  name: "EnableInputs",
+  type: "effect",
+  match: ({ trace }) => 
+    trace.type === "ext_enableInputs" || 
+    trace.payload?.name === "ext_enableInputs",
+  effect: async ({ trace }) => {
+    try {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) {
+        window.voiceflow.chat.interact({ type: "complete" });
+        return;
+      }
+      
+      // Get the input container and make it visible again
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.display = ""; // Remove the display:none if it was set
+        inputContainer.style.opacity = "1";
+        inputContainer.style.pointerEvents = "auto";
+        inputContainer.style. = "opacity 0.3s ease";
+      }
+
+      // Enable all interactive elements
+      const elements = chatDiv.shadowRoot.querySelectorAll("textarea, input, button, .c-bXTvXv, .vfrc-chat-input--button");
+      elements.forEach(el => {
+        el.disabled = false;
+        el.style.pointerEvents = "auto";
+        el.style.opacity = "1";
+        
+        if (el.tagName.toLowerCase() === "textarea") {
+          el.style.backgroundColor = "";
+        }
+      });
+      
+      window.voiceflow.chat.interact({ type: "complete" });
+      
+    } catch (error) {
+      console.error('EnableInputs Extension Error:', error);
+      window.voiceflow.chat.interact({ type: "complete" });
+    }
+  }
+};
