@@ -1010,7 +1010,10 @@ export const MultiSelectExtension = {
       title: trace.payload?.title || "Select your options",
       submitText: trace.payload?.submitText || "Submit",
       cancelText: trace.payload?.cancelText || "Cancel",
-      darkMode: trace.payload?.darkMode || false
+      darkMode: trace.payload?.darkMode || false,
+      successMessage: trace.payload?.successMessage || "Your selection has been saved",
+      slantTitle: trace.payload?.slantTitle || false,
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10
     };
 
     // Color utilities
@@ -1061,13 +1064,25 @@ export const MultiSelectExtension = {
         .multi-select-container {
           font-family: 'Inter', sans-serif;
           width: 100%;
+          max-width: 450px;
+          margin: 0 auto;
         }
         
         .multi-select-title {
-          font-size: 14px;
+          font-size: 15px;
           color: ${colors.textSecondary};
-          margin-bottom: 12px;
+          margin-bottom: 14px;
           font-weight: 500;
+          ${config.slantTitle ? `
+            font-style: italic;
+            transform: skewX(${config.titleSkewDegree}deg);
+            display: inline-block;
+            background: ${hexToRgba(config.color, 0.08)};
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: ${config.color};
+            margin-left: -4px;
+          ` : ''}
         }
         
         .multi-select-subtitle {
@@ -1093,6 +1108,8 @@ export const MultiSelectExtension = {
           cursor: pointer;
           transition: all 0.2s ease;
           user-select: none;
+          opacity: 0;
+          animation: slideIn 0.3s forwards;
         }
         
         .option-label:hover {
@@ -1149,6 +1166,10 @@ export const MultiSelectExtension = {
           margin: -8px 0 12px;
           display: none;
           animation: slideIn 0.3s ease;
+          padding: 10px;
+          background: ${hexToRgba(colors.error, 0.1)};
+          border-radius: 6px;
+          text-align: center;
         }
         
         .button-group {
@@ -1171,16 +1192,23 @@ export const MultiSelectExtension = {
         .submit-button {
           background: ${colors.primary};
           color: white;
+          box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
         }
         
         .submit-button:not(:disabled):hover {
           background: ${colors.primaryHover};
           transform: translateY(-1px);
+          box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
+        }
+        
+        .submit-button:not(:disabled):active {
+          transform: translateY(0);
         }
         
         .submit-button:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+          box-shadow: none;
         }
         
         .cancel-button {
@@ -1194,7 +1222,7 @@ export const MultiSelectExtension = {
         }
         
         @keyframes slideIn {
-          from { opacity: 0; transform: translateY(-10px); }
+          from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
         
@@ -1219,6 +1247,7 @@ export const MultiSelectExtension = {
           color: ${colors.text};
           border: 1px solid ${hexToRgba(colors.primary, 0.2)};
           display: none;
+          animation: fadeIn 0.5s ease;
         }
         
         .success-icon {
@@ -1229,6 +1258,9 @@ export const MultiSelectExtension = {
           background: ${colors.primary};
           border-radius: 50%;
           position: relative;
+          animation: scaleIn 0.4s cubic-bezier(0.18, 1.25, 0.6, 1.25) forwards;
+          opacity: 0;
+          transform: scale(0.5);
         }
         
         .success-icon:after {
@@ -1241,6 +1273,22 @@ export const MultiSelectExtension = {
           border: solid white;
           border-width: 0 0 2px 2px;
           transform: translate(-50%, -60%) rotate(-45deg);
+        }
+        
+        .success-text {
+          display: block;
+          animation: fadeIn 0.5s ease forwards 0.2s;
+          opacity: 0;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.5); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
         }
       </style>
       
@@ -1265,7 +1313,7 @@ export const MultiSelectExtension = {
         </div>
         <div class="success-message">
           <div class="success-icon"></div>
-          <span class="success-text">Your selection has been saved</span>
+          <span class="success-text">${config.successMessage}</span>
         </div>
       </div>
     `;
@@ -1345,7 +1393,7 @@ export const MultiSelectExtension = {
           type: "complete",
           payload: { options: selectedOptions }
         });
-      }, 1000);
+      }, 1200);
     });
 
     cancelButton.addEventListener("click", () => {
