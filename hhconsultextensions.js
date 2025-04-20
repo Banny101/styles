@@ -1008,12 +1008,16 @@ export const MultiSelectExtension = {
       maxSelections: trace.payload?.maxSelections || trace.payload?.options?.length || 0,
       color: trace.payload?.color || "#545857",
       title: trace.payload?.title || "Select your options",
+      subtitle: trace.payload?.subtitle || "",
       submitText: trace.payload?.submitText || "Submit",
       cancelText: trace.payload?.cancelText || "Cancel",
-      darkMode: trace.payload?.darkMode || false,
       successMessage: trace.payload?.successMessage || "Your selection has been saved",
-      slantTitle: trace.payload?.slantTitle || false,
-      titleSkewDegree: trace.payload?.titleSkewDegree || -10
+      darkMode: trace.payload?.darkMode || false,
+      showCounter: trace.payload?.showCounter !== false, // Default true
+      showCancelButton: trace.payload?.showCancelButton !== false, // Default true
+      allowSelectAll: trace.payload?.allowSelectAll || false,
+      slantTitle: trace.payload?.slantTitle || false, // Match ranking component
+      titleSkewDegree: trace.payload?.titleSkewDegree || -6
     };
 
     // Color utilities
@@ -1041,6 +1045,7 @@ export const MultiSelectExtension = {
     const colors = {
       primary: config.color,
       primaryHover: adjustBrightness(config.color, config.darkMode ? 20 : -15),
+      primaryLight: hexToRgba(config.color, 0.12),
       background: config.darkMode ? '#1E293B' : '#FFFFFF',
       surface: config.darkMode ? '#334155' : '#FFFFFF',
       text: config.darkMode ? '#F1F5F9' : '#303235',
@@ -1048,7 +1053,7 @@ export const MultiSelectExtension = {
       border: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.08)',
       hoverBg: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.04)',
       error: '#FF4444',
-      accent: hexToRgba(config.color, 0.15)
+      success: '#10B981'
     };
 
     const multiSelectContainer = document.createElement("form");
@@ -1071,10 +1076,10 @@ export const MultiSelectExtension = {
         
         .multi-select-title {
           font-size: 15px;
-          margin-bottom: 16px;
           color: ${colors.textSecondary};
+          margin-bottom: 14px;
           font-weight: 500;
-          user-select: none;
+          position: relative;
           ${config.slantTitle ? `
             font-style: italic;
             transform: skewX(${config.titleSkewDegree}deg);
@@ -1091,18 +1096,27 @@ export const MultiSelectExtension = {
           font-size: 13px;
           color: ${colors.textSecondary};
           margin-bottom: 16px;
-          opacity: 0.8;
+        }
+        
+        .selection-count {
+          display: ${config.showCounter && config.maxSelections < config.options.length ? 'block' : 'none'};
+          font-size: 13px;
+          color: ${colors.primary};
+          font-weight: 500;
+          margin-bottom: 12px;
+          text-align: right;
+          transition: all 0.2s ease;
         }
         
         .multi-select-options {
           display: grid;
           gap: 10px;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
         }
         
         .option-label {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           padding: 14px;
           background: ${colors.surface};
           border: 1px solid ${colors.border};
@@ -1110,33 +1124,41 @@ export const MultiSelectExtension = {
           cursor: pointer;
           transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
           user-select: none;
+          will-change: transform, box-shadow;
           box-shadow: 0 1px 2px ${hexToRgba('#000000', 0.05)};
-          will-change: transform, box-shadow, border-color;
-          animation: slideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          animation: fadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
           opacity: 0;
-          animation-delay: calc(var(--item-index) * 0.08s);
+          animation-delay: calc(var(--item-index) * 0.05s);
         }
         
         .option-label:hover {
-          border-color: ${hexToRgba(colors.primary, 0.3)};
-          box-shadow: 0 3px 6px ${colors.shadow};
+          border-color: ${colors.primary};
           transform: translateY(-1px);
+          box-shadow: 0 3px 6px ${colors.hoverBg};
+        }
+        
+        .option-label:active {
+          transform: translateY(0);
+        }
+        
+        .option-label.selected {
+          background: ${colors.primaryLight};
+          border-color: ${hexToRgba(config.color, 0.3)};
         }
         
         .checkbox-wrapper {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 22px;
-          height: 22px;
+          width: 20px;
+          height: 20px;
+          min-width: 20px;
           margin-right: 12px;
           border: 2px solid ${colors.textSecondary};
-          border-radius: 6px;
-          transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-          flex-shrink: 0;
-          margin-top: 1px;
+          border-radius: 4px;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
           position: relative;
-          overflow: hidden;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.08);
         }
         
         .option-label:hover .checkbox-wrapper {
@@ -1155,42 +1177,59 @@ export const MultiSelectExtension = {
           border-color: ${colors.primary};
         }
         
-        .checkbox-input:checked + .checkbox-wrapper:after {
+        .checkbox-wrapper:after {
           content: '';
-          width: 6px;
+          position: absolute;
+          width: 5px;
           height: 10px;
           border: solid white;
           border-width: 0 2px 2px 0;
-          transform: rotate(45deg) translate(-1px, -1px);
-          display: block;
-          animation: checkmark 0.2s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+          transform: rotate(45deg) scale(0);
+          opacity: 0;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .checkbox-input:checked + .checkbox-wrapper:after {
+          opacity: 1;
+          transform: rotate(45deg) scale(1);
         }
         
         .option-text {
           font-size: 14px;
           color: ${colors.text};
-          line-height: 1.5;
-          padding-top: 2px;
+          line-height: 1.4;
+        }
+        
+        .select-all-option {
+          font-weight: 500;
+          color: ${colors.primary};
+          border-style: dashed;
+          background: ${hexToRgba(config.color, 0.05)};
+          opacity: 0;
+          animation: fadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          animation-delay: 0;
         }
         
         .error-message {
           color: ${colors.error};
           font-size: 13px;
-          margin: -10px 0 16px;
-          padding: 10px;
+          margin: -8px 0 12px;
           display: none;
           animation: slideIn 0.3s ease;
-          border-radius: 8px;
+          padding: 8px 12px;
           background: ${hexToRgba(colors.error, 0.1)};
+          border-radius: 6px;
         }
         
         .button-group {
           display: grid;
-          grid-template-columns: 1fr 1fr;
           gap: 10px;
+          ${config.showCancelButton ? 'grid-template-columns: 1fr;' : ''}
+          margin-top: 6px;
         }
         
         .submit-button, .cancel-button {
+          width: 100%;
           padding: 14px;
           border: none;
           border-radius: 10px;
@@ -1223,102 +1262,29 @@ export const MultiSelectExtension = {
         .submit-button:disabled {
           opacity: 0.6;
           cursor: not-allowed;
+          background-color: ${colors.textSecondary};
           box-shadow: none;
         }
         
         .cancel-button {
-          background: ${colors.surface};
+          background: transparent;
           color: ${colors.textSecondary};
-          border: 1px solid ${colors.border};
+          border: 1px solid ${hexToRgba(colors.textSecondary, 0.2)};
         }
         
         .cancel-button:hover {
-          background: ${config.darkMode ? '#475569' : '#E2E8F0'};
+          background: ${hexToRgba(colors.textSecondary, 0.1)};
           transform: translateY(-1px);
         }
         
-        .cancel-button:active {
-          transform: translateY(0);
-        }
-        
-        /* Success state styling */
-        .success-message {
-          text-align: center;
-          padding: 20px;
-          margin-top: 20px;
-          background: ${hexToRgba(colors.primary, 0.1)};
-          border-radius: 10px;
-          color: ${colors.text};
-          border: 1px solid ${hexToRgba(colors.primary, 0.2)};
-          display: none;
-          animation: fadeIn 0.5s ease;
-        }
-        
-        .success-icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 48px;
-          height: 48px;
-          margin: 0 auto 16px;
-          background: ${hexToRgba(colors.primary, 0.2)};
-          border-radius: 50%;
-          position: relative;
-        }
-        
-        .success-icon svg {
-          width: 24px;
-          height: 24px;
-          color: ${colors.primary};
-          animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.1s;
-          transform: scale(0.5);
-          opacity: 0;
-        }
-        
-        .success-text {
-          font-size: 15px;
-          font-weight: 500;
-          opacity: 0;
-          transform: translateY(10px);
-          animation: fadeUp 0.3s ease forwards 0.2s;
-        }
-        
-        .count-display {
-          margin-top: 8px;
-          text-align: right;
-          font-size: 13px;
-          color: ${colors.textSecondary};
-        }
-        
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(15px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes scaleIn {
-          from { transform: scale(0.5); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        
-        @keyframes fadeUp {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
         
-        @keyframes checkmark {
-          from { opacity: 0; transform: rotate(45deg) scale(0.8) translate(-1px, -1px); }
-          to { opacity: 1; transform: rotate(45deg) scale(1) translate(-1px, -1px); }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes shake {
@@ -1330,34 +1296,94 @@ export const MultiSelectExtension = {
         .shake {
           animation: shake 0.3s ease;
         }
+        
+        /* Success state styling */
+        .success-message {
+          text-align: center;
+          padding: 20px;
+          background: ${hexToRgba(colors.success, 0.1)};
+          border-radius: 10px;
+          font-size: 15px;
+          color: ${colors.text};
+          border: 1px solid ${hexToRgba(colors.success, 0.2)};
+          display: none;
+          animation: fadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .success-icon {
+          display: block;
+          width: 48px;
+          height: 48px;
+          margin: 0 auto 16px;
+          background: ${colors.success};
+          border-radius: 50%;
+          position: relative;
+          animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .success-icon:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 22px;
+          height: 11px;
+          border: solid white;
+          border-width: 0 0 3px 3px;
+          transform: translate(-50%, -60%) rotate(-45deg);
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.5); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Focus states for accessibility */
+        .option-label:focus-within {
+          outline: 2px solid ${colors.primary};
+          outline-offset: 2px;
+        }
+        
+        .submit-button:focus, .cancel-button:focus {
+          outline: 2px solid ${colors.primary};
+          outline-offset: 2px;
+        }
       </style>
       
       <div class="multi-select-container">
         <div class="multi-select-title">${config.title}</div>
-        ${config.maxSelections < config.options.length ? 
-          `<div class="multi-select-subtitle">Choose up to ${config.maxSelections} options</div>` : 
-          ''}
+        
+        ${config.subtitle ? `<div class="multi-select-subtitle">${config.subtitle}</div>` : ''}
+        
+        <div class="selection-count">0 / ${config.maxSelections} selected</div>
+        
         <div class="multi-select-options">
+          ${config.allowSelectAll ? 
+            `<label class="option-label select-all-option">
+              <input type="checkbox" class="checkbox-input select-all" name="select-all">
+              <div class="checkbox-wrapper"></div>
+              <span class="option-text">Select all options</span>
+            </label>` : ''}
+            
           ${config.options.map((option, index) => `
-            <label class="option-label" style="--item-index: ${index}">
-              <input type="checkbox" class="checkbox-input" name="options" value="${option}">
+            <label class="option-label" style="--item-index: ${index+1}" tabindex="0">
+              <input type="checkbox" class="checkbox-input" name="options" value="${option}" tabindex="-1">
               <div class="checkbox-wrapper"></div>
               <span class="option-text">${option}</span>
             </label>
           `).join('')}
         </div>
-        <div class="count-display">Selected: <span class="selected-count">0</span>/${config.maxSelections === config.options.length ? 'any' : config.maxSelections}</div>
-        <div class="error-message"></div>
+        
+        <div class="error-message" aria-live="polite"></div>
+        
         <div class="button-group">
-          <button type="button" class="cancel-button">${config.cancelText}</button>
           <button type="submit" class="submit-button" disabled>${config.submitText}</button>
+          ${config.showCancelButton ? 
+            `<button type="button" class="cancel-button">${config.cancelText}</button>` : ''}
         </div>
-        <div class="success-message">
-          <div class="success-icon">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 13L9 17L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
+        
+        <div class="success-message" aria-live="polite">
+          <div class="success-icon" role="img" aria-label="Success"></div>
           <span class="success-text">${config.successMessage}</span>
         </div>
       </div>
@@ -1367,17 +1393,46 @@ export const MultiSelectExtension = {
     const errorMessage = multiSelectContainer.querySelector(".error-message");
     const submitButton = multiSelectContainer.querySelector(".submit-button");
     const cancelButton = multiSelectContainer.querySelector(".cancel-button");
-    const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
+    const checkboxes = multiSelectContainer.querySelectorAll('input[name="options"]');
     const successMessage = multiSelectContainer.querySelector(".success-message");
-    const countDisplay = multiSelectContainer.querySelector(".selected-count");
+    const selectionCount = multiSelectContainer.querySelector(".selection-count");
+    const selectAllCheckbox = multiSelectContainer.querySelector('.select-all');
+    const optionLabels = multiSelectContainer.querySelectorAll('.option-label');
 
-    const updateSubmitButton = () => {
+    // Update selection count and submit button state
+    const updateSelectionStatus = () => {
       if (isSubmitted) return;
+      
       const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
-      countDisplay.textContent = selectedCount;
+      
+      // Update counter
+      if (config.showCounter && config.maxSelections < config.options.length) {
+        selectionCount.textContent = `${selectedCount} / ${config.maxSelections} selected`;
+        
+        // Highlight counter when getting close to max
+        if (selectedCount >= config.maxSelections * 0.75 && selectedCount < config.maxSelections) {
+          selectionCount.style.color = '#F59E0B'; // Amber color for warning
+        } else if (selectedCount === config.maxSelections) {
+          selectionCount.style.color = colors.primary;
+          selectionCount.style.fontWeight = '600';
+        } else {
+          selectionCount.style.color = colors.primary;
+          selectionCount.style.fontWeight = '500';
+        }
+      }
+      
+      // Update select all checkbox if present
+      if (config.allowSelectAll && selectAllCheckbox) {
+        const allSelected = selectedCount === checkboxes.length;
+        selectAllCheckbox.checked = allSelected;
+        selectAllCheckbox.indeterminate = selectedCount > 0 && selectedCount < checkboxes.length;
+      }
+      
+      // Enable/disable submit button
       submitButton.disabled = selectedCount === 0;
     };
 
+    // Display error message
     const showError = (message) => {
       errorMessage.textContent = message;
       errorMessage.style.display = "block";
@@ -1385,45 +1440,97 @@ export const MultiSelectExtension = {
       setTimeout(() => {
         multiSelectContainer.querySelector('.multi-select-options').classList.remove('shake');
       }, 300);
+      
+      // Announce for screen readers
+      errorMessage.setAttribute('role', 'alert');
     };
     
+    // Disable form on submission
     const disableForm = () => {
-      // Disable all inputs in the component
       checkboxes.forEach(checkbox => {
         checkbox.disabled = true;
-        checkbox.parentElement.style.opacity = "0.7";
-        checkbox.parentElement.style.cursor = "not-allowed";
       });
       
-      submitButton.disabled = true;
-      cancelButton.disabled = true;
+      optionLabels.forEach(label => {
+        label.style.opacity = "0.7";
+        label.style.cursor = "not-allowed";
+        label.style.pointerEvents = "none";
+      });
       
-      // Add disabled appearance
-      multiSelectContainer.querySelector('.button-group').style.opacity = "0.5";
-      multiSelectContainer.querySelector('.count-display').style.opacity = "0.5";
+      if (selectAllCheckbox) {
+        selectAllCheckbox.disabled = true;
+        selectAllCheckbox.parentElement.style.opacity = "0.7";
+        selectAllCheckbox.parentElement.style.pointerEvents = "none";
+      }
+      
+      submitButton.disabled = true;
+      
+      if (cancelButton) {
+        cancelButton.disabled = true;
+        cancelButton.style.opacity = "0.5";
+      }
     };
     
+    // Show success message
     const showSuccess = () => {
       successMessage.style.display = "block";
     };
+    
+    // Update label selected state
+    const updateLabelState = (checkbox) => {
+      const label = checkbox.closest('.option-label');
+      if (checkbox.checked) {
+        label.classList.add('selected');
+      } else {
+        label.classList.remove('selected');
+      }
+    };
 
+    // Add change event for checkboxes
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener("change", () => {
         if (isSubmitted) return;
         
+        updateLabelState(checkbox);
+        
         const selectedCount = multiSelectContainer.querySelectorAll('input[name="options"]:checked').length;
         
-        if (selectedCount > config.maxSelections && config.maxSelections < config.options.length) {
+        if (selectedCount > config.maxSelections) {
           checkbox.checked = false;
+          updateLabelState(checkbox);
           showError(`You can select up to ${config.maxSelections} options`);
         } else {
           errorMessage.style.display = "none";
         }
         
-        updateSubmitButton();
+        updateSelectionStatus();
       });
     });
+    
+    // Select All functionality
+    if (config.allowSelectAll && selectAllCheckbox) {
+      selectAllCheckbox.addEventListener('change', () => {
+        if (isSubmitted) return;
+        
+        const willCheck = selectAllCheckbox.checked;
+        
+        // If selecting all would exceed max, show error
+        if (willCheck && config.maxSelections < checkboxes.length) {
+          selectAllCheckbox.checked = false;
+          showError(`You can select up to ${config.maxSelections} options`);
+          return;
+        }
+        
+        checkboxes.forEach(checkbox => {
+          checkbox.checked = willCheck;
+          updateLabelState(checkbox);
+        });
+        
+        updateSelectionStatus();
+      });
+    }
 
+    // Form submission
     multiSelectContainer.addEventListener("submit", (e) => {
       e.preventDefault();
       if (isSubmitted) return;
@@ -1442,17 +1549,35 @@ export const MultiSelectExtension = {
           type: "complete",
           payload: { options: selectedOptions }
         });
-      }, 1500);
+      }, 1000);
     });
 
-    cancelButton.addEventListener("click", () => {
-      if (isSubmitted) return;
-      
-      disableForm();
-      
-      window.voiceflow.chat.interact({
-        type: "cancel",
-        payload: { options: [] }
+    // Cancel button
+    if (cancelButton) {
+      cancelButton.addEventListener("click", () => {
+        if (isSubmitted) return;
+        
+        disableForm();
+        
+        window.voiceflow.chat.interact({
+          type: "cancel",
+          payload: { options: [] }
+        });
+      });
+    }
+    
+    // Add keyboard navigation to option labels
+    optionLabels.forEach(label => {
+      label.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          const checkbox = label.querySelector('input[type="checkbox"]');
+          checkbox.checked = !checkbox.checked;
+          
+          // Trigger the change event
+          const event = new Event('change', { bubbles: true });
+          checkbox.dispatchEvent(event);
+        }
       });
     });
 
