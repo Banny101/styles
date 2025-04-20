@@ -3516,6 +3516,18 @@ export const CalendarDatePickerExtension = {
         0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
         100% { background: ${hexToRgba(config.primaryColor, 0.05)}; }
       }
+      
+      /* Custom overlay for input blocker */
+      #vf-input-blocker {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80px; /* Height that should cover the input area */
+        background: transparent;
+        z-index: 10000;
+        pointer-events: all;
+      }
     `;
     
     // Create the container element
@@ -3717,62 +3729,172 @@ export const CalendarDatePickerExtension = {
       disableAllControls();
     };
     
-    // Improved input control - Using direct display manipulation for more reliable control
-    const hideInputContainer = () => {
-      console.log("📹 Hiding input container for date picker");
-      const chatDiv = document.getElementById("voiceflow-chat");
-      
-      if (chatDiv && chatDiv.shadowRoot) {
-        // Access the shadow root
-        const shadowRoot = chatDiv.shadowRoot;
-        
-        // Find the input container inside the shadow DOM
-        const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
-        
-        if (inputContainer) {
-          // Store current display value to restore later
-          inputContainer.dataset.previousDisplay = inputContainer.style.display || '';
-          inputContainer.style.display = "none"; // Hide input field completely
-          console.log("✅ Input container hidden");
-        } else {
-          console.warn("⚠️ Input container not found");
-        }
-        
-        // Also hide any voice input overlay
-        const voiceOverlay = shadowRoot.querySelector(".vfrc-voice-input");
-        if (voiceOverlay) {
-          voiceOverlay.dataset.previousDisplay = voiceOverlay.style.display || '';
-          voiceOverlay.style.display = "none";
-        }
-      }
-    }
+    // Multiple approaches to block input - more robust for Next.js/TypeScript
+    let inputBlockerDiv = null;
+    let inputObserver = null;
+    const modifiedElements = new Map();
     
-    const showInputContainer = () => {
-      console.log("📹 Restoring input container");
-      const chatDiv = document.getElementById("voiceflow-chat");
-      
-      if (chatDiv && chatDiv.shadowRoot) {
-        // Access the shadow root
-        const shadowRoot = chatDiv.shadowRoot;
+    const blockInputs = () => {
+      try {
+        // 1. Create physical blocker div that covers the input area
+        inputBlockerDiv = document.createElement('div');
+        inputBlockerDiv.id = 'vf-input-blocker';
+        document.body.appendChild(inputBlockerDiv);
         
-        // Find the input container inside the shadow DOM
-        const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
+        // 2. Try to find Voiceflow chat input through multiple methods
+        const chatDiv = document.getElementById("voiceflow-chat");
+        if (!chatDiv) return;
         
-        if (inputContainer) {
-          // Restore previous display value
-          inputContainer.style.display = inputContainer.dataset.previousDisplay || '';
-          console.log("✅ Input container restored");
-        } else {
-          console.warn("⚠️ Input container not found");
+        if (chatDiv.shadowRoot) {
+          // Use multiple selectors to find input elements
+          const selectors = [
+            ".vfrc-input-container",
+            ".vfrc-chat-input",
+            "[data-testid='chat-input']",
+            "textarea",
+            "input[type='text']",
+            ".vfrc-voice-input",
+            "button"
+          ];
+          
+          // Try each selector
+          selectors.forEach(selector => {
+            try {
+              const elements = chatDiv.shadowRoot.querySelectorAll(selector);
+              elements.forEach(el => {
+                // Save original state
+                modifiedElements.set(el, {
+                  display: el.style.display,
+                  visibility: el.style.visibility,
+                  pointerEvents: el.style.pointerEvents,
+                  opacity: el.style.opacity,
+                  zIndex: el.style.zIndex
+                });
+                
+                // Apply multiple blocking techniques
+                el.style.pointerEvents = "none";
+                if (selector === ".vfrc-input-container" || selector === ".vfrc-chat-input") {
+                  el.style.display = "none";
+                }
+                el.style.visibility = "hidden";
+                el.style.opacity = "0";
+                el.style.zIndex = "-1";
+                
+                if (el.tagName === "BUTTON" || el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
+                  el.disabled = true;
+                }
+              });
+            } catch (err) {
+              // Ignore individual selector errors
+            }
+          });
+          
+          // 3. Add mutation observer for dynamically added elements
+          inputObserver = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+              if (mutation.addedNodes.length) {
+                // If new input elements appear, hide them
+                try {
+                  selectors.forEach(selector => {
+                    const newElements = chatDiv.shadowRoot.querySelectorAll(selector);
+                    newElements.forEach(el => {
+                      if (!modifiedElements.has(el)) {
+                        modifiedElements.set(el, {
+                          display: el.style.display,
+                          visibility: el.style.visibility,
+                          pointerEvents: el.style.pointerEvents,
+                          opacity: el.style.opacity,
+                          zIndex: el.style.zIndex
+                        });
+                        
+                        el.style.pointerEvents = "none";
+                        if (selector === ".vfrc-input-container" || selector === ".vfrc-chat-input") {
+                          el.style.display = "none";
+                        }
+                        el.style.visibility = "hidden";
+                        el.style.opacity = "0";
+                        el.style.zIndex = "-1";
+                        
+                        if (el.tagName === "BUTTON" || el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
+                          el.disabled = true;
+                        }
+                      }
+                    });
+                  });
+                } catch (err) {
+                  // Ignore mutation handling errors
+                }
+              }
+            }
+          });
+          
+          // Start observing
+          inputObserver.observe(chatDiv.shadowRoot, { 
+            childList: true, 
+            subtree: true 
+          });
+        }
+      } catch (error) {
+        console.warn("Failed to block inputs completely:", error);
+      }
+    };
+    
+    const unblockInputs = () => {
+      try {
+        // Remove physical blocker
+        if (inputBlockerDiv && inputBlockerDiv.parentNode) {
+          inputBlockerDiv.parentNode.removeChild(inputBlockerDiv);
         }
         
-        // Also restore any voice input overlay
-        const voiceOverlay = shadowRoot.querySelector(".vfrc-voice-input");
-        if (voiceOverlay) {
-          voiceOverlay.style.display = voiceOverlay.dataset.previousDisplay || '';
+        // Disconnect observer
+        if (inputObserver) {
+          inputObserver.disconnect();
+        }
+        
+        // Restore modified elements
+        modifiedElements.forEach((originalStyles, element) => {
+          try {
+            if (element) {
+              // Restore original styles
+              element.style.display = originalStyles.display || '';
+              element.style.visibility = originalStyles.visibility || '';
+              element.style.pointerEvents = originalStyles.pointerEvents || '';
+              element.style.opacity = originalStyles.opacity || '';
+              element.style.zIndex = originalStyles.zIndex || '';
+              
+              if (element.tagName === "BUTTON" || element.tagName === "TEXTAREA" || element.tagName === "INPUT") {
+                element.disabled = false;
+              }
+            }
+          } catch (err) {
+            // Ignore individual element restoration errors
+          }
+        });
+        
+        // Clear the map
+        modifiedElements.clear();
+      } catch (error) {
+        console.warn("Failed to unblock inputs completely:", error);
+        
+        // Last-resort attempt: try to reset all Voiceflow inputs
+        try {
+          const chatDiv = document.getElementById("voiceflow-chat");
+          if (chatDiv && chatDiv.shadowRoot) {
+            const inputs = chatDiv.shadowRoot.querySelectorAll("input, textarea, button");
+            inputs.forEach(input => {
+              input.style.display = '';
+              input.style.visibility = '';
+              input.style.opacity = '';
+              input.style.pointerEvents = '';
+              input.style.zIndex = '';
+              input.disabled = false;
+            });
+          }
+        } catch (err) {
+          // Final fallback failed, can't do more
         }
       }
-    }
+    };
     
     // Event Listeners
     monthSelect.addEventListener('change', (e) => {
@@ -3807,8 +3929,8 @@ export const CalendarDatePickerExtension = {
       
       // Send cancel event to Voiceflow with a slight delay for visual feedback
       setTimeout(() => {
-        // Show input container before sending response
-        showInputContainer();
+        // Unblock inputs before sending response
+        unblockInputs();
         
         window.voiceflow.chat.interact({
           type: "cancel",
@@ -3847,8 +3969,8 @@ export const CalendarDatePickerExtension = {
         
         // Send data to Voiceflow after showing success state
         setTimeout(() => {
-          // Show input container before sending response
-          showInputContainer();
+          // Unblock inputs before sending response
+          unblockInputs();
           
           window.voiceflow.chat.interact({
             type: "complete",
@@ -3878,12 +4000,13 @@ export const CalendarDatePickerExtension = {
       }
     });
     
-    // Completely hide input container while date picker is active
-    hideInputContainer();
+    // Block inputs when component mounts
+    // Do this with a slight delay to ensure everything is rendered
+    setTimeout(blockInputs, 50);
     
-    // Return cleanup function that restores the input container
+    // Return cleanup function
     return () => {
-      showInputContainer();
+      unblockInputs();
     };
   }
 };
