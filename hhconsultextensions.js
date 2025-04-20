@@ -5,44 +5,6 @@ export const BrowserDataExtension = {
     trace.type === "ext_browserData" || 
     trace.payload?.name === "ext_browserData",
   effect: async ({ trace }) => {
-    // Disable input while collecting data
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        // Disable/enable the entire input container
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        }
-
-        // Disable/enable specific elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          primaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".c-bXTvXv.c-bXTvXv-lckiv-type-info"
-          ),
-          secondaryButtons: chatDiv.shadowRoot.querySelectorAll(
-            ".vfrc-chat-input--button.c-iSWgdS"
-          ),
-          voiceButtons: chatDiv.shadowRoot.querySelectorAll(
-            "[aria-label='Voice input']"
-          ),
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            if (el.tagName.toLowerCase() === "textarea") {
-              el.style.backgroundColor = disable ? "#f5f5f5" : "";
-            }
-          });
-        });
-      }
-    };
-
     // Show loading indicator
     const showLoadingIndicator = () => {
       const chatContainer = document.querySelector('.vfrc-chat-messages');
@@ -52,6 +14,8 @@ export const BrowserDataExtension = {
       loadingElement.className = 'browser-data-loading';
       loadingElement.innerHTML = `
         <style>
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+          
           .browser-data-loading {
             display: flex;
             align-items: center;
@@ -60,7 +24,7 @@ export const BrowserDataExtension = {
             margin: 8px 0;
             background: rgba(84, 88, 87, 0.05);
             border-radius: 8px;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 13px;
             color: #72727a;
           }
@@ -269,9 +233,6 @@ export const BrowserDataExtension = {
     };
 
     try {
-      // Disable inputs while collecting data
-      toggleInputs(true);
-      
       // Show loading indicator
       const loadingIndicator = showLoadingIndicator();
       
@@ -312,9 +273,6 @@ export const BrowserDataExtension = {
       if (loadingIndicator) {
         loadingIndicator.remove();
       }
-      
-      // Re-enable inputs
-      toggleInputs(false);
 
       // Send data back to chat
       window.voiceflow.chat.interact({
@@ -323,9 +281,6 @@ export const BrowserDataExtension = {
       });
     } catch (error) {
       console.error("BrowserData Extension Error:", error);
-      
-      // Make sure inputs are re-enabled even if there's an error
-      toggleInputs(false);
       
       // Send error back to chat
       window.voiceflow.chat.interact({
