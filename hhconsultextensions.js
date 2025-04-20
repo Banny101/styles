@@ -382,7 +382,7 @@ export const CalendarDatePickerExtension = {
         width: 100%;
         max-width: 300px;
         margin: 0 auto;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        : all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid ${colors.border};
       }
       
@@ -432,7 +432,7 @@ export const CalendarDatePickerExtension = {
         border-radius: 12px;
         appearance: none;
         cursor: pointer;
-        transition: all 0.2s ease;
+        : all 0.2s ease;
         font-family: 'Inter', system-ui, sans-serif;
       }
       
@@ -470,7 +470,7 @@ export const CalendarDatePickerExtension = {
         font-size: 14px;
         font-weight: 500;
         color: ${colors.text};
-        transition: all 0.2s ease;
+        : all 0.2s ease;
       }
       
       .date-summary.has-date {
@@ -574,7 +574,7 @@ export const CalendarDatePickerExtension = {
         z-index: 10;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.2s ease;
+        : opacity 0.2s ease;
       }
       
       .processing-overlay.active {
@@ -607,7 +607,7 @@ export const CalendarDatePickerExtension = {
         font-weight: 600;
         text-align: center;
         font-family: 'Inter', system-ui, sans-serif;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        : all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
         overflow: hidden;
       }
@@ -622,14 +622,14 @@ export const CalendarDatePickerExtension = {
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         transform: translate(-50%, -50%) scale(0);
-        transition: transform 0.4s ease-out;
+        : transform 0.4s ease-out;
         pointer-events: none;
       }
       
       .btn:active::after {
         transform: translate(-50%, -50%) scale(2);
         opacity: 0;
-        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+        : transform 0.4s ease-out, opacity 0.4s ease-out;
       }
       
       .btn-cancel {
@@ -1106,7 +1106,7 @@ export const MultiSelectExtension = {
           border: 1px solid ${colors.border};
           border-radius: 8px;
           cursor: pointer;
-          transition: all 0.2s ease;
+          : all 0.2s ease;
           user-select: none;
           opacity: 0;
           animation: slideIn 0.3s forwards;
@@ -1127,7 +1127,7 @@ export const MultiSelectExtension = {
           margin-right: 12px;
           border: 2px solid ${colors.textSecondary};
           border-radius: 4px;
-          transition: all 0.2s ease;
+          : all 0.2s ease;
           flex-shrink: 0;
         }
         
@@ -1186,7 +1186,7 @@ export const MultiSelectExtension = {
           font-size: 14px;
           font-weight: 500;
           cursor: pointer;
-          transition: all 0.2s ease;
+          : all 0.2s ease;
         }
         
         .submit-button {
@@ -1443,7 +1443,7 @@ export const DisableInputsExtension = {
           // Just disable it
           inputContainer.style.opacity = "0.5";
           inputContainer.style.pointerEvents = "none";
-          inputContainer.style.transition = "opacity 0.3s ease";
+          inputContainer.style. = "opacity 0.3s ease";
         }
       }
 
@@ -1497,7 +1497,7 @@ export const EnableInputsExtension = {
         inputContainer.style.display = ""; // Remove the display:none if it was set
         inputContainer.style.opacity = "1";
         inputContainer.style.pointerEvents = "auto";
-        inputContainer.style.transition = "opacity 0.3s ease";
+        inputContainer.style. = "opacity 0.3s ease";
       }
 
       // Enable all interactive elements
@@ -2027,57 +2027,6 @@ export const TransitionAnimationExtension = {
     if (config.showPercentage) {
       animationFrame = requestAnimationFrame(updatePercentage);
     }
-    
-    // Improved toggleInputs function that preserves scrolling
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv?.shadowRoot) return;
-      
-      // FIRST: Ensure message container remains scrollable
-      const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
-      if (messageContainer) {
-        // Always keep messages scrollable
-        messageContainer.style.pointerEvents = "auto";
-        messageContainer.style.overflow = "auto"; 
-        messageContainer.style.touchAction = "auto"; // Important for mobile
-      }
-      
-      // Also ensure any parent scrollable containers remain functional
-      const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
-      scrollContainers.forEach(container => {
-        if (container) {
-          container.style.pointerEvents = "auto";
-          container.style.overflow = "auto";
-          container.style.touchAction = "auto";
-        }
-      });
-      
-      // Only disable the input controls
-      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-      if (inputContainer) {
-        inputContainer.style.opacity = disable ? "0.5" : "1";
-        inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        inputContainer.style.transition = "opacity 0.3s ease";
-      }
-
-      // Disable specific input elements
-      const elements = {
-        textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-        buttons: chatDiv.shadowRoot.querySelectorAll("button"),
-        inputs: chatDiv.shadowRoot.querySelectorAll("input")
-      };
-
-      Object.values(elements).forEach(elementList => {
-        elementList.forEach(el => {
-          if (inputContainer && inputContainer.contains(el)) {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            el.style.transition = "opacity 0.3s ease";
-          }
-        });
-      });
-    };
 
     // Hide scroll indicators
     const hideScrollIndicators = () => {
@@ -2170,7 +2119,6 @@ export const TransitionAnimationExtension = {
     
     // Initial setup
     hideScrollIndicators();
-    toggleInputs(true);
     element.appendChild(animationContainer);
 
     // Set up cleanup function
@@ -2180,7 +2128,6 @@ export const TransitionAnimationExtension = {
         container.removeEventListener('click', handleInteraction);
       }
       
-      toggleInputs(false);
       hideScrollIndicators();
     };
 
