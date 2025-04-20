@@ -340,20 +340,55 @@ export const BrowserDataExtension = {
   }
 };
 
-export const DropdownExtension = {
-  name: "DropdownExtension",
+export const CalendarDatePickerExtension = {
+  name: "CalendarDatePicker",
   type: "response",
-  match: ({ trace }) =>
-    trace.type === "ext_dropdown" || trace.payload?.name === "ext_dropdown",
+  match: ({ trace }) => 
+    trace.type === "ext_calendarDatePicker" || 
+    trace.payload?.name === "ext_calendarDatePicker",
   render: ({ trace, element }) => {
-    // Configuration options
-    const primaryColor = trace.payload?.color || "#545857";
-    const buttonText = trace.payload?.buttonText || "Submit";
-    const placeholder = trace.payload?.placeholder || "Search or select...";
-    const maxHeight = trace.payload?.maxHeight || 200; // Max height of dropdown options
-    const darkMode = trace.payload?.darkMode || false;
+    // Configuration with defaults
+    const config = {
+      title: trace.payload?.title || "",
+      confirmText: trace.payload?.confirmText || "Confirm",
+      cancelText: trace.payload?.cancelText || "Cancel",
+      primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
+      maxYear: parseInt(trace.payload?.maxYear) || new Date().getFullYear(),
+      minYear: parseInt(trace.payload?.minYear) || 1900,
+      ageLabel: trace.payload?.ageLabel || "Your age", 
+      darkMode: trace.payload?.darkMode || false,
+      preventFutureDates: trace.payload?.preventFutureDates !== false // Default true
+    };
     
-    // Color utility functions
+    // Create a unique ID for this instance
+    const instanceId = `datepicker-${Date.now()}`;
+    
+    // Helper functions
+    const calculateAge = (birthdate) => {
+      const today = new Date();
+      let age = today.getFullYear() - birthdate.getFullYear();
+      const monthDiff = today.getMonth() - birthdate.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+        age--;
+      }
+      
+      return age;
+    };
+    
+    const isFutureDate = (year, month, day) => {
+      if (!config.preventFutureDates) return false;
+      const date = new Date(year, month, day);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date > today;
+    };
+    
+    const formatDate = (year, month, day) => {
+      return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+    };
+    
+    // Color utilities
     const hexToRgba = (hex, alpha = 1) => {
       const r = parseInt(hex.slice(1, 3), 16);
       const g = parseInt(hex.slice(3, 5), 16);
@@ -361,543 +396,648 @@ export const DropdownExtension = {
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
     
-    // Lighten/darken a hex color
-    const adjustColor = (hex, percent) => {
-      const num = parseInt(hex.slice(1), 16);
-      const amt = Math.round(2.55 * percent);
-      const R = (num >> 16) + amt;
-      const G = (num >> 8 & 0x00FF) + amt;
-      const B = (num & 0x0000FF) + amt;
-      
-      return '#' + (
-        0x1000000 + 
-        (R < 255 ? (R < 0 ? 0 : R) : 255) * 0x10000 + 
-        (G < 255 ? (G < 0 ? 0 : G) : 255) * 0x100 + 
-        (B < 255 ? (B < 0 ? 0 : B) : 255)
-      ).toString(16).slice(1);
-    };
-    
-    // Set colors based on mode
+    // Set color scheme based on dark mode preference
     const colors = {
-      primary: primaryColor,
-      hover: adjustColor(primaryColor, 10),
-      border: hexToRgba(primaryColor, 0.2),
-      focusShadow: hexToRgba(primaryColor, 0.1),
-      hoverBg: hexToRgba(primaryColor, 0.08),
-      background: darkMode ? "#1E293B" : "white",
-      surface: darkMode ? "#334155" : "white",
-      text: darkMode ? "#F1F5F9" : primaryColor,
-      textSecondary: darkMode ? "#94A3B8" : hexToRgba(primaryColor, 0.7),
-      inputBg: darkMode ? "#475569" : "white",
-      scrollThumb: hexToRgba(primaryColor, 0.4),
-      scrollTrack: darkMode ? "#334155" : "#f1f1f1"
+      background: config.darkMode ? '#1E293B' : '#FFFFFF',
+      surface: config.darkMode ? '#334155' : '#F8FAFC',
+      text: config.darkMode ? '#F1F5F9' : '#1E293B',
+      textSecondary: config.darkMode ? '#94A3B8' : '#64748B',
+      border: config.darkMode ? '#475569' : '#E2E8F0',
+      primary: config.primaryColor,
+      primaryLight: hexToRgba(config.primaryColor, 0.15),
+      hover: config.darkMode ? '#475569' : '#F1F5F9',
+      success: '#10B981',
+      successLight: hexToRgba('#10B981', 0.1)
     };
     
-    // Improved input disabling that preserves scrolling
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv?.shadowRoot) return;
+    // Month names
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                     'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    // Style
+    const styles = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
       
-      // FIRST: Ensure all chat message containers remain scrollable
-      const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
-      if (messageContainer) {
-        messageContainer.style.pointerEvents = "auto";
-        messageContainer.style.overflow = "auto"; 
-        messageContainer.style.touchAction = "auto"; // Important for mobile
-      }
-      
-      // Also ensure any parent scrollable containers remain functional
-      const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
-      scrollContainers.forEach(container => {
-        if (container) {
-          container.style.pointerEvents = "auto";
-          container.style.overflow = "auto";
-          container.style.touchAction = "auto";
-        }
-      });
-      
-      // Only disable the input controls
-      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-      if (inputContainer) {
-        inputContainer.style.opacity = disable ? "0.5" : "1";
-        inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        inputContainer.style.transition = "opacity 0.3s ease";
-      }
-
-      // Disable specific input elements
-      const elements = {
-        textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-        buttons: chatDiv.shadowRoot.querySelectorAll("button"),
-        inputs: chatDiv.shadowRoot.querySelectorAll("input")
-      };
-
-      Object.values(elements).forEach(elementList => {
-        elementList.forEach(el => {
-          // Don't disable elements outside the input container
-          if (inputContainer && inputContainer.contains(el)) {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-          }
-        });
-      });
-    };
-
-    const formContainer = document.createElement("form");
-    formContainer.className = "dropdown-ext-form";
-    formContainer.style.display = "inline-block";
-    formContainer.style.maxWidth = "100%";
-    formContainer.style.width = "auto";
-    const dropdownOptions = trace.payload?.options || [];
-
-    formContainer.innerHTML = `
-    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-      
-      .dropdown-ext-form {
-        display: inline-block !important;
-        width: auto;
-        max-width: 100%;
-        min-width: 250px;
+      .datepicker-container {
         font-family: 'Inter', system-ui, sans-serif;
-      }
-      
-      .dropdown-wrapper {
-        width: 100%;
-      }
-      
-      .dropdown-extension-container {
-        position: relative;
-        width: 100%;
-        margin-bottom: 8px;
-      }
-      
-      .dropdown-extension-input[type="text"] {
-        width: 100%;
-        padding: 10px 14px;
-        border: 1px solid ${colors.border};
-        border-radius: 8px;
-        background: ${colors.inputBg};
-        color: ${colors.text};
-        font-family: 'Inter', system-ui, sans-serif;
-        font-size: 14px;
-        transition: all 0.2s ease;
-        cursor: pointer;
-        margin: 0;
-        box-sizing: border-box;
-        -webkit-appearance: none;
-      }
-
-      .dropdown-extension-input[type="text"]:focus {
-        outline: none;
-        border-color: ${colors.primary};
-        box-shadow: 0 0 0 2px ${colors.focusShadow};
-      }
-
-      .dropdown-extension-input[type="text"]::placeholder {
-        color: ${colors.textSecondary};
-        opacity: 0.7;
-      }
-
-      .dropdown-extension-input[type="text"]:disabled {
-        background-color: ${darkMode ? "#1E293B" : "#f5f5f5"};
-        cursor: not-allowed;
-        opacity: 0.7;
-      }
-
-      .dropdown-extension-options {
-        position: absolute;
-        bottom: calc(100% + 4px);
-        left: 0;
-        right: 0;
-        width: 100%;
-        max-height: ${maxHeight}px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        background: ${colors.surface};
-        border-radius: 8px;
-        border: 1px solid ${colors.border};
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, ${darkMode ? 0.3 : 0.1});
-        display: none;
-        z-index: 1000;
-        box-sizing: border-box;
-        scrollbar-width: thin;
-        scrollbar-color: ${colors.scrollThumb} ${colors.scrollTrack};
-        -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
-      }
-      
-      /* Scrollbar styling */
-      .dropdown-extension-options::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      
-      .dropdown-extension-options::-webkit-scrollbar-track {
-        background: ${colors.scrollTrack};
-        border-radius: 10px;
-      }
-      
-      .dropdown-extension-options::-webkit-scrollbar-thumb {
-        background: ${colors.scrollThumb};
-        border-radius: 10px;
-      }
-      
-      .dropdown-extension-options::-webkit-scrollbar-thumb:hover {
-        background: ${colors.primary};
-      }
-
-      .dropdown-extension-options div {
-        padding: 10px 14px;
-        font-size: 14px;
-        color: ${colors.text};
-        cursor: pointer;
-        transition: background-color 0.15s ease;
-        white-space: nowrap;
+        background: ${colors.background};
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, ${config.darkMode ? 0.4 : 0.08});
         overflow: hidden;
-        text-overflow: ellipsis;
-        border-bottom: 1px solid ${hexToRgba(colors.border, 0.5)};
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid ${colors.border};
       }
       
-      .dropdown-extension-options div:last-child {
-        border-bottom: none;
+      .datepicker-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: ${config.title ? '14px 16px' : '0'};
+        background: ${colors.surface};
+        border-bottom: ${config.title ? `1px solid ${colors.border}` : 'none'};
       }
-
-      .dropdown-extension-options div:hover,
-      .dropdown-extension-options div.highlighted {
-        background-color: ${colors.hoverBg};
+      
+      .datepicker-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: ${colors.text};
+        letter-spacing: -0.01em;
       }
-
-      .dropdown-extension-submit {
+      
+      .datepicker-body {
+        padding: 16px;
+        position: relative;
+      }
+      
+      /* Custom dropdown styling */
+      .select-container {
+        position: relative;
+        margin-bottom: 16px;
+      }
+      
+      .select-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: ${colors.textSecondary};
+        margin-bottom: 6px;
+        display: block;
+      }
+      
+      .custom-select {
         width: 100%;
-        padding: 10px 16px;
-        background-color: ${colors.primary};
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-family: 'Inter', system-ui, sans-serif;
+        padding: 12px 14px;
         font-size: 14px;
         font-weight: 500;
+        color: ${colors.text};
+        background: ${colors.surface};
+        border: 1px solid ${colors.border};
+        border-radius: 12px;
+        appearance: none;
         cursor: pointer;
-        opacity: 0.5;
-        pointer-events: none;
         transition: all 0.2s ease;
-        margin: 0;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      
+      .custom-select:focus {
+        outline: none;
+        border-color: ${config.primaryColor};
+        box-shadow: 0 0 0 2px ${hexToRgba(config.primaryColor, 0.2)};
+      }
+      
+      .custom-select:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
+      .select-container::after {
+        content: '';
+        position: absolute;
+        right: 16px;
+        top: calc(50% + 10px);
+        width: 10px;
+        height: 6px;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+        background-repeat: no-repeat;
+        pointer-events: none;
+      }
+      
+      /* Results display */
+      .date-summary {
+        background: ${colors.surface};
+        border: 1px solid ${colors.border};
+        border-radius: 12px;
+        padding: 12px;
+        margin: 16px 0;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        color: ${colors.text};
+        transition: all 0.2s ease;
+      }
+      
+      .date-summary.has-date {
+        border-color: ${hexToRgba(config.primaryColor, 0.3)};
+        background: ${hexToRgba(config.primaryColor, 0.05)};
+      }
+      
+      .age-display {
+        text-align: center;
+        padding: 12px;
+        background: ${hexToRgba(config.primaryColor, 0.1)};
+        color: ${config.primaryColor};
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+        animation: fadeIn 0.3s ease;
+        border: 1px solid ${hexToRgba(config.primaryColor, 0.15)};
+        margin-bottom: 16px;
+      }
+      
+      .error-text {
+        text-align: center;
+        padding: 12px;
+        background: ${hexToRgba('#EF4444', 0.1)};
+        color: #EF4444;
+        border-radius: 12px;
+        font-size: 14px;
+        margin-bottom: 16px;
+        border: 1px solid ${hexToRgba('#EF4444', 0.2)};
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      /* Success state */
+      .success-state {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${colors.background};
+        animation: fadeIn 0.3s ease;
+        padding: 16px;
         box-sizing: border-box;
       }
-
-      .dropdown-extension-submit.enabled {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .dropdown-extension-submit.enabled:hover {
-        background-color: ${colors.hover};
-        transform: translateY(-1px);
+      
+      .success-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
       }
       
-      .dropdown-extension-submit.enabled:active {
+      .success-icon {
+        width: 48px;
+        height: 48px;
+        background: ${colors.successLight};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.1s;
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      
+      .success-message {
+        font-size: 16px;
+        font-weight: 600;
+        color: ${colors.text};
+        margin-bottom: 8px;
+        animation: fadeUp 0.3s ease forwards 0.2s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      .success-details {
+        font-size: 14px;
+        color: ${colors.textSecondary};
+        animation: fadeUp 0.3s ease forwards 0.3s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      /* Processing overlay */
+      .processing-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${hexToRgba(colors.background, 0.8)};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      
+      .processing-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      
+      .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid ${hexToRgba(config.primaryColor, 0.2)};
+        border-radius: 50%;
+        border-top-color: ${config.primaryColor};
+        animation: spin 1s linear infinite;
+      }
+      
+      /* Buttons */
+      .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      
+      .btn {
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        font-family: 'Inter', system-ui, sans-serif;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.4s ease-out;
+        pointer-events: none;
+      }
+      
+      .btn:active::after {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+      }
+      
+      .btn-cancel {
+        background: ${colors.surface};
+        color: ${colors.textSecondary};
+        border: 1px solid ${colors.border};
+      }
+      
+      .btn-cancel:hover {
+        background: ${config.darkMode ? '#475569' : '#E2E8F0'};
+      }
+      
+      .btn-confirm {
+        background: ${config.primaryColor};
+        color: white;
+        box-shadow: 0 2px 5px ${hexToRgba(config.primaryColor, 0.4)};
+      }
+      
+      .btn-confirm:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px ${hexToRgba(config.primaryColor, 0.5)};
+      }
+      
+      .btn-confirm:active {
         transform: translateY(0);
       }
-
-      .dropdown-extension-invalid {
-        border-color: #ff4444 !important;
-      }
-
-      .dropdown-extension-input[type="text"] {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='${encodeURIComponent(colors.text)}' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='18 15 12 9 6 15'%3E%3C/polyline%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 12px center;
-        padding-right: 32px;
+      
+      .btn-confirm:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
       }
       
-      /* Animation classes */
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(5px); }
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes scaleIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
       }
       
-      .dropdown-fade-in {
-        animation: fadeIn 0.2s ease forwards;
+      @keyframes spin {
+        to { transform: rotate(360deg); }
       }
       
-      /* Mobile adjustments */
-      @media screen and (max-width: 480px) {
-        .dropdown-ext-form {
-          width: 100%;
-          min-width: 0;
-        }
+      .highlight-animation {
+        animation: highlight 0.5s ease;
       }
-    </style>
-  
-    <div class="dropdown-wrapper">
-      <div class="dropdown-extension-container">
-        <input 
-          type="text" 
-          class="dropdown-extension-input dropdown-extension-search" 
-          placeholder="${placeholder}" 
-          autocomplete="off"
-          spellcheck="false"
-          aria-label="Dropdown search field"
-        >
-        <div class="dropdown-extension-options" role="listbox" aria-label="Dropdown options">
-          ${dropdownOptions
-            .map((option) => `<div data-value="${option}" role="option">${option}</div>`)
-            .join("")}
+      
+      @keyframes highlight {
+        0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
+        100% { background: ${hexToRgba(config.primaryColor, 0.05)}; }
+      }
+    `;
+    
+    // Create the container element
+    const container = document.createElement('div');
+    container.id = instanceId;
+    
+    // Set initial state
+    const today = new Date();
+    let selectedYear = null;
+    let selectedMonth = null;
+    let selectedDay = null;
+    let selectedDate = null;
+    let isProcessing = false;
+    let isCompleted = false;
+    
+    // Get days in month
+    const getDaysInMonth = (year, month) => {
+      return new Date(year, month + 1, 0).getDate();
+    };
+    
+    // Create the HTML structure
+    container.innerHTML = `
+      <style>${styles}</style>
+      <div class="datepicker-container">
+        ${config.title ? `
+        <div class="datepicker-header">
+          <div class="datepicker-title">${config.title}</div>
         </div>
-        <input 
-          type="hidden" 
-          class="dropdown-extension-input dropdown-extension-hidden" 
-          name="dropdown" 
-          required
-        >
+        ` : ''}
+        
+        <div class="datepicker-body">
+          <!-- Month Dropdown -->
+          <div class="select-container">
+            <label for="month-select" class="select-label">Month</label>
+            <select id="month-select" class="custom-select">
+              <option value="" disabled selected>Select month</option>
+              ${monthNames.map((month, index) => 
+                `<option value="${index}">${month}</option>`
+              ).join('')}
+            </select>
+          </div>
+          
+          <!-- Day Dropdown -->
+          <div class="select-container">
+            <label for="day-select" class="select-label">Day</label>
+            <select id="day-select" class="custom-select" disabled>
+              <option value="" disabled selected>Select day</option>
+            </select>
+          </div>
+          
+          <!-- Year Dropdown -->
+          <div class="select-container">
+            <label for="year-select" class="select-label">Year</label>
+            <select id="year-select" class="custom-select">
+              <option value="" disabled selected>Select year</option>
+              ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
+                .map(year => `<option value="${year}">${year}</option>`)
+                .join('')}
+            </select>
+          </div>
+          
+          <div class="date-summary">No date selected</div>
+          <div class="age-display"></div>
+          <div class="error-text">Please complete your selection</div>
+          
+          <div class="buttons">
+            <button class="btn btn-cancel">${config.cancelText}</button>
+            <button class="btn btn-confirm" disabled>${config.confirmText}</button>
+          </div>
+          
+          <!-- Processing overlay -->
+          <div class="processing-overlay">
+            <div class="spinner"></div>
+          </div>
+          
+          <!-- Success state -->
+          <div class="success-state">
+            <div class="success-content">
+              <div class="success-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 13L9 17L19 7" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="success-message">Date confirmed</div>
+              <div class="success-details"></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <button type="submit" class="dropdown-extension-submit">${buttonText}</button>
-    </div>
-  `;  
-
-    const dropdownSearch = formContainer.querySelector(".dropdown-extension-search");
-    const dropdownOptionsDiv = formContainer.querySelector(".dropdown-extension-options");
-    const hiddenDropdownInput = formContainer.querySelector(".dropdown-extension-hidden");
-    const submitButton = formContainer.querySelector(".dropdown-extension-submit");
-    let highlightedIndex = -1;
-    let isDropdownVisible = false;
-
-    const enableSubmitButton = () => {
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      submitButton.classList.toggle("enabled", isValidOption);
-    };
-
-    const showDropup = (e) => {
-      if (e) e.stopPropagation();
-      if (isDropdownVisible) return;
-      
-      isDropdownVisible = true;
-      dropdownOptionsDiv.style.display = "block";
-      dropdownOptionsDiv.classList.add("dropdown-fade-in");
-      
-      // Scroll to selected option if exists
-      const selectedOption = dropdownOptionsDiv.querySelector(`div[data-value="${hiddenDropdownInput.value}"]`);
-      if (selectedOption) {
-        highlightedIndex = Array.from(dropdownOptionsDiv.querySelectorAll("div")).indexOf(selectedOption);
-        updateHighlight();
-        setTimeout(() => {
-          selectedOption.scrollIntoView({ block: "nearest", behavior: "smooth" });
-        }, 50);
-      }
-    };
-
-    const hideDropup = () => {
-      isDropdownVisible = false;
-      dropdownOptionsDiv.style.display = "none";
-      highlightedIndex = -1;
-      updateHighlight();
-    };
-
-    const updateHighlight = () => {
-      const options = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
-      options.forEach((option, index) => {
-        option.classList.toggle("highlighted", index === highlightedIndex);
-        option.setAttribute("aria-selected", index === highlightedIndex ? "true" : "false");
-      });
-      
-      // Scroll highlighted option into view
-      if (highlightedIndex >= 0 && options[highlightedIndex]) {
-        options[highlightedIndex].scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }
-    };
-
-    const handleOptionSelection = (selectedValue) => {
-      dropdownSearch.value = selectedValue;
-      hiddenDropdownInput.value = selectedValue;
-      hideDropup();
-      enableSubmitButton();
-    };
-
-    const handleInput = (e) => {
-      e.stopPropagation();
-      const filter = dropdownSearch.value.toLowerCase();
-      const options = dropdownOptionsDiv.querySelectorAll("div");
-      let hasVisibleOptions = false;
-      
-      options.forEach((option) => {
-        const text = option.textContent.toLowerCase();
-        const isVisible = text.includes(filter);
-        option.style.display = isVisible ? "" : "none";
-        if (isVisible) hasVisibleOptions = true;
-      });
-      
-      // Only show dropdown if there are matching options
-      if (hasVisibleOptions) {
-        showDropup();
-      } else {
-        hideDropup();
-      }
-      
-      hiddenDropdownInput.value = "";
-      enableSubmitButton();
-      highlightedIndex = -1;
-      updateHighlight();
-    };
-
-    const handleKeyNavigation = (e) => {
-      const visibleOptions = [...dropdownOptionsDiv.querySelectorAll("div:not([style*='display: none'])")];
-      
-      switch(e.key) {
-        case "ArrowDown":
-          e.preventDefault();
-          if (!isDropdownVisible) {
-            showDropup();
-          } else if (visibleOptions.length > 0) {
-            highlightedIndex = Math.min(highlightedIndex + 1, visibleOptions.length - 1);
-            updateHighlight();
-          }
-          break;
-          
-        case "ArrowUp":
-          e.preventDefault();
-          if (highlightedIndex > 0) {
-            highlightedIndex = Math.max(highlightedIndex - 1, 0);
-            updateHighlight();
-          }
-          break;
-          
-        case "Enter":
-          e.preventDefault();
-          if (highlightedIndex >= 0 && visibleOptions[highlightedIndex]) {
-            const selectedValue = visibleOptions[highlightedIndex].getAttribute("data-value");
-            handleOptionSelection(selectedValue);
-          } else if (submitButton.classList.contains("enabled")) {
-            submitButton.click(); // Submit form if valid
-          }
-          break;
-          
-        case "Escape":
-          e.preventDefault();
-          hideDropup();
-          dropdownSearch.blur();
-          break;
-          
-        case "Tab":
-          hideDropup();
-          break;
-      }
-    };
-
-    // Prevent form submission on enter key while typing
-    formContainer.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && document.activeElement === dropdownSearch) {
-        e.preventDefault();
-      }
-    });
-
-    // Add event listeners
-    dropdownSearch.addEventListener("focus", showDropup);
-    dropdownSearch.addEventListener("click", showDropup);
-    dropdownSearch.addEventListener("input", handleInput);
-    dropdownSearch.addEventListener("keydown", handleKeyNavigation);
-
-    // Make options dropdown properly scrollable
-    dropdownOptionsDiv.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (e.target.tagName === "DIV") {
-        const selectedValue = e.target.getAttribute("data-value");
-        handleOptionSelection(selectedValue);
-      }
-    });
+    `;
     
-    // Handle mousewheel/touch scrolling properly
-    dropdownOptionsDiv.addEventListener("wheel", (e) => {
-      // Only stop propagation if we're at the boundary and would scroll the page
-      const { scrollTop, scrollHeight, clientHeight } = dropdownOptionsDiv;
-      const isAtTop = scrollTop === 0 && e.deltaY < 0;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
-      
-      if (isAtTop || isAtBottom) {
-        e.stopPropagation();
-      } else {
-        // Let the dropdown scroll internally
-        e.stopPropagation();
-      }
-    });
-
-    // Close dropdown when clicking outside
-    const handleOutsideClick = (e) => {
-      if (!dropdownSearch.contains(e.target) && !dropdownOptionsDiv.contains(e.target)) {
-        hideDropup();
-      }
-    };
+    // Append to the element
+    element.appendChild(container);
     
-    document.addEventListener("click", handleOutsideClick);
-
-    // Form submission
-    formContainer.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const isValidOption = dropdownOptions.includes(hiddenDropdownInput.value);
-      if (!isValidOption) {
-        dropdownSearch.classList.add("dropdown-extension-invalid");
-        setTimeout(() => dropdownSearch.classList.remove("dropdown-extension-invalid"), 1500);
+    // Get DOM elements
+    const monthSelect = container.querySelector('#month-select');
+    const daySelect = container.querySelector('#day-select');
+    const yearSelect = container.querySelector('#year-select');
+    const dateSummary = container.querySelector('.date-summary');
+    const ageDisplay = container.querySelector('.age-display');
+    const errorText = container.querySelector('.error-text');
+    const cancelButton = container.querySelector('.btn-cancel');
+    const confirmButton = container.querySelector('.btn-confirm');
+    const processingOverlay = container.querySelector('.processing-overlay');
+    const successState = container.querySelector('.success-state');
+    const successDetails = container.querySelector('.success-details');
+    
+    // Update day options based on selected month and year
+    const updateDayOptions = () => {
+      if (selectedMonth === null || selectedYear === null) {
+        daySelect.disabled = true;
         return;
       }
-
-      // Disable input and prevent changes after submission
-      dropdownSearch.disabled = true;
-      dropdownSearch.style.backgroundColor = darkMode ? "#1E293B" : "#f5f5f5";
-      dropdownSearch.style.cursor = "not-allowed";
-      dropdownSearch.style.opacity = "0.7";
       
-      // Remove all event listeners to prevent any interaction
-      dropdownSearch.removeEventListener("focus", showDropup);
-      dropdownSearch.removeEventListener("click", showDropup);
-      dropdownSearch.removeEventListener("input", handleInput);
-      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
+      daySelect.disabled = false;
       
-      // Disable submit button
-      submitButton.disabled = true;
-      submitButton.style.opacity = "0.5";
-      submitButton.style.pointerEvents = "none";
+      const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
       
-      // Re-enable Voiceflow's inputs
-      toggleInputs(false);
+      // Clear existing options except the placeholder
+      daySelect.innerHTML = '<option value="" disabled selected>Select day</option>';
       
-      // Send data back to Voiceflow
-      window.voiceflow.chat.interact({
-        type: "complete",
-        payload: { dropdown: hiddenDropdownInput.value },
-      });
-    });
-
-    const cleanup = () => {
-      document.removeEventListener("click", handleOutsideClick);
-      dropdownSearch.removeEventListener("focus", showDropup);
-      dropdownSearch.removeEventListener("click", showDropup);
-      dropdownSearch.removeEventListener("input", handleInput);
-      dropdownSearch.removeEventListener("keydown", handleKeyNavigation);
+      // Add day options
+      for (let day = 1; day <= daysInMonth; day++) {
+        const option = document.createElement('option');
+        option.value = day;
+        option.textContent = day;
+        
+        // Check if this day would create a future date
+        if (isFutureDate(selectedYear, selectedMonth, day)) {
+          option.disabled = true;
+        }
+        
+        daySelect.appendChild(option);
+      }
       
-      // Make sure inputs are re-enabled when component is removed
-      toggleInputs(false);
+      // If we had a previously selected day, try to restore it
+      if (selectedDay !== null) {
+        if (selectedDay <= daysInMonth) {
+          daySelect.value = selectedDay;
+        } else {
+          selectedDay = null;
+        }
+      }
     };
-
-    // Adjust size when the window is resized
-    const resizeObserver = new ResizeObserver(() => {
-      const parentWidth = element.offsetWidth;
-      if (parentWidth > 0) {
-        // Allow the form to size properly but not bigger than container
-        formContainer.style.maxWidth = `${parentWidth}px`;
+    
+    // Update date summary
+    const updateDateSummary = () => {
+      if (selectedYear && selectedMonth !== null && selectedDay) {
+        const formattedDate = formatDate(selectedYear, selectedMonth + 1, selectedDay);
+        dateSummary.textContent = formattedDate;
+        dateSummary.classList.add('has-date');
+        dateSummary.classList.add('highlight-animation');
+        setTimeout(() => {
+          dateSummary.classList.remove('highlight-animation');
+        }, 500);
+        
+        // Calculate age
+        selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
+        const age = calculateAge(selectedDate);
+        
+        // Update age display
+        ageDisplay.textContent = `${config.ageLabel}: ${age} years`;
+        ageDisplay.style.display = 'block';
+        
+        // Enable confirm button
+        confirmButton.disabled = false;
+        
+        // Hide error if shown
+        errorText.style.display = 'none';
+      } else {
+        dateSummary.textContent = 'No date selected';
+        dateSummary.classList.remove('has-date');
+        ageDisplay.style.display = 'none';
+        confirmButton.disabled = true;
+      }
+    };
+    
+    // Disable all controls
+    const disableAllControls = () => {
+      monthSelect.disabled = true;
+      daySelect.disabled = true;
+      yearSelect.disabled = true;
+      confirmButton.disabled = true;
+      cancelButton.disabled = true;
+    };
+    
+    // Show success state
+    const showSuccessState = (date, age) => {
+      // Update success details
+      successDetails.textContent = `${formatDate(selectedYear, selectedMonth + 1, selectedDay)} (Age: ${age})`;
+      
+      // Show success state
+      successState.style.display = 'block';
+      
+      // Hide processing overlay
+      processingOverlay.classList.remove('active');
+      
+      // Disable all controls
+      disableAllControls();
+    };
+    
+    // Event Listeners
+    monthSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedMonth = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
+    
+    daySelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedDay = parseInt(e.target.value);
+      updateDateSummary();
+    });
+    
+    yearSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedYear = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
+    
+    cancelButton.addEventListener('click', () => {
+      if (isCompleted || isProcessing) return;
+      
+      // Disable controls to prevent further interaction
+      disableAllControls();
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
+      
+      // Send cancel event to Voiceflow with a slight delay for visual feedback
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "cancel",
+          payload: { 
+            cancelled: true,
+            timestamp: Date.now()
+          }
+        });
+      }, 500);
+    });
+    
+    confirmButton.addEventListener('click', () => {
+      if (isCompleted || isProcessing) return;
+      
+      if (!selectedYear || selectedMonth === null || !selectedDay) {
+        // Show error message
+        errorText.style.display = 'block';
+        return;
+      }
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
+      
+      // Format the date
+      const month = selectedMonth + 1;
+      const formattedDate = formatDate(selectedYear, month, selectedDay);
+      
+      // Calculate age
+      const age = calculateAge(selectedDate);
+      
+      // Show success state after a brief delay for better UX
+      setTimeout(() => {
+        isCompleted = true;
+        showSuccessState(formattedDate, age);
+        
+        // Send data to Voiceflow after showing success state
+        setTimeout(() => {
+          window.voiceflow.chat.interact({
+            type: "complete",
+            payload: {
+              date: formattedDate,
+              age: age,
+              year: selectedYear,
+              month: month,
+              day: selectedDay,
+              timestamp: Date.now()
+            }
+          });
+        }, 1000);
+      }, 800);
+    });
+    
+    // Implement keyboard navigation
+    container.addEventListener('keydown', (e) => {
+      if (isCompleted || isProcessing) return;
+      
+      if (e.key === 'Enter' && !confirmButton.disabled) {
+        e.preventDefault();
+        confirmButton.click();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        cancelButton.click();
       }
     });
     
-    resizeObserver.observe(element);
-
-    element.appendChild(formContainer);
-    
-    // Disable inputs when component is mounted
-    toggleInputs(true);
-
-    return () => {
-      cleanup();
-      resizeObserver.disconnect();
-    };
-  },
+    // Empty cleanup function since we're not disabling inputs here
+    return () => {};
+  }
 };
 
 export const MultiSelectExtension = {
@@ -1713,268 +1853,126 @@ export const RankOptionsExtension = {
   },
 };
 
-export const DelayEffectExtension = {
-  name: "DelayEffect",
+export const DisableInputsExtension = {
+  name: "DisableInputs",
   type: "effect",
   match: ({ trace }) => 
-    trace.type === "ext_delay" || trace.payload?.name === "ext_delay",
+    trace.type === "ext_disableInputs" || 
+    trace.payload?.name === "ext_disableInputs",
   effect: async ({ trace }) => {
     try {
-      // Configuration options
-      const delay = Math.max(0, parseInt(trace.payload?.delay) || 1000);
-      const showIndicator = trace.payload?.showIndicator !== false;
-      const indicatorText = trace.payload?.indicatorText || "Processing...";
-      const primaryColor = trace.payload?.color || "#545857";
-      const darkMode = trace.payload?.darkMode || false;
-      
-      // Color utility functions
-      const hexToRgba = (hex, alpha = 1) => {
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-      };
-      
-      // Set colors based on mode
-      const colors = {
-        primary: primaryColor,
-        background: darkMode ? "#1E293B" : "rgba(84, 88, 87, 0.05)",
-        text: darkMode ? "#94A3B8" : "#72727a",
-        progress: darkMode ? "#334155" : "#e2e8f0",
-        progressBar: primaryColor
-      };
-
-      // Improved function to disable/enable chat inputs while preserving scrolling
-      const toggleInputs = (disable) => {
-        const chatDiv = document.getElementById("voiceflow-chat");
-        if (!chatDiv?.shadowRoot) return;
-        
-        // FIRST: Ensure message container remains scrollable
-        const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
-        if (messageContainer) {
-          // Always keep messages scrollable
-          messageContainer.style.pointerEvents = "auto";
-          messageContainer.style.overflow = "auto"; 
-          messageContainer.style.touchAction = "auto"; // Important for mobile
-        }
-        
-        // Also ensure any parent scrollable containers remain functional
-        const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
-        scrollContainers.forEach(container => {
-          if (container) {
-            container.style.pointerEvents = "auto";
-            container.style.overflow = "auto";
-            container.style.touchAction = "auto";
-          }
-        });
-        
-        // Only disable the input controls
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = disable ? "0.5" : "1";
-          inputContainer.style.pointerEvents = disable ? "none" : "auto";
-          inputContainer.style.transition = "opacity 0.3s ease";
-        }
-
-        // Disable specific input elements
-        const elements = {
-          textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-          buttons: chatDiv.shadowRoot.querySelectorAll("button"),
-          inputs: chatDiv.shadowRoot.querySelectorAll("input")
-        };
-
-        Object.values(elements).forEach(elementList => {
-          elementList.forEach(el => {
-            if (inputContainer && inputContainer.contains(el)) {
-              el.disabled = disable;
-              el.style.pointerEvents = disable ? "none" : "auto";
-              el.style.opacity = disable ? "0.5" : "1";
-            }
-          });
-        });
-      };
-
-      // Hide any existing scroll indicators
-      const hideScrollIndicators = () => {
-        document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
-          .forEach(el => {
-            el.style.display = 'none';
-          });
-      };
-
-      // Show optional visual indicator
-      const showDelayIndicator = (duration) => {
-        const chatContainer = document.querySelector('.vfrc-chat-messages');
-        if (!chatContainer) return null;
-        
-        const indicatorElement = document.createElement('div');
-        indicatorElement.className = 'delay-indicator';
-        indicatorElement.innerHTML = `
-          <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-            
-            .delay-indicator {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              padding: 12px 16px;
-              margin: 12px 0;
-              background: ${colors.background};
-              border-radius: 10px;
-              font-family: 'Inter', system-ui, sans-serif;
-              font-size: 14px;
-              color: ${colors.text};
-              animation: fadeIn 0.3s ease;
-              width: auto;
-              max-width: 300px;
-            }
-            
-            .delay-indicator-content {
-              width: 100%;
-            }
-            
-            .delay-progress {
-              width: 100%;
-              height: 4px;
-              background: ${colors.progress};
-              border-radius: 2px;
-              margin-top: 8px;
-              overflow: hidden;
-            }
-            
-            .delay-progress-bar {
-              height: 100%;
-              background: ${colors.progressBar};
-              width: 100%;
-              transition: width linear;
-              transform-origin: left;
-              border-radius: 2px;
-            }
-            
-            @keyframes pulse {
-              0% { opacity: 0.7; }
-              50% { opacity: 1; }
-              100% { opacity: 0.7; }
-            }
-            
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(5px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            
-            .delay-indicator-text {
-              animation: pulse 2s infinite;
-              font-weight: 500;
-              display: flex;
-              align-items: center;
-            }
-            
-            .delay-indicator-dots {
-              display: inline-flex;
-              margin-left: 4px;
-            }
-            
-            .dot {
-              width: 4px;
-              height: 4px;
-              border-radius: 50%;
-              background: ${colors.text};
-              margin: 0 2px;
-              opacity: 0.7;
-            }
-            
-            .dot:nth-child(1) { animation: bounce 1.5s infinite 0s; }
-            .dot:nth-child(2) { animation: bounce 1.5s infinite 0.2s; }
-            .dot:nth-child(3) { animation: bounce 1.5s infinite 0.4s; }
-            
-            @keyframes bounce {
-              0%, 60%, 100% { transform: translateY(0); }
-              30% { transform: translateY(-4px); }
-            }
-          </style>
-          <div class="delay-indicator-content">
-            <div class="delay-indicator-text">
-              ${indicatorText}
-              <div class="delay-indicator-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-              </div>
-            </div>
-            <div class="delay-progress">
-              <div class="delay-progress-bar"></div>
-            </div>
-          </div>
-        `;
-        
-        chatContainer.appendChild(indicatorElement);
-        
-        // Animate progress bar
-        const progressBar = indicatorElement.querySelector('.delay-progress-bar');
-        if (progressBar) {
-          progressBar.style.width = '100%';
-          setTimeout(() => {
-            progressBar.style.width = '0%';
-            progressBar.style.transition = `width ${duration}ms linear`;
-          }, 50);
-        }
-        
-        return indicatorElement;
-      };
-
-      // Initial cleanup and disable inputs
-      hideScrollIndicators();
-      toggleInputs(true);
-      
-      // Show delay indicator if enabled and delay is significant
-      const indicator = showIndicator && delay > 500 ? showDelayIndicator(delay) : null;
-
-      // Execute delay
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      // Remove indicator with a fade-out animation if it exists
-      if (indicator) {
-        indicator.style.opacity = '0';
-        indicator.style.transition = 'opacity 0.3s ease';
-        
-        // Remove from DOM after animation completes
-        setTimeout(() => {
-          indicator.remove();
-        }, 300);
-      }
-      
-      // Cleanup and re-enable inputs
-      hideScrollIndicators();
-      toggleInputs(false);
-
-      // Move to next block
-      window.voiceflow.chat.interact({ 
-        type: "complete",
-        payload: { 
-          delay: delay,
-          completed_at: new Date().toISOString()
-        }
-      });
-
-    } catch (error) {
-      console.error('DelayEffect Extension Error:', error);
-      // Re-enable inputs even if there's an error
       const chatDiv = document.getElementById("voiceflow-chat");
-      if (chatDiv?.shadowRoot) {
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          inputContainer.style.opacity = "1";
-          inputContainer.style.pointerEvents = "auto";
-        }
+      if (!chatDiv?.shadowRoot) {
+        // If we can't find the chat div, just continue to the next block
+        window.voiceflow.chat.interact({ type: "complete" });
+        return;
       }
       
-      window.voiceflow.chat.interact({ 
-        type: "complete",
-        payload: {
-          error: true,
-          message: error.message
+      // Disable the entire input container
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.opacity = "0.5";
+        inputContainer.style.pointerEvents = "none";
+        inputContainer.style.transition = "opacity 0.3s ease";
+      }
+
+      // Disable all interactive elements
+      const selectorsToDisable = [
+        "textarea", 
+        "input",
+        "button",
+        ".c-bXTvXv.c-bXTvXv-lckiv-type-info",
+        ".vfrc-chat-input--button.c-iSWgdS",
+        "[aria-label='Voice input']",
+        "[aria-label='Send message']",
+        "[aria-label='Add attachment']"
+      ];
+      
+      // Combine all selectors and disable them
+      const elements = chatDiv.shadowRoot.querySelectorAll(selectorsToDisable.join(", "));
+      elements.forEach(el => {
+        el.disabled = true;
+        el.style.pointerEvents = "none";
+        el.style.opacity = "0.5";
+        el.style.transition = "opacity 0.3s ease";
+        
+        if (el.tagName.toLowerCase() === "textarea") {
+          el.style.backgroundColor = "#f5f5f5";
         }
       });
+      
+      // Additionally, try to find and disable any voice input overlay
+      const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
+      if (voiceOverlay) {
+        voiceOverlay.style.display = "none";
+      }
+      
+      // Continue to the next block
+      window.voiceflow.chat.interact({ type: "complete" });
+      
+    } catch (error) {
+      console.error('DisableInputs Extension Error:', error);
+      // Continue to next block even if there's an error
+      window.voiceflow.chat.interact({ type: "complete" });
+    }
+  }
+};
+
+export const EnableInputsExtension = {
+  name: "EnableInputs",
+  type: "effect",
+  match: ({ trace }) => 
+    trace.type === "ext_enableInputs" || 
+    trace.payload?.name === "ext_enableInputs",
+  effect: async ({ trace }) => {
+    try {
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) {
+        // If we can't find the chat div, just continue to the next block
+        window.voiceflow.chat.interact({ type: "complete" });
+        return;
+      }
+      
+      // Enable the entire input container
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (inputContainer) {
+        inputContainer.style.opacity = "1";
+        inputContainer.style.pointerEvents = "auto";
+        inputContainer.style.transition = "opacity 0.3s ease";
+      }
+
+      // Enable all interactive elements
+      const selectorsToEnable = [
+        "textarea", 
+        "input",
+        "button",
+        ".c-bXTvXv.c-bXTvXv-lckiv-type-info",
+        ".vfrc-chat-input--button.c-iSWgdS",
+        "[aria-label='Voice input']",
+        "[aria-label='Send message']",
+        "[aria-label='Add attachment']"
+      ];
+      
+      // Combine all selectors and enable them
+      const elements = chatDiv.shadowRoot.querySelectorAll(selectorsToEnable.join(", "));
+      elements.forEach(el => {
+        el.disabled = false;
+        el.style.pointerEvents = "auto";
+        el.style.opacity = "1";
+        el.style.transition = "opacity 0.3s ease";
+        
+        if (el.tagName.toLowerCase() === "textarea") {
+          el.style.backgroundColor = "";
+        }
+      });
+      
+      // Continue to the next block
+      window.voiceflow.chat.interact({ type: "complete" });
+      
+    } catch (error) {
+      console.error('EnableInputs Extension Error:', error);
+      // Continue to next block even if there's an error
+      window.voiceflow.chat.interact({ type: "complete" });
     }
   }
 };
@@ -2662,1351 +2660,6 @@ export const TransitionAnimationExtension = {
         container.removeEventListener('click', handleInteraction);
       }
       cleanup();
-    };
-  }
-};
-
-export const StripePaymentExtension = {
-  name: "StripePayment",
-  type: "response",
-  match: ({ trace }) => 
-    trace.type === "ext_stripePayment" || 
-    trace.payload?.name === "ext_stripePayment",
-  render: ({ trace, element }) => {
-    const paymentUrl = trace.payload?.paymentUrl;
-    const buttonText = trace.payload?.buttonText || "Pay Now";
-    const laterButtonText = trace.payload?.laterButtonText || "Pay Later";
-    const autoRedirect = trace.payload?.autoRedirect || false;
-    const redirectDelay = trace.payload?.redirectDelay || 5000;
-    const autoRedirectText = trace.payload?.autoRedirectText || "Redirecting to secure payment in";
-    const customColor = trace.payload?.color || "#635bff"; // Stripe purple by default
-    const customTitle = trace.payload?.title || "Complete your payment to proceed";
-
-    // Improved toggleInputs function that preserves scrolling
-    const toggleInputs = (disable) => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv?.shadowRoot) return;
-      
-      // FIRST: Ensure message container remains scrollable
-      const messageContainer = chatDiv.shadowRoot.querySelector(".vfrc-chat-messages");
-      if (messageContainer) {
-        // Always keep messages scrollable
-        messageContainer.style.pointerEvents = "auto";
-        messageContainer.style.overflow = "auto"; 
-        messageContainer.style.touchAction = "auto"; // Important for mobile
-      }
-      
-      // Also ensure any parent scrollable containers remain functional
-      const scrollContainers = chatDiv.shadowRoot.querySelectorAll(".vfrc-chat-container, .vfrc-chat");
-      scrollContainers.forEach(container => {
-        if (container) {
-          container.style.pointerEvents = "auto";
-          container.style.overflow = "auto";
-          container.style.touchAction = "auto";
-        }
-      });
-      
-      // Only disable the input controls
-      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-      if (inputContainer) {
-        inputContainer.style.opacity = disable ? "0.5" : "1";
-        inputContainer.style.pointerEvents = disable ? "none" : "auto";
-        inputContainer.style.transition = "opacity 0.3s ease";
-      }
-
-      // Disable specific input elements
-      const elements = {
-        textareas: chatDiv.shadowRoot.querySelectorAll("textarea"),
-        buttons: chatDiv.shadowRoot.querySelectorAll("button"),
-        inputs: chatDiv.shadowRoot.querySelectorAll("input")
-      };
-
-      Object.values(elements).forEach(elementList => {
-        elementList.forEach(el => {
-          if (inputContainer && inputContainer.contains(el)) {
-            el.disabled = disable;
-            el.style.pointerEvents = disable ? "none" : "auto";
-            el.style.opacity = disable ? "0.5" : "1";
-            el.style.transition = "opacity 0.3s ease";
-          }
-        });
-      });
-    };
-
-    // Hide any scroll indicators that might be present
-    const hideScrollIndicators = () => {
-      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
-        .forEach(el => {
-          el.style.display = 'none';
-        });
-    };
-
-    const paymentContainer = document.createElement("div");
-    paymentContainer.className = "_1ddzqsn7";
-
-    paymentContainer.innerHTML = `
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-        
-        ._1ddzqsn7 {
-          display: block;
-        }
-        
-        .payment-container {
-          font-family: 'Inter', system-ui, sans-serif;
-          padding: 16px;
-          background: white;
-          border-radius: 12px;
-          border: 1px solid rgba(0, 0, 0, 0.1);
-          margin: 8px 0;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .payment-title {
-          font-size: 14px;
-          color: #303235;
-          margin-bottom: 12px;
-          font-weight: 500;
-        }
-
-        .button-group {
-          display: grid;
-          gap: 8px;
-          margin-top: ${autoRedirect ? '12px' : '0'};
-        }
-
-        .payment-link {
-          text-decoration: none;
-          display: block;
-          width: 100%;
-        }
-
-        .payment-button {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          background: ${customColor};
-          color: white;
-          border: none;
-          padding: 12px 20px;
-          border-radius: 8px;
-          font-family: 'Inter', system-ui, sans-serif;
-          font-size: 14px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .payment-button:hover {
-          filter: brightness(1.05);
-          transform: translateY(-1px);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .payment-button:active {
-          transform: translateY(0);
-        }
-
-        .later-button {
-          background: transparent;
-          color: #72727a;
-          border: 1px solid rgba(114, 114, 122, 0.2);
-        }
-
-        .later-button:hover {
-          background: rgba(114, 114, 122, 0.1);
-          box-shadow: none;
-        }
-
-        .redirect-countdown {
-          margin-bottom: 12px;
-          padding: 12px;
-          background: #f7fafc;
-          border-radius: 8px;
-          font-size: 13px;
-          color: #4a5568;
-          text-align: center;
-          animation: fadeIn 0.3s ease;
-        }
-
-        .countdown-number {
-          font-weight: 600;
-          color: ${customColor};
-          margin: 0 4px;
-        }
-
-        .redirect-progress {
-          width: 100%;
-          height: 4px;
-          background: #e2e8f0;
-          border-radius: 2px;
-          margin-top: 8px;
-          overflow: hidden;
-        }
-
-        .redirect-progress-bar {
-          height: 100%;
-          background: ${customColor};
-          width: 100%;
-          transition: width linear;
-        }
-
-        .backup-link {
-          margin-top: 12px;
-          padding: 12px;
-          background: #f8fafc;
-          border-radius: 8px;
-          font-size: 13px;
-          color: #4a5568;
-          text-align: center;
-          display: none;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .backup-link.visible {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          opacity: 1;
-          animation: fadeIn 0.5s ease;
-        }
-
-        .backup-link svg {
-          width: 16px;
-          height: 16px;
-          color: ${customColor};
-        }
-
-        .backup-link a {
-          color: ${customColor};
-          text-decoration: none;
-          font-weight: 500;
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-        }
-
-        .backup-link a:hover {
-          text-decoration: underline;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-          0% { opacity: 0.6; }
-          50% { opacity: 1; }
-          100% { opacity: 0.6; }
-        }
-
-        .payment-status {
-          display: none;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          margin-top: 12px;
-          padding: 8px;
-          border-radius: 6px;
-          font-size: 13px;
-          color: #4a5568;
-          animation: fadeIn 0.3s ease;
-        }
-        
-        /* Remove any down arrows that might be added by the chat UI */
-        [class*="scroll-down"],
-        [class*="scroll-button"] {
-          display: none !important;
-        }
-        
-        .secure-badge {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 12px;
-          color: #72727a;
-          margin-top: 12px;
-          padding-top: 12px;
-          border-top: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        
-        .secure-badge svg {
-          width: 14px;
-          height: 14px;
-          color: #72727a;
-        }
-      </style>
-
-      <div class="payment-container">
-        <div class="payment-title">${customTitle}</div>
-        
-        ${autoRedirect ? `
-          <div class="redirect-countdown">
-            <span>${autoRedirectText}</span>
-            <span class="countdown-number">${Math.ceil(redirectDelay/1000)}</span>
-            <span>seconds</span>
-            <div class="redirect-progress">
-              <div class="redirect-progress-bar"></div>
-            </div>
-          </div>
-        ` : ''}
-        
-        <div class="button-group">
-          <a href="${paymentUrl}" target="_blank" rel="noopener noreferrer" class="payment-link" id="stripePaymentBtn">
-            <div class="payment-button">
-              <svg class="payment-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
-                <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="2"/>
-                <path d="M4 8h16M8 14h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-              ${buttonText}
-            </div>
-          </a>
-          <button class="payment-button later-button" id="payLaterBtn">
-            ${laterButtonText}
-          </button>
-        </div>
-
-        <div class="backup-link" id="backupLink">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          <span>Payment page not opening? <a href="${paymentUrl}" target="_blank" rel="noopener noreferrer">Click here to open it</a></span>
-        </div>
-        
-        <div class="secure-badge">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-          <span>Secure payment powered by Stripe</span>
-        </div>
-      </div>
-    `;
-
-    const handlePayment = (e) => {
-      const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
-      const laterButton = paymentContainer.querySelector('#payLaterBtn');
-      const countdown = paymentContainer.querySelector('.redirect-countdown');
-      const backupLink = paymentContainer.querySelector('#backupLink');
-      
-      // Disable buttons
-      paymentLink.style.pointerEvents = 'none';
-      paymentLink.style.opacity = '0.7';
-      laterButton.style.display = 'none';
-      
-      if (countdown) {
-        countdown.style.display = 'none';
-      }
-
-      // Show backup link after a short delay
-      setTimeout(() => {
-        backupLink.classList.add('visible');
-      }, 1500);
-
-      // Hide scroll indicators
-      hideScrollIndicators();
-
-      // Re-enable chat input after a short delay
-      setTimeout(() => {
-        toggleInputs(false);
-      }, 500);
-
-      // Complete the interaction
-      setTimeout(() => {
-        window.voiceflow.chat.interact({
-          type: "complete",
-          payload: { 
-            status: "payment_initiated",
-            paymentUrl,
-            timestamp: new Date().toISOString()
-          }
-        });
-      }, 1000);
-    };
-
-    const handlePayLater = () => {
-      // Disable buttons to prevent multiple clicks
-      const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
-      const laterButton = paymentContainer.querySelector('#payLaterBtn');
-      
-      paymentLink.style.pointerEvents = 'none';
-      paymentLink.style.opacity = '0.7';
-      laterButton.disabled = true;
-      laterButton.style.opacity = '0.7';
-      laterButton.style.pointerEvents = 'none';
-      
-      // Hide scroll indicators
-      hideScrollIndicators();
-      
-      // Re-enable chat input before completing
-      toggleInputs(false);
-      
-      window.voiceflow.chat.interact({
-        type: "cancel",
-        payload: { 
-          status: "payment_delayed",
-          timestamp: new Date().toISOString()
-        }
-      });
-    };
-
-    // Disable inputs immediately when extension starts
-    toggleInputs(true);
-    
-    // Hide scroll indicators
-    hideScrollIndicators();
-
-    const paymentLink = paymentContainer.querySelector('#stripePaymentBtn');
-    const laterButton = paymentContainer.querySelector('#payLaterBtn');
-    
-    paymentLink.addEventListener('click', handlePayment);
-    laterButton.addEventListener('click', handlePayLater);
-
-    // Handle auto-redirect
-    let countdownInterval = null;
-    if (autoRedirect && paymentUrl) {
-      const countdownElement = paymentContainer.querySelector('.countdown-number');
-      const progressBar = paymentContainer.querySelector('.redirect-progress-bar');
-      let timeLeft = Math.ceil(redirectDelay/1000);
-
-      // Start progress bar animation
-      if (progressBar) {
-        progressBar.style.width = '100%';
-        setTimeout(() => {
-          progressBar.style.width = '0%';
-          progressBar.style.transition = `width ${redirectDelay}ms linear`;
-        }, 50);
-      }
-
-      // Start countdown
-      countdownInterval = setInterval(() => {
-        timeLeft -= 1;
-        if (countdownElement) {
-          countdownElement.textContent = timeLeft;
-        }
-        
-        if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
-          paymentLink.click();
-        }
-      }, 1000);
-
-      // Allow manual click during countdown
-      paymentLink.addEventListener('click', () => {
-        if (countdownInterval) {
-          clearInterval(countdownInterval);
-        }
-      });
-    }
-
-    element.appendChild(paymentContainer);
-    
-    // Return cleanup function
-    return () => {
-      // Clear any intervals
-      if (countdownInterval) {
-        clearInterval(countdownInterval);
-      }
-      
-      // Re-enable inputs if component is removed
-      toggleInputs(false);
-      
-      // Hide scroll indicators
-      hideScrollIndicators();
-    };
-  },
-};
-
-export const CalendarDatePickerExtension = {
-  name: "CalendarDatePicker",
-  type: "response",
-  match: ({ trace }) => 
-    trace.type === "ext_calendarDatePicker" || 
-    trace.payload?.name === "ext_calendarDatePicker",
-  render: ({ trace, element }) => {
-    // Configuration with defaults
-    const config = {
-      title: trace.payload?.title || "",
-      confirmText: trace.payload?.confirmText || "Confirm",
-      cancelText: trace.payload?.cancelText || "Cancel",
-      primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
-      maxYear: parseInt(trace.payload?.maxYear) || new Date().getFullYear(),
-      minYear: parseInt(trace.payload?.minYear) || 1900,
-      ageLabel: trace.payload?.ageLabel || "Your age", 
-      darkMode: trace.payload?.darkMode || false,
-      preventFutureDates: trace.payload?.preventFutureDates !== false // Default true
-    };
-    
-    // Create a unique ID for this instance
-    const instanceId = `datepicker-${Date.now()}`;
-    
-    // Utility functions
-    const calculateAge = (birthdate) => {
-      const today = new Date();
-      let age = today.getFullYear() - birthdate.getFullYear();
-      const monthDiff = today.getMonth() - birthdate.getMonth();
-      
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
-        age--;
-      }
-      
-      return age;
-    };
-    
-    const isFutureDate = (year, month, day) => {
-      if (!config.preventFutureDates) return false;
-      const date = new Date(year, month, day);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return date > today;
-    };
-    
-    const formatDate = (year, month, day) => {
-      return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-    };
-    
-    // Color utilities
-    const hexToRgba = (hex, alpha = 1) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-    
-    // Set color scheme based on dark mode preference
-    const colors = {
-      background: config.darkMode ? '#1E293B' : '#FFFFFF',
-      surface: config.darkMode ? '#334155' : '#F8FAFC',
-      text: config.darkMode ? '#F1F5F9' : '#1E293B',
-      textSecondary: config.darkMode ? '#94A3B8' : '#64748B',
-      border: config.darkMode ? '#475569' : '#E2E8F0',
-      primary: config.primaryColor,
-      primaryLight: hexToRgba(config.primaryColor, 0.15),
-      hover: config.darkMode ? '#475569' : '#F1F5F9',
-      success: '#10B981',
-      successLight: hexToRgba('#10B981', 0.1)
-    };
-    
-    // Month names
-    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                     'July', 'August', 'September', 'October', 'November', 'December'];
-    
-    // Style
-    const styles = `
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-      
-      .datepicker-container {
-        font-family: 'Inter', system-ui, sans-serif;
-        background: ${colors.background};
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, ${config.darkMode ? 0.4 : 0.08});
-        overflow: hidden;
-        width: 100%;
-        max-width: 300px;
-        margin: 0 auto;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 1px solid ${colors.border};
-      }
-      
-      .datepicker-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: ${config.title ? '14px 16px' : '0'};
-        background: ${colors.surface};
-        border-bottom: ${config.title ? `1px solid ${colors.border}` : 'none'};
-      }
-      
-      .datepicker-title {
-        font-size: 15px;
-        font-weight: 600;
-        color: ${colors.text};
-        letter-spacing: -0.01em;
-      }
-      
-      .datepicker-body {
-        padding: 16px;
-        position: relative;
-      }
-      
-      .select-container {
-        position: relative;
-        margin-bottom: 16px;
-      }
-      
-      .select-label {
-        font-size: 13px;
-        font-weight: 500;
-        color: ${colors.textSecondary};
-        margin-bottom: 6px;
-        display: block;
-      }
-      
-      .custom-select {
-        width: 100%;
-        padding: 12px 14px;
-        font-size: 14px;
-        font-weight: 500;
-        color: ${colors.text};
-        background: ${colors.surface};
-        border: 1px solid ${colors.border};
-        border-radius: 12px;
-        appearance: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-family: 'Inter', system-ui, sans-serif;
-      }
-      
-      .custom-select:focus {
-        outline: none;
-        border-color: ${config.primaryColor};
-        box-shadow: 0 0 0 2px ${hexToRgba(config.primaryColor, 0.2)};
-      }
-      
-      .custom-select:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-      
-      .select-container::after {
-        content: '';
-        position: absolute;
-        right: 16px;
-        top: calc(50% + 10px);
-        width: 10px;
-        height: 6px;
-        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
-        background-repeat: no-repeat;
-        pointer-events: none;
-      }
-      
-      .date-summary {
-        background: ${colors.surface};
-        border: 1px solid ${colors.border};
-        border-radius: 12px;
-        padding: 12px;
-        margin: 16px 0;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 500;
-        color: ${colors.text};
-        transition: all 0.2s ease;
-      }
-      
-      .date-summary.has-date {
-        border-color: ${hexToRgba(config.primaryColor, 0.3)};
-        background: ${hexToRgba(config.primaryColor, 0.05)};
-      }
-      
-      .age-display {
-        text-align: center;
-        padding: 12px;
-        background: ${hexToRgba(config.primaryColor, 0.1)};
-        color: ${config.primaryColor};
-        border-radius: 12px;
-        font-size: 14px;
-        font-weight: 500;
-        display: none;
-        animation: fadeIn 0.3s ease;
-        border: 1px solid ${hexToRgba(config.primaryColor, 0.15)};
-        margin-bottom: 16px;
-      }
-      
-      .error-text {
-        text-align: center;
-        padding: 12px;
-        background: ${hexToRgba('#EF4444', 0.1)};
-        color: #EF4444;
-        border-radius: 12px;
-        font-size: 14px;
-        margin-bottom: 16px;
-        border: 1px solid ${hexToRgba('#EF4444', 0.2)};
-        display: none;
-        animation: fadeIn 0.3s ease;
-      }
-      
-      .success-state {
-        display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: ${colors.background};
-        animation: fadeIn 0.3s ease;
-        padding: 16px;
-        box-sizing: border-box;
-      }
-      
-      .success-content {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-      }
-      
-      .success-icon {
-        width: 48px;
-        height: 48px;
-        background: ${colors.successLight};
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 16px;
-        animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.1s;
-        transform: scale(0.5);
-        opacity: 0;
-      }
-      
-      .success-message {
-        font-size: 16px;
-        font-weight: 600;
-        color: ${colors.text};
-        margin-bottom: 8px;
-        animation: fadeUp 0.3s ease forwards 0.2s;
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      
-      .success-details {
-        font-size: 14px;
-        color: ${colors.textSecondary};
-        animation: fadeUp 0.3s ease forwards 0.3s;
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      
-      .processing-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: ${hexToRgba(colors.background, 0.8)};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-      }
-      
-      .processing-overlay.active {
-        opacity: 1;
-        pointer-events: all;
-      }
-      
-      .spinner {
-        width: 24px;
-        height: 24px;
-        border: 3px solid ${hexToRgba(config.primaryColor, 0.2)};
-        border-radius: 50%;
-        border-top-color: ${config.primaryColor};
-        animation: spin 1s linear infinite;
-      }
-      
-      .buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-      
-      .btn {
-        padding: 12px;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        text-align: center;
-        font-family: 'Inter', system-ui, sans-serif;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .btn::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        transition: transform 0.4s ease-out;
-        pointer-events: none;
-      }
-      
-      .btn:active::after {
-        transform: translate(-50%, -50%) scale(2);
-        opacity: 0;
-        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
-      }
-      
-      .btn-cancel {
-        background: ${colors.surface};
-        color: ${colors.textSecondary};
-        border: 1px solid ${colors.border};
-      }
-      
-      .btn-cancel:hover {
-        background: ${config.darkMode ? '#475569' : '#E2E8F0'};
-      }
-      
-      .btn-confirm {
-        background: ${config.primaryColor};
-        color: white;
-        box-shadow: 0 2px 5px ${hexToRgba(config.primaryColor, 0.4)};
-      }
-      
-      .btn-confirm:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px ${hexToRgba(config.primaryColor, 0.5)};
-      }
-      
-      .btn-confirm:active {
-        transform: translateY(0);
-      }
-      
-      .btn-confirm:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        box-shadow: none;
-        transform: none;
-      }
-      
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      
-      @keyframes scaleIn {
-        from { transform: scale(0.5); opacity: 0; }
-        to { transform: scale(1); opacity: 1; }
-      }
-      
-      @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-      
-      .highlight-animation {
-        animation: highlight 0.5s ease;
-      }
-      
-      @keyframes highlight {
-        0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
-        100% { background: ${hexToRgba(config.primaryColor, 0.05)}; }
-      }
-      
-      /* Custom overlay for input blocker */
-      #vf-input-blocker {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 80px; /* Height that should cover the input area */
-        background: transparent;
-        z-index: 10000;
-        pointer-events: all;
-      }
-    `;
-    
-    // Create the container element
-    const container = document.createElement('div');
-    container.id = instanceId;
-    
-    // Set initial state
-    const today = new Date();
-    let selectedYear = null;
-    let selectedMonth = null;
-    let selectedDay = null;
-    let selectedDate = null;
-    let isProcessing = false;
-    let isCompleted = false;
-    
-    // Get days in month
-    const getDaysInMonth = (year, month) => {
-      return new Date(year, month + 1, 0).getDate();
-    };
-    
-    // Create the HTML structure
-    container.innerHTML = `
-      <style>${styles}</style>
-      <div class="datepicker-container">
-        ${config.title ? `
-        <div class="datepicker-header">
-          <div class="datepicker-title">${config.title}</div>
-        </div>
-        ` : ''}
-        
-        <div class="datepicker-body">
-          <!-- Month Dropdown -->
-          <div class="select-container">
-            <label for="month-select" class="select-label">Month</label>
-            <select id="month-select" class="custom-select">
-              <option value="" disabled selected>Select month</option>
-              ${monthNames.map((month, index) => 
-                `<option value="${index}">${month}</option>`
-              ).join('')}
-            </select>
-          </div>
-          
-          <!-- Day Dropdown -->
-          <div class="select-container">
-            <label for="day-select" class="select-label">Day</label>
-            <select id="day-select" class="custom-select" disabled>
-              <option value="" disabled selected>Select day</option>
-            </select>
-          </div>
-          
-          <!-- Year Dropdown -->
-          <div class="select-container">
-            <label for="year-select" class="select-label">Year</label>
-            <select id="year-select" class="custom-select">
-              <option value="" disabled selected>Select year</option>
-              ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
-                .map(year => `<option value="${year}">${year}</option>`)
-                .join('')}
-            </select>
-          </div>
-          
-          <div class="date-summary">No date selected</div>
-          <div class="age-display"></div>
-          <div class="error-text">Please complete your selection</div>
-          
-          <div class="buttons">
-            <button class="btn btn-cancel">${config.cancelText}</button>
-            <button class="btn btn-confirm" disabled>${config.confirmText}</button>
-          </div>
-          
-          <!-- Processing overlay -->
-          <div class="processing-overlay">
-            <div class="spinner"></div>
-          </div>
-          
-          <!-- Success state -->
-          <div class="success-state">
-            <div class="success-content">
-              <div class="success-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5 13L9 17L19 7" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-              <div class="success-message">Date confirmed</div>
-              <div class="success-details"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-    
-    // Append to the element
-    element.appendChild(container);
-    
-    // Get DOM elements
-    const monthSelect = container.querySelector('#month-select');
-    const daySelect = container.querySelector('#day-select');
-    const yearSelect = container.querySelector('#year-select');
-    const dateSummary = container.querySelector('.date-summary');
-    const ageDisplay = container.querySelector('.age-display');
-    const errorText = container.querySelector('.error-text');
-    const cancelButton = container.querySelector('.btn-cancel');
-    const confirmButton = container.querySelector('.btn-confirm');
-    const processingOverlay = container.querySelector('.processing-overlay');
-    const successState = container.querySelector('.success-state');
-    const successDetails = container.querySelector('.success-details');
-    
-    // Update day options based on selected month and year
-    const updateDayOptions = () => {
-      if (selectedMonth === null || selectedYear === null) {
-        daySelect.disabled = true;
-        return;
-      }
-      
-      daySelect.disabled = false;
-      
-      const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
-      
-      // Clear existing options except the placeholder
-      daySelect.innerHTML = '<option value="" disabled selected>Select day</option>';
-      
-      // Add day options
-      for (let day = 1; day <= daysInMonth; day++) {
-        const option = document.createElement('option');
-        option.value = day;
-        option.textContent = day;
-        
-        // Check if this day would create a future date
-        if (isFutureDate(selectedYear, selectedMonth, day)) {
-          option.disabled = true;
-        }
-        
-        daySelect.appendChild(option);
-      }
-      
-      // If we had a previously selected day, try to restore it
-      if (selectedDay !== null) {
-        if (selectedDay <= daysInMonth) {
-          daySelect.value = selectedDay;
-        } else {
-          selectedDay = null;
-        }
-      }
-    };
-    
-    // Update date summary
-    const updateDateSummary = () => {
-      if (selectedYear && selectedMonth !== null && selectedDay) {
-        const formattedDate = formatDate(selectedYear, selectedMonth + 1, selectedDay);
-        dateSummary.textContent = formattedDate;
-        dateSummary.classList.add('has-date');
-        dateSummary.classList.add('highlight-animation');
-        setTimeout(() => {
-          dateSummary.classList.remove('highlight-animation');
-        }, 500);
-        
-        // Calculate age
-        selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
-        const age = calculateAge(selectedDate);
-        
-        // Update age display
-        ageDisplay.textContent = `${config.ageLabel}: ${age} years`;
-        ageDisplay.style.display = 'block';
-        
-        // Enable confirm button
-        confirmButton.disabled = false;
-        
-        // Hide error if shown
-        errorText.style.display = 'none';
-      } else {
-        dateSummary.textContent = 'No date selected';
-        dateSummary.classList.remove('has-date');
-        ageDisplay.style.display = 'none';
-        confirmButton.disabled = true;
-      }
-    };
-    
-    // Disable all controls
-    const disableAllControls = () => {
-      monthSelect.disabled = true;
-      daySelect.disabled = true;
-      yearSelect.disabled = true;
-      confirmButton.disabled = true;
-      cancelButton.disabled = true;
-    };
-    
-    // Show success state
-    const showSuccessState = (date, age) => {
-      // Update success details
-      successDetails.textContent = `${formatDate(selectedYear, selectedMonth + 1, selectedDay)} (Age: ${age})`;
-      
-      // Show success state
-      successState.style.display = 'block';
-      
-      // Hide processing overlay
-      processingOverlay.classList.remove('active');
-      
-      // Disable all controls
-      disableAllControls();
-    };
-    
-    // Multiple approaches to block input - more robust for Next.js/TypeScript
-    let inputBlockerDiv = null;
-    let inputObserver = null;
-    const modifiedElements = new Map();
-    
-    const blockInputs = () => {
-      try {
-        // 1. Create physical blocker div that covers the input area
-        inputBlockerDiv = document.createElement('div');
-        inputBlockerDiv.id = 'vf-input-blocker';
-        document.body.appendChild(inputBlockerDiv);
-        
-        // 2. Try to find Voiceflow chat input through multiple methods
-        const chatDiv = document.getElementById("voiceflow-chat");
-        if (!chatDiv) return;
-        
-        if (chatDiv.shadowRoot) {
-          // Use multiple selectors to find input elements
-          const selectors = [
-            ".vfrc-input-container",
-            ".vfrc-chat-input",
-            "[data-testid='chat-input']",
-            "textarea",
-            "input[type='text']",
-            ".vfrc-voice-input",
-            "button"
-          ];
-          
-          // Try each selector
-          selectors.forEach(selector => {
-            try {
-              const elements = chatDiv.shadowRoot.querySelectorAll(selector);
-              elements.forEach(el => {
-                // Save original state
-                modifiedElements.set(el, {
-                  display: el.style.display,
-                  visibility: el.style.visibility,
-                  pointerEvents: el.style.pointerEvents,
-                  opacity: el.style.opacity,
-                  zIndex: el.style.zIndex
-                });
-                
-                // Apply multiple blocking techniques
-                el.style.pointerEvents = "none";
-                if (selector === ".vfrc-input-container" || selector === ".vfrc-chat-input") {
-                  el.style.display = "none";
-                }
-                el.style.visibility = "hidden";
-                el.style.opacity = "0";
-                el.style.zIndex = "-1";
-                
-                if (el.tagName === "BUTTON" || el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
-                  el.disabled = true;
-                }
-              });
-            } catch (err) {
-              // Ignore individual selector errors
-            }
-          });
-          
-          // 3. Add mutation observer for dynamically added elements
-          inputObserver = new MutationObserver((mutations) => {
-            for (const mutation of mutations) {
-              if (mutation.addedNodes.length) {
-                // If new input elements appear, hide them
-                try {
-                  selectors.forEach(selector => {
-                    const newElements = chatDiv.shadowRoot.querySelectorAll(selector);
-                    newElements.forEach(el => {
-                      if (!modifiedElements.has(el)) {
-                        modifiedElements.set(el, {
-                          display: el.style.display,
-                          visibility: el.style.visibility,
-                          pointerEvents: el.style.pointerEvents,
-                          opacity: el.style.opacity,
-                          zIndex: el.style.zIndex
-                        });
-                        
-                        el.style.pointerEvents = "none";
-                        if (selector === ".vfrc-input-container" || selector === ".vfrc-chat-input") {
-                          el.style.display = "none";
-                        }
-                        el.style.visibility = "hidden";
-                        el.style.opacity = "0";
-                        el.style.zIndex = "-1";
-                        
-                        if (el.tagName === "BUTTON" || el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
-                          el.disabled = true;
-                        }
-                      }
-                    });
-                  });
-                } catch (err) {
-                  // Ignore mutation handling errors
-                }
-              }
-            }
-          });
-          
-          // Start observing
-          inputObserver.observe(chatDiv.shadowRoot, { 
-            childList: true, 
-            subtree: true 
-          });
-        }
-      } catch (error) {
-        console.warn("Failed to block inputs completely:", error);
-      }
-    };
-    
-    const unblockInputs = () => {
-      try {
-        // Remove physical blocker
-        if (inputBlockerDiv && inputBlockerDiv.parentNode) {
-          inputBlockerDiv.parentNode.removeChild(inputBlockerDiv);
-        }
-        
-        // Disconnect observer
-        if (inputObserver) {
-          inputObserver.disconnect();
-        }
-        
-        // Restore modified elements
-        modifiedElements.forEach((originalStyles, element) => {
-          try {
-            if (element) {
-              // Restore original styles
-              element.style.display = originalStyles.display || '';
-              element.style.visibility = originalStyles.visibility || '';
-              element.style.pointerEvents = originalStyles.pointerEvents || '';
-              element.style.opacity = originalStyles.opacity || '';
-              element.style.zIndex = originalStyles.zIndex || '';
-              
-              if (element.tagName === "BUTTON" || element.tagName === "TEXTAREA" || element.tagName === "INPUT") {
-                element.disabled = false;
-              }
-            }
-          } catch (err) {
-            // Ignore individual element restoration errors
-          }
-        });
-        
-        // Clear the map
-        modifiedElements.clear();
-      } catch (error) {
-        console.warn("Failed to unblock inputs completely:", error);
-        
-        // Last-resort attempt: try to reset all Voiceflow inputs
-        try {
-          const chatDiv = document.getElementById("voiceflow-chat");
-          if (chatDiv && chatDiv.shadowRoot) {
-            const inputs = chatDiv.shadowRoot.querySelectorAll("input, textarea, button");
-            inputs.forEach(input => {
-              input.style.display = '';
-              input.style.visibility = '';
-              input.style.opacity = '';
-              input.style.pointerEvents = '';
-              input.style.zIndex = '';
-              input.disabled = false;
-            });
-          }
-        } catch (err) {
-          // Final fallback failed, can't do more
-        }
-      }
-    };
-    
-    // Event Listeners
-    monthSelect.addEventListener('change', (e) => {
-      if (isCompleted || isProcessing) return;
-      selectedMonth = parseInt(e.target.value);
-      updateDayOptions();
-      updateDateSummary();
-    });
-    
-    daySelect.addEventListener('change', (e) => {
-      if (isCompleted || isProcessing) return;
-      selectedDay = parseInt(e.target.value);
-      updateDateSummary();
-    });
-    
-    yearSelect.addEventListener('change', (e) => {
-      if (isCompleted || isProcessing) return;
-      selectedYear = parseInt(e.target.value);
-      updateDayOptions();
-      updateDateSummary();
-    });
-    
-    cancelButton.addEventListener('click', () => {
-      if (isCompleted || isProcessing) return;
-      
-      // Disable controls to prevent further interaction
-      disableAllControls();
-      
-      // Show processing state
-      isProcessing = true;
-      processingOverlay.classList.add('active');
-      
-      // Send cancel event to Voiceflow with a slight delay for visual feedback
-      setTimeout(() => {
-        // Unblock inputs before sending response
-        unblockInputs();
-        
-        window.voiceflow.chat.interact({
-          type: "cancel",
-          payload: { 
-            cancelled: true,
-            timestamp: Date.now()
-          }
-        });
-      }, 500);
-    });
-    
-    confirmButton.addEventListener('click', () => {
-      if (isCompleted || isProcessing) return;
-      
-      if (!selectedYear || selectedMonth === null || !selectedDay) {
-        // Show error message
-        errorText.style.display = 'block';
-        return;
-      }
-      
-      // Show processing state
-      isProcessing = true;
-      processingOverlay.classList.add('active');
-      
-      // Format the date
-      const month = selectedMonth + 1;
-      const formattedDate = formatDate(selectedYear, month, selectedDay);
-      
-      // Calculate age
-      const age = calculateAge(selectedDate);
-      
-      // Show success state after a brief delay for better UX
-      setTimeout(() => {
-        isCompleted = true;
-        showSuccessState(formattedDate, age);
-        
-        // Send data to Voiceflow after showing success state
-        setTimeout(() => {
-          // Unblock inputs before sending response
-          unblockInputs();
-          
-          window.voiceflow.chat.interact({
-            type: "complete",
-            payload: {
-              date: formattedDate,
-              age: age,
-              year: selectedYear,
-              month: month,
-              day: selectedDay,
-              timestamp: Date.now()
-            }
-          });
-        }, 1000);
-      }, 800);
-    });
-    
-    // Implement keyboard navigation
-    container.addEventListener('keydown', (e) => {
-      if (isCompleted || isProcessing) return;
-      
-      if (e.key === 'Enter' && !confirmButton.disabled) {
-        e.preventDefault();
-        confirmButton.click();
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        cancelButton.click();
-      }
-    });
-    
-    // Block inputs when component mounts
-    // Do this with a slight delay to ensure everything is rendered
-    setTimeout(blockInputs, 50);
-    
-    // Return cleanup function
-    return () => {
-      unblockInputs();
     };
   }
 };
