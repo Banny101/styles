@@ -1380,8 +1380,7 @@ export const RankOptionsExtension = {
       title: trace.payload?.title || "Rank these items in order of importance",
       submitText: trace.payload?.submitText || "Submit",
       submitMessage: trace.payload?.submitMessage || "Rankings submitted",
-      darkMode: trace.payload?.darkMode || false,
-      instructions: trace.payload?.instructions || "Drag items to reorder them"
+      darkMode: trace.payload?.darkMode || false
     };
     
     // Color utilities
@@ -1400,57 +1399,9 @@ export const RankOptionsExtension = {
       surface: config.darkMode ? "#334155" : "#FFFFFF",
       border: config.darkMode ? "rgba(255, 255, 255, 0.12)" : "rgba(0, 0, 0, 0.08)",
       secondaryText: config.darkMode ? "#94A3B8" : "#72727a",
-      buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : "#72727a",
-      shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)"
-    };
-
-    // Improved input control - Using direct display manipulation
-    const hideInputContainer = () => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      
-      if (chatDiv && chatDiv.shadowRoot) {
-        // Access the shadow root
-        const shadowRoot = chatDiv.shadowRoot;
-        
-        // Find the input container inside the shadow DOM
-        const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
-        
-        if (inputContainer) {
-          // Store current display value to restore later
-          inputContainer.dataset.previousDisplay = inputContainer.style.display || '';
-          inputContainer.style.display = "none"; // Hide input field completely
-        }
-        
-        // Also hide any voice input overlay
-        const voiceOverlay = shadowRoot.querySelector(".vfrc-voice-input");
-        if (voiceOverlay) {
-          voiceOverlay.dataset.previousDisplay = voiceOverlay.style.display || '';
-          voiceOverlay.style.display = "none";
-        }
-      }
-    };
-    
-    const showInputContainer = () => {
-      const chatDiv = document.getElementById("voiceflow-chat");
-      
-      if (chatDiv && chatDiv.shadowRoot) {
-        // Access the shadow root
-        const shadowRoot = chatDiv.shadowRoot;
-        
-        // Find the input container inside the shadow DOM
-        const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
-        
-        if (inputContainer) {
-          // Restore previous display value
-          inputContainer.style.display = inputContainer.dataset.previousDisplay || '';
-        }
-        
-        // Also restore any voice input overlay
-        const voiceOverlay = shadowRoot.querySelector(".vfrc-voice-input");
-        if (voiceOverlay) {
-          voiceOverlay.style.display = voiceOverlay.dataset.previousDisplay || '';
-        }
-      }
+      buttonHover: config.darkMode ? hexToRgba(config.color, 0.85) : hexToRgba(config.color, 0.9),
+      shadow: config.darkMode ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.1)",
+      accent: hexToRgba(config.color, 0.15)
     };
 
     // Hide any scroll indicators that might be present
@@ -1463,34 +1414,30 @@ export const RankOptionsExtension = {
 
     const createForm = () => {
       const formContainer = document.createElement("form");
-      formContainer.className = "_1ddzqsn7";
+      formContainer.className = "rank-options-form";
 
       formContainer.innerHTML = `
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
           
-          ._1ddzqsn7 {
+          .rank-options-form {
             display: block;
+            font-family: 'Inter', sans-serif;
+            max-width: 450px;
+            margin: 0 auto;
           }
           
           .rank-options-container {
-            font-family: 'Inter', sans-serif;
             padding: 0;
             width: 100%;
           }
           
           .rank-title {
-            font-size: 16px;
-            margin-bottom: 4px;
-            color: ${colors.text};
-            font-weight: 600;
-          }
-          
-          .rank-instructions {
             font-size: 14px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             color: ${colors.secondaryText};
-            font-weight: 400;
+            font-weight: 500;
+            user-select: none;
           }
           
           .rank-options-list {
@@ -1503,19 +1450,22 @@ export const RankOptionsExtension = {
           .rank-options-list li {
             display: flex;
             align-items: center;
-            padding: 12px 14px;
-            margin-bottom: 8px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
             background-color: ${colors.surface};
             border: 1px solid ${colors.border};
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: grab;
             font-size: 14px;
             color: ${colors.text};
             width: 100%;
             box-sizing: border-box;
-            transition: all 0.2s ease;
+            transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
             overflow: hidden;
+            user-select: none;
+            box-shadow: 0 1px 2px ${hexToRgba('#000000', 0.05)};
+            will-change: transform, box-shadow, border-color, background-color;
           }
           
           .rank-options-list li:before {
@@ -1532,8 +1482,8 @@ export const RankOptionsExtension = {
           
           .rank-options-list li:hover {
             border-color: ${hexToRgba(colors.primary, 0.3)};
-            box-shadow: 0 2px 4px ${colors.shadow};
-            transform: translateX(2px);
+            box-shadow: 0 3px 6px ${colors.shadow};
+            transform: translateY(-1px);
           }
           
           .rank-options-list li:hover:before {
@@ -1542,8 +1492,8 @@ export const RankOptionsExtension = {
           
           .rank-options-list li:active {
             cursor: grabbing;
-            background-color: ${config.darkMode ? '#2D3748' : '#f8f9fa'};
-            transform: scale(1.02);
+            background-color: ${colors.accent};
+            transform: scale(1.01);
           }
 
           .rank-options-list.disabled li {
@@ -1553,76 +1503,88 @@ export const RankOptionsExtension = {
           }
 
           .rank-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             min-width: 24px;
-            color: ${colors.secondaryText};
-            font-size: 14px;
-            font-weight: 500;
-            margin-right: 10px;
+            height: 24px;
+            background: ${hexToRgba(colors.primary, 0.12)};
+            color: ${colors.primary};
+            font-size: 13px;
+            font-weight: 600;
+            margin-right: 12px;
             user-select: none;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
+            border-radius: 50%;
+            padding: 0 2px;
           }
           
           li:hover .rank-number {
-            color: ${colors.primary};
+            background: ${colors.primary};
+            color: white;
           }
           
           .rank-text {
             flex: 1;
             padding-right: 4px;
             line-height: 1.4;
-            user-select: none; /* Prevent text selection for smoother dragging */
           }
           
           .submit-button {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background-color: ${colors.primary};
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-family: 'Inter', sans-serif;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             margin-top: 16px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
             position: relative;
             overflow: hidden;
+            box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
           }
           
           .submit-button:not(:disabled):hover {
             background-color: ${colors.buttonHover};
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px ${colors.shadow};
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
           }
           
           .submit-button:not(:disabled):active {
             transform: translateY(0);
+            box-shadow: 0 2px 4px ${hexToRgba(colors.primary, 0.3)};
           }
 
           .submit-button:disabled {
-            opacity: 0.5;
+            opacity: 0.6;
             cursor: not-allowed;
             background-color: ${colors.secondaryText};
+            box-shadow: none;
           }
           
           .sortable-ghost {
             opacity: 0.3;
-            background: ${config.darkMode ? '#2D3748' : '#f5f5f5'};
+            background: ${colors.accent};
             border: 2px dashed ${colors.primary};
+            box-shadow: none !important;
           }
 
           .sortable-drag {
-            background-color: ${colors.surface};
-            box-shadow: 0 4px 8px ${colors.shadow};
+            background-color: ${colors.accent};
+            box-shadow: 0 8px 16px ${colors.shadow};
             border-color: ${colors.primary};
-            transform: rotate(2deg);
+            z-index: 1000;
+            opacity: 0.9;
           }
 
           @keyframes slideIn {
             from {
               opacity: 0;
-              transform: translateY(10px);
+              transform: translateY(15px);
             }
             to {
               opacity: 1;
@@ -1631,57 +1593,61 @@ export const RankOptionsExtension = {
           }
 
           .rank-options-list li {
-            animation: slideIn 0.3s ease forwards;
-            animation-delay: calc(var(--item-index) * 0.05s);
+            animation: slideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: calc(var(--item-index) * 0.08s);
             opacity: 0;
           }
 
           .rank-handle {
-            width: 16px;
-            height: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 4px;
+            align-items: center;
+            gap: 3px;
             margin-left: auto;
-            opacity: 0.5;
+            padding: 8px;
+            opacity: 0.4;
             transition: opacity 0.2s ease;
-            cursor: grab;
-          }
-
-          .rank-handle::before,
-          .rank-handle::after {
-            content: '';
-            width: 100%;
-            height: 2px;
-            background: ${colors.text};
-            border-radius: 1px;
+            border-radius: 6px;
           }
           
-          .rank-handle div {
-            width: 100%;
+          .rank-handle:hover {
+            background: ${hexToRgba('#000000', config.darkMode ? 0.2 : 0.05)};
+          }
+
+          .rank-handle span {
+            width: 25px;
             height: 2px;
             background: ${colors.text};
             border-radius: 1px;
           }
 
           li:hover .rank-handle {
-            opacity: 0.8;
-          }
-          
-          li .rank-handle:hover {
-            opacity: 1;
+            opacity: 0.7;
           }
 
           .submitted-message {
-            color: ${colors.secondaryText};
-            font-size: 13px;
+            color: ${colors.primary};
+            font-size: 14px;
             text-align: center;
-            margin-top: 12px;
-            font-style: italic;
+            margin-top: 16px;
+            font-weight: 500;
+            padding: 12px;
+            background: ${colors.accent};
+            border-radius: 8px;
+            animation: fadeIn 0.5s ease;
           }
           
-          /* Remove any down arrows that might be added by the chat UI */
+          /* Sortable animations */
+          .sortable-chosen {
+            background-color: ${colors.accent} !important;
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
           [class*="scroll-down"],
           [class*="scroll-button"] {
             display: none !important;
@@ -1690,16 +1656,15 @@ export const RankOptionsExtension = {
         
         <div class="rank-options-container">
           <div class="rank-title">${config.title}</div>
-          <div class="rank-instructions">${config.instructions}</div>
           <ul class="rank-options-list">
             ${config.options.map((option, index) => `
-              <li data-value="${option}" style="--item-index: ${index}">
+              <li data-value="${option}" style="--item-index: ${index}" aria-label="Item ${index + 1}: ${option}">
                 <span class="rank-number">${index + 1}</span>
                 <span class="rank-text">${option}</span>
-                <div class="rank-handle">
-                  <div></div>
-                  <div></div>
-                  <div></div>
+                <div class="rank-handle" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
                 </div>
               </li>
             `).join('')}
@@ -1715,6 +1680,7 @@ export const RankOptionsExtension = {
         if (!isSubmitted) {
           formContainer.querySelectorAll('.rank-number').forEach((span, index) => {
             span.textContent = index + 1;
+            span.parentElement.setAttribute('aria-label', `Item ${index + 1}: ${span.parentElement.dataset.value}`);
           });
         }
       };
@@ -1756,9 +1722,6 @@ export const RankOptionsExtension = {
         // Hide any scroll indicators
         hideScrollIndicators();
         
-        // Re-enable chat inputs
-        showInputContainer();
-
         window.voiceflow.chat.interact({
           type: "complete",
           payload: { rankedOptions }
@@ -1770,14 +1733,25 @@ export const RankOptionsExtension = {
       if (typeof Sortable !== 'undefined') {
         sortableInstance = new Sortable(formContainer.querySelector('.rank-options-list'), {
           animation: 150,
-          onEnd: updateRankNumbers,
+          easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+          handle: "li",  // Make the entire li element draggable
           ghostClass: 'sortable-ghost',
+          chosenClass: 'sortable-chosen',
           dragClass: 'sortable-drag',
+          onEnd: updateRankNumbers,
           disabled: isSubmitted,
-          handle: '.rank-handle', // Only allow dragging by the handle
-          forceFallback: true, // Force fallback for smoother mobile experience
-          fallbackTolerance: 5, // Smaller tolerance for better mobile experience
-          touchStartThreshold: 5 // More responsive touch handling
+          delay: 50, // Small delay to improve experience on touch devices
+          delayOnTouchOnly: true, // Only delay for touch devices
+          forceFallback: false, // Better performance
+          fallbackTolerance: 5, // Small threshold to start drag
+          touchStartThreshold: 5,
+          // Better performance on mobile
+          supportPointer: 'ontouchstart' in window,  
+          // Enhanced animation settings for smoothness
+          animation: 150, 
+          scroll: true,
+          scrollSensitivity: 80,
+          scrollSpeed: 20
         });
       }
       
@@ -1786,16 +1760,11 @@ export const RankOptionsExtension = {
         if (sortableInstance) {
           sortableInstance.destroy();
         }
-        // Make sure inputs are re-enabled when component is removed
-        showInputContainer();
       };
     };
 
     // Hide any scroll indicators that might be present
     hideScrollIndicators();
-    
-    // Hide inputs when component is mounted
-    hideInputContainer();
 
     let cleanup = null;
     
@@ -1807,8 +1776,6 @@ export const RankOptionsExtension = {
       };
       script.onerror = () => {
         console.error('Failed to load Sortable.js');
-        // Re-enable inputs if script fails to load
-        showInputContainer();
       };
       document.head.appendChild(script);
     } else {
@@ -1819,9 +1786,6 @@ export const RankOptionsExtension = {
     return () => {
       if (typeof cleanup === 'function') {
         cleanup();
-      } else {
-        // Fallback cleanup if createForm wasn't called
-        showInputContainer();
       }
     };
   },
