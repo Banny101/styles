@@ -1790,12 +1790,7 @@ export const DisableInputExtension = {
   type: "effect",
   match: ({ trace }) => trace.type === "ext_disableInputs" || trace.payload?.name === "ext_disableInputs",
   effect: ({ trace }) => {
-    console.log("🔴 DisableInputExtension triggered");
-
-    // Config
-    const config = {
-      hideCompletely: trace.payload?.hideCompletely || false
-    };
+    console.log("🔴 DisableInputExtension triggered", trace);
 
     // Get the Voiceflow chat container
     const chatDiv = document.getElementById("voiceflow-chat");
@@ -1808,46 +1803,8 @@ export const DisableInputExtension = {
       const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
 
       if (inputContainer) {
-        if (config.hideCompletely) {
-          // Hide the input container completely
-          inputContainer.style.display = "none";
-          console.log("✅ Input container hidden completely");
-        } else {
-          // Just disable it visually but keep it in the layout
-          inputContainer.style.opacity = "0.5";
-          inputContainer.style.pointerEvents = "none";
-          
-          // Add a style tag to ensure extensions remain interactive
-          const styleElement = document.createElement('style');
-          styleElement.id = 'vf-disabled-inputs-effect';
-          styleElement.textContent = `
-            /* Critical: PRESERVE custom components and extensions */
-            ._1ddzqsn7 {
-              pointer-events: auto !important;
-              opacity: 1 !important;
-              display: block !important;
-            }
-            
-            /* Ensure extension buttons remain clickable */
-            ._1ddzqsn7 button, 
-            ._1ddzqsn7 input, 
-            ._1ddzqsn7 select,
-            ._1ddzqsn7 .calendar-wrapper,
-            ._1ddzqsn7 * {
-              pointer-events: auto !important;
-              opacity: 1 !important;
-            }
-          `;
-          shadowRoot.appendChild(styleElement);
-          
-          console.log("✅ Input container disabled (but still visible)");
-        }
-        
-        // Add a flag to the container
-        inputContainer.dataset.disabled = "true";
-        
-        // Set global flag
-        window.__voiceflowInputsDisabled = true;
+        inputContainer.style.display = "none"; // Hide input field completely
+        console.log("✅ vfrc-input-container hidden inside shadow root");
       } else {
         console.warn("⚠️ vfrc-input-container not found inside shadow root");
       }
@@ -1862,7 +1819,7 @@ export const EnableInputExtension = {
   type: "effect",
   match: ({ trace }) => trace.type === "ext_enableInputs" || trace.payload?.name === "ext_enableInputs",
   effect: ({ trace }) => {
-    console.log("🔵 EnableInputExtension triggered");
+    console.log("🔵 EnableInputExtension triggered", trace);
 
     // Get the Voiceflow chat container
     const chatDiv = document.getElementById("voiceflow-chat");
@@ -1874,25 +1831,9 @@ export const EnableInputExtension = {
       // Find the input container inside the shadow DOM
       const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
 
-      // Find and remove any style elements we created
-      const styleElement = shadowRoot.querySelector('#vf-disabled-inputs-effect');
-      if (styleElement) {
-        styleElement.remove();
-      }
-
       if (inputContainer) {
-        // Reset all properties to default
-        inputContainer.style.display = "";
-        inputContainer.style.opacity = "";
-        inputContainer.style.pointerEvents = "";
-        
-        // Remove our data flag
-        delete inputContainer.dataset.disabled;
-        
-        // Clear global flag
-        window.__voiceflowInputsDisabled = false;
-        
-        console.log("✅ Input container is now enabled again");
+        inputContainer.style.display = ""; // Show input field
+        console.log("✅ vfrc-input-container is now visible again");
       } else {
         console.warn("⚠️ vfrc-input-container not found inside shadow root");
       }
