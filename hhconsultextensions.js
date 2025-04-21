@@ -1785,6 +1785,46 @@ export const TransitionAnimationExtension = {
   }
 };
 
+export const DisableInputExtension = {
+  name: "DisableInput",
+  type: "effect",
+  match: ({ trace }) => trace.type === "ext_disableInputs" || trace.payload?.name === "ext_disableInputs",
+  effect: ({ trace }) => {
+    try {
+      console.log("DisableInputExtension executing...");
+      
+      // Extract config
+      const hideCompletely = trace.payload?.hideCompletely === true;
+      
+      // Find the input container
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv || !chatDiv.shadowRoot) {
+        console.warn("Cannot find chat container");
+        return; // Exit immediately to ensure flow continues
+      }
+      
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (!inputContainer) {
+        console.warn("Cannot find input container");
+        return; // Exit immediately to ensure flow continues
+      }
+      
+      // Apply styling directly
+      if (hideCompletely) {
+        inputContainer.style.display = "none";
+      } else {
+        inputContainer.style.opacity = "0.5";
+        inputContainer.style.pointerEvents = "none";
+      }
+      
+      console.log("DisableInputExtension completed successfully");
+    } catch (error) {
+      // Catch any errors to prevent blocking the flow
+      console.error("Error in DisableInputExtension:", error);
+    }
+  }
+};
+
 export const EnableInputExtension = {
   name: "EnableInput",
   type: "effect", 
