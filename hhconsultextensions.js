@@ -1802,131 +1802,11 @@ export const CalendarDatePickerExtension = {
       minYear: parseInt(trace.payload?.minYear) || 1900,
       ageLabel: trace.payload?.ageLabel || "Your age", 
       darkMode: trace.payload?.darkMode || false,
-      preventFutureDates: trace.payload?.preventFutureDates !== false,
-      hideInputCompletely: trace.payload?.hideInputCompletely || false
+      preventFutureDates: trace.payload?.preventFutureDates !== false // Default true
     };
     
     // Create a unique ID for this instance
     const instanceId = `datepicker-${Date.now()}`;
-    
-    // ******* INPUT CONTROL MECHANISM *******
-    // Create a CSS style block for input control
-    const createInputControlStyles = () => {
-      // Create unique ID to avoid conflicts
-      const styleId = `vf-input-control-${Date.now()}`;
-      
-      // Check if style already exists
-      if (document.getElementById(styleId)) return styleId;
-      
-      // Create style element
-      const style = document.createElement('style');
-      style.id = styleId;
-      
-      // CSS that targets multiple potential chat input selectors
-      style.textContent = `
-        /* Target standard Voiceflow selectors */
-        .vfrc-input-container, 
-        [class*="input-container"],
-        
-        /* Target Next.js potential class patterns */
-        [class*="footer"] [class*="input"],
-        [class*="chat"] [class*="input"],
-        [class*="message"] [class*="form"],
-        
-        /* Target elements containing textareas or text inputs */
-        div:has(> textarea),
-        div:has(> input[type="text"]),
-        form:has(> textarea),
-        form:has(> input[type="text"]) {
-          ${config.hideInputCompletely ? 'display: none !important;' : `
-            opacity: 0.5 !important;
-            pointer-events: none !important;
-          `}
-          transition: opacity 0.3s ease !important;
-        }
-        
-        /* Target actual input elements */
-        .vfrc-chat-input,
-        textarea[class*="chat"],
-        input[type="text"][class*="chat"],
-        button[id*="send"],
-        button[class*="send"],
-        #vfrc-send-message {
-          ${config.hideInputCompletely ? 'display: none !important;' : `
-            opacity: 0.5 !important;
-            pointer-events: none !important;
-            background-color: #f5f5f5 !important;
-          `}
-        }
-      `;
-      
-      // Add to document head
-      document.head.appendChild(style);
-      return styleId;
-    };
-    
-    // Function to remove input control styles
-    const removeInputControlStyles = (styleId) => {
-      const styleElem = document.getElementById(styleId);
-      if (styleElem) {
-        styleElem.parentNode.removeChild(styleElem);
-        return true;
-      }
-      return false;
-    };
-    
-    // Disable inputs via CSS
-    const styleId = createInputControlStyles();
-    
-    // Backup method: direct element manipulation if CSS approach fails
-    const findAndDisableInputs = () => {
-      try {
-        // Common selectors that might contain the input area
-        const inputSelectors = [
-          ".vfrc-input-container",
-          "[class*='input-container']",
-          "[class*='footer'] [class*='input']",
-          "form:has(textarea)",
-          "div:has(> textarea)",
-          "div:has(> input[type='text'])"
-        ];
-        
-        // Try each selector
-        for (const selector of inputSelectors) {
-          const elements = document.querySelectorAll(selector);
-          if (elements.length > 0) {
-            elements.forEach(el => {
-              if (config.hideInputCompletely) {
-                el.style.display = "none";
-              } else {
-                el.style.opacity = "0.5";
-                el.style.pointerEvents = "none";
-              }
-              
-              // Also disable child inputs
-              const inputs = el.querySelectorAll("textarea, input, button");
-              inputs.forEach(input => {
-                input.disabled = true;
-                if (!config.hideInputCompletely) {
-                  input.style.opacity = "0.5";
-                  input.style.pointerEvents = "none";
-                }
-              });
-            });
-            
-            return true;
-          }
-        }
-        
-        return false;
-      } catch (error) {
-        console.warn("Error in direct input disabling:", error);
-        return false;
-      }
-    };
-    
-    // Try direct manipulation as a fallback
-    findAndDisableInputs();
     
     // Helper functions
     const calculateAge = (birthdate) => {
@@ -1979,7 +1859,7 @@ export const CalendarDatePickerExtension = {
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                      'July', 'August', 'September', 'October', 'November', 'December'];
     
-    // Style - Rest of your styles as before...
+    // Style
     const styles = `
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
       
@@ -1992,64 +1872,615 @@ export const CalendarDatePickerExtension = {
         width: 100%;
         max-width: 300px;
         margin: 0 auto;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        : all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid ${colors.border};
       }
-      /* Rest of styles as before */
       
-      /* Add specific styles to ensure proper functioning in Next.js */
-      #${instanceId} {
-        z-index: 1000;
+      .datepicker-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: ${config.title ? '14px 16px' : '0'};
+        background: ${colors.surface};
+        border-bottom: ${config.title ? `1px solid ${colors.border}` : 'none'};
+      }
+      
+      .datepicker-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: ${colors.text};
+        letter-spacing: -0.01em;
+      }
+      
+      .datepicker-body {
+        padding: 16px;
         position: relative;
+      }
+      
+      /* Custom dropdown styling */
+      .select-container {
+        position: relative;
+        margin-bottom: 16px;
+      }
+      
+      .select-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: ${colors.textSecondary};
+        margin-bottom: 6px;
+        display: block;
+      }
+      
+      .custom-select {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 500;
+        color: ${colors.text};
+        background: ${colors.surface};
+        border: 1px solid ${colors.border};
+        border-radius: 12px;
+        appearance: none;
+        cursor: pointer;
+        : all 0.2s ease;
+        font-family: 'Inter', system-ui, sans-serif;
+      }
+      
+      .custom-select:focus {
+        outline: none;
+        border-color: ${config.primaryColor};
+        box-shadow: 0 0 0 2px ${hexToRgba(config.primaryColor, 0.2)};
+      }
+      
+      .custom-select:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      
+      .select-container::after {
+        content: '';
+        position: absolute;
+        right: 16px;
+        top: calc(50% + 10px);
+        width: 10px;
+        height: 6px;
+        background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23${config.primaryColor.substring(1)}' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+        background-repeat: no-repeat;
+        pointer-events: none;
+      }
+      
+      /* Results display */
+      .date-summary {
+        background: ${colors.surface};
+        border: 1px solid ${colors.border};
+        border-radius: 12px;
+        padding: 12px;
+        margin: 16px 0;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        color: ${colors.text};
+        : all 0.2s ease;
+      }
+      
+      .date-summary.has-date {
+        border-color: ${hexToRgba(config.primaryColor, 0.3)};
+        background: ${hexToRgba(config.primaryColor, 0.05)};
+      }
+      
+      .age-display {
+        text-align: center;
+        padding: 12px;
+        background: ${hexToRgba(config.primaryColor, 0.1)};
+        color: ${config.primaryColor};
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        display: none;
+        animation: fadeIn 0.3s ease;
+        border: 1px solid ${hexToRgba(config.primaryColor, 0.15)};
+        margin-bottom: 16px;
+      }
+      
+      .error-text {
+        text-align: center;
+        padding: 12px;
+        background: ${hexToRgba('#EF4444', 0.1)};
+        color: #EF4444;
+        border-radius: 12px;
+        font-size: 14px;
+        margin-bottom: 16px;
+        border: 1px solid ${hexToRgba('#EF4444', 0.2)};
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      
+      /* Success state */
+      .success-state {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${colors.background};
+        animation: fadeIn 0.3s ease;
+        padding: 16px;
+        box-sizing: border-box;
+      }
+      
+      .success-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      
+      .success-icon {
+        width: 48px;
+        height: 48px;
+        background: ${colors.successLight};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 0.1s;
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      
+      .success-message {
+        font-size: 16px;
+        font-weight: 600;
+        color: ${colors.text};
+        margin-bottom: 8px;
+        animation: fadeUp 0.3s ease forwards 0.2s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      .success-details {
+        font-size: 14px;
+        color: ${colors.textSecondary};
+        animation: fadeUp 0.3s ease forwards 0.3s;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      /* Processing overlay */
+      .processing-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: ${hexToRgba(colors.background, 0.8)};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        opacity: 0;
+        pointer-events: none;
+        : opacity 0.2s ease;
+      }
+      
+      .processing-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+      
+      .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid ${hexToRgba(config.primaryColor, 0.2)};
+        border-radius: 50%;
+        border-top-color: ${config.primaryColor};
+        animation: spin 1s linear infinite;
+      }
+      
+      /* Buttons */
+      .buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      
+      .btn {
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: center;
+        font-family: 'Inter', system-ui, sans-serif;
+        : all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        : transform 0.4s ease-out;
+        pointer-events: none;
+      }
+      
+      .btn:active::after {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+        : transform 0.4s ease-out, opacity 0.4s ease-out;
+      }
+      
+      .btn-cancel {
+        background: ${colors.surface};
+        color: ${colors.textSecondary};
+        border: 1px solid ${colors.border};
+      }
+      
+      .btn-cancel:hover {
+        background: ${config.darkMode ? '#475569' : '#E2E8F0'};
+      }
+      
+      .btn-confirm {
+        background: ${config.primaryColor};
+        color: white;
+        box-shadow: 0 2px 5px ${hexToRgba(config.primaryColor, 0.4)};
+      }
+      
+      .btn-confirm:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px ${hexToRgba(config.primaryColor, 0.5)};
+      }
+      
+      .btn-confirm:active {
+        transform: translateY(0);
+      }
+      
+      .btn-confirm:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes scaleIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      
+      .highlight-animation {
+        animation: highlight 0.5s ease;
+      }
+      
+      @keyframes highlight {
+        0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
+        100% { background: ${hexToRgba(config.primaryColor, 0.05)}; }
       }
     `;
     
-    // Create the container element and set up the widget
-    // ... Rest of your implementation as before ...
+    // Create the container element
+    const container = document.createElement('div');
+    container.id = instanceId;
     
-    // Return a cleanup function that properly removes input control
-    return () => {
-      // Remove the CSS-based input control
-      removeInputControlStyles(styleId);
-      
-      // Activate a mutation observer to ensure inputs are enabled
-      // This helps with Next.js's asynchronous rendering
-      const observer = new MutationObserver((mutations) => {
-        // Look for changes that might bring back disabled inputs
-        const inputContainers = document.querySelectorAll(".vfrc-input-container, [class*='input-container']");
-        
-        if (inputContainers.length > 0) {
-          // Enable found input containers
-          inputContainers.forEach(container => {
-            container.style.display = "";
-            container.style.opacity = "1";
-            container.style.pointerEvents = "auto";
-            
-            // Enable child inputs
-            const inputs = container.querySelectorAll("textarea, input, button");
-            inputs.forEach(input => {
-              input.disabled = false;
-              input.style.opacity = "1";
-              input.style.pointerEvents = "auto";
-              input.style.backgroundColor = "";
-            });
-          });
-          
-          observer.disconnect();
-        }
-      });
-      
-      // Start observing for changes
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-        attributes: true
-      });
-      
-      // Set a timeout to disconnect the observer after a reasonable time
-      setTimeout(() => observer.disconnect(), 2000);
+    // Set initial state
+    const today = new Date();
+    let selectedYear = null;
+    let selectedMonth = null;
+    let selectedDay = null;
+    let selectedDate = null;
+    let isProcessing = false;
+    let isCompleted = false;
+    
+    // Get days in month
+    const getDaysInMonth = (year, month) => {
+      return new Date(year, month + 1, 0).getDate();
     };
-  }
-};
+    
+    // Create the HTML structure
+    container.innerHTML = `
+      <style>${styles}</style>
+      <div class="datepicker-container">
+        ${config.title ? `
+        <div class="datepicker-header">
+          <div class="datepicker-title">${config.title}</div>
+        </div>
+        ` : ''}
+        
+        <div class="datepicker-body">
+          <!-- Month Dropdown -->
+          <div class="select-container">
+            <label for="month-select" class="select-label">Month</label>
+            <select id="month-select" class="custom-select">
+              <option value="" disabled selected>Select month</option>
+              ${monthNames.map((month, index) => 
+                `<option value="${index}">${month}</option>`
+              ).join('')}
+            </select>
+          </div>
+          
+          <!-- Day Dropdown -->
+          <div class="select-container">
+            <label for="day-select" class="select-label">Day</label>
+            <select id="day-select" class="custom-select" disabled>
+              <option value="" disabled selected>Select day</option>
+            </select>
+          </div>
+          
+          <!-- Year Dropdown -->
+          <div class="select-container">
+            <label for="year-select" class="select-label">Year</label>
+            <select id="year-select" class="custom-select">
+              <option value="" disabled selected>Select year</option>
+              ${Array.from({length: config.maxYear - config.minYear + 1}, (_, i) => config.maxYear - i)
+                .map(year => `<option value="${year}">${year}</option>`)
+                .join('')}
+            </select>
+          </div>
+          
+          <div class="date-summary">No date selected</div>
+          <div class="age-display"></div>
+          <div class="error-text">Please complete your selection</div>
+          
+          <div class="buttons">
+            <button class="btn btn-cancel">${config.cancelText}</button>
+            <button class="btn btn-confirm" disabled>${config.confirmText}</button>
+          </div>
+          
+          <!-- Processing overlay -->
+          <div class="processing-overlay">
+            <div class="spinner"></div>
+          </div>
+          
+          <!-- Success state -->
+          <div class="success-state">
+            <div class="success-content">
+              <div class="success-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 13L9 17L19 7" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="success-message">Date confirmed</div>
+              <div class="success-details"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Append to the element
+    element.appendChild(container);
+    
+    // Get DOM elements
+    const monthSelect = container.querySelector('#month-select');
+    const daySelect = container.querySelector('#day-select');
+    const yearSelect = container.querySelector('#year-select');
+    const dateSummary = container.querySelector('.date-summary');
+    const ageDisplay = container.querySelector('.age-display');
+    const errorText = container.querySelector('.error-text');
+    const cancelButton = container.querySelector('.btn-cancel');
+    const confirmButton = container.querySelector('.btn-confirm');
+    const processingOverlay = container.querySelector('.processing-overlay');
+    const successState = container.querySelector('.success-state');
+    const successDetails = container.querySelector('.success-details');
+    
+    // Update day options based on selected month and year
+    const updateDayOptions = () => {
+      if (selectedMonth === null || selectedYear === null) {
+        daySelect.disabled = true;
+        return;
+      }
+      
+      daySelect.disabled = false;
+      
+      const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
+      
+      // Clear existing options except the placeholder
+      daySelect.innerHTML = '<option value="" disabled selected>Select day</option>';
+      
+      // Add day options
+      for (let day = 1; day <= daysInMonth; day++) {
+        const option = document.createElement('option');
+        option.value = day;
+        option.textContent = day;
+        
+        // Check if this day would create a future date
+        if (isFutureDate(selectedYear, selectedMonth, day)) {
+          option.disabled = true;
+        }
+        
+        daySelect.appendChild(option);
+      }
+      
+      // If we had a previously selected day, try to restore it
+      if (selectedDay !== null) {
+        if (selectedDay <= daysInMonth) {
+          daySelect.value = selectedDay;
+        } else {
+          selectedDay = null;
+        }
+      }
+    };
+    
+    // Update date summary
+    const updateDateSummary = () => {
+      if (selectedYear && selectedMonth !== null && selectedDay) {
+        const formattedDate = formatDate(selectedYear, selectedMonth + 1, selectedDay);
+        dateSummary.textContent = formattedDate;
+        dateSummary.classList.add('has-date');
+        dateSummary.classList.add('highlight-animation');
+        setTimeout(() => {
+          dateSummary.classList.remove('highlight-animation');
+        }, 500);
+        
+        // Calculate age
+        selectedDate = new Date(selectedYear, selectedMonth, selectedDay);
+        const age = calculateAge(selectedDate);
+        
+        // Update age display
+        ageDisplay.textContent = `${config.ageLabel}: ${age} years`;
+        ageDisplay.style.display = 'block';
+        
+        // Enable confirm button
+        confirmButton.disabled = false;
+        
+        // Hide error if shown
+        errorText.style.display = 'none';
+      } else {
+        dateSummary.textContent = 'No date selected';
+        dateSummary.classList.remove('has-date');
+        ageDisplay.style.display = 'none';
+        confirmButton.disabled = true;
+      }
+    };
+    
+    // Disable all controls
+    const disableAllControls = () => {
+      monthSelect.disabled = true;
+      daySelect.disabled = true;
+      yearSelect.disabled = true;
+      confirmButton.disabled = true;
+      cancelButton.disabled = true;
+    };
+    
+    // Show success state
+    const showSuccessState = (date, age) => {
+      // Update success details
+      successDetails.textContent = `${formatDate(selectedYear, selectedMonth + 1, selectedDay)} (Age: ${age})`;
+      
+      // Show success state
+      successState.style.display = 'block';
+      
+      // Hide processing overlay
+      processingOverlay.classList.remove('active');
+      
+      // Disable all controls
+      disableAllControls();
+    };
+    
+    // Event Listeners
+    monthSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedMonth = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
+    
+    daySelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedDay = parseInt(e.target.value);
+      updateDateSummary();
+    });
+    
+    yearSelect.addEventListener('change', (e) => {
+      if (isCompleted || isProcessing) return;
+      selectedYear = parseInt(e.target.value);
+      updateDayOptions();
+      updateDateSummary();
+    });
+    
+    cancelButton.addEventListener('click', () => {
+      if (isCompleted || isProcessing) return;
+      
+      // Disable controls to prevent further interaction
+      disableAllControls();
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
+      
+      // Send cancel event to Voiceflow with a slight delay for visual feedback
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "cancel",
+          payload: { 
+            cancelled: true,
+            timestamp: Date.now()
+          }
+        });
+      }, 500);
+    });
+    
+    confirmButton.addEventListener('click', () => {
+      if (isCompleted || isProcessing) return;
+      
+      if (!selectedYear || selectedMonth === null || !selectedDay) {
+        // Show error message
+        errorText.style.display = 'block';
+        return;
+      }
+      
+      // Show processing state
+      isProcessing = true;
+      processingOverlay.classList.add('active');
+      
+      // Format the date
+      const month = selectedMonth + 1;
+      const formattedDate = formatDate(selectedYear, month, selectedDay);
+      
+      // Calculate age
+      const age = calculateAge(selectedDate);
+      
+      // Show success state after a brief delay for better UX
+      setTimeout(() => {
+        isCompleted = true;
+        showSuccessState(formattedDate, age);
+        
+        // Send data to Voiceflow after showing success state
+        setTimeout(() => {
+          window.voiceflow.chat.interact({
+            type: "complete",
+            payload: {
+              date: formattedDate,
+              age: age,
+              year: selectedYear,
+              month: month,
+              day: selectedDay,
+              timestamp: Date.now()
+            }
+          });
+        }, 1000);
+      }, 800);
+    });
+    
+    // Implement keyboard navigation
+    container.addEventListener('keydown', (e) => {
+      if (isCompleted || isProcessing) return;
+      
+      if (e.key === 'Enter' && !confirmButton.disabled) {
+        e.preventDefault();
+        confirmButton.click();
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        cancelButton.click();
+      }
+    });
+    
+    // Empty cleanup function since we're not disabling inputs here
+    return () => {};
   }
 };
