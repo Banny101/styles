@@ -1859,40 +1859,6 @@ export const EnableInputExtension = {
   }
 };
 
-export const EnableInputExtension = {
-  name: "EnableInput",
-  type: "effect", 
-  match: ({ trace }) => trace.type === "ext_enableInputs" || trace.payload?.name === "ext_enableInputs",
-  effect: ({ trace }) => {
-    try {
-      console.log("EnableInputExtension executing...");
-      
-      // Find the input container
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv || !chatDiv.shadowRoot) {
-        console.warn("Cannot find chat container");
-        return; // Exit immediately to ensure flow continues
-      }
-      
-      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-      if (!inputContainer) {
-        console.warn("Cannot find input container");
-        return; // Exit immediately to ensure flow continues
-      }
-      
-      // Reset all styles to default
-      inputContainer.style.display = "";
-      inputContainer.style.opacity = "";
-      inputContainer.style.pointerEvents = "";
-      
-      console.log("EnableInputExtension completed successfully");
-    } catch (error) {
-      // Catch any errors to prevent blocking the flow
-      console.error("Error in EnableInputExtension:", error);
-    }
-  }
-};
-
 export const CalendarDatePickerExtension = {
   name: "CalendarDatePicker",
   type: "response",
