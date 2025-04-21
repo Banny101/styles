@@ -1798,7 +1798,7 @@ export const DisableInputExtension = {
       fadeEffect: trace.payload?.fadeEffect !== false,
       opacity: trace.payload?.opacity || 0.5,
       disableScrolling: trace.payload?.disableScrolling || false,
-      message: trace.payload?.message || "",
+      preserveExtensions: trace.payload?.preserveExtensions !== false, // Default to true
       retryDelay: trace.payload?.retryDelay || 100,
       maxRetries: trace.payload?.maxRetries || 5
     };
@@ -1809,7 +1809,6 @@ export const DisableInputExtension = {
     // Track retry attempts and cleanup items
     let retryCount = 0;
     let retryTimer = null;
-    let messageElement = null;
     
     // Function to find and disable the chat inputs
     const disableInputs = () => {
@@ -1829,19 +1828,38 @@ export const DisableInputExtension = {
       const styleElement = document.createElement('style');
       styleElement.id = `vf-disabled-inputs-${instanceId}`;
       
-      // Build CSS based on configuration
+      // Build CSS based on configuration - IMPORTANT: Use more specific targeting
       let css = `
+        /* Target only the main input container - NOT custom extensions */
         .vfrc-input-container {
           opacity: ${config.hideCompletely ? 0 : config.opacity} !important;
           pointer-events: none !important;
           ${config.hideCompletely ? 'display: none !important;' : ''}
           ${config.fadeEffect ? 'transition: opacity 0.3s ease !important;' : ''}
-          position: relative;
         }
 
-        /* Ensure buttons and inputs within the container are also disabled */
-        .vfrc-input-container * {
+        /* Target specific input elements inside the input container */
+        .vfrc-input-container textarea,
+        .vfrc-input-container input,
+        .vfrc-input-container button:not([class*="_1ddzqsn7"] button) {
           pointer-events: none !important;
+        }
+        
+        /* Critical: PRESERVE custom components and extensions */
+        ._1ddzqsn7 {
+          pointer-events: auto !important;
+          opacity: 1 !important;
+          display: block !important;
+        }
+        
+        /* Ensure extension buttons remain clickable */
+        ._1ddzqsn7 button, 
+        ._1ddzqsn7 input, 
+        ._1ddzqsn7 select,
+        ._1ddzqsn7 .calendar-wrapper,
+        ._1ddzqsn7 * {
+          pointer-events: auto !important;
+          opacity: 1 !important;
         }
       `;
       
@@ -1867,34 +1885,6 @@ export const DisableInputExtension = {
       styleElement.textContent = css;
       chatDiv.shadowRoot.appendChild(styleElement);
       
-      // Add message overlay if specified
-      if (config.message && !config.hideCompletely) {
-        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-        if (inputContainer) {
-          messageElement = document.createElement('div');
-          messageElement.className = 'vf-disabled-message';
-          messageElement.textContent = config.message;
-          messageElement.style.cssText = `
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(0,0,0,0.03);
-            color: rgba(0,0,0,0.6);
-            font-size: 12px;
-            border-radius: 8px;
-            z-index: 10;
-            pointer-events: none;
-          `;
-          
-          inputContainer.appendChild(messageElement);
-        }
-      }
-      
       // Track disabled state globally
       if (!window.__voiceflowDisabledInputs) {
         window.__voiceflowDisabledInputs = {};
@@ -1919,11 +1909,6 @@ export const DisableInputExtension = {
         const styleElement = chatDiv.shadowRoot.querySelector(`#vf-disabled-inputs-${instanceId}`);
         if (styleElement) {
           styleElement.remove();
-        }
-        
-        // Remove message overlay if it exists
-        if (messageElement && messageElement.parentNode) {
-          messageElement.remove();
         }
       }
       
@@ -1985,10 +1970,6 @@ export const EnableInputExtension = {
       // Remove all disabling styles
       const disablingStyles = chatDiv.shadowRoot.querySelectorAll('style[id^="vf-disabled-inputs"]');
       disablingStyles.forEach(style => style.remove());
-      
-      // Remove any disabled message overlays
-      const messageOverlays = chatDiv.shadowRoot.querySelectorAll('.vf-disabled-message');
-      messageOverlays.forEach(overlay => overlay.remove());
       
       // Apply fade-in effect if needed
       if (config.fadeIn) {
