@@ -1785,6 +1785,326 @@ export const TransitionAnimationExtension = {
   }
 };
 
+export const DisableInputExtension = {
+  name: "DisableInputs",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_disableInputs" || 
+    trace.payload?.name === "ext_disableInputs",
+  render: ({ trace, element }) => {
+    // Configuration with defaults
+    const config = {
+      hideCompletely: trace.payload?.hideCompletely || false,
+      fadeEffect: trace.payload?.fadeEffect !== false,
+      opacity: trace.payload?.opacity || 0.5,
+      disableScrolling: trace.payload?.disableScrolling || false,
+      message: trace.payload?.message || "",
+      retryDelay: trace.payload?.retryDelay || 100,
+      maxRetries: trace.payload?.maxRetries || 5
+    };
+    
+    // Generate unique ID for this instance
+    const instanceId = `disable-inputs-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    
+    // Track retry attempts and cleanup items
+    let retryCount = 0;
+    let retryTimer = null;
+    let messageElement = null;
+    
+    // Function to find and disable the chat inputs
+    const disableInputs = () => {
+      // Find the chat container in shadow DOM
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) {
+        retryCount++;
+        if (retryCount <= config.maxRetries) {
+          retryTimer = setTimeout(disableInputs, config.retryDelay);
+          return;
+        }
+        console.warn("DisableInputExtension: Chat container not found after retries");
+        return;
+      }
+      
+      // Create style element
+      const styleElement = document.createElement('style');
+      styleElement.id = `vf-disabled-inputs-${instanceId}`;
+      
+      // Build CSS based on configuration
+      let css = `
+        .vfrc-input-container {
+          opacity: ${config.hideCompletely ? 0 : config.opacity} !important;
+          pointer-events: none !important;
+          ${config.hideCompletely ? 'display: none !important;' : ''}
+          ${config.fadeEffect ? 'transition: opacity 0.3s ease !important;' : ''}
+          position: relative;
+        }
+
+        /* Ensure buttons and inputs within the container are also disabled */
+        .vfrc-input-container * {
+          pointer-events: none !important;
+        }
+      `;
+      
+      // Only keep scrollability if disableScrolling is false
+      if (!config.disableScrolling) {
+        css += `
+          /* Keep scrollability for messages */
+          .vfrc-chat-messages {
+            pointer-events: auto !important;
+            overflow: auto !important;
+            touch-action: auto !important;
+          }
+          
+          .vfrc-chat-container, .vfrc-chat {
+            pointer-events: auto !important;
+            overflow: auto !important;
+            touch-action: auto !important;
+          }
+        `;
+      }
+      
+      // Apply the styles
+      styleElement.textContent = css;
+      chatDiv.shadowRoot.appendChild(styleElement);
+      
+      // Add message overlay if specified
+      if (config.message && !config.hideCompletely) {
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          messageElement = document.createElement('div');
+          messageElement.className = 'vf-disabled-message';
+          messageElement.textContent = config.message;
+          messageElement.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0,0,0,0.03);
+            color: rgba(0,0,0,0.6);
+            font-size: 12px;
+            border-radius: 8px;
+            z-index: 10;
+            pointer-events: none;
+          `;
+          
+          inputContainer.appendChild(messageElement);
+        }
+      }
+      
+      // Track disabled state globally
+      if (!window.__voiceflowDisabledInputs) {
+        window.__voiceflowDisabledInputs = {};
+      }
+      window.__voiceflowDisabledInputs[instanceId] = true;
+      window.__voiceflowInputsDisabled = true;
+    };
+    
+    // Start the disable process
+    disableInputs();
+    
+    // Return cleanup function
+    return () => {
+      // Clear any pending retry
+      if (retryTimer) {
+        clearTimeout(retryTimer);
+      }
+      
+      // Find and remove our style element
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const styleElement = chatDiv.shadowRoot.querySelector(`#vf-disabled-inputs-${instanceId}`);
+        if (styleElement) {
+          styleElement.remove();
+        }
+        
+        // Remove message overlay if it exists
+        if (messageElement && messageElement.parentNode) {
+          messageElement.remove();
+        }
+      }
+      
+      // Update global tracking
+      if (window.__voiceflowDisabledInputs) {
+        delete window.__voiceflowDisabledInputs[instanceId];
+        
+        // If no more disablers are active, clear the global flag
+        if (Object.keys(window.__voiceflowDisabledInputs).length === 0) {
+          window.__voiceflowInputsDisabled = false;
+        }
+      }
+    };
+  }
+};
+
+export const EnableInputExtension = {
+  name: "EnableInputs",
+  type: "response",
+  match: ({ trace }) => 
+    trace.type === "ext_enableInputs" || 
+    trace.payload?.name === "ext_enableInputs",
+  render: ({ trace, element }) => {
+    // Configuration with defaults
+    const config = {
+      fadeIn: trace.payload?.fadeIn !== false,
+      fadeSpeed: trace.payload?.fadeSpeed || 0.3,
+      force: trace.payload?.force || false,
+      retryDelay: trace.payload?.retryDelay || 100,
+      maxRetries: trace.payload?.maxRetries || 5
+    };
+    
+    // Track retry attempts
+    let retryCount = 0;
+    let retryTimer = null;
+    let fadeTimeoutId = null;
+    
+    // Function to find and enable the chat inputs
+    const enableInputs = () => {
+      // Find the chat container in shadow DOM
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv?.shadowRoot) {
+        retryCount++;
+        if (retryCount <= config.maxRetries) {
+          retryTimer = setTimeout(enableInputs, config.retryDelay);
+          return;
+        }
+        console.warn("EnableInputExtension: Chat container not found after retries");
+        return;
+      }
+      
+      // If force is false and other disablers are active, do nothing
+      if (!config.force && window.__voiceflowDisabledInputs && 
+          Object.keys(window.__voiceflowDisabledInputs || {}).length > 0) {
+        console.info("EnableInputExtension: Other disablers still active, not enabling inputs");
+        return;
+      }
+      
+      // Remove all disabling styles
+      const disablingStyles = chatDiv.shadowRoot.querySelectorAll('style[id^="vf-disabled-inputs"]');
+      disablingStyles.forEach(style => style.remove());
+      
+      // Remove any disabled message overlays
+      const messageOverlays = chatDiv.shadowRoot.querySelectorAll('.vf-disabled-message');
+      messageOverlays.forEach(overlay => overlay.remove());
+      
+      // Apply fade-in effect if needed
+      if (config.fadeIn) {
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        if (inputContainer) {
+          // Create style for fade-in
+          const fadeStyleElement = document.createElement('style');
+          fadeStyleElement.id = 'vf-enable-inputs-fade';
+          
+          // First set opacity to 0
+          fadeStyleElement.textContent = `
+            .vfrc-input-container {
+              opacity: 0 !important;
+              pointer-events: auto !important;
+              display: flex !important;
+              transition: opacity ${config.fadeSpeed}s ease !important;
+            }
+            
+            /* Re-enable pointer events for all child elements */
+            .vfrc-input-container * {
+              pointer-events: auto !important;
+            }
+          `;
+          
+          chatDiv.shadowRoot.appendChild(fadeStyleElement);
+          
+          // Force reflow
+          void inputContainer.offsetWidth;
+          
+          // Then update to fade in
+          fadeStyleElement.textContent = `
+            .vfrc-input-container {
+              opacity: 1 !important;
+              pointer-events: auto !important;
+              display: flex !important;
+              transition: opacity ${config.fadeSpeed}s ease !important;
+            }
+            
+            /* Re-enable pointer events for all child elements */
+            .vfrc-input-container * {
+              pointer-events: auto !important;
+            }
+          `;
+          
+          // Remove the style after animation completes
+          fadeTimeoutId = setTimeout(() => {
+            if (fadeStyleElement.parentNode) {
+              fadeStyleElement.remove();
+            }
+          }, config.fadeSpeed * 1000 + 50);
+        }
+      } else {
+        // Immediately enable without animation
+        const enableStyleElement = document.createElement('style');
+        enableStyleElement.id = 'vf-enable-inputs';
+        enableStyleElement.textContent = `
+          .vfrc-input-container {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            display: flex !important;
+          }
+          
+          /* Re-enable pointer events for all child elements */
+          .vfrc-input-container * {
+            pointer-events: auto !important;
+          }
+        `;
+        
+        chatDiv.shadowRoot.appendChild(enableStyleElement);
+        
+        // Remove the style after a short delay
+        fadeTimeoutId = setTimeout(() => {
+          if (enableStyleElement.parentNode) {
+            enableStyleElement.remove();
+          }
+        }, 500); // Short delay to ensure styles are applied
+      }
+      
+      // Clear global disabling state
+      if (config.force) {
+        window.__voiceflowDisabledInputs = {};
+      }
+      window.__voiceflowInputsDisabled = false;
+    };
+    
+    // Start the enabling process
+    enableInputs();
+    
+    // Return cleanup function
+    return () => {
+      // Clear any pending timers
+      if (retryTimer) {
+        clearTimeout(retryTimer);
+      }
+      
+      if (fadeTimeoutId) {
+        clearTimeout(fadeTimeoutId);
+      }
+      
+      // Remove any styles we created
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (chatDiv?.shadowRoot) {
+        const fadeStyle = chatDiv.shadowRoot.querySelector('#vf-enable-inputs-fade');
+        if (fadeStyle) {
+          fadeStyle.remove();
+        }
+        
+        const enableStyle = chatDiv.shadowRoot.querySelector('#vf-enable-inputs');
+        if (enableStyle) {
+          enableStyle.remove();
+        }
+      }
+    };
+  }
+};
+
 export const CalendarDatePickerExtension = {
   name: "CalendarDatePicker",
   type: "response",
