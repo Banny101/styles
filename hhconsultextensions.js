@@ -1802,75 +1802,9 @@ export const CalendarDatePickerExtension = {
       minYear: parseInt(trace.payload?.minYear) || 1900,
       ageLabel: trace.payload?.ageLabel || "Your age", 
       darkMode: trace.payload?.darkMode || false,
-      preventFutureDates: trace.payload?.preventFutureDates !== false // Default true
+      preventFutureDates: trace.payload?.preventFutureDates !== false, // Default true
+      hideInputCompletely: trace.payload?.hideInputCompletely || false // Control whether to hide or just disable
     };
-    
-    // Function to disable Voiceflow input
-    const disableInput = () => {
-      try {
-        // Target the input container
-        const inputContainer = document.querySelector('._1gdvh9t4');
-        if (inputContainer) {
-          // Save the original display style so we can restore it later
-          inputContainer.dataset.originalDisplay = inputContainer.style.display || '';
-          inputContainer.style.display = 'none';
-        }
-        
-        // Also try to find the input in the shadow DOM if it exists
-        const chatDiv = document.getElementById("voiceflow-chat");
-        if (chatDiv?.shadowRoot) {
-          const shadowInputContainer = chatDiv.shadowRoot.querySelector("._1gdvh9t4");
-          if (shadowInputContainer) {
-            shadowInputContainer.dataset.originalDisplay = shadowInputContainer.style.display || '';
-            shadowInputContainer.style.display = 'none';
-          }
-          
-          // Also look for standard input container classes
-          const standardInputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-          if (standardInputContainer) {
-            standardInputContainer.dataset.originalDisplay = standardInputContainer.style.display || '';
-            standardInputContainer.style.display = 'none';
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to disable input:', error);
-      }
-    };
-    
-    // Function to re-enable Voiceflow input
-    const enableInput = () => {
-      try {
-        // Target the input container
-        const inputContainer = document.querySelector('._1gdvh9t4');
-        if (inputContainer) {
-          // Restore the original display style
-          inputContainer.style.display = inputContainer.dataset.originalDisplay || '';
-          delete inputContainer.dataset.originalDisplay;
-        }
-        
-        // Also try to find the input in the shadow DOM if it exists
-        const chatDiv = document.getElementById("voiceflow-chat");
-        if (chatDiv?.shadowRoot) {
-          const shadowInputContainer = chatDiv.shadowRoot.querySelector("._1gdvh9t4");
-          if (shadowInputContainer) {
-            shadowInputContainer.style.display = shadowInputContainer.dataset.originalDisplay || '';
-            delete shadowInputContainer.dataset.originalDisplay;
-          }
-          
-          // Also look for standard input container classes
-          const standardInputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
-          if (standardInputContainer) {
-            standardInputContainer.style.display = standardInputContainer.dataset.originalDisplay || '';
-            delete standardInputContainer.dataset.originalDisplay;
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to enable input:', error);
-      }
-    };
-    
-    // Immediately disable input when the component renders
-    disableInput();
     
     // Create a unique ID for this instance
     const instanceId = `datepicker-${Date.now()}`;
@@ -2355,6 +2289,88 @@ export const CalendarDatePickerExtension = {
     const successState = container.querySelector('.success-state');
     const successDetails = container.querySelector('.success-details');
     
+    // Input control functions
+    const disableInputArea = () => {
+      try {
+        const chatDiv = document.getElementById("voiceflow-chat");
+        if (!chatDiv?.shadowRoot) return;
+        
+        // Get the input container
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        
+        if (inputContainer) {
+          if (config.hideInputCompletely) {
+            // Completely hide the input container
+            inputContainer.style.display = "none";
+          } else {
+            // Just disable it visually
+            inputContainer.style.opacity = "0.5";
+            inputContainer.style.pointerEvents = "none";
+            inputContainer.style.transition = "opacity 0.3s ease";
+          }
+        }
+        
+        // Specifically target known classes
+        const textareaContainer = chatDiv.shadowRoot.querySelector("._1gdvh9t4, ._1gdvh9t8");
+        const buttonsContainer = chatDiv.shadowRoot.querySelector("._1gdvh9t9");
+        const sendButton = chatDiv.shadowRoot.querySelector("#vfrc-send-message");
+        const textarea = chatDiv.shadowRoot.querySelector(".vfrc-chat-input");
+        
+        // Disable all interactive elements
+        [textareaContainer, buttonsContainer, sendButton, textarea].forEach(el => {
+          if (el) {
+            el.disabled = true;
+            el.style.pointerEvents = "none";
+            if (!config.hideInputCompletely) {
+              el.style.opacity = "0.5";
+            }
+          }
+        });
+        
+        // Handle voice input overlay if present
+        const voiceOverlay = chatDiv.shadowRoot.querySelector(".vfrc-voice-input");
+        if (voiceOverlay) {
+          voiceOverlay.style.display = "none";
+        }
+      } catch (error) {
+        console.warn('Failed to disable input area:', error);
+      }
+    };
+    
+    const enableInputArea = () => {
+      try {
+        const chatDiv = document.getElementById("voiceflow-chat");
+        if (!chatDiv?.shadowRoot) return;
+        
+        // Get the input container
+        const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+        
+        if (inputContainer) {
+          // Restore visibility and interaction
+          inputContainer.style.display = "";
+          inputContainer.style.opacity = "1";
+          inputContainer.style.pointerEvents = "auto";
+        }
+        
+        // Specifically target known classes
+        const textareaContainer = chatDiv.shadowRoot.querySelector("._1gdvh9t4, ._1gdvh9t8");
+        const buttonsContainer = chatDiv.shadowRoot.querySelector("._1gdvh9t9");
+        const sendButton = chatDiv.shadowRoot.querySelector("#vfrc-send-message");
+        const textarea = chatDiv.shadowRoot.querySelector(".vfrc-chat-input");
+        
+        // Enable all interactive elements
+        [textareaContainer, buttonsContainer, sendButton, textarea].forEach(el => {
+          if (el) {
+            el.disabled = false;
+            el.style.pointerEvents = "auto";
+            el.style.opacity = "1";
+          }
+        });
+      } catch (error) {
+        console.warn('Failed to enable input area:', error);
+      }
+    };
+    
     // Update day options based on selected month and year
     const updateDayOptions = () => {
       if (selectedMonth === null || selectedYear === null) {
@@ -2449,6 +2465,9 @@ export const CalendarDatePickerExtension = {
       disableAllControls();
     };
     
+    // *** Immediately disable the input area when rendering starts ***
+    disableInputArea();
+    
     // Event Listeners
     monthSelect.addEventListener('change', (e) => {
       if (isCompleted || isProcessing) return;
@@ -2480,11 +2499,11 @@ export const CalendarDatePickerExtension = {
       isProcessing = true;
       processingOverlay.classList.add('active');
       
+      // Re-enable the input area before sending the cancel event
+      enableInputArea();
+      
       // Send cancel event to Voiceflow with a slight delay for visual feedback
       setTimeout(() => {
-        // Re-enable input before sending the cancel event
-        enableInput();
-        
         window.voiceflow.chat.interact({
           type: "cancel",
           payload: { 
@@ -2520,11 +2539,11 @@ export const CalendarDatePickerExtension = {
         isCompleted = true;
         showSuccessState(formattedDate, age);
         
+        // Re-enable the input area before sending the completion event
+        enableInputArea();
+        
         // Send data to Voiceflow after showing success state
         setTimeout(() => {
-          // Re-enable input before sending the complete event
-          enableInput();
-          
           window.voiceflow.chat.interact({
             type: "complete",
             payload: {
@@ -2553,9 +2572,10 @@ export const CalendarDatePickerExtension = {
       }
     });
     
-    // Return cleanup function to ensure input is re-enabled if component is unmounted
+    // Clean up function that will be called when this component is removed from the DOM
     return () => {
-      enableInput();
+      // Make sure input area is re-enabled when calendar widget is removed
+      enableInputArea();
     };
   }
 };
