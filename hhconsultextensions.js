@@ -1791,116 +1791,105 @@ export const DisableInputExtension = {
   match: ({ trace }) => trace.type === "ext_disableInputs" || trace.payload?.name === "ext_disableInputs",
   effect: ({ trace }) => {
     try {
-      console.log("💬 DisableInputExtension executing...");
+      console.log("🔴 Next.js DisableInputExtension executing...");
       
-      // Extract config
       const hideCompletely = trace.payload?.hideCompletely === true;
       
-      // Find the chat container
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv || !chatDiv.shadowRoot) {
-        console.warn("Cannot find chat container");
-        return;
+      // APPROACH 1: Try querySelector with document instead of shadow DOM
+      const allInputElements = Array.from(document.querySelectorAll(
+        'textarea, input[type="text"], .vfrc-input-container, [class*="gdvh9t"], button[id="vfrc-send-message"]'
+      ));
+      
+      if (allInputElements.length > 0) {
+        console.log(`Found ${allInputElements.length} input elements in main document`);
+        
+        allInputElements.forEach(el => {
+          if (hideCompletely) {
+            el.style.cssText = "display: none !important;";
+          } else {
+            el.style.cssText = "opacity: 0.5 !important; pointer-events: none !important;";
+          }
+          
+          // Also set disabled attribute where applicable
+          if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'BUTTON') {
+            el.setAttribute('disabled', 'true');
+          }
+        });
       }
       
-      // Create style element with very specific selectors for web app
-      const styleElement = document.createElement('style');
-      styleElement.id = 'vf-disable-inputs-webapp';
+      // APPROACH 2: Try the iframe approach - Next.js might embed the chat in an iframe
+      const chatIframes = document.querySelectorAll('iframe');
+      chatIframes.forEach(iframe => {
+        try {
+          const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+          const iframeInputs = iframeDocument.querySelectorAll(
+            'textarea, input[type="text"], .vfrc-input-container, [class*="gdvh9t"], button[id="vfrc-send-message"]'
+          );
+          
+          if (iframeInputs.length > 0) {
+            console.log(`Found ${iframeInputs.length} input elements in iframe`);
+            
+            iframeInputs.forEach(el => {
+              if (hideCompletely) {
+                el.style.cssText = "display: none !important;";
+              } else {
+                el.style.cssText = "opacity: 0.5 !important; pointer-events: none !important;";
+              }
+              
+              // Also set disabled attribute where applicable
+              if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'BUTTON') {
+                el.setAttribute('disabled', 'true');
+              }
+            });
+          }
+        } catch (err) {
+          // Cross-origin iframe access is restricted
+          console.log("Could not access iframe contents (likely cross-origin)");
+        }
+      });
       
-      // Comprehensive CSS targeting ALL elements in the web app's input area
-      styleElement.textContent = `
-        /* Target main containers */
-        .vfrc-input-container, 
-        ._1gdvh9t1, 
-        .vfrc-footer ._1vj16245 > div {
-          ${hideCompletely ? 'display: none !important;' : ''}
-          ${!hideCompletely ? 'opacity: 0.5 !important; pointer-events: none !important;' : ''}
-          transition: opacity 0.2s ease !important;
+      // APPROACH 3: Inject a global CSS style that affects ALL possible input elements
+      const styleElement = document.createElement('style');
+      styleElement.id = 'vf-next-disable-inputs';
+      styleElement.innerHTML = `
+        /* Target all possible chat input elements in a Next.js app */
+        [class*="InputContainer"],
+        [class*="gdvh9t"],
+        [class*="chat-input"],
+        [id="vfrc-send-message"],
+        [class*="TextArea"],
+        [class*="SendButton"],
+        .vfrc-input-container {
+          ${hideCompletely ? 'display: none !important;' : 'opacity: 0.5 !important; pointer-events: none !important;'}
         }
         
-        /* Target all input container children */
-        .vfrc-input-container *, 
-        ._1gdvh9t1 *,
-        ._1gdvh9t4, 
-        ._1gdvh9t8, 
-        ._1gdvh9t9 {
-          pointer-events: none !important;
-        }
-        
-        /* Target textarea specifically */
-        .vfrc-chat-input, 
-        ._1gdvh9t6,
-        textarea {
-          pointer-events: none !important;
-          ${!hideCompletely ? 'opacity: 0.5 !important;' : ''}
-        }
-        
-        /* Target buttons specifically */
-        #vfrc-send-message,
-        .vfrc-button,
-        ._1q15b0b0,
-        ._12m8tlu0,
-        ._12m8tlu1,
-        .mhuss05,
-        ._1gdvh9ta,
-        ._1gdvh9td,
-        .vfrc-input-container button,
-        ._1gdvh9t1 button,
-        ._1gdvh9t9 button {
-          pointer-events: none !important;
-          ${!hideCompletely ? 'opacity: 0.5 !important;' : ''}
-        }
-        
-        /* CRITICAL: Keep all custom extensions working */
-        ._1ddzqsn7,
+        /* Critical: Still allow interactions with custom components */
         [class*="ddzqsn"] {
-          pointer-events: auto !important;
           opacity: 1 !important;
+          pointer-events: auto !important;
           display: block !important;
         }
         
-        /* Ensure all elements inside extensions work */
-        ._1ddzqsn7 *,
         [class*="ddzqsn"] * {
-          pointer-events: auto !important;
           opacity: 1 !important;
+          pointer-events: auto !important;
         }
       `;
       
-      // Add the style element to the shadow DOM
-      chatDiv.shadowRoot.appendChild(styleElement);
+      document.head.appendChild(styleElement);
       
-      // Also try direct DOM manipulation on specific elements as a backup
-      try {
-        // Get all possible input containers
-        const inputContainers = [
-          ...chatDiv.shadowRoot.querySelectorAll('.vfrc-input-container'),
-          ...chatDiv.shadowRoot.querySelectorAll('._1gdvh9t1'),
-          ...chatDiv.shadowRoot.querySelectorAll('.vfrc-footer ._1vj16245 > div')
-        ];
-        
-        // Apply direct styles to each container
-        inputContainers.forEach(container => {
-          if (hideCompletely) {
-            container.style.display = "none";
-          } else {
-            container.style.opacity = "0.5";
-            container.style.pointerEvents = "none";
-          }
-        });
-        
-        // Log how many elements we found
-        console.log(`Found ${inputContainers.length} input containers to disable`);
-      } catch (err) {
-        console.warn("Error during direct DOM manipulation:", err);
-      }
+      // APPROACH 4: Set global state variables for Next.js React app
+      window.__VF_INPUTS_DISABLED = true;
+      window.__VF_INPUTS_HIDE_COMPLETELY = hideCompletely;
       
-      // Mark as disabled globally
-      window.__voiceflowInputsDisabled = true;
+      // APPROACH 5: Dispatch custom event that Next.js app might be listening for
+      document.dispatchEvent(new CustomEvent('vf:disableInputs', { 
+        detail: { disabled: true, hideCompletely: hideCompletely }
+      }));
       
-      console.log("✅ DisableInputExtension completed");
+      console.log("✅ Next.js DisableInputExtension completed - used 5 different approaches");
     } catch (error) {
-      console.error("❌ Error in DisableInputExtension:", error);
+      console.error("❌ Error in Next.js DisableInputExtension:", error);
     }
   }
 };
@@ -1911,118 +1900,105 @@ export const EnableInputExtension = {
   match: ({ trace }) => trace.type === "ext_enableInputs" || trace.payload?.name === "ext_enableInputs",
   effect: ({ trace }) => {
     try {
-      console.log("💬 EnableInputExtension executing...");
+      console.log("🔵 Next.js EnableInputExtension executing...");
       
-      // Find the chat container
-      const chatDiv = document.getElementById("voiceflow-chat");
-      if (!chatDiv || !chatDiv.shadowRoot) {
-        console.warn("Cannot find chat container");
-        return;
-      }
-      
-      // First remove our style element
-      const styleElement = chatDiv.shadowRoot.querySelector('#vf-disable-inputs-webapp');
+      // APPROACH 1: Remove our global style
+      const styleElement = document.getElementById('vf-next-disable-inputs');
       if (styleElement) {
         styleElement.remove();
-        console.log("Removed disable styles");
+        console.log("Removed global disable styles");
       }
       
-      // Try direct DOM manipulation on all possible input elements
-      try {
-        // Reset all input containers
-        const inputContainers = [
-          ...chatDiv.shadowRoot.querySelectorAll('.vfrc-input-container'),
-          ...chatDiv.shadowRoot.querySelectorAll('._1gdvh9t1'),
-          ...chatDiv.shadowRoot.querySelectorAll('.vfrc-footer ._1vj16245 > div')
-        ];
+      // APPROACH 2: Try querySelector with document to reset all elements
+      const allInputElements = Array.from(document.querySelectorAll(
+        'textarea, input[type="text"], .vfrc-input-container, [class*="gdvh9t"], button[id="vfrc-send-message"]'
+      ));
+      
+      if (allInputElements.length > 0) {
+        console.log(`Found ${allInputElements.length} input elements in main document to enable`);
         
-        inputContainers.forEach(container => {
-          container.style.display = "";
-          container.style.opacity = "";
-          container.style.pointerEvents = "";
+        allInputElements.forEach(el => {
+          // Reset styles
+          el.style.display = "";
+          el.style.opacity = "";
+          el.style.pointerEvents = "";
+          
+          // Also remove disabled attribute where applicable
+          if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'BUTTON') {
+            el.removeAttribute('disabled');
+          }
         });
-        
-        // Reset textareas
-        const textareas = [
-          ...chatDiv.shadowRoot.querySelectorAll('.vfrc-chat-input'),
-          ...chatDiv.shadowRoot.querySelectorAll('._1gdvh9t6'),
-          ...chatDiv.shadowRoot.querySelectorAll('textarea')
-        ];
-        
-        textareas.forEach(textarea => {
-          textarea.style.pointerEvents = "";
-          textarea.style.opacity = "";
-        });
-        
-        // Reset buttons
-        const buttons = [
-          ...chatDiv.shadowRoot.querySelectorAll('#vfrc-send-message'),
-          ...chatDiv.shadowRoot.querySelectorAll('.vfrc-button'),
-          ...chatDiv.shadowRoot.querySelectorAll('.vfrc-input-container button'),
-          ...chatDiv.shadowRoot.querySelectorAll('._1gdvh9t1 button'),
-          ...chatDiv.shadowRoot.querySelectorAll('._1gdvh9t9 button')
-        ];
-        
-        buttons.forEach(button => {
-          button.style.pointerEvents = "";
-          button.style.opacity = "";
-        });
-        
-        console.log(`Reset styles on ${inputContainers.length} containers, ${textareas.length} textareas, and ${buttons.length} buttons`);
-      } catch (err) {
-        console.warn("Error during direct DOM manipulation:", err);
       }
       
-      // Ensure we also create a style to fully reset everything
-      const resetStyle = document.createElement('style');
-      resetStyle.id = 'vf-enable-inputs-webapp';
-      resetStyle.textContent = `
-        /* Reset all possible input container classes */
-        .vfrc-input-container, 
-        ._1gdvh9t1, 
-        .vfrc-footer ._1vj16245 > div,
-        .vfrc-input-container *,
-        ._1gdvh9t1 *,
-        ._1gdvh9t4,
-        ._1gdvh9t8,
-        ._1gdvh9t9,
-        .vfrc-chat-input, 
-        ._1gdvh9t6,
-        textarea,
-        #vfrc-send-message,
-        .vfrc-button,
-        ._1q15b0b0,
-        ._12m8tlu0,
-        ._12m8tlu1,
-        .mhuss05,
-        ._1gdvh9ta,
-        ._1gdvh9td,
-        .vfrc-input-container button,
-        ._1gdvh9t1 button,
-        ._1gdvh9t9 button {
-          display: initial !important;
+      // APPROACH 3: Try the iframe approach
+      const chatIframes = document.querySelectorAll('iframe');
+      chatIframes.forEach(iframe => {
+        try {
+          const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+          const iframeInputs = iframeDocument.querySelectorAll(
+            'textarea, input[type="text"], .vfrc-input-container, [class*="gdvh9t"], button[id="vfrc-send-message"]'
+          );
+          
+          if (iframeInputs.length > 0) {
+            console.log(`Found ${iframeInputs.length} input elements in iframe to enable`);
+            
+            iframeInputs.forEach(el => {
+              // Reset styles
+              el.style.display = "";
+              el.style.opacity = "";
+              el.style.pointerEvents = "";
+              
+              // Also remove disabled attribute where applicable
+              if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'BUTTON') {
+                el.removeAttribute('disabled');
+              }
+            });
+          }
+        } catch (err) {
+          // Cross-origin iframe access is restricted
+          console.log("Could not access iframe contents (likely cross-origin)");
+        }
+      });
+      
+      // APPROACH 4: Inject a temporary enable style 
+      const enableStyle = document.createElement('style');
+      enableStyle.id = 'vf-next-enable-inputs';
+      enableStyle.innerHTML = `
+        /* Force enable all input elements */
+        [class*="InputContainer"],
+        [class*="gdvh9t"],
+        [class*="chat-input"],
+        [id="vfrc-send-message"],
+        [class*="TextArea"],
+        [class*="SendButton"],
+        .vfrc-input-container {
+          display: block !important;
           opacity: 1 !important;
           pointer-events: auto !important;
-          transition: opacity 0.2s ease !important;
         }
       `;
       
-      // Add the reset style
-      chatDiv.shadowRoot.appendChild(resetStyle);
+      document.head.appendChild(enableStyle);
       
-      // Remove the reset style after a short delay
+      // Remove temporary enable style after a short delay
       setTimeout(() => {
-        if (resetStyle.parentNode) {
-          resetStyle.remove();
+        if (enableStyle.parentNode) {
+          enableStyle.remove();
         }
       }, 500);
       
-      // Clear disabled flag
-      window.__voiceflowInputsDisabled = false;
+      // APPROACH 5: Reset global state variables
+      window.__VF_INPUTS_DISABLED = false;
+      window.__VF_INPUTS_HIDE_COMPLETELY = false;
       
-      console.log("✅ EnableInputExtension completed");
+      // APPROACH 6: Dispatch custom event for React app
+      document.dispatchEvent(new CustomEvent('vf:enableInputs', { 
+        detail: { disabled: false }
+      }));
+      
+      console.log("✅ Next.js EnableInputExtension completed - used 6 different approaches");
     } catch (error) {
-      console.error("❌ Error in EnableInputExtension:", error);
+      console.error("❌ Error in Next.js EnableInputExtension:", error);
     }
   }
 };
