@@ -1785,60 +1785,70 @@ export const TransitionAnimationExtension = {
   }
 };
 
-export const DisableInputExtension = {
-  name: "DisableInput",
-  type: "effect",
-  match: ({ trace }) => trace.type === "ext_disableInputs" || trace.payload?.name === "ext_disableInputs",
+export const EnableInputExtension = {
+  name: "EnableInput",
+  type: "effect", 
+  match: ({ trace }) => trace.type === "ext_enableInputs" || trace.payload?.name === "ext_enableInputs",
   effect: ({ trace }) => {
-    console.log("🔴 DisableInputExtension triggered", trace);
-
-    // Get the Voiceflow chat container
-    const chatDiv = document.getElementById("voiceflow-chat");
-
-    if (chatDiv && chatDiv.shadowRoot) {
-      // Access the shadow root
-      const shadowRoot = chatDiv.shadowRoot;
-
-      // Find the input container inside the shadow DOM
-      const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
-
-      if (inputContainer) {
-        inputContainer.style.display = "none"; // Hide input field completely
-        console.log("✅ vfrc-input-container hidden inside shadow root");
-      } else {
-        console.warn("⚠️ vfrc-input-container not found inside shadow root");
+    try {
+      console.log("EnableInputExtension executing...");
+      
+      // Find the input container
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv || !chatDiv.shadowRoot) {
+        console.warn("Cannot find chat container");
+        return; // Exit immediately to ensure flow continues
       }
-    } else {
-      console.warn("⚠️ voiceflow-chat or shadowRoot not found");
+      
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (!inputContainer) {
+        console.warn("Cannot find input container");
+        return; // Exit immediately to ensure flow continues
+      }
+      
+      // Reset all styles to default
+      inputContainer.style.display = "";
+      inputContainer.style.opacity = "";
+      inputContainer.style.pointerEvents = "";
+      
+      console.log("EnableInputExtension completed successfully");
+    } catch (error) {
+      // Catch any errors to prevent blocking the flow
+      console.error("Error in EnableInputExtension:", error);
     }
   }
 };
 
 export const EnableInputExtension = {
   name: "EnableInput",
-  type: "effect",
+  type: "effect", 
   match: ({ trace }) => trace.type === "ext_enableInputs" || trace.payload?.name === "ext_enableInputs",
   effect: ({ trace }) => {
-    console.log("🔵 EnableInputExtension triggered", trace);
-
-    // Get the Voiceflow chat container
-    const chatDiv = document.getElementById("voiceflow-chat");
-
-    if (chatDiv && chatDiv.shadowRoot) {
-      // Access the shadow root
-      const shadowRoot = chatDiv.shadowRoot;
-
-      // Find the input container inside the shadow DOM
-      const inputContainer = shadowRoot.querySelector(".vfrc-input-container");
-
-      if (inputContainer) {
-        inputContainer.style.display = ""; // Show input field
-        console.log("✅ vfrc-input-container is now visible again");
-      } else {
-        console.warn("⚠️ vfrc-input-container not found inside shadow root");
+    try {
+      console.log("EnableInputExtension executing...");
+      
+      // Find the input container
+      const chatDiv = document.getElementById("voiceflow-chat");
+      if (!chatDiv || !chatDiv.shadowRoot) {
+        console.warn("Cannot find chat container");
+        return; // Exit immediately to ensure flow continues
       }
-    } else {
-      console.warn("⚠️ voiceflow-chat or shadowRoot not found");
+      
+      const inputContainer = chatDiv.shadowRoot.querySelector(".vfrc-input-container");
+      if (!inputContainer) {
+        console.warn("Cannot find input container");
+        return; // Exit immediately to ensure flow continues
+      }
+      
+      // Reset all styles to default
+      inputContainer.style.display = "";
+      inputContainer.style.opacity = "";
+      inputContainer.style.pointerEvents = "";
+      
+      console.log("EnableInputExtension completed successfully");
+    } catch (error) {
+      // Catch any errors to prevent blocking the flow
+      console.error("Error in EnableInputExtension:", error);
     }
   }
 };
