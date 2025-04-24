@@ -309,8 +309,10 @@ export const RankOptionsExtension = {
       submitText: trace.payload?.submitText || "Submit",
       submitMessage: trace.payload?.submitMessage || "Rankings submitted",
       darkMode: trace.payload?.darkMode || false,
-      slantTitle: trace.payload?.slantTitle || false, // New option for slanted title
-      titleSkewDegree: trace.payload?.titleSkewDegree || -10 // Control skew angle
+      slantTitle: trace.payload?.slantTitle || false,
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10,
+      autoScroll: trace.payload?.autoScroll !== false, // Default to true
+      preserveScrollIndicators: trace.payload?.preserveScrollIndicators !== false // Default to true
     };
     
     // Color utilities
@@ -334,12 +336,41 @@ export const RankOptionsExtension = {
       accent: hexToRgba(config.color, 0.15)
     };
 
-    // Hide any scroll indicators that might be present
-    const hideScrollIndicators = () => {
-      document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
-        .forEach(el => {
-          el.style.display = 'none';
-        });
+    // IMPROVED: Only hide scroll indicators if explicitly configured to do so
+    const manageScrollIndicators = (action) => {
+      if (!config.preserveScrollIndicators) {
+        document.querySelectorAll('[class*="scroll-down"], [class*="scroll-button"]')
+          .forEach(el => {
+            el.style.display = action === 'hide' ? 'none' : '';
+          });
+      }
+    };
+
+    // NEW: Auto-scroll function to make component visible
+    const scrollIntoView = () => {
+      if (config.autoScroll) {
+        try {
+          // First try smooth scrolling the container
+          const chatContainer = document.querySelector('.vfrc-chat-container') || 
+                               document.querySelector('[class*="chat-container"]');
+          
+          if (chatContainer) {
+            // Scroll to the bottom with a slight delay to ensure rendering
+            setTimeout(() => {
+              chatContainer.scrollTop = chatContainer.scrollHeight;
+              console.log("Scrolled chat container to bottom");
+            }, 100);
+          }
+          
+          // Then directly scroll to our element as a backup
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            console.log("Scrolled element into view");
+          }, 200);
+        } catch (err) {
+          console.warn("Auto-scroll error:", err);
+        }
+      }
     };
 
     const createForm = () => {
@@ -355,6 +386,8 @@ export const RankOptionsExtension = {
             font-family: 'Inter', sans-serif;
             max-width: 450px;
             margin: 0 auto;
+            /* Added bottom margin to ensure space below */
+            margin-bottom: 16px;
           }
           
           .rank-options-container {
@@ -385,6 +418,8 @@ export const RankOptionsExtension = {
             padding: 0;
             margin: 0;
             width: 100%;
+            /* Added min-height to ensure rendering before items appear */
+            min-height: 100px;
           }
           
           .rank-options-list li {
@@ -532,9 +567,10 @@ export const RankOptionsExtension = {
             }
           }
 
+          /* Modified to reduce animation delay and ensure initial visibility */
           .rank-options-list li {
-            animation: slideIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            animation-delay: calc(var(--item-index) * 0.08s);
+            animation: slideIn 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation-delay: calc(var(--item-index) * 0.05s);
             opacity: 0;
           }
 
@@ -588,10 +624,7 @@ export const RankOptionsExtension = {
             to { opacity: 1; }
           }
           
-          [class*="scroll-down"],
-          [class*="scroll-button"] {
-            display: none !important;
-          }
+          /* REMOVED: No longer hiding scroll indicators in CSS */
         </style>
         
         <div class="rank-options-container">
@@ -659,9 +692,6 @@ export const RankOptionsExtension = {
         isSubmitted = true;
         disableRanking();
         
-        // Hide any scroll indicators
-        hideScrollIndicators();
-        
         window.voiceflow.chat.interact({
           type: "complete",
           payload: { rankedOptions }
@@ -703,9 +733,7 @@ export const RankOptionsExtension = {
       };
     };
 
-    // Hide any scroll indicators that might be present
-    hideScrollIndicators();
-
+    // Load Sortable.js if needed, then create form
     let cleanup = null;
     
     if (typeof Sortable === 'undefined') {
@@ -713,6 +741,8 @@ export const RankOptionsExtension = {
       script.src = 'https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js';
       script.onload = () => {
         cleanup = createForm();
+        // NEW: Auto-scroll after form created with a slight delay to allow rendering
+        setTimeout(scrollIntoView, 100);
       };
       script.onerror = () => {
         console.error('Failed to load Sortable.js');
@@ -720,13 +750,26 @@ export const RankOptionsExtension = {
       document.head.appendChild(script);
     } else {
       cleanup = createForm();
+      // NEW: Auto-scroll after form created
+      setTimeout(scrollIntoView, 100);
     }
+
+    // Set up a repeated scroll check to handle delayed rendering
+    const scrollCheckInterval = setInterval(() => {
+      scrollIntoView();
+    }, 500);
+    
+    // Clear interval after a few seconds
+    setTimeout(() => {
+      clearInterval(scrollCheckInterval);
+    }, 2000);
 
     // Return cleanup function
     return () => {
       if (typeof cleanup === 'function') {
         cleanup();
       }
+      clearInterval(scrollCheckInterval);
     };
   },
 };
