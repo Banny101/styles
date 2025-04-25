@@ -792,7 +792,8 @@ export const MultiSelectExtension = {
       darkMode: trace.payload?.darkMode || false,
       successMessage: trace.payload?.successMessage || "Your selection has been saved",
       slantTitle: trace.payload?.slantTitle || false,
-      titleSkewDegree: trace.payload?.titleSkewDegree || -10
+      titleSkewDegree: trace.payload?.titleSkewDegree || -10,
+      successDuration: trace.payload?.successDuration || 2000 // Duration to show success message before proceeding
     };
 
     // Color utilities
@@ -830,14 +831,17 @@ export const MultiSelectExtension = {
     };
 
     const multiSelectContainer = document.createElement("form");
-    multiSelectContainer.className = "_1ddzqsn7";
+    multiSelectContainer.className = "_1ddzqsn7 multi-select-wrapper";
+    multiSelectContainer.id = `multiSelect-${Date.now()}`;
 
     multiSelectContainer.innerHTML = `
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
         
-        ._1ddzqsn7 {
+        ._1ddzqsn7.multi-select-wrapper {
           display: block;
+          margin-bottom: 20px; /* Add space at bottom to ensure visibility */
+          position: relative; /* For absolute positioning of success overlay */
         }
         
         .multi-select-container {
@@ -845,6 +849,8 @@ export const MultiSelectExtension = {
           width: 100%;
           max-width: 450px;
           margin: 0 auto;
+          position: relative;
+          transition: all 0.3s ease;
         }
         
         .multi-select-title {
@@ -885,7 +891,7 @@ export const MultiSelectExtension = {
           border: 1px solid ${colors.border};
           border-radius: 8px;
           cursor: pointer;
-          : all 0.2s ease;
+          transition: all 0.2s ease;
           user-select: none;
           opacity: 0;
           animation: slideIn 0.3s forwards;
@@ -906,7 +912,7 @@ export const MultiSelectExtension = {
           margin-right: 12px;
           border: 2px solid ${colors.textSecondary};
           border-radius: 4px;
-          : all 0.2s ease;
+          transition: all 0.2s ease;
           flex-shrink: 0;
         }
         
@@ -965,7 +971,7 @@ export const MultiSelectExtension = {
           font-size: 14px;
           font-weight: 500;
           cursor: pointer;
-          : all 0.2s ease;
+          transition: all 0.2s ease;
         }
         
         .submit-button {
@@ -1015,54 +1021,102 @@ export const MultiSelectExtension = {
           animation: shake 0.3s ease;
         }
         
-        /* Success state styling */
-        .success-message {
-          text-align: center;
-          padding: 16px;
-          margin-top: 16px;
-          background: ${hexToRgba(colors.primary, 0.1)};
+        /* Improved success overlay */
+        .success-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: ${hexToRgba(colors.background, 0.95)};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          opacity: 0;
+          pointer-events: none;
+          z-index: 10;
+          transition: opacity 0.3s ease;
           border-radius: 8px;
-          font-size: 14px;
-          color: ${colors.text};
-          border: 1px solid ${hexToRgba(colors.primary, 0.2)};
-          display: none;
-          animation: fadeIn 0.5s ease;
+          padding: 20px;
+          box-sizing: border-box;
+        }
+        
+        .success-overlay.visible {
+          opacity: 1;
+          pointer-events: auto;
         }
         
         .success-icon {
-          display: block;
-          width: 36px;
-          height: 36px;
-          margin: 0 auto 12px;
-          background: ${colors.primary};
+          width: 48px;
+          height: 48px;
+          margin-bottom: 16px;
+          background: ${hexToRgba(colors.primary, 0.15)};
           border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           position: relative;
-          animation: scaleIn 0.4s cubic-bezier(0.18, 1.25, 0.6, 1.25) forwards;
+          animation: scaleIn 0.5s cubic-bezier(0.18, 1.25, 0.6, 1.25) forwards;
           opacity: 0;
-          transform: scale(0.5);
         }
         
         .success-icon:after {
           content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 16px;
-          height: 8px;
-          border: solid white;
-          border-width: 0 0 2px 2px;
-          transform: translate(-50%, -60%) rotate(-45deg);
+          display: block;
+          width: 20px;
+          height: 10px;
+          border: solid ${colors.primary};
+          border-width: 0 0 3px 3px;
+          transform: rotate(-45deg) translate(2px, -2px);
         }
         
         .success-text {
-          display: block;
-          animation: fadeIn 0.5s ease forwards 0.2s;
+          font-size: 16px;
+          font-weight: 600;
+          color: ${colors.text};
+          text-align: center;
           opacity: 0;
+          animation: fadeIn 0.5s ease forwards 0.3s;
+        }
+        
+        .selected-items {
+          margin-top: 12px;
+          padding: 12px;
+          background: ${hexToRgba(colors.primary, 0.1)};
+          border-radius: 8px;
+          max-width: 100%;
+          text-align: center;
+          opacity: 0;
+          animation: fadeIn 0.5s ease forwards 0.5s;
+        }
+        
+        .selected-items-title {
+          font-size: 13px;
+          font-weight: 500;
+          color: ${colors.textSecondary};
+          margin-bottom: 8px;
+        }
+        
+        .selected-item {
+          display: inline-block;
+          margin: 4px;
+          padding: 6px 10px;
+          background: ${hexToRgba(colors.primary, 0.15)};
+          color: ${colors.primary};
+          border-radius: 16px;
+          font-size: 13px;
+          font-weight: 500;
+        }
+        
+        /* Ensure component is focused and visible */
+        .multi-select-wrapper.submitted {
+          padding-bottom: 40px; /* Extra space to ensure visibility */
         }
         
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes scaleIn {
@@ -1090,19 +1144,52 @@ export const MultiSelectExtension = {
           <button type="submit" class="submit-button" disabled>${config.submitText}</button>
           <button type="button" class="cancel-button">${config.cancelText}</button>
         </div>
-        <div class="success-message">
+        
+        <!-- Improved success overlay -->
+        <div class="success-overlay">
           <div class="success-icon"></div>
-          <span class="success-text">${config.successMessage}</span>
+          <div class="success-text">${config.successMessage}</div>
+          <div class="selected-items">
+            <div class="selected-items-title">Your selections:</div>
+            <div class="selected-items-list"></div>
+          </div>
         </div>
       </div>
     `;
 
+    element.innerHTML = '';
+    element.appendChild(multiSelectContainer);
+
+    // Get DOM elements
     let isSubmitted = false;
     const errorMessage = multiSelectContainer.querySelector(".error-message");
     const submitButton = multiSelectContainer.querySelector(".submit-button");
     const cancelButton = multiSelectContainer.querySelector(".cancel-button");
     const checkboxes = multiSelectContainer.querySelectorAll('input[type="checkbox"]');
-    const successMessage = multiSelectContainer.querySelector(".success-message");
+    const successOverlay = multiSelectContainer.querySelector(".success-overlay");
+    const selectedItemsList = multiSelectContainer.querySelector(".selected-items-list");
+    
+    // Auto-scroll function to ensure component is visible
+    const scrollIntoView = () => {
+      try {
+        // Try both the container and the element itself
+        setTimeout(() => {
+          const chatContainer = document.querySelector('.vfrc-chat-container') || 
+                               document.querySelector('[class*="chat-container"]');
+          
+          if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }
+          
+          multiSelectContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      } catch (err) {
+        console.warn("Scroll error:", err);
+      }
+    };
+    
+    // Call scroll function on initial render
+    scrollIntoView();
 
     const updateSubmitButton = () => {
       if (isSubmitted) return;
@@ -1125,16 +1212,29 @@ export const MultiSelectExtension = {
         checkbox.disabled = true;
         checkbox.parentElement.style.opacity = "0.7";
         checkbox.parentElement.style.cursor = "not-allowed";
+        checkbox.parentElement.style.pointerEvents = "none";
       });
       
       submitButton.disabled = true;
-      submitButton.style.opacity = "0.5";
       cancelButton.disabled = true;
+      
+      // Add visual indication that form is disabled
+      submitButton.style.opacity = "0.5";
       cancelButton.style.opacity = "0.5";
+      multiSelectContainer.classList.add("submitted");
     };
     
-    const showSuccess = () => {
-      successMessage.style.display = "block";
+    const showSuccess = (selectedOptions) => {
+      // Fill the selected items list
+      selectedItemsList.innerHTML = selectedOptions.length > 0 
+        ? selectedOptions.map(option => `<span class="selected-item">${option}</span>`).join('')
+        : '<span class="selected-item">None selected</span>';
+      
+      // Display the success overlay with animation
+      successOverlay.classList.add("visible");
+      
+      // Make sure the component is visible
+      scrollIntoView();
     };
 
     checkboxes.forEach(checkbox => {
@@ -1162,17 +1262,37 @@ export const MultiSelectExtension = {
         multiSelectContainer.querySelectorAll('input[name="options"]:checked')
       ).map(input => input.value);
 
+      // Mark as submitted to prevent duplicate submissions
       isSubmitted = true;
-      disableForm();
-      showSuccess();
       
-      // Short delay before sending the interaction to allow the success state to be visible
+      // Disable the form controls
+      disableForm();
+      
+      // Show success state with selected options
+      showSuccess(selectedOptions);
+      
+      // Set up a "heartbeat" to keep checking if we're still in the DOM
+      // This helps ensure the success message remains visible
+      let heartbeatInterval = setInterval(() => {
+        if (document.body.contains(multiSelectContainer)) {
+          scrollIntoView();
+        } else {
+          clearInterval(heartbeatInterval);
+        }
+      }, 300);
+      
+      // Proceed to next step after showing success message
       setTimeout(() => {
-        window.voiceflow.chat.interact({
-          type: "complete",
-          payload: { options: selectedOptions }
-        });
-      }, 1200);
+        clearInterval(heartbeatInterval);
+        
+        // Only proceed if we're still in the DOM
+        if (document.body.contains(multiSelectContainer)) {
+          window.voiceflow.chat.interact({
+            type: "complete",
+            payload: { options: selectedOptions }
+          });
+        }
+      }, config.successDuration);
     });
 
     cancelButton.addEventListener("click", () => {
@@ -1180,17 +1300,42 @@ export const MultiSelectExtension = {
       
       disableForm();
       
+      // Just immediately cancel without showing success
       window.voiceflow.chat.interact({
         type: "cancel",
         payload: { options: [] }
       });
     });
-
-    element.innerHTML = '';
-    element.appendChild(multiSelectContainer);
     
-    // No cleanup needed since we're using separate extensions for input control
-    return () => {};
+    // Return a cleanup function
+    return () => {
+      // If we have a success state and submitted already, 
+      // artificially keep the success visible a bit longer
+      if (isSubmitted && successOverlay.classList.contains("visible")) {
+        const clonedOverlay = successOverlay.cloneNode(true);
+        clonedOverlay.style.position = 'fixed';
+        clonedOverlay.style.zIndex = '9999';
+        clonedOverlay.style.top = '50%';
+        clonedOverlay.style.left = '50%';
+        clonedOverlay.style.transform = 'translate(-50%, -50%)';
+        clonedOverlay.style.maxWidth = '450px';
+        clonedOverlay.style.width = '90%';
+        clonedOverlay.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+        
+        document.body.appendChild(clonedOverlay);
+        
+        setTimeout(() => {
+          if (document.body.contains(clonedOverlay)) {
+            clonedOverlay.style.opacity = '0';
+            setTimeout(() => {
+              if (document.body.contains(clonedOverlay)) {
+                document.body.removeChild(clonedOverlay);
+              }
+            }, 500);
+          }
+        }, 1500);
+      }
+    };
   },
 };
 
