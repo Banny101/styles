@@ -1839,7 +1839,6 @@ export const CalendarDatePickerExtension = {
     const config = {
       title: trace.payload?.title || "",
       confirmText: trace.payload?.confirmText || "Confirm",
-      cancelText: trace.payload?.cancelText || "Cancel",
       primaryColor: trace.payload?.color || "#4F46E5", // Indigo default
       maxYear: parseInt(trace.payload?.maxYear) || new Date().getFullYear(),
       minYear: parseInt(trace.payload?.minYear) || 1900,
@@ -1915,7 +1914,7 @@ export const CalendarDatePickerExtension = {
         width: 100%;
         max-width: 300px;
         margin: 0 auto;
-        : all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid ${colors.border};
       }
       
@@ -1965,7 +1964,7 @@ export const CalendarDatePickerExtension = {
         border-radius: 12px;
         appearance: none;
         cursor: pointer;
-        : all 0.2s ease;
+        transition: all 0.2s ease;
         font-family: 'Inter', system-ui, sans-serif;
       }
       
@@ -2003,7 +2002,7 @@ export const CalendarDatePickerExtension = {
         font-size: 14px;
         font-weight: 500;
         color: ${colors.text};
-        : all 0.2s ease;
+        transition: all 0.2s ease;
       }
       
       .date-summary.has-date {
@@ -2107,7 +2106,7 @@ export const CalendarDatePickerExtension = {
         z-index: 10;
         opacity: 0;
         pointer-events: none;
-        : opacity 0.2s ease;
+        transition: opacity 0.2s ease;
       }
       
       .processing-overlay.active {
@@ -2124,11 +2123,10 @@ export const CalendarDatePickerExtension = {
         animation: spin 1s linear infinite;
       }
       
-      /* Buttons */
+      /* Single button container (removed the grid) */
       .buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
+        display: flex;
+        justify-content: center;
       }
       
       .btn {
@@ -2140,9 +2138,10 @@ export const CalendarDatePickerExtension = {
         font-weight: 600;
         text-align: center;
         font-family: 'Inter', system-ui, sans-serif;
-        : all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         position: relative;
         overflow: hidden;
+        width: 100%; /* Make the button full width */
       }
       
       .btn::after {
@@ -2155,24 +2154,14 @@ export const CalendarDatePickerExtension = {
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         transform: translate(-50%, -50%) scale(0);
-        : transform 0.4s ease-out;
+        transition: transform 0.4s ease-out;
         pointer-events: none;
       }
       
       .btn:active::after {
         transform: translate(-50%, -50%) scale(2);
         opacity: 0;
-        : transform 0.4s ease-out, opacity 0.4s ease-out;
-      }
-      
-      .btn-cancel {
-        background: ${colors.surface};
-        color: ${colors.textSecondary};
-        border: 1px solid ${colors.border};
-      }
-      
-      .btn-cancel:hover {
-        background: ${config.darkMode ? '#475569' : '#E2E8F0'};
+        transition: transform 0.4s ease-out, opacity 0.4s ease-out;
       }
       
       .btn-confirm {
@@ -2223,6 +2212,11 @@ export const CalendarDatePickerExtension = {
       @keyframes highlight {
         0% { background: ${hexToRgba(config.primaryColor, 0.2)}; }
         100% { background: ${hexToRgba(config.primaryColor, 0.05)}; }
+      }
+
+      /* Added to make sure component is visible */
+      .datepicker-container {
+        margin-bottom: 16px;
       }
     `;
     
@@ -2289,8 +2283,8 @@ export const CalendarDatePickerExtension = {
           <div class="age-display"></div>
           <div class="error-text">Please complete your selection</div>
           
+          <!-- Only the confirm button, no cancel button -->
           <div class="buttons">
-            <button class="btn btn-cancel">${config.cancelText}</button>
             <button class="btn btn-confirm" disabled>${config.confirmText}</button>
           </div>
           
@@ -2325,7 +2319,6 @@ export const CalendarDatePickerExtension = {
     const dateSummary = container.querySelector('.date-summary');
     const ageDisplay = container.querySelector('.age-display');
     const errorText = container.querySelector('.error-text');
-    const cancelButton = container.querySelector('.btn-cancel');
     const confirmButton = container.querySelector('.btn-confirm');
     const processingOverlay = container.querySelector('.processing-overlay');
     const successState = container.querySelector('.success-state');
@@ -2407,7 +2400,6 @@ export const CalendarDatePickerExtension = {
       daySelect.disabled = true;
       yearSelect.disabled = true;
       confirmButton.disabled = true;
-      cancelButton.disabled = true;
     };
     
     // Show success state
@@ -2424,6 +2416,31 @@ export const CalendarDatePickerExtension = {
       // Disable all controls
       disableAllControls();
     };
+    
+    // Auto-scroll function to make sure component is visible
+    const scrollIntoView = () => {
+      try {
+        // First try scrolling container
+        const chatContainer = document.querySelector('.vfrc-chat-container') || 
+                             document.querySelector('[class*="chat-container"]');
+        
+        if (chatContainer) {
+          setTimeout(() => {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }, 100);
+        }
+        
+        // Then scroll directly to our element
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
+      } catch (err) {
+        console.warn("Auto-scroll error:", err);
+      }
+    };
+    
+    // Call the scroll function
+    scrollIntoView();
     
     // Event Listeners
     monthSelect.addEventListener('change', (e) => {
@@ -2444,28 +2461,6 @@ export const CalendarDatePickerExtension = {
       selectedYear = parseInt(e.target.value);
       updateDayOptions();
       updateDateSummary();
-    });
-    
-    cancelButton.addEventListener('click', () => {
-      if (isCompleted || isProcessing) return;
-      
-      // Disable controls to prevent further interaction
-      disableAllControls();
-      
-      // Show processing state
-      isProcessing = true;
-      processingOverlay.classList.add('active');
-      
-      // Send cancel event to Voiceflow with a slight delay for visual feedback
-      setTimeout(() => {
-        window.voiceflow.chat.interact({
-          type: "cancel",
-          payload: { 
-            cancelled: true,
-            timestamp: Date.now()
-          }
-        });
-      }, 500);
     });
     
     confirmButton.addEventListener('click', () => {
@@ -2510,20 +2505,23 @@ export const CalendarDatePickerExtension = {
       }, 800);
     });
     
-    // Implement keyboard navigation
+    // Implement keyboard navigation - only for Enter, removed Escape
     container.addEventListener('keydown', (e) => {
       if (isCompleted || isProcessing) return;
       
       if (e.key === 'Enter' && !confirmButton.disabled) {
         e.preventDefault();
         confirmButton.click();
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        cancelButton.click();
       }
     });
     
-    // Empty cleanup function since we're not disabling inputs here
-    return () => {};
+    // Set up periodic scroll checks to ensure visibility
+    const scrollInterval = setInterval(scrollIntoView, 500);
+    setTimeout(() => clearInterval(scrollInterval), 2000);
+    
+    // Empty cleanup function
+    return () => {
+      clearInterval(scrollInterval);
+    };
   }
 };
