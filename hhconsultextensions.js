@@ -793,7 +793,7 @@ export const MultiSelectExtension = {
       successMessage: trace.payload?.successMessage || "Your selection has been saved",
       slantTitle: trace.payload?.slantTitle || false,
       titleSkewDegree: trace.payload?.titleSkewDegree || -10,
-      successDuration: trace.payload?.successDuration || 2000 // Duration to show success message before proceeding
+      successDuration: trace.payload?.successDuration || 1000 // Reduced to 1 second
     };
 
     // Color utilities
@@ -840,8 +840,8 @@ export const MultiSelectExtension = {
         
         ._1ddzqsn7.multi-select-wrapper {
           display: block;
-          margin-bottom: 20px; /* Add space at bottom to ensure visibility */
-          position: relative; /* For absolute positioning of success overlay */
+          margin-bottom: 20px;
+          position: relative;
         }
         
         .multi-select-container {
@@ -1109,11 +1109,6 @@ export const MultiSelectExtension = {
           font-weight: 500;
         }
         
-        /* Ensure component is focused and visible */
-        .multi-select-wrapper.submitted {
-          padding-bottom: 40px; /* Extra space to ensure visibility */
-        }
-        
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
@@ -1162,6 +1157,7 @@ export const MultiSelectExtension = {
 
     // Get DOM elements
     let isSubmitted = false;
+    let hasInteracted = false; // Flag to track if we've sent the interaction
     const errorMessage = multiSelectContainer.querySelector(".error-message");
     const submitButton = multiSelectContainer.querySelector(".submit-button");
     const cancelButton = multiSelectContainer.querySelector(".cancel-button");
@@ -1172,7 +1168,6 @@ export const MultiSelectExtension = {
     // Auto-scroll function to ensure component is visible
     const scrollIntoView = () => {
       try {
-        // Try both the container and the element itself
         setTimeout(() => {
           const chatContainer = document.querySelector('.vfrc-chat-container') || 
                                document.querySelector('[class*="chat-container"]');
@@ -1221,7 +1216,6 @@ export const MultiSelectExtension = {
       // Add visual indication that form is disabled
       submitButton.style.opacity = "0.5";
       cancelButton.style.opacity = "0.5";
-      multiSelectContainer.classList.add("submitted");
     };
     
     const showSuccess = (selectedOptions) => {
@@ -1232,9 +1226,6 @@ export const MultiSelectExtension = {
       
       // Display the success overlay with animation
       successOverlay.classList.add("visible");
-      
-      // Make sure the component is visible
-      scrollIntoView();
     };
 
     checkboxes.forEach(checkbox => {
@@ -1256,7 +1247,7 @@ export const MultiSelectExtension = {
 
     multiSelectContainer.addEventListener("submit", (e) => {
       e.preventDefault();
-      if (isSubmitted) return;
+      if (isSubmitted || hasInteracted) return;
 
       const selectedOptions = Array.from(
         multiSelectContainer.querySelectorAll('input[name="options"]:checked')
@@ -1271,36 +1262,28 @@ export const MultiSelectExtension = {
       // Show success state with selected options
       showSuccess(selectedOptions);
       
-      // Set up a "heartbeat" to keep checking if we're still in the DOM
-      // This helps ensure the success message remains visible
-      let heartbeatInterval = setInterval(() => {
-        if (document.body.contains(multiSelectContainer)) {
-          scrollIntoView();
-        } else {
-          clearInterval(heartbeatInterval);
-        }
-      }, 300);
-      
-      // Proceed to next step after showing success message
+      // IMPORTANT FIX: Send the interact call immediately after a brief delay
+      // This ensures the flow continues to the next block
       setTimeout(() => {
-        clearInterval(heartbeatInterval);
-        
-        // Only proceed if we're still in the DOM
-        if (document.body.contains(multiSelectContainer)) {
+        if (!hasInteracted) {
+          hasInteracted = true;
+          console.log("MultiSelect: Sending complete interaction with options:", selectedOptions);
+          
           window.voiceflow.chat.interact({
             type: "complete",
             payload: { options: selectedOptions }
           });
         }
-      }, config.successDuration);
+      }, 300); // Short delay to allow success state to appear
     });
 
     cancelButton.addEventListener("click", () => {
-      if (isSubmitted) return;
+      if (isSubmitted || hasInteracted) return;
       
+      hasInteracted = true;
       disableForm();
       
-      // Just immediately cancel without showing success
+      console.log("MultiSelect: Sending cancel interaction");
       window.voiceflow.chat.interact({
         type: "cancel",
         payload: { options: [] }
@@ -1309,31 +1292,18 @@ export const MultiSelectExtension = {
     
     // Return a cleanup function
     return () => {
-      // If we have a success state and submitted already, 
-      // artificially keep the success visible a bit longer
-      if (isSubmitted && successOverlay.classList.contains("visible")) {
-        const clonedOverlay = successOverlay.cloneNode(true);
-        clonedOverlay.style.position = 'fixed';
-        clonedOverlay.style.zIndex = '9999';
-        clonedOverlay.style.top = '50%';
-        clonedOverlay.style.left = '50%';
-        clonedOverlay.style.transform = 'translate(-50%, -50%)';
-        clonedOverlay.style.maxWidth = '450px';
-        clonedOverlay.style.width = '90%';
-        clonedOverlay.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+      // If we haven't yet interacted but we're being cleaned up, force an interaction
+      if (isSubmitted && !hasInteracted) {
+        const selectedOptions = Array.from(
+          multiSelectContainer.querySelectorAll('input[name="options"]:checked')
+        ).map(input => input.value);
         
-        document.body.appendChild(clonedOverlay);
+        console.log("MultiSelect cleanup: Forcing interaction with options:", selectedOptions);
         
-        setTimeout(() => {
-          if (document.body.contains(clonedOverlay)) {
-            clonedOverlay.style.opacity = '0';
-            setTimeout(() => {
-              if (document.body.contains(clonedOverlay)) {
-                document.body.removeChild(clonedOverlay);
-              }
-            }, 500);
-          }
-        }, 1500);
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: { options: selectedOptions }
+        });
       }
     };
   },
