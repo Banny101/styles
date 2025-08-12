@@ -63,13 +63,60 @@ div.f6dof87.f6dof89 {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Hover effect for closed state button - sleek animation */
+/* Amazing hover effect for launcher - overrides all animations */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
-  transform: scale(1.08) rotate(2deg) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25) !important;
-  border-color: #333333 !important;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
+  animation: launcherHoverMagic 0.6s ease-in-out infinite !important;
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.3),
+    0 0 0 20px rgba(0, 0, 0, 0.1),
+    0 0 30px rgba(255, 255, 255, 0.5) inset !important;
+  border-color: #000000 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #ffffff 100%) !important;
+  filter: brightness(1.1) drop-shadow(0 0 25px rgba(0, 0, 0, 0.4)) !important;
+}
+
+@keyframes launcherHoverMagic {
+  0% {
+    transform: scale(1.15) rotate(0deg) translateY(-5px);
+  }
+  25% {
+    transform: scale(1.18) rotate(3deg) translateY(-8px) translateX(2px);
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg) translateY(-12px);
+  }
+  75% {
+    transform: scale(1.18) rotate(-3deg) translateY(-8px) translateX(-2px);
+  }
+  100% {
+    transform: scale(1.15) rotate(0deg) translateY(-5px);
+  }
+}
+
+/* Image inside launcher gets extra hover effects */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover img,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover img {
+  animation: launcherImageSpin 0.8s ease-in-out infinite !important;
+  filter: brightness(1.15) contrast(1.1) !important;
+}
+
+@keyframes launcherImageSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(2deg) scale(1.02);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.05);
+  }
+  75% {
+    transform: rotate(-2deg) scale(1.02);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
 }
 
 /* Additional selectors for parent container in closed state */
@@ -119,54 +166,67 @@ div.f6dof80:has(img[alt="open chat"]) {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Beautiful launcher animations */
+/* Beautiful launcher idle animations */
 @keyframes launcherPulse {
   0% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
   }
   50% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 15px rgba(0, 0, 0, 0);
-    transform: scale(1.02);
+    transform: scale(1.03) rotate(1deg);
   }
   100% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0);
-    transform: scale(1);
+    transform: scale(1) rotate(0deg);
   }
 }
 
 @keyframes launcherFloat {
   0%, 100% {
-    transform: translateY(0px) scale(1);
+    transform: translateY(0px) translateX(0px) scale(1);
   }
   25% {
-    transform: translateY(-5px) scale(1.01);
+    transform: translateY(-6px) translateX(2px) scale(1.01);
   }
   50% {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-10px) translateX(0px) scale(1.02);
   }
   75% {
-    transform: translateY(-5px) scale(1.01);
+    transform: translateY(-6px) translateX(-2px) scale(1.01);
   }
 }
 
 @keyframes launcherGlow {
   0%, 100% {
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1)) brightness(1);
   }
   50% {
-    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.3)) brightness(1.05);
   }
 }
 
-/* Apply multiple beautiful animations */
+@keyframes launcherWobble {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(1deg);
+  }
+  75% {
+    transform: rotate(-1deg);
+  }
+}
+
+/* Apply multiple beautiful idle animations */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
   animation: 
-    launcherPulse 2.5s ease-in-out infinite,
+    launcherPulse 3s ease-in-out infinite,
     launcherFloat 4s ease-in-out infinite,
-    launcherGlow 3s ease-in-out infinite !important;
-  animation-delay: 0s, 0.5s, 1s !important;
+    launcherGlow 2.5s ease-in-out infinite,
+    launcherWobble 6s ease-in-out infinite !important;
+  animation-delay: 0s, 0.7s, 1.2s, 2s !important;
 }
 
 /* ================= OPENED STATE STYLING ================= */
@@ -257,6 +317,61 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
 .vfrc-avatar:hover {
   animation-duration: 1s !important;
   transform: scale(1.05) !important;
+}
+
+/* Chat interface avatar - make it bigger with bouncing animation */
+.vfrc-avatar.g931q10.g931q12,
+img[src*="istock-1480510752.jpg"],
+.vfrc-system-response .vfrc-avatar {
+  width: 60px !important;
+  height: 60px !important;
+  min-width: 60px !important;
+  min-height: 60px !important;
+  max-width: 60px !important;
+  max-height: 60px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  animation: avatarBounce 2.5s ease-in-out infinite !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+@keyframes avatarBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.05);
+  }
+  75% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+.vfrc-avatar.g931q10.g931q12:hover,
+img[src*="istock-1480510752.jpg"]:hover,
+.vfrc-system-response .vfrc-avatar:hover {
+  animation: avatarSpinBounce 1s ease-in-out infinite !important;
+  transform: scale(1.1) !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25) !important;
+}
+
+@keyframes avatarSpinBounce {
+  0%, 100% {
+    transform: scale(1.1) rotate(0deg) translateY(0px);
+  }
+  25% {
+    transform: scale(1.12) rotate(2deg) translateY(-2px);
+  }
+  50% {
+    transform: scale(1.15) rotate(-2deg) translateY(-4px);
+  }
+  75% {
+    transform: scale(1.12) rotate(2deg) translateY(-2px);
+  }
 }
 
 /* Banner/agent image styling - Fix the blown out size */
