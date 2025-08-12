@@ -63,57 +63,24 @@ div.f6dof87.f6dof89 {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Amazing hover effect for launcher - movement-based, no brightness */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover,
-.vfrc-launcher:hover,
-button.vfrc-launcher:hover {
-  animation: launcherHoverDance 0.4s ease-in-out infinite !important;
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.4),
-    0 0 0 25px rgba(0, 0, 0, 0.08),
-    0 0 0 50px rgba(0, 0, 0, 0.04) !important;
-  border-color: #000000 !important;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%) !important;
-  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.5)) !important;
-}
-
-@keyframes launcherHoverDance {
-  0% {
-    transform: scale(1.2) rotate(0deg) translateY(-10px) translateX(0px);
-  }
-  25% {
-    transform: scale(1.25) rotate(5deg) translateY(-15px) translateX(5px);
-  }
-  50% {
-    transform: scale(1.3) rotate(0deg) translateY(-20px) translateX(0px);
-  }
-  75% {
-    transform: scale(1.25) rotate(-5deg) translateY(-15px) translateX(-5px);
-  }
-  100% {
-    transform: scale(1.2) rotate(0deg) translateY(-10px) translateX(0px);
-  }
-}
-
-/* Image inside launcher gets extra hover effects - movement only */
+/* Image inside launcher gets extra hover effects */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover img,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover img {
-  animation: launcherImageDance 0.6s ease-in-out infinite !important;
+  animation: launcherImageHoverSpin 0.8s ease-in-out infinite !important;
 }
 
-@keyframes launcherImageDance {
+@keyframes launcherImageHoverSpin {
   0% {
     transform: rotate(0deg) scale(1);
   }
   25% {
-    transform: rotate(-3deg) scale(1.03) translateX(-2px);
+    transform: rotate(-5deg) scale(1.05) translateX(-3px);
   }
   50% {
-    transform: rotate(0deg) scale(1.08) translateY(-2px);
+    transform: rotate(0deg) scale(1.1) translateY(-3px);
   }
   75% {
-    transform: rotate(3deg) scale(1.03) translateX(2px);
+    transform: rotate(5deg) scale(1.05) translateX(3px);
   }
   100% {
     transform: rotate(0deg) scale(1);
@@ -166,22 +133,22 @@ div.f6dof80:has(img[alt="open chat"]) {
   box-sizing: border-box !important;
   transform: none !important;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  animation: launcherImageFloat 3.5s ease-in-out infinite !important;
+  animation: launcherImageSpin 4s ease-in-out infinite !important;
 }
 
-/* Launcher image floating animation */
-@keyframes launcherImageFloat {
+/* Launcher image gentle spin animation */
+@keyframes launcherImageSpin {
   0%, 100% {
     transform: scale(1) rotate(0deg);
   }
   25% {
-    transform: scale(1.02) rotate(1deg);
+    transform: scale(1.02) rotate(2deg);
   }
   50% {
     transform: scale(1.05) rotate(0deg);
   }
   75% {
-    transform: scale(1.02) rotate(-1deg);
+    transform: scale(1.02) rotate(-2deg);
   }
 }
 
@@ -252,121 +219,71 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-/* ADVANCED LAUNCHER ANIMATION - MULTI-LAYER EFFECTS */
+/* ================= WORKING IDLE ANIMATIONS ================= */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   animation: 
-    advancedPulse 2.5s ease-in-out infinite,
+    launcherBreathe 3s ease-in-out infinite,
     launcherFloat 4s ease-in-out infinite,
-    launcherRotate 6s linear infinite !important;
+    launcherPulse 2.5s ease-in-out infinite !important;
   animation-delay: 0s, 0.5s, 1s !important;
 }
 
-/* Advanced pulse with multiple shadow rings */
-@keyframes advancedPulse {
-  0% {
-    box-shadow: 
-      0 0 15px rgba(0, 0, 0, 0.3),
-      0 0 0 0 rgba(0, 0, 0, 0.2),
-      0 0 0 0 rgba(0, 0, 0, 0.1);
-    transform: scale(1);
-  }
-  25% {
-    box-shadow: 
-      0 0 20px rgba(0, 0, 0, 0.4),
-      0 0 0 5px rgba(0, 0, 0, 0.15),
-      0 0 0 0 rgba(0, 0, 0, 0.05);
-    transform: scale(1.02);
+/* Breathing animation - gentle scale */
+@keyframes launcherBreathe {
+  0%, 100% {
+    transform: scale(1) !important;
   }
   50% {
-    box-shadow: 
-      0 0 25px rgba(0, 0, 0, 0.5),
-      0 0 0 10px rgba(0, 0, 0, 0.1),
-      0 0 0 20px rgba(0, 0, 0, 0.05);
-    transform: scale(1.05);
-  }
-  75% {
-    box-shadow: 
-      0 0 20px rgba(0, 0, 0, 0.4),
-      0 0 0 15px rgba(0, 0, 0, 0.05),
-      0 0 0 30px rgba(0, 0, 0, 0);
-    transform: scale(1.02);
-  }
-  100% {
-    box-shadow: 
-      0 0 15px rgba(0, 0, 0, 0.3),
-      0 0 0 0 rgba(0, 0, 0, 0),
-      0 0 0 0 rgba(0, 0, 0, 0);
-    transform: scale(1);
+    transform: scale(1.03) !important;
   }
 }
 
-/* Floating motion */
+/* Floating animation - up and down movement */
 @keyframes launcherFloat {
   0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  25% {
-    transform: translateY(-8px) translateX(3px);
+    transform: translateY(0px) !important;
   }
   50% {
-    transform: translateY(-15px) translateX(0px);
-  }
-  75% {
-    transform: translateY(-8px) translateX(-3px);
+    transform: translateY(-8px) !important;
   }
 }
 
-/* Subtle rotation */
-@keyframes launcherRotate {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(1deg); }
-  50% { transform: rotate(0deg); }
-  75% { transform: rotate(-1deg); }
-  100% { transform: rotate(0deg); }
+/* Pulsing shadow animation */
+@keyframes launcherPulse {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1) !important;
+  }
+  50% {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 0 0 15px rgba(0, 0, 0, 0) !important;
+  }
 }
 
-/* Advanced hover effect with dramatic transformation */
+/* Enhanced hover effect with dynamic movements */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
-  animation: launcherHoverDance 0.4s ease-in-out infinite !important;
+  animation: launcherHoverBounce 0.6s ease-in-out infinite !important;
   box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.6),
-    0 0 0 20px rgba(0, 0, 0, 0.1),
-    0 0 0 40px rgba(0, 0, 0, 0.05) !important;
-  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.7)) !important;
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 25px rgba(0, 0, 0, 0.08) !important;
 }
 
-@keyframes launcherHoverDance {
+/* Dynamic hover bounce animation */
+@keyframes launcherHoverBounce {
   0% {
-    transform: scale(1.15) rotate(0deg) translateY(-10px);
+    transform: scale(1.1) rotate(0deg) translateY(-5px) !important;
   }
   25% {
-    transform: scale(1.2) rotate(3deg) translateY(-15px) translateX(5px);
+    transform: scale(1.15) rotate(2deg) translateY(-12px) !important;
   }
   50% {
-    transform: scale(1.25) rotate(0deg) translateY(-20px);
+    transform: scale(1.2) rotate(0deg) translateY(-18px) !important;
   }
   75% {
-    transform: scale(1.2) rotate(-3deg) translateY(-15px) translateX(-5px);
+    transform: scale(1.15) rotate(-2deg) translateY(-12px) !important;
   }
   100% {
-    transform: scale(1.15) rotate(0deg) translateY(-10px);
-  }
-}
-
-/* Image inside launcher gets independent animation */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img {
-  animation: launcherImageBreath 3.5s ease-in-out infinite !important;
-}
-
-@keyframes launcherImageBreath {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.08) rotate(2deg);
+    transform: scale(1.1) rotate(0deg) translateY(-5px) !important;
   }
 }
 
@@ -385,57 +302,7 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-/* UNIVERSAL LAUNCHER BOUNCE - BACKUP */
-*[class*="launcher"],
-*[class*="f6dof8"]:not([class*="voiceflow-chat"]) {
-  animation: universalBounce 1.8s ease-in-out infinite !important;
-}
-
-@keyframes universalBounce {
-  0%, 100% {
-    transform: translateY(0px) scale(1) rotate(0deg) !important;
-  }
-  25% {
-    transform: translateY(-6px) scale(1.02) rotate(1deg) !important;
-  }
-  50% {
-    transform: translateY(-12px) scale(1.05) rotate(0deg) !important;
-  }
-  75% {
-    transform: translateY(-6px) scale(1.02) rotate(-1deg) !important;
-  }
-}
-
-/* SIMPLE LAUNCHER BOUNCE ANIMATION - FALLBACK */
-.vfrc-launcher,
-button[class*="vfrc-launcher"],
-.f6dof81,
-div[class*="f6dof8"] {
-  animation: simpleBounce 2s ease-in-out infinite !important;
-}
-
-@keyframes simpleBounce {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  50% {
-    transform: translateY(-10px) scale(1.05);
-  }
-}
-
-/* Apply multiple beautiful idle animations with bouncing - BACKUP */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h),
-.vfrc-launcher:not(:has(#voiceflow-chat)),
-button.vfrc-launcher {
-  animation: 
-    launcherPulse 2.5s ease-in-out infinite,
-    launcherBounce 1.8s ease-in-out infinite,
-    launcherFloat 3s ease-in-out infinite,
-    launcherGlow 2.2s ease-in-out infinite,
-    launcherWobble 4s ease-in-out infinite !important;
-  animation-delay: 0s, 0.3s, 0.8s, 1.2s, 1.8s !important;
-}
+/* Removed conflicting backup animations - using main animations above */
 
 /* ================= OPENED STATE STYLING ================= */
 /* Main container in opened state */
