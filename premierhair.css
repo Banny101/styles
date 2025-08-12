@@ -334,21 +334,49 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   transform: scale(1.05) !important;
 }
 
-/* Chat interface avatar - revert to original size but keep animations */
-.vfrc-avatar.g931q10.g931q12,
-img[src*="istock-1480510752.jpg"],
-.vfrc-system-response .vfrc-avatar {
-  width: 40px !important;
-  height: 40px !important;
-  min-width: 40px !important;
-  min-height: 40px !important;
-  max-width: 40px !important;
-  max-height: 40px !important;
+/* Banner image - make it bigger with animations */
+img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12 {
+  width: 120px !important;
+  height: 120px !important;
+  min-width: 120px !important;
+  min-height: 120px !important;
+  max-width: 120px !important;
+  max-height: 120px !important;
+  border-radius: 16px !important;
+  object-fit: cover !important;
+  animation: bannerAvatarFloat 3s ease-in-out infinite !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+  border: 3px solid rgba(0, 0, 0, 0.1) !important;
+  margin: 15px auto !important;
+  display: block !important;
+}
+
+@keyframes bannerAvatarFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-6px) scale(1.02) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-3px) scale(1.05) rotate(-1deg);
+  }
+}
+
+/* Regular avatar - revert to original small size */
+img[src*="generated-image-july-13-2025"].vfrc-avatar.g931q10.g931q11.g3dqfd2,
+.vfrc-system-response .vfrc-avatar:not([src*="istock-1480510752.jpg"]) {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
   border-radius: 50% !important;
   object-fit: cover !important;
   animation: avatarBounce 2.5s ease-in-out infinite !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
-  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 @keyframes avatarBounce {
@@ -548,22 +576,25 @@ div._6r9xee3.o231sh1 > * {
   }
 }
 
-/* User Messages */
+/* User Messages - Enhanced to match agent quality */
 .vfrc-user-response .vfrc-message {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%) !important;
   color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 20px 20px 8px 20px !important;
   padding: 16px 20px !important;
   margin: 8px 0 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(255, 255, 255, 0.05) inset !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   line-height: 1.6 !important;
   position: relative !important;
-  animation: messageSlideInUser 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  backdrop-filter: blur(5px) !important;
+  animation: userMessageSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
   overflow: hidden !important;
+  transform-origin: right center !important;
 }
 
-/* User message glow effect */
+/* Enhanced user message shimmer effect */
 .vfrc-user-response .vfrc-message::before {
   content: '' !important;
   position: absolute !important;
@@ -571,9 +602,34 @@ div._6r9xee3.o231sh1 > * {
   left: -100% !important;
   width: 100% !important;
   height: 100% !important;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent) !important;
-  animation: userMessageShimmer 2s infinite !important;
-  animation-delay: 0.3s !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+  animation: userMessageShimmer 2.5s infinite !important;
+  animation-delay: 0.7s !important;
+}
+
+/* Subtle glow border effect for user messages */
+.vfrc-user-response .vfrc-message::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -1px !important;
+  left: -1px !important;
+  right: -1px !important;
+  bottom: -1px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent, rgba(255, 255, 255, 0.1)) !important;
+  border-radius: inherit !important;
+  z-index: -1 !important;
+  opacity: 0 !important;
+  animation: userMessageGlow 3s ease-in-out infinite !important;
+  animation-delay: 1s !important;
+}
+
+@keyframes userMessageGlow {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 @keyframes userMessageShimmer {
@@ -585,28 +641,21 @@ div._6r9xee3.o231sh1 > * {
   }
 }
 
-/* Message slide-in animations */
-@keyframes messageSlideIn {
+/* Enhanced user message slide-in animation */
+@keyframes userMessageSlideIn {
   0% {
     opacity: 0;
-    transform: translateX(-20px) scale(0.95);
+    transform: translateX(25px) scale(0.9) rotate(3deg);
+  }
+  60% {
+    transform: translateX(-3px) scale(1.02) rotate(-1deg);
   }
   100% {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: translateX(0) scale(1) rotate(0deg);
   }
 }
 
-@keyframes messageSlideInUser {
-  0% {
-    opacity: 0;
-    transform: translateX(20px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
-}
 
 /* Hover effects for message bubbles */
 .vfrc-system-response .vfrc-message:hover,
