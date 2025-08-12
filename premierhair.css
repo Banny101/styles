@@ -63,56 +63,55 @@ div.f6dof87.f6dof89 {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Amazing hover effect for launcher - overrides all animations */
+/* Amazing hover effect for launcher - movement-based, no brightness */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
-  animation: launcherHoverMagic 0.6s ease-in-out infinite !important;
+  animation: launcherHoverDance 0.4s ease-in-out infinite !important;
   box-shadow: 
-    0 15px 50px rgba(0, 0, 0, 0.3),
-    0 0 0 20px rgba(0, 0, 0, 0.1),
-    0 0 30px rgba(255, 255, 255, 0.5) inset !important;
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 25px rgba(0, 0, 0, 0.08),
+    0 0 0 50px rgba(0, 0, 0, 0.04) !important;
   border-color: #000000 !important;
-  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #ffffff 100%) !important;
-  filter: brightness(1.1) drop-shadow(0 0 25px rgba(0, 0, 0, 0.4)) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%) !important;
+  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.5)) !important;
 }
 
-@keyframes launcherHoverMagic {
+@keyframes launcherHoverDance {
   0% {
-    transform: scale(1.15) rotate(0deg) translateY(-5px);
+    transform: scale(1.2) rotate(0deg) translateY(-10px) translateX(0px);
   }
   25% {
-    transform: scale(1.18) rotate(3deg) translateY(-8px) translateX(2px);
+    transform: scale(1.25) rotate(5deg) translateY(-15px) translateX(5px);
   }
   50% {
-    transform: scale(1.2) rotate(0deg) translateY(-12px);
+    transform: scale(1.3) rotate(0deg) translateY(-20px) translateX(0px);
   }
   75% {
-    transform: scale(1.18) rotate(-3deg) translateY(-8px) translateX(-2px);
+    transform: scale(1.25) rotate(-5deg) translateY(-15px) translateX(-5px);
   }
   100% {
-    transform: scale(1.15) rotate(0deg) translateY(-5px);
+    transform: scale(1.2) rotate(0deg) translateY(-10px) translateX(0px);
   }
 }
 
-/* Image inside launcher gets extra hover effects */
+/* Image inside launcher gets extra hover effects - movement only */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover img,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover img {
-  animation: launcherImageSpin 0.8s ease-in-out infinite !important;
-  filter: brightness(1.15) contrast(1.1) !important;
+  animation: launcherImageDance 0.6s ease-in-out infinite !important;
 }
 
-@keyframes launcherImageSpin {
+@keyframes launcherImageDance {
   0% {
     transform: rotate(0deg) scale(1);
   }
   25% {
-    transform: rotate(2deg) scale(1.02);
+    transform: rotate(-3deg) scale(1.03) translateX(-2px);
   }
   50% {
-    transform: rotate(0deg) scale(1.05);
+    transform: rotate(0deg) scale(1.08) translateY(-2px);
   }
   75% {
-    transform: rotate(-2deg) scale(1.02);
+    transform: rotate(3deg) scale(1.03) translateX(2px);
   }
   100% {
     transform: rotate(0deg) scale(1);
@@ -166,7 +165,7 @@ div.f6dof80:has(img[alt="open chat"]) {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Beautiful launcher idle animations */
+/* Beautiful launcher idle animations with bouncing */
 @keyframes launcherPulse {
   0% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
@@ -174,7 +173,7 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
   50% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 15px rgba(0, 0, 0, 0);
-    transform: scale(1.03) rotate(1deg);
+    transform: scale(1.05) rotate(2deg);
   }
   100% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0);
@@ -182,27 +181,42 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-@keyframes launcherFloat {
+@keyframes launcherBounce {
   0%, 100% {
-    transform: translateY(0px) translateX(0px) scale(1);
+    transform: translateY(0px) scale(1);
   }
   25% {
-    transform: translateY(-6px) translateX(2px) scale(1.01);
+    transform: translateY(-8px) scale(1.02);
   }
   50% {
-    transform: translateY(-10px) translateX(0px) scale(1.02);
+    transform: translateY(-15px) scale(1.05);
   }
   75% {
-    transform: translateY(-6px) translateX(-2px) scale(1.01);
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+@keyframes launcherFloat {
+  0%, 100% {
+    transform: translateX(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateX(3px) rotate(1deg);
+  }
+  50% {
+    transform: translateX(0px) rotate(0deg);
+  }
+  75% {
+    transform: translateX(-3px) rotate(-1deg);
   }
 }
 
 @keyframes launcherGlow {
   0%, 100% {
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1)) brightness(1);
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
   }
   50% {
-    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.3)) brightness(1.05);
+    filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.4));
   }
 }
 
@@ -211,22 +225,23 @@ div.f6dof80:has(img[alt="open chat"]) {
     transform: rotate(0deg);
   }
   25% {
-    transform: rotate(1deg);
+    transform: rotate(2deg);
   }
   75% {
-    transform: rotate(-1deg);
+    transform: rotate(-2deg);
   }
 }
 
-/* Apply multiple beautiful idle animations */
+/* Apply multiple beautiful idle animations with bouncing */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
   animation: 
-    launcherPulse 3s ease-in-out infinite,
-    launcherFloat 4s ease-in-out infinite,
-    launcherGlow 2.5s ease-in-out infinite,
-    launcherWobble 6s ease-in-out infinite !important;
-  animation-delay: 0s, 0.7s, 1.2s, 2s !important;
+    launcherPulse 2.5s ease-in-out infinite,
+    launcherBounce 1.8s ease-in-out infinite,
+    launcherFloat 3s ease-in-out infinite,
+    launcherGlow 2.2s ease-in-out infinite,
+    launcherWobble 4s ease-in-out infinite !important;
+  animation-delay: 0s, 0.3s, 0.8s, 1.2s, 1.8s !important;
 }
 
 /* ================= OPENED STATE STYLING ================= */
@@ -319,16 +334,16 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   transform: scale(1.05) !important;
 }
 
-/* Chat interface avatar - make it bigger with bouncing animation */
+/* Chat interface avatar - revert to original size but keep animations */
 .vfrc-avatar.g931q10.g931q12,
 img[src*="istock-1480510752.jpg"],
 .vfrc-system-response .vfrc-avatar {
-  width: 60px !important;
-  height: 60px !important;
-  min-width: 60px !important;
-  min-height: 60px !important;
-  max-width: 60px !important;
-  max-height: 60px !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
   border-radius: 50% !important;
   object-fit: cover !important;
   animation: avatarBounce 2.5s ease-in-out infinite !important;
@@ -374,17 +389,41 @@ img[src*="istock-1480510752.jpg"]:hover,
   }
 }
 
-/* Banner/agent image styling - Fix the blown out size */
-.vfrc-system-response img:not(.vfrc-avatar) {
-  width: 120px !important;
-  height: 120px !important;
-  max-width: 120px !important;
-  max-height: 120px !important;
+/* Banner/agent image styling - keep big for banner images */
+.vfrc-system-response img:not(.vfrc-avatar):first-of-type,
+img[src*="banner"],
+.c-kIbiaN-eyfkxi-size-large {
+  width: 180px !important;
+  height: 140px !important;
+  max-width: 180px !important;
+  max-height: 140px !important;
   object-fit: cover !important;
+  border-radius: 16px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+  margin: 15px 0 !important;
+  display: block !important;
+  animation: bannerImageFloat 4s ease-in-out infinite !important;
+}
+
+@keyframes bannerImageFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+}
+
+/* General images in message bubbles - improve sizing */
+.vfrc-system-response img,
+.vfrc-user-response img {
+  min-width: 150px !important;
+  min-height: 100px !important;
+  max-width: 250px !important;
   border-radius: 12px !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-  margin: 10px 0 !important;
-  display: inline-block !important;
+  margin: 8px 0 !important;
+  object-fit: cover !important;
 }
 
 /* ================= PROACTIVE MESSAGE STYLING ================= */
@@ -590,6 +629,117 @@ div._6r9xee3.o231sh1 > * {
 .vfrc-message div {
   position: relative !important;
   z-index: 2 !important;
+}
+
+/* ================= BANNER TEXT AND DESCRIPTION ANIMATIONS ================= */
+/* Banner title animations */
+.vfrc-assistant-info--title,
+.vfrc-header--title,
+h1, h2, h3 {
+  animation: titleSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative !important;
+}
+
+@keyframes titleSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  60% {
+    transform: translateY(-3px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Banner description animations */
+.vfrc-assistant-info--description,
+.vfrc-system-response p,
+.vfrc-message p {
+  animation: textFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both !important;
+  position: relative !important;
+}
+
+@keyframes textFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Typing animation effect for longer descriptions */
+.vfrc-assistant-info--description {
+  overflow: hidden !important;
+  border-right: 2px solid transparent !important;
+  animation: 
+    textFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both,
+    typewriter 2s steps(40) 1s both,
+    blinkCursor 1s infinite 3s !important;
+}
+
+@keyframes typewriter {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes blinkCursor {
+  0%, 50% {
+    border-right-color: rgba(0, 0, 0, 0.3);
+  }
+  51%, 100% {
+    border-right-color: transparent;
+  }
+}
+
+/* Welcome message special animation */
+.vfrc-system-response .vfrc-message:first-of-type {
+  animation: welcomeMessageBounce 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: left center !important;
+}
+
+@keyframes welcomeMessageBounce {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.8) rotate(-5deg);
+  }
+  30% {
+    transform: translateX(10px) scale(1.1) rotate(2deg);
+  }
+  60% {
+    transform: translateX(-5px) scale(0.95) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotate(0deg);
+  }
+}
+
+/* List items animation in descriptions */
+.vfrc-message li,
+.vfrc-system-response span {
+  animation: listItemSlide 0.6s cubic-bezier(0.4, 0, 0.2, 1) both !important;
+  animation-delay: calc(var(--item-index, 0) * 0.1s) !important;
+}
+
+@keyframes listItemSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Footer watermark */
