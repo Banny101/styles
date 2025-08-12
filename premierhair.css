@@ -252,10 +252,50 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-/* UNIVERSAL LAUNCHER BOUNCE - WORKS ON ALL POSSIBLE SELECTORS */
+/* TARGET THE EXACT LAUNCHER BUTTON STRUCTURE */
+button[title="Open chat agent"].vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5,
+button.vfrc-launcher.f6dof81,
+button[class*="vfrc-launcher"][class*="f6dof81"] {
+  animation: perfectBounce 1.5s ease-in-out infinite !important;
+}
+
+/* Also target by title attribute for safety */
+button[title*="chat agent"] {
+  animation: perfectBounce 1.5s ease-in-out infinite !important;
+}
+
+/* EMERGENCY ANIMATION - TEST IF ANY CSS IS WORKING */
+button {
+  animation: emergencyBounce 1s ease-in-out infinite !important;
+}
+
+@keyframes emergencyBounce {
+  0%, 100% {
+    transform: translateY(0px) !important;
+  }
+  50% {
+    transform: translateY(-10px) !important;
+  }
+}
+
+@keyframes perfectBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg) !important;
+  }
+  25% {
+    transform: translateY(-8px) scale(1.03) rotate(1deg) !important;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.08) rotate(0deg) !important;
+  }
+  75% {
+    transform: translateY(-8px) scale(1.03) rotate(-1deg) !important;
+  }
+}
+
+/* UNIVERSAL LAUNCHER BOUNCE - BACKUP */
 *[class*="launcher"],
-*[class*="f6dof8"]:not([class*="voiceflow-chat"]),
-._1emja3f9 > * {
+*[class*="f6dof8"]:not([class*="voiceflow-chat"]) {
   animation: universalBounce 1.8s ease-in-out infinite !important;
 }
 
