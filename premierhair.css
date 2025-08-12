@@ -65,7 +65,9 @@ div.f6dof87.f6dof89 {
 
 /* Amazing hover effect for launcher - movement-based, no brightness */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover,
+.vfrc-launcher:hover,
+button.vfrc-launcher:hover {
   animation: launcherHoverDance 0.4s ease-in-out infinite !important;
   box-shadow: 
     0 20px 60px rgba(0, 0, 0, 0.4),
@@ -147,7 +149,8 @@ div.f6dof80:has(img[alt="open chat"]) {
 
 /* Target the actual image in closed state - BIGGER SIZE */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"],
+.vfrc-launcher img {
   width: 104px !important;
   height: 104px !important;
   min-width: 104px !important;
@@ -163,6 +166,23 @@ div.f6dof80:has(img[alt="open chat"]) {
   box-sizing: border-box !important;
   transform: none !important;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: launcherImageFloat 3.5s ease-in-out infinite !important;
+}
+
+/* Launcher image floating animation */
+@keyframes launcherImageFloat {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.02) rotate(1deg);
+  }
+  50% {
+    transform: scale(1.05) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.02) rotate(-1deg);
+  }
 }
 
 /* Beautiful launcher idle animations with bouncing */
@@ -234,7 +254,9 @@ div.f6dof80:has(img[alt="open chat"]) {
 
 /* Apply multiple beautiful idle animations with bouncing */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h),
+.vfrc-launcher:not(:has(#voiceflow-chat)),
+button.vfrc-launcher {
   animation: 
     launcherPulse 2.5s ease-in-out infinite,
     launcherBounce 1.8s ease-in-out infinite,
