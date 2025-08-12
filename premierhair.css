@@ -55,12 +55,19 @@ div.f6dof87.f6dof89 {
   padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box !important;
-  transform: none !important;
   position: fixed !important;
   bottom: 20px !important;
   right: 20px !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
+  animation: launcherPulse 3s ease-in-out infinite !important;
+}
+
+/* Hover effect for closed state button */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4) !important;
+  animation: launcherHoverBounce 0.6s ease-in-out infinite !important;
 }
 
 /* Image inside launcher gets extra hover effects */
@@ -219,14 +226,40 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-/* ================= WORKING IDLE ANIMATIONS ================= */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
-  animation: 
-    launcherBreathe 3s ease-in-out infinite,
-    launcherFloat 4s ease-in-out infinite,
-    launcherPulse 2.5s ease-in-out infinite !important;
-  animation-delay: 0s, 0.5s, 1s !important;
+/* ================= WORKING KEYFRAME ANIMATIONS ================= */
+/* Simple pulse animation that works */
+@keyframes launcherPulse {
+  0% {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 0 0 15px rgba(0, 0, 0, 0);
+    transform: scale(1.03) rotate(1deg);
+  }
+  100% {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0);
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Hover bounce animation */
+@keyframes launcherHoverBounce {
+  0% {
+    transform: scale(1.1) rotate(0deg) translateY(0px);
+  }
+  25% {
+    transform: scale(1.15) rotate(2deg) translateY(-8px);
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg) translateY(-15px);
+  }
+  75% {
+    transform: scale(1.15) rotate(-2deg) translateY(-8px);
+  }
+  100% {
+    transform: scale(1.1) rotate(0deg) translateY(0px);
+  }
 }
 
 /* Breathing animation - gentle scale */
