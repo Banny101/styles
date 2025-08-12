@@ -1,1 +1,479 @@
-here
+/* ================= RESET ALL BUTTON CONTAINERS FIRST ================= */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5,
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5,
+.vfrc-launcher,
+.f6dof81,
+.f6dof87.f6dof89,
+.f6dof86.f6dof88,
+div.f6dof87.f6dof89,
+div.f6dof8m.f6dof8o.f6dof8r.f6dof8f,
+div.f6dof87.f6dof89 {
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* ================= MAIN CONTAINER STYLING (APPLIES TO BOTH STATES) ================= */
+._1emja3f9 {
+  position: fixed !important;
+  z-index: 9999 !important;
+}
+
+/* CLOSED STATE - specific positioning */
+._1emja3f9:has(img[alt="open chat"]),
+._1emja3f9:not(:has(#voiceflow-chat)) {
+  bottom: 20px !important;
+  right: 20px !important;
+}
+
+/* OPENED STATE - specific positioning */
+._1emja3f9:has(#voiceflow-chat) {
+  bottom: 0 !important;
+  right: 0 !important;
+}
+
+/* ================= CLOSED STATE STYLING (BIGGER LAUNCHER) ================= */
+/* Parent containers in closed state - INCREASED SIZE TO 110px */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+  width: 110px !important;
+  height: 110px !important;
+  min-width: 110px !important;
+  min-height: 110px !important;
+  max-width: 110px !important;
+  max-height: 110px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%) !important;
+  border: 3px solid #000000 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Hover effect for closed state button - sleek animation */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
+  transform: scale(1.08) rotate(2deg) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25) !important;
+  border-color: #333333 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
+}
+
+/* Additional selectors for parent container in closed state */
+div.f6dof80:has(img[alt="open chat"]) {
+  width: 110px !important;
+  height: 110px !important;
+  min-width: 110px !important;
+  min-height: 110px !important;
+  max-width: 110px !important;
+  max-height: 110px !important;
+}
+
+/* Immediate image container in closed state */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]) div.f6dof87.f6dof89,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]) div.f6dof86.f6dof88 {
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+/* Target the actual image in closed state - BIGGER SIZE */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+  width: 104px !important;
+  height: 104px !important;
+  min-width: 104px !important;
+  min-height: 104px !important;
+  max-width: 104px !important;
+  max-height: 104px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Pulse animation for launcher */
+@keyframes launcherPulse {
+  0% {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* Apply pulse animation */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+  animation: launcherPulse 3s infinite !important;
+}
+
+/* ================= OPENED STATE STYLING ================= */
+/* Main container in opened state */
+div._1emja3f9:has(#voiceflow-chat) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+}
+
+/* Button in opened state */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  transform: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 15px !important;
+  margin-right: 15px !important;
+  margin-bottom: 15px !important;
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Hover effect for close button */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover {
+  transform: scale(1.05) rotate(90deg) !important;
+  background: linear-gradient(135deg, #333333 0%, #555555 100%) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Additional selectors for parent container in opened state */
+div.f6dof80:has(svg[viewBox="0 0 32 32"]) {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+}
+
+/* Container for svg in opened state */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) div.f6dof87.f6dof89 {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+}
+
+/* Arrow icon in opened state */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) svg {
+  width: 24px !important;
+  height: 24px !important;
+  transform: none !important;
+  object-fit: contain !important;
+  color: #ffffff !important;
+}
+
+/* ================= CHAT WIDGET STYLING ================= */
+/* Main chat widget with sleek design */
+.vfrc-widget--chat {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  animation: slideInChat 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes slideInChat {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header styling */
+.vfrc-header {
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
+  height: 70px !important;
+  border-radius: 16px 16px 0 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 20px !important;
+  position: relative !important;
+}
+
+.vfrc-header::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Header title */
+.vfrc-header--title {
+  color: #ffffff !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Avatar styling */
+.vfrc-avatar {
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Header buttons */
+.vfrc-header--button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+.vfrc-header--button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Chat dialog */
+.vfrc-chat-dialog {
+  background: #ffffff !important;
+  color: #000000 !important;
+  padding: 16px !important;
+}
+
+/* System messages */
+.vfrc-system-response .vfrc-message {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+  color: #000000 !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  border-radius: 16px 16px 16px 4px !important;
+  padding: 16px !important;
+  margin: 8px 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  line-height: 1.5 !important;
+}
+
+/* User messages */
+.vfrc-user-response .vfrc-message {
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
+  color: #ffffff !important;
+  border-radius: 16px 16px 4px 16px !important;
+  padding: 16px !important;
+  margin: 8px 0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  line-height: 1.5 !important;
+}
+
+/* Buttons */
+.vfrc-button {
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 24px !important;
+  margin: 6px 4px !important;
+  font-weight: 500 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.vfrc-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%) !important;
+}
+
+.vfrc-button--secondary {
+  background: transparent !important;
+  color: #000000 !important;
+  border: 2px solid #000000 !important;
+}
+
+.vfrc-button--secondary:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Input styling */
+.vfrc-chat-input {
+  border-radius: 12px !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  margin: 16px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.vfrc-chat-input:focus-within {
+  border-color: #000000 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.vfrc-chat-input textarea {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  color: #000000 !important;
+  background: #ffffff !important;
+  border: none !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+}
+
+.vfrc-chat-input--button {
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.vfrc-chat-input--button:hover {
+  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%) !important;
+  transform: scale(1.05) !important;
+}
+
+/* ================= PROACTIVE MESSAGE STYLING ================= */
+._6r9xee0 {
+  margin-bottom: 70px !important;
+}
+
+div._6r9xee3.o231sh1 {
+  position: relative !important;
+  z-index: 0 !important;
+  border-radius: 16px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+  color: #000000 !important;
+  opacity: 1 !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(10px) !important;
+  animation: proactiveSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: bottom right !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  padding: 16px 20px !important;
+}
+
+@keyframes proactiveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Ensure text inside is visible above the background */
+div._6r9xee3.o231sh1 > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Footer watermark */
+.vfrc-footer--watermark {
+  color: rgba(0, 0, 0, 0.5) !important;
+  font-size: 12px !important;
+}
+
+.vfrc-footer--watermark a {
+  color: #000000 !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border-radius: 3px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .vfrc-widget--chat {
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .vfrc-header {
+    border-radius: 0 !important;
+  }
+  
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    width: 80px !important;
+    height: 80px !important;
+    min-width: 80px !important;
+    min-height: 80px !important;
+    max-width: 80px !important;
+    max-height: 80px !important;
+  }
+  
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+    width: 74px !important;
+    height: 74px !important;
+    min-width: 74px !important;
+    min-height: 74px !important;
+    max-width: 74px !important;
+    max-height: 74px !important;
+  }
+}
