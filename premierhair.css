@@ -119,23 +119,54 @@ div.f6dof80:has(img[alt="open chat"]) {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Pulse animation for launcher */
+/* Beautiful launcher animations */
 @keyframes launcherPulse {
   0% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
+    transform: scale(1);
   }
   50% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(0, 0, 0, 0);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 15px rgba(0, 0, 0, 0);
+    transform: scale(1.02);
   }
   100% {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0);
+    transform: scale(1);
   }
 }
 
-/* Apply pulse animation */
+@keyframes launcherFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-5px) scale(1.01);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.02);
+  }
+  75% {
+    transform: translateY(-5px) scale(1.01);
+  }
+}
+
+@keyframes launcherGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.3));
+  }
+}
+
+/* Apply multiple beautiful animations */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
-  animation: launcherPulse 3s infinite !important;
+  animation: 
+    launcherPulse 2.5s ease-in-out infinite,
+    launcherFloat 4s ease-in-out infinite,
+    launcherGlow 3s ease-in-out infinite !important;
+  animation-delay: 0s, 0.5s, 1s !important;
 }
 
 /* ================= OPENED STATE STYLING ================= */
@@ -207,176 +238,39 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   color: #ffffff !important;
 }
 
-/* ================= CHAT WIDGET STYLING ================= */
-/* Main chat widget with sleek design */
-.vfrc-widget--chat {
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  animation: slideInChat 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-@keyframes slideInChat {
-  0% {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Header styling */
-.vfrc-header {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
-  height: 70px !important;
-  border-radius: 16px 16px 0 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  padding: 0 20px !important;
-  position: relative !important;
-}
-
-.vfrc-header::after {
-  content: '' !important;
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 1px !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Header title */
-.vfrc-header--title {
-  color: #ffffff !important;
-  font-size: 18px !important;
-  font-weight: 600 !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-}
-
-/* Avatar styling */
+/* ================= AVATAR STYLING WITH ANIMATION ================= */
+/* Avatar with gentle floating animation */
 .vfrc-avatar {
-  border: 2px solid rgba(255, 255, 255, 0.2) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Header buttons */
-.vfrc-header--button {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  color: #ffffff !important;
-  border-radius: 8px !important;
+  animation: avatarFloat 3s ease-in-out infinite !important;
   transition: all 0.3s ease !important;
-  backdrop-filter: blur(5px) !important;
 }
 
-.vfrc-header--button:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
+@keyframes avatarFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.vfrc-avatar:hover {
+  animation-duration: 1s !important;
   transform: scale(1.05) !important;
 }
 
-/* Chat dialog */
-.vfrc-chat-dialog {
-  background: #ffffff !important;
-  color: #000000 !important;
-  padding: 16px !important;
-}
-
-/* System messages */
-.vfrc-system-response .vfrc-message {
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
-  color: #000000 !important;
-  border: 1px solid rgba(0, 0, 0, 0.05) !important;
-  border-radius: 16px 16px 16px 4px !important;
-  padding: 16px !important;
-  margin: 8px 0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-  line-height: 1.5 !important;
-}
-
-/* User messages */
-.vfrc-user-response .vfrc-message {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
-  color: #ffffff !important;
-  border-radius: 16px 16px 4px 16px !important;
-  padding: 16px !important;
-  margin: 8px 0 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-  line-height: 1.5 !important;
-}
-
-/* Buttons */
-.vfrc-button {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
-  color: #ffffff !important;
-  border: none !important;
+/* Banner image styling - make it bigger */
+.vfrc-banner img,
+.vfrc-system-response img:first-of-type,
+img[src*="banner"],
+.c-kIbiaN-eyfkxi-size-large {
+  width: 200px !important;
+  height: 150px !important;
+  object-fit: cover !important;
   border-radius: 12px !important;
-  padding: 12px 24px !important;
-  margin: 6px 4px !important;
-  font-weight: 500 !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-  cursor: pointer !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
-}
-
-.vfrc-button:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
-  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%) !important;
-}
-
-.vfrc-button--secondary {
-  background: transparent !important;
-  color: #000000 !important;
-  border: 2px solid #000000 !important;
-}
-
-.vfrc-button--secondary:hover {
-  background: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* Input styling */
-.vfrc-chat-input {
-  border-radius: 12px !important;
-  border: 2px solid rgba(0, 0, 0, 0.1) !important;
-  margin: 16px !important;
-  overflow: hidden !important;
-  transition: all 0.3s ease !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
-}
-
-.vfrc-chat-input:focus-within {
-  border-color: #000000 !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
-}
-
-.vfrc-chat-input textarea {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-  color: #000000 !important;
-  background: #ffffff !important;
-  border: none !important;
-  font-size: 15px !important;
-  line-height: 1.5 !important;
-}
-
-.vfrc-chat-input--button {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%) !important;
-  color: #ffffff !important;
-  border: none !important;
-  transition: all 0.3s ease !important;
-}
-
-.vfrc-chat-input--button:hover {
-  background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%) !important;
-  transform: scale(1.05) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  margin: 10px auto !important;
+  display: block !important;
 }
 
 /* ================= PROACTIVE MESSAGE STYLING ================= */
@@ -387,28 +281,71 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
 div._6r9xee3.o231sh1 {
   position: relative !important;
   z-index: 0 !important;
-  border-radius: 16px !important;
+  border-radius: 20px !important;
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
   color: #000000 !important;
   opacity: 1 !important;
-  border: 2px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
-  backdrop-filter: blur(10px) !important;
-  animation: proactiveSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: 2px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12) !important;
+  backdrop-filter: blur(15px) !important;
+  animation: proactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   transform-origin: bottom right !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-weight: 500 !important;
-  padding: 16px 20px !important;
+  padding: 18px 24px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Sleek shimmer effect for proactive messages */
+div._6r9xee3.o231sh1::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
+  animation: shimmer 3s infinite !important;
+  animation-delay: 1s !important;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 @keyframes proactiveSlideIn {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.9);
+    transform: translateY(25px) scale(0.9) rotate(-2deg);
+  }
+  60% {
+    transform: translateY(-3px) scale(1.02) rotate(1deg);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+/* Gentle floating animation for proactive messages */
+div._6r9xee3.o231sh1 {
+  animation: 
+    proactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    proactiveFloat 4s ease-in-out 1s infinite !important;
+}
+
+@keyframes proactiveFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-2px);
   }
 }
 
