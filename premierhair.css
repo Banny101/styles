@@ -252,30 +252,122 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-/* WORKING LAUNCHER ANIMATION - COPIED FROM EXAMPLES */
+/* ADVANCED LAUNCHER ANIMATION - MULTI-LAYER EFFECTS */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
-  animation: launcherPulse 3s infinite !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: 
+    advancedPulse 2.5s ease-in-out infinite,
+    launcherFloat 4s ease-in-out infinite,
+    launcherRotate 6s linear infinite !important;
+  animation-delay: 0s, 0.5s, 1s !important;
 }
 
-@keyframes launcherPulse {
+/* Advanced pulse with multiple shadow rings */
+@keyframes advancedPulse {
   0% {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 
+      0 0 15px rgba(0, 0, 0, 0.3),
+      0 0 0 0 rgba(0, 0, 0, 0.2),
+      0 0 0 0 rgba(0, 0, 0, 0.1);
+    transform: scale(1);
+  }
+  25% {
+    box-shadow: 
+      0 0 20px rgba(0, 0, 0, 0.4),
+      0 0 0 5px rgba(0, 0, 0, 0.15),
+      0 0 0 0 rgba(0, 0, 0, 0.05);
+    transform: scale(1.02);
   }
   50% {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), 0 0 0 10px rgba(0, 0, 0, 0);
+    box-shadow: 
+      0 0 25px rgba(0, 0, 0, 0.5),
+      0 0 0 10px rgba(0, 0, 0, 0.1),
+      0 0 0 20px rgba(0, 0, 0, 0.05);
+    transform: scale(1.05);
+  }
+  75% {
+    box-shadow: 
+      0 0 20px rgba(0, 0, 0, 0.4),
+      0 0 0 15px rgba(0, 0, 0, 0.05),
+      0 0 0 30px rgba(0, 0, 0, 0);
+    transform: scale(1.02);
   }
   100% {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(0, 0, 0, 0);
+    box-shadow: 
+      0 0 15px rgba(0, 0, 0, 0.3),
+      0 0 0 0 rgba(0, 0, 0, 0),
+      0 0 0 0 rgba(0, 0, 0, 0);
+    transform: scale(1);
   }
 }
 
-/* Hover effect for closed state button */
+/* Floating motion */
+@keyframes launcherFloat {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(-8px) translateX(3px);
+  }
+  50% {
+    transform: translateY(-15px) translateX(0px);
+  }
+  75% {
+    transform: translateY(-8px) translateX(-3px);
+  }
+}
+
+/* Subtle rotation */
+@keyframes launcherRotate {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(1deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-1deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Advanced hover effect with dramatic transformation */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
-  transform: scale(1.05) !important;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5) !important;
+  animation: launcherHoverDance 0.4s ease-in-out infinite !important;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 20px rgba(0, 0, 0, 0.1),
+    0 0 0 40px rgba(0, 0, 0, 0.05) !important;
+  filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.7)) !important;
+}
+
+@keyframes launcherHoverDance {
+  0% {
+    transform: scale(1.15) rotate(0deg) translateY(-10px);
+  }
+  25% {
+    transform: scale(1.2) rotate(3deg) translateY(-15px) translateX(5px);
+  }
+  50% {
+    transform: scale(1.25) rotate(0deg) translateY(-20px);
+  }
+  75% {
+    transform: scale(1.2) rotate(-3deg) translateY(-15px) translateX(-5px);
+  }
+  100% {
+    transform: scale(1.15) rotate(0deg) translateY(-10px);
+  }
+}
+
+/* Image inside launcher gets independent animation */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img {
+  animation: launcherImageBreath 3.5s ease-in-out infinite !important;
+}
+
+@keyframes launcherImageBreath {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.08) rotate(2deg);
+  }
 }
 
 @keyframes perfectBounce {
