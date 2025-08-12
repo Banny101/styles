@@ -252,7 +252,46 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-/* Apply multiple beautiful idle animations with bouncing */
+/* UNIVERSAL LAUNCHER BOUNCE - WORKS ON ALL POSSIBLE SELECTORS */
+*[class*="launcher"],
+*[class*="f6dof8"]:not([class*="voiceflow-chat"]),
+._1emja3f9 > * {
+  animation: universalBounce 1.8s ease-in-out infinite !important;
+}
+
+@keyframes universalBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg) !important;
+  }
+  25% {
+    transform: translateY(-6px) scale(1.02) rotate(1deg) !important;
+  }
+  50% {
+    transform: translateY(-12px) scale(1.05) rotate(0deg) !important;
+  }
+  75% {
+    transform: translateY(-6px) scale(1.02) rotate(-1deg) !important;
+  }
+}
+
+/* SIMPLE LAUNCHER BOUNCE ANIMATION - FALLBACK */
+.vfrc-launcher,
+button[class*="vfrc-launcher"],
+.f6dof81,
+div[class*="f6dof8"] {
+  animation: simpleBounce 2s ease-in-out infinite !important;
+}
+
+@keyframes simpleBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+/* Apply multiple beautiful idle animations with bouncing - BACKUP */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h),
 .vfrc-launcher:not(:has(#voiceflow-chat)),
