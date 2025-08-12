@@ -59,7 +59,7 @@ div.f6dof87.f6dof89 {
   bottom: 20px !important;
   right: 20px !important;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
-  animation: launcherPulse 3s ease-in-out infinite !important;
+  animation: launcherIdleBreathe 3s ease-in-out infinite !important;
 }
 
 /* Hover effect for closed state button */
@@ -227,19 +227,23 @@ div.f6dof80:has(img[alt="open chat"]) {
 }
 
 /* ================= WORKING KEYFRAME ANIMATIONS ================= */
-/* Simple pulse animation that works */
-@keyframes launcherPulse {
-  0% {
+/* Idle breathing animation - runs continuously */
+@keyframes launcherIdleBreathe {
+  0%, 100% {
+    transform: scale(1) rotate(0deg) translateY(0px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
-    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.02) rotate(1deg) translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 5px rgba(0, 0, 0, 0.05);
   }
   50% {
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 0 0 15px rgba(0, 0, 0, 0);
-    transform: scale(1.03) rotate(1deg);
+    transform: scale(1.05) rotate(0deg) translateY(-6px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 0 0 10px rgba(0, 0, 0, 0);
   }
-  100% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0);
-    transform: scale(1) rotate(0deg);
+  75% {
+    transform: scale(1.02) rotate(-1deg) translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 5px rgba(0, 0, 0, 0.05);
   }
 }
 
