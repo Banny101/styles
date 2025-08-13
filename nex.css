@@ -570,7 +570,7 @@ img[src*="istock-1480510752.jpg"]:hover,
 /* ================= PROACTIVE MESSAGE STYLING ================= */
 /* Main proactive container - moves messages up from launcher */
 ._6r9xee0 {
-  margin-bottom: 150px !important; /* Clear spacing above 120px launcher */
+  margin-bottom: 70px !important; /* Proper spacing from launcher */
 }
 
 /* Proactive message bubble - premium glass design */
