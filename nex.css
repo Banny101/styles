@@ -379,28 +379,120 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   }
 }
 
-/* ================= AVATAR ENHANCEMENTS ================= */
+/* ================= PREMIUM AVATAR ANIMATIONS ================= */
+/* Base avatar styling with gentle floating animation */
 .vfrc-avatar {
-  border-radius: 50% !important;
+  animation: avatarFloat 3s ease-in-out infinite !important;
   transition: all 0.3s var(--animation-smooth) !important;
-  animation: avatarFloat 3s var(--animation-smooth) infinite !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
   will-change: transform !important;
 }
 
 @keyframes avatarFloat {
   0%, 100% {
-    transform: translateY(0px) scale(1);
+    transform: translateY(0px);
   }
   50% {
-    transform: translateY(-4px) scale(1.02);
+    transform: translateY(-3px);
   }
 }
 
 .vfrc-avatar:hover {
+  animation-duration: 1s !important;
+  transform: scale(1.05) !important;
+}
+
+/* Banner image - BIGGER SIZE with sophisticated animations */
+img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12,
+.vfrc-system-response img:not(.vfrc-avatar):first-of-type,
+img[src*="banner"],
+.c-kIbiaN-eyfkxi-size-large {
+  width: 150px !important;
+  height: 150px !important;
+  min-width: 150px !important;
+  min-height: 150px !important;
+  max-width: 150px !important;
+  max-height: 150px !important;
+  border-radius: 20px !important;
+  object-fit: cover !important;
+  animation: bannerAvatarFloat 3s ease-in-out infinite !important;
+  box-shadow: 
+    var(--shadow-soft),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  border: 2px solid var(--glass-border) !important;
+  margin: 20px auto !important;
+  display: block !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+}
+
+@keyframes bannerAvatarFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-6px) scale(1.02) rotate(1deg);
+  }
+  66% {
+    transform: translateY(-3px) scale(1.05) rotate(-1deg);
+  }
+}
+
+/* Regular agent avatars - enhanced bouncing */
+img[src*="generated-image-july-13-2025"].vfrc-avatar.g931q10.g931q11.g3dqfd2,
+.vfrc-system-response .vfrc-avatar:not([src*="istock-1480510752.jpg"]) {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  animation: avatarBounce 2.5s ease-in-out infinite !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid var(--glass-border) !important;
+}
+
+@keyframes avatarBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  25% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.05);
+  }
+  75% {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+/* Enhanced hover effects for all avatars */
+.vfrc-avatar.g931q10.g931q12:hover,
+img[src*="istock-1480510752.jpg"]:hover,
+.vfrc-system-response .vfrc-avatar:hover,
+.c-kIbiaN-eyfkxi-size-large:hover {
+  animation: avatarSpinBounce 1s ease-in-out infinite !important;
   transform: scale(1.1) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
-  animation-duration: 1.5s !important;
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.25),
+    0 0 20px rgba(102, 126, 234, 0.2) !important;
+}
+
+@keyframes avatarSpinBounce {
+  0%, 100% {
+    transform: scale(1.1) rotate(0deg) translateY(0px);
+  }
+  25% {
+    transform: scale(1.12) rotate(2deg) translateY(-2px);
+  }
+  50% {
+    transform: scale(1.15) rotate(-2deg) translateY(-4px);
+  }
+  75% {
+    transform: scale(1.12) rotate(2deg) translateY(-2px);
+  }
 }
 
 /* ================= SCROLLBAR STYLING ================= */
