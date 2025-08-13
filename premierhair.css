@@ -35,19 +35,30 @@ div.f6dof87.f6dof89 {
   right: 0 !important;
 }
 
-/* ================= CLOSED STATE STYLING (BIGGER LAUNCHER) ================= */
-/* Parent containers in closed state - INCREASED SIZE TO 110px */
+/* ================= CLOSED STATE STYLING (PREMIUM LAUNCHER) ================= */
+/* Parent containers in closed state - PREMIUM GLASS MORPHISM */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
-  width: 110px !important;
-  height: 110px !important;
-  min-width: 110px !important;
-  min-height: 110px !important;
-  max-width: 110px !important;
-  max-height: 110px !important;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%) !important;
-  border: 3px solid #000000 !important;
+  width: 120px !important;
+  height: 120px !important;
+  min-width: 120px !important;
+  min-height: 120px !important;
+  max-width: 120px !important;
+  max-height: 120px !important;
+  
+  /* Premium Glass Morphism Design */
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 50% !important;
+  
+  /* Advanced Shadow System */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  
   overflow: hidden !important;
   display: flex !important;
   align-items: center !important;
@@ -58,22 +69,42 @@ div.f6dof87.f6dof89 {
   position: fixed !important;
   bottom: 20px !important;
   right: 20px !important;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
-  animation: launcherIdleBreathe 3s ease-in-out infinite !important;
+  
+  /* Smooth Transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, backdrop-filter !important;
+  
+  /* Premium Breathing Animation */
+  animation: launcherPremiumBreathing 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite !important;
 }
 
-/* Hover effect for closed state button */
+/* Premium hover effect for closed state button */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
-  transform: scale(1.1) !important;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4) !important;
-  animation: launcherHoverBounce 0.6s ease-in-out infinite !important;
+  /* Enhanced glass effect on hover */
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(30px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+  
+  /* Dramatic shadow enhancement */
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 40px rgba(102, 126, 234, 0.3) !important;
+  
+  /* Smooth scale transform */
+  transform: scale(1.08) translateY(-4px) !important;
+  
+  /* Premium hover bounce */
+  animation: launcherPremiumHoverBounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite !important;
 }
 
-/* Image inside launcher gets extra hover effects */
+/* Image inside launcher gets premium hover effects */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover img,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover img {
-  animation: launcherImageHoverSpin 0.8s ease-in-out infinite !important;
+  animation: imagePremiumHoverSpin 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite !important;
+  filter: brightness(1.1) saturate(1.2) !important;
 }
 
 @keyframes launcherImageHoverSpin {
@@ -96,12 +127,12 @@ div.f6dof87.f6dof89 {
 
 /* Additional selectors for parent container in closed state */
 div.f6dof80:has(img[alt="open chat"]) {
-  width: 110px !important;
-  height: 110px !important;
-  min-width: 110px !important;
-  min-height: 110px !important;
-  max-width: 110px !important;
-  max-height: 110px !important;
+  width: 120px !important;
+  height: 120px !important;
+  min-width: 120px !important;
+  min-height: 120px !important;
+  max-width: 120px !important;
+  max-height: 120px !important;
 }
 
 /* Immediate image container in closed state */
@@ -121,16 +152,16 @@ div.f6dof80:has(img[alt="open chat"]) {
   box-sizing: border-box !important;
 }
 
-/* Target the actual image in closed state - BIGGER SIZE */
+/* Target the actual image in closed state - PREMIUM SIZING */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"],
 .vfrc-launcher img {
-  width: 104px !important;
-  height: 104px !important;
-  min-width: 104px !important;
-  min-height: 104px !important;
-  max-width: 104px !important;
-  max-height: 104px !important;
+  width: 110px !important;
+  height: 110px !important;
+  min-width: 110px !important;
+  min-height: 110px !important;
+  max-width: 110px !important;
+  max-height: 110px !important;
   border-radius: 50% !important;
   object-fit: cover !important;
   object-position: center !important;
@@ -138,24 +169,51 @@ div.f6dof80:has(img[alt="open chat"]) {
   padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box !important;
-  transform: none !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  animation: launcherImageSpin 4s ease-in-out infinite !important;
+  
+  /* Smooth image transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform !important;
+  
+  /* Subtle premium pulse */
+  animation: imagePremiumPulse 3s ease-in-out infinite !important;
 }
 
-/* Launcher image gentle spin animation */
-@keyframes launcherImageSpin {
+/* Premium image pulse animation */
+@keyframes imagePremiumPulse {
   0%, 100% {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
+    filter: brightness(1) saturate(1);
   }
   25% {
-    transform: scale(1.02) rotate(2deg);
+    transform: scale(1.02);
+    filter: brightness(1.05) saturate(1.1);
   }
   50% {
-    transform: scale(1.05) rotate(0deg);
+    transform: scale(1.05);
+    filter: brightness(1.1) saturate(1.2);
   }
   75% {
-    transform: scale(1.02) rotate(-2deg);
+    transform: scale(1.02);
+    filter: brightness(1.05) saturate(1.1);
+  }
+}
+
+/* Premium image hover spin effect */
+@keyframes imagePremiumHoverSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-5deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(5deg) scale(1.05);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
   }
 }
 
@@ -226,43 +284,56 @@ div.f6dof80:has(img[alt="open chat"]) {
   }
 }
 
-/* ================= WORKING KEYFRAME ANIMATIONS ================= */
-/* Idle breathing animation - runs continuously */
-@keyframes launcherIdleBreathe {
+/* ================= PREMIUM KEYFRAME ANIMATIONS ================= */
+/* Premium breathing animation - smooth and sophisticated */
+@keyframes launcherPremiumBreathing {
   0%, 100% {
-    transform: scale(1) rotate(0deg) translateY(0px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
   }
-  25% {
-    transform: scale(1.02) rotate(1deg) translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 5px rgba(0, 0, 0, 0.05);
+  20% {
+    transform: scale(1.01) translateY(-1px);
+    box-shadow: 
+      0 10px 35px rgba(0, 0, 0, 0.11),
+      inset 0 1px 1px rgba(255, 255, 255, 0.32),
+      0 0 0 1px rgba(255, 255, 255, 0.12);
   }
   50% {
-    transform: scale(1.05) rotate(0deg) translateY(-6px);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 0 0 10px rgba(0, 0, 0, 0);
+    transform: scale(1.03) translateY(-3px);
+    box-shadow: 
+      0 14px 45px rgba(0, 0, 0, 0.14),
+      inset 0 1px 1px rgba(255, 255, 255, 0.38),
+      0 0 0 1px rgba(255, 255, 255, 0.18),
+      0 0 20px rgba(102, 126, 234, 0.15);
   }
-  75% {
-    transform: scale(1.02) rotate(-1deg) translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 5px rgba(0, 0, 0, 0.05);
+  80% {
+    transform: scale(1.01) translateY(-1px);
+    box-shadow: 
+      0 10px 35px rgba(0, 0, 0, 0.11),
+      inset 0 1px 1px rgba(255, 255, 255, 0.32),
+      0 0 0 1px rgba(255, 255, 255, 0.12);
   }
 }
 
-/* Hover bounce animation */
-@keyframes launcherHoverBounce {
+/* Premium hover bounce animation */
+@keyframes launcherPremiumHoverBounce {
   0% {
-    transform: scale(1.1) rotate(0deg) translateY(0px);
+    transform: scale(1.08) translateY(-4px) rotate(0deg);
   }
   25% {
-    transform: scale(1.15) rotate(2deg) translateY(-8px);
+    transform: scale(1.12) translateY(-8px) rotate(1deg);
   }
   50% {
-    transform: scale(1.2) rotate(0deg) translateY(-15px);
+    transform: scale(1.15) translateY(-12px) rotate(0deg);
   }
   75% {
-    transform: scale(1.15) rotate(-2deg) translateY(-8px);
+    transform: scale(1.12) translateY(-8px) rotate(-1deg);
   }
   100% {
-    transform: scale(1.1) rotate(0deg) translateY(0px);
+    transform: scale(1.08) translateY(-4px) rotate(0deg);
   }
 }
 
