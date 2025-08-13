@@ -473,6 +473,50 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   }
 }
 
+/* ================= PROACTIVE MESSAGE POSITIONING ================= */
+.vfrc-prompt {
+  margin-bottom: 140px !important; /* Move proactive message up from launcher */
+  position: relative !important;
+  z-index: 999 !important;
+}
+
+/* Style the proactive message bubble */
+.vfrc-prompt .vfrc-message {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 2px solid var(--glass-border) !important;
+  border-radius: 20px !important;
+  padding: 16px 20px !important;
+  box-shadow: 
+    var(--shadow-soft),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  animation: proactiveSlideIn 0.8s var(--animation-bounce) !important;
+  font-weight: 500 !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Proactive message animation */
+@keyframes proactiveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) translateX(10px) scale(0.9);
+  }
+  60% {
+    transform: translateY(-5px) translateX(-2px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+}
+
+/* Ensure proactive message appears above other elements */
+.vfrc-chat--overlay .vfrc-prompt {
+  margin-bottom: 140px !important;
+  margin-right: 10px !important;
+}
+
 /* ================= ACCESSIBILITY ENHANCEMENTS ================= */
 @media (prefers-contrast: high) {
   .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
@@ -483,5 +527,9 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   .vfrc-system-response .vfrc-message,
   .vfrc-user-response .vfrc-message {
     border: 2px solid rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  .vfrc-prompt .vfrc-message {
+    border: 3px solid rgba(0, 0, 0, 0.6) !important;
   }
 }
