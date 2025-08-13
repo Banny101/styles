@@ -406,12 +406,12 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12,
 .vfrc-system-response img:not(.vfrc-avatar):first-of-type,
 img[src*="banner"],
 .c-kIbiaN-eyfkxi-size-large {
-  width: 150px !important;
-  height: 150px !important;
-  min-width: 150px !important;
-  min-height: 150px !important;
-  max-width: 150px !important;
-  max-height: 150px !important;
+  width: 180px !important;
+  height: 140px !important;
+  min-width: 180px !important;
+  min-height: 140px !important;
+  max-width: 180px !important;
+  max-height: 140px !important;
   border-radius: 20px !important;
   object-fit: cover !important;
   animation: bannerAvatarFloat 3s ease-in-out infinite !important;
