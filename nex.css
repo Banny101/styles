@@ -1,949 +1,487 @@
-/* ================= RESET ALL BUTTON CONTAINERS FIRST ================= */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5,
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5,
-.vfrc-launcher,
-.f6dof81,
-.f6dof87.f6dof89,
-.f6dof86.f6dof88,
-div.f6dof87.f6dof89,
-div.f6dof8m.f6dof8o.f6dof8r.f6dof8f,
-div.f6dof87.f6dof89 {
+/* ================= WORLD-CLASS AI CHAT CSS ================= */
+/* Premium styling for elite AI company - Smooth, modern, performant */
+
+/* CSS Variables for consistent theming */
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --neutral-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  --glass-bg: rgba(255, 255, 255, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-intense: 0 20px 60px rgba(0, 0, 0, 0.2);
+  --animation-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ================= RESET AND BASE STYLES ================= */
+.vfrc-button, .vfrc-launcher, .f6dof81, 
+.f6dof87, .f6dof89, .f6dof86, .f6dof88,
+div.f6dof87.f6dof89, div.f6dof8m.f6dof8o.f6dof8r.f6dof8f {
   width: auto !important;
   height: auto !important;
   min-width: auto !important;
   min-height: auto !important;
   max-width: none !important;
   max-height: none !important;
+  box-sizing: border-box !important;
 }
 
-/* ================= MAIN CONTAINER STYLING (APPLIES TO BOTH STATES) ================= */
+/* ================= MAIN CONTAINER STYLING ================= */
 ._1emja3f9 {
   position: fixed !important;
   z-index: 9999 !important;
+  will-change: transform !important;
 }
 
-/* CLOSED STATE - specific positioning */
+/* CLOSED STATE - Premium positioning with breathing room */
 ._1emja3f9:has(img[alt="open chat"]),
 ._1emja3f9:not(:has(#voiceflow-chat)) {
-  bottom: 20px !important;
-  right: 20px !important;
+  bottom: 24px !important;
+  right: 24px !important;
 }
 
-/* OPENED STATE - specific positioning */
+/* OPENED STATE - Elegant corner positioning */
 ._1emja3f9:has(#voiceflow-chat) {
   bottom: 0 !important;
   right: 0 !important;
 }
 
-/* ================= CLOSED STATE STYLING (BIGGER LAUNCHER) ================= */
-/* Parent containers in closed state - INCREASED SIZE TO 110px */
+/* ================= PREMIUM LAUNCHER BUTTON ================= */
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
 .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
-  width: 110px !important;
-  height: 110px !important;
-  min-width: 110px !important;
-  min-height: 110px !important;
-  max-width: 110px !important;
-  max-height: 110px !important;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%) !important;
-  border: 3px solid #000000 !important;
-  border-radius: 50% !important;
-  overflow: hidden !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-  position: fixed !important;
-  bottom: 20px !important;
-  right: 20px !important;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
-  animation: launcherIdleBreathe 3s ease-in-out infinite !important;
-}
-
-/* Hover effect for closed state button */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
-  transform: scale(1.1) !important;
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4) !important;
-  animation: launcherHoverBounce 0.6s ease-in-out infinite !important;
-}
-
-/* Image inside launcher gets extra hover effects */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover img,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover img {
-  animation: launcherImageHoverSpin 0.8s ease-in-out infinite !important;
-}
-
-@keyframes launcherImageHoverSpin {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  25% {
-    transform: rotate(-5deg) scale(1.05) translateX(-3px);
-  }
-  50% {
-    transform: rotate(0deg) scale(1.1) translateY(-3px);
-  }
-  75% {
-    transform: rotate(5deg) scale(1.05) translateX(3px);
-  }
-  100% {
-    transform: rotate(0deg) scale(1);
-  }
-}
-
-/* Additional selectors for parent container in closed state */
-div.f6dof80:has(img[alt="open chat"]) {
-  width: 110px !important;
-  height: 110px !important;
-  min-width: 110px !important;
-  min-height: 110px !important;
-  max-width: 110px !important;
-  max-height: 110px !important;
-}
-
-/* Immediate image container in closed state */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]) div.f6dof87.f6dof89,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]) div.f6dof86.f6dof88 {
-  width: auto !important;
-  height: auto !important;
-  min-width: auto !important;
-  min-height: auto !important;
-  max-width: none !important;
-  max-height: none !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 0 !important;
-  overflow: visible !important;
-  box-sizing: border-box !important;
-}
-
-/* Target the actual image in closed state - BIGGER SIZE */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"],
-.vfrc-launcher img {
-  width: 104px !important;
-  height: 104px !important;
-  min-width: 104px !important;
-  min-height: 104px !important;
-  max-width: 104px !important;
-  max-height: 104px !important;
-  border-radius: 50% !important;
-  object-fit: cover !important;
-  object-position: center !important;
-  display: block !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box !important;
-  transform: none !important;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  animation: launcherImageSpin 4s ease-in-out infinite !important;
-}
-
-/* Launcher image gentle spin animation */
-@keyframes launcherImageSpin {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-  }
-  25% {
-    transform: scale(1.02) rotate(2deg);
-  }
-  50% {
-    transform: scale(1.05) rotate(0deg);
-  }
-  75% {
-    transform: scale(1.02) rotate(-2deg);
-  }
-}
-
-/* Beautiful launcher idle animations with bouncing */
-@keyframes launcherPulse {
-  0% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 15px rgba(0, 0, 0, 0);
-    transform: scale(1.05) rotate(2deg);
-  }
-  100% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0);
-    transform: scale(1) rotate(0deg);
-  }
-}
-
-@keyframes launcherBounce {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  25% {
-    transform: translateY(-8px) scale(1.02);
-  }
-  50% {
-    transform: translateY(-15px) scale(1.05);
-  }
-  75% {
-    transform: translateY(-8px) scale(1.02);
-  }
-}
-
-@keyframes launcherFloat {
-  0%, 100% {
-    transform: translateX(0px) rotate(0deg);
-  }
-  25% {
-    transform: translateX(3px) rotate(1deg);
-  }
-  50% {
-    transform: translateX(0px) rotate(0deg);
-  }
-  75% {
-    transform: translateX(-3px) rotate(-1deg);
-  }
-}
-
-@keyframes launcherGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
-  }
-  50% {
-    filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.4));
-  }
-}
-
-@keyframes launcherWobble {
-  0%, 100% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(2deg);
-  }
-  75% {
-    transform: rotate(-2deg);
-  }
-}
-
-/* ================= WORKING KEYFRAME ANIMATIONS ================= */
-/* Idle breathing animation - runs continuously */
-@keyframes launcherIdleBreathe {
-  0%, 100% {
-    transform: scale(1) rotate(0deg) translateY(0px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1);
-  }
-  25% {
-    transform: scale(1.02) rotate(1deg) translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 5px rgba(0, 0, 0, 0.05);
-  }
-  50% {
-    transform: scale(1.05) rotate(0deg) translateY(-6px);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 0 0 10px rgba(0, 0, 0, 0);
-  }
-  75% {
-    transform: scale(1.02) rotate(-1deg) translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 5px rgba(0, 0, 0, 0.05);
-  }
-}
-
-/* Hover bounce animation */
-@keyframes launcherHoverBounce {
-  0% {
-    transform: scale(1.1) rotate(0deg) translateY(0px);
-  }
-  25% {
-    transform: scale(1.15) rotate(2deg) translateY(-8px);
-  }
-  50% {
-    transform: scale(1.2) rotate(0deg) translateY(-15px);
-  }
-  75% {
-    transform: scale(1.15) rotate(-2deg) translateY(-8px);
-  }
-  100% {
-    transform: scale(1.1) rotate(0deg) translateY(0px);
-  }
-}
-
-/* Breathing animation - gentle scale */
-@keyframes launcherBreathe {
-  0%, 100% {
-    transform: scale(1) !important;
-  }
-  50% {
-    transform: scale(1.03) !important;
-  }
-}
-
-/* Floating animation - up and down movement */
-@keyframes launcherFloat {
-  0%, 100% {
-    transform: translateY(0px) !important;
-  }
-  50% {
-    transform: translateY(-8px) !important;
-  }
-}
-
-/* Pulsing shadow animation */
-@keyframes launcherPulse {
-  0%, 100% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(0, 0, 0, 0.1) !important;
-  }
-  50% {
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25), 0 0 0 15px rgba(0, 0, 0, 0) !important;
-  }
-}
-
-/* Enhanced hover effect with dynamic movements */
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
-.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
-  animation: launcherHoverBounce 0.6s ease-in-out infinite !important;
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.4),
-    0 0 0 25px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* Dynamic hover bounce animation */
-@keyframes launcherHoverBounce {
-  0% {
-    transform: scale(1.1) rotate(0deg) translateY(-5px) !important;
-  }
-  25% {
-    transform: scale(1.15) rotate(2deg) translateY(-12px) !important;
-  }
-  50% {
-    transform: scale(1.2) rotate(0deg) translateY(-18px) !important;
-  }
-  75% {
-    transform: scale(1.15) rotate(-2deg) translateY(-12px) !important;
-  }
-  100% {
-    transform: scale(1.1) rotate(0deg) translateY(-5px) !important;
-  }
-}
-
-@keyframes perfectBounce {
-  0%, 100% {
-    transform: translateY(0px) scale(1) rotate(0deg) !important;
-  }
-  25% {
-    transform: translateY(-8px) scale(1.03) rotate(1deg) !important;
-  }
-  50% {
-    transform: translateY(-15px) scale(1.08) rotate(0deg) !important;
-  }
-  75% {
-    transform: translateY(-8px) scale(1.03) rotate(-1deg) !important;
-  }
-}
-
-/* Removed conflicting backup animations - using main animations above */
-
-/* ================= OPENED STATE STYLING ================= */
-/* Main container in opened state */
-div._1emja3f9:has(#voiceflow-chat) {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: flex-end !important;
-}
-
-/* Button in opened state */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) {
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  min-height: 48px !important;
-  max-width: 48px !important;
-  max-height: 48px !important;
-  background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
-  border-radius: 50% !important;
-  overflow: hidden !important;
-  transform: none !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin-top: 15px !important;
-  margin-right: 15px !important;
-  margin-bottom: 15px !important;
-  position: relative !important;
-  bottom: auto !important;
-  right: auto !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* Hover effect for close button */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover {
-  transform: scale(1.05) rotate(90deg) !important;
-  background: linear-gradient(135deg, #333333 0%, #555555 100%) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
-}
-
-/* Additional selectors for parent container in opened state */
-div.f6dof80:has(svg[viewBox="0 0 32 32"]) {
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  min-height: 48px !important;
-  max-width: 48px !important;
-  max-height: 48px !important;
-}
-
-/* Container for svg in opened state */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) div.f6dof87.f6dof89 {
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  min-height: 48px !important;
-  max-width: 48px !important;
-  max-height: 48px !important;
-}
-
-/* Arrow icon in opened state */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) svg {
-  width: 24px !important;
-  height: 24px !important;
-  transform: none !important;
-  object-fit: contain !important;
-  color: #ffffff !important;
-}
-
-/* ================= AVATAR STYLING WITH ANIMATION ================= */
-/* Small avatar in header with gentle floating animation */
-.vfrc-avatar {
-  animation: avatarFloat 3s ease-in-out infinite !important;
-  transition: all 0.3s ease !important;
-}
-
-@keyframes avatarFloat {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-3px);
-  }
-}
-
-.vfrc-avatar:hover {
-  animation-duration: 1s !important;
-  transform: scale(1.05) !important;
-}
-
-/* Banner image - make it bigger with animations */
-img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12 {
   width: 120px !important;
   height: 120px !important;
   min-width: 120px !important;
   min-height: 120px !important;
   max-width: 120px !important;
   max-height: 120px !important;
-  border-radius: 16px !important;
-  object-fit: cover !important;
-  animation: bannerAvatarFloat 3s ease-in-out infinite !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
-  border: 3px solid rgba(0, 0, 0, 0.1) !important;
-  margin: 15px auto !important;
-  display: block !important;
+  
+  /* Premium Glass Morphism Design */
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 2px solid var(--glass-border) !important;
+  border-radius: 50% !important;
+  
+  /* Advanced Shadow System */
+  box-shadow: 
+    var(--shadow-soft),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  
+  /* Perfect Centering */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  
+  /* Positioning */
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  
+  /* Smooth Transitions */
+  transition: all 0.4s var(--animation-smooth) !important;
+  will-change: transform, box-shadow, backdrop-filter !important;
+  
+  /* Continuous Breathing Animation */
+  animation: launcherBreathing 4s var(--animation-smooth) infinite !important;
 }
 
-@keyframes bannerAvatarFloat {
-  0%, 100% {
-    transform: translateY(0px) scale(1) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-6px) scale(1.02) rotate(1deg);
-  }
-  66% {
-    transform: translateY(-3px) scale(1.05) rotate(-1deg);
-  }
-}
-
-/* Regular avatar - revert to original small size */
-img[src*="generated-image-july-13-2025"].vfrc-avatar.g931q10.g931q11.g3dqfd2,
-.vfrc-system-response .vfrc-avatar:not([src*="istock-1480510752.jpg"]) {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
+/* ================= LAUNCHER IMAGE STYLING ================= */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"],
+.vfrc-launcher img {
+  width: 110px !important;
+  height: 110px !important;
+  min-width: 110px !important;
+  min-height: 110px !important;
+  max-width: 110px !important;
+  max-height: 110px !important;
   border-radius: 50% !important;
   object-fit: cover !important;
-  animation: avatarBounce 2.5s ease-in-out infinite !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-@keyframes avatarBounce {
-  0%, 100% {
-    transform: translateY(0px) scale(1);
-  }
-  25% {
-    transform: translateY(-4px) scale(1.02);
-  }
-  50% {
-    transform: translateY(-8px) scale(1.05);
-  }
-  75% {
-    transform: translateY(-4px) scale(1.02);
-  }
-}
-
-.vfrc-avatar.g931q10.g931q12:hover,
-img[src*="istock-1480510752.jpg"]:hover,
-.vfrc-system-response .vfrc-avatar:hover {
-  animation: avatarSpinBounce 1s ease-in-out infinite !important;
-  transform: scale(1.1) !important;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25) !important;
-}
-
-@keyframes avatarSpinBounce {
-  0%, 100% {
-    transform: scale(1.1) rotate(0deg) translateY(0px);
-  }
-  25% {
-    transform: scale(1.12) rotate(2deg) translateY(-2px);
-  }
-  50% {
-    transform: scale(1.15) rotate(-2deg) translateY(-4px);
-  }
-  75% {
-    transform: scale(1.12) rotate(2deg) translateY(-2px);
-  }
-}
-
-/* Banner/agent image styling - keep big for banner images */
-.vfrc-system-response img:not(.vfrc-avatar):first-of-type,
-img[src*="banner"],
-.c-kIbiaN-eyfkxi-size-large {
-  width: 180px !important;
-  height: 140px !important;
-  max-width: 180px !important;
-  max-height: 140px !important;
-  object-fit: cover !important;
-  border-radius: 16px !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
-  margin: 15px 0 !important;
+  object-position: center !important;
   display: block !important;
-  animation: bannerImageFloat 4s ease-in-out infinite !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  
+  /* Smooth image transitions */
+  transition: all 0.4s var(--animation-smooth) !important;
+  will-change: transform !important;
+  
+  /* Subtle idle rotation */
+  animation: imageGentleRotation 8s linear infinite !important;
 }
 
-@keyframes bannerImageFloat {
+/* ================= PREMIUM HOVER EFFECTS ================= */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
+  /* Enhanced glass effect on hover */
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(30px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+  
+  /* Dramatic shadow enhancement */
+  box-shadow: 
+    var(--shadow-intense),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 40px rgba(102, 126, 234, 0.3) !important;
+  
+  /* Smooth scale transform */
+  transform: scale(1.08) translateY(-4px) !important;
+  
+  /* Override breathing animation with hover bounce */
+  animation: launcherHoverBounce 1s var(--animation-bounce) infinite !important;
+}
+
+/* Image hover effects */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:hover img {
+  animation: imageHoverSpin 2s var(--animation-smooth) infinite !important;
+  filter: brightness(1.1) saturate(1.2) !important;
+}
+
+/* ================= KEYFRAME ANIMATIONS ================= */
+
+/* Subtle breathing animation for idle state */
+@keyframes launcherBreathing {
   0%, 100% {
-    transform: translateY(0px) scale(1);
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      var(--shadow-soft),
+      inset 0 1px 1px rgba(255, 255, 255, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  25% {
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.12),
+      inset 0 1px 1px rgba(255, 255, 255, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.15);
   }
   50% {
-    transform: translateY(-5px) scale(1.02);
+    transform: scale(1.05) translateY(-4px);
+    box-shadow: 
+      0 16px 48px rgba(0, 0, 0, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.2);
+  }
+  75% {
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.12),
+      inset 0 1px 1px rgba(255, 255, 255, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.15);
   }
 }
 
-/* General images in message bubbles - improve sizing */
-.vfrc-system-response img,
-.vfrc-user-response img {
-  min-width: 150px !important;
-  min-height: 100px !important;
-  max-width: 250px !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-  margin: 8px 0 !important;
-  object-fit: cover !important;
+/* Dynamic hover bounce */
+@keyframes launcherHoverBounce {
+  0% {
+    transform: scale(1.08) translateY(-4px) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.12) translateY(-8px) rotate(1deg);
+  }
+  50% {
+    transform: scale(1.15) translateY(-12px) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.12) translateY(-8px) rotate(-1deg);
+  }
+  100% {
+    transform: scale(1.08) translateY(-4px) rotate(0deg);
+  }
 }
 
-/* ================= PROACTIVE MESSAGE STYLING ================= */
-._6r9xee0 {
-  margin-bottom: 70px !important;
+/* Gentle image rotation */
+@keyframes imageGentleRotation {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(90deg) scale(1.01);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.02);
+  }
+  75% {
+    transform: rotate(270deg) scale(1.01);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
 }
 
-div._6r9xee3.o231sh1 {
-  position: relative !important;
-  z-index: 0 !important;
-  border-radius: 20px !important;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
-  color: #000000 !important;
-  opacity: 1 !important;
-  border: 2px solid rgba(0, 0, 0, 0.08) !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12) !important;
-  backdrop-filter: blur(15px) !important;
-  animation: proactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  transform-origin: bottom right !important;
+/* Image hover spin effect */
+@keyframes imageHoverSpin {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-5deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(0deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(5deg) scale(1.05);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+/* ================= CHAT OPENED STATE ================= */
+div._1emja3f9:has(#voiceflow-chat) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+}
+
+/* Premium close button */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) {
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px !important;
+  min-height: 56px !important;
+  max-width: 56px !important;
+  max-height: 56px !important;
+  
+  /* Glass morphism for close button */
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 2px solid var(--glass-border) !important;
+  border-radius: 50% !important;
+  
+  box-shadow: var(--shadow-soft) !important;
+  
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 20px 20px 20px 0 !important;
+  
+  transition: all 0.3s var(--animation-smooth) !important;
+  will-change: transform, background !important;
+}
+
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: scale(1.1) rotate(90deg) !important;
+  box-shadow: var(--shadow-intense) !important;
+}
+
+/* Close button icon */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) svg {
+  width: 28px !important;
+  height: 28px !important;
+  color: rgba(0, 0, 0, 0.8) !important;
+  transition: all 0.3s var(--animation-smooth) !important;
+}
+
+/* ================= CHAT WIDGET STYLING ================= */
+#voiceflow-chat {
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: 
+    0 25px 80px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* ================= MESSAGE BUBBLES ================= */
+/* Agent/System Messages - Premium Glass Design */
+.vfrc-system-response .vfrc-message {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(15px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 24px 24px 24px 8px !important;
+  padding: 18px 24px !important;
+  margin: 12px 0 !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   font-weight: 500 !important;
-  padding: 18px 24px !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-/* Sleek shimmer effect for proactive messages */
-div._6r9xee3.o231sh1::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
-  animation: shimmer 3s infinite !important;
-  animation-delay: 1s !important;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-@keyframes proactiveSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(25px) scale(0.9) rotate(-2deg);
-  }
-  60% {
-    transform: translateY(-3px) scale(1.02) rotate(1deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
-  }
-}
-
-/* Gentle floating animation for proactive messages */
-div._6r9xee3.o231sh1 {
-  animation: 
-    proactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-    proactiveFloat 4s ease-in-out 1s infinite !important;
-}
-
-@keyframes proactiveFloat {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
-}
-
-/* Ensure text inside is visible above the background */
-div._6r9xee3.o231sh1 > * {
-  position: relative !important;
-  z-index: 1 !important;
-}
-
-/* ================= BEAUTIFUL MESSAGE BUBBLES ================= */
-/* System/Agent Messages */
-.vfrc-system-response .vfrc-message {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
-  color: #1a1a1a !important;
-  border: 1px solid rgba(0, 0, 0, 0.08) !important;
-  border-radius: 20px 20px 20px 8px !important;
-  padding: 16px 20px !important;
-  margin: 8px 0 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   line-height: 1.6 !important;
   position: relative !important;
-  backdrop-filter: blur(5px) !important;
-  animation: messageSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  overflow: hidden !important;
+  animation: messageSlideIn 0.6s var(--animation-smooth) !important;
+  transition: all 0.3s var(--animation-smooth) !important;
+  will-change: transform, box-shadow !important;
 }
 
-/* Subtle shimmer effect on system messages */
-.vfrc-system-response .vfrc-message::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
-  animation: messageShimmer 2s infinite !important;
-  animation-delay: 0.5s !important;
-}
-
-@keyframes messageShimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-/* User Messages - Enhanced to match agent quality */
+/* User Messages - Elegant Dark Glass */
 .vfrc-user-response .vfrc-message {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #333333 100%) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 20px 20px 8px 20px !important;
-  padding: 16px 20px !important;
-  margin: 8px 0 !important;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(255, 255, 255, 0.05) inset !important;
+  background: rgba(0, 0, 0, 0.15) !important;
+  backdrop-filter: blur(15px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+  color: rgba(0, 0, 0, 0.9) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 24px 24px 8px 24px !important;
+  padding: 18px 24px !important;
+  margin: 12px 0 !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 500 !important;
   line-height: 1.6 !important;
   position: relative !important;
-  backdrop-filter: blur(5px) !important;
-  animation: userMessageSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  overflow: hidden !important;
-  transform-origin: right center !important;
+  animation: userMessageSlideIn 0.6s var(--animation-smooth) !important;
+  transition: all 0.3s var(--animation-smooth) !important;
+  will-change: transform, box-shadow !important;
 }
 
-/* Enhanced user message shimmer effect */
-.vfrc-user-response .vfrc-message::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
-  animation: userMessageShimmer 2.5s infinite !important;
-  animation-delay: 0.7s !important;
-}
-
-/* Subtle glow border effect for user messages */
-.vfrc-user-response .vfrc-message::after {
-  content: '' !important;
-  position: absolute !important;
-  top: -1px !important;
-  left: -1px !important;
-  right: -1px !important;
-  bottom: -1px !important;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent, rgba(255, 255, 255, 0.1)) !important;
-  border-radius: inherit !important;
-  z-index: -1 !important;
-  opacity: 0 !important;
-  animation: userMessageGlow 3s ease-in-out infinite !important;
-  animation-delay: 1s !important;
-}
-
-@keyframes userMessageGlow {
-  0%, 100% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 0.3;
-  }
-}
-
-@keyframes userMessageShimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-/* Enhanced user message slide-in animation */
-@keyframes userMessageSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateX(25px) scale(0.9) rotate(3deg);
-  }
-  60% {
-    transform: translateX(-3px) scale(1.02) rotate(-1deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1) rotate(0deg);
-  }
-}
-
-
-/* Hover effects for message bubbles */
+/* Message hover effects */
 .vfrc-system-response .vfrc-message:hover,
 .vfrc-user-response .vfrc-message:hover {
   transform: translateY(-2px) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
 }
 
-.vfrc-system-response .vfrc-message:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12) !important;
-}
-
-.vfrc-user-response .vfrc-message:hover {
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25) !important;
-}
-
-/* Message text styling */
-.vfrc-message p,
-.vfrc-message span,
-.vfrc-message div {
-  position: relative !important;
-  z-index: 2 !important;
-}
-
-/* ================= BANNER TEXT AND DESCRIPTION ANIMATIONS ================= */
-/* Banner title animations */
-.vfrc-assistant-info--title,
-.vfrc-header--title,
-h1, h2, h3 {
-  animation: titleSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  position: relative !important;
-}
-
-@keyframes titleSlideIn {
+/* Message animations */
+@keyframes messageSlideIn {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.95);
+    transform: translateX(-20px) scale(0.95);
   }
   60% {
-    transform: translateY(-3px) scale(1.02);
+    transform: translateX(3px) scale(1.02);
   }
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateX(0) scale(1);
   }
 }
 
-/* Banner description animations */
-.vfrc-assistant-info--description,
-.vfrc-system-response p,
-.vfrc-message p {
-  animation: textFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both !important;
-  position: relative !important;
-}
-
-@keyframes textFadeIn {
+@keyframes userMessageSlideIn {
   0% {
     opacity: 0;
-    transform: translateX(-15px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* Typing animation effect for longer descriptions */
-.vfrc-assistant-info--description {
-  overflow: hidden !important;
-  border-right: 2px solid transparent !important;
-  animation: 
-    textFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both,
-    typewriter 2s steps(40) 1s both,
-    blinkCursor 1s infinite 3s !important;
-}
-
-@keyframes typewriter {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 100%;
-  }
-}
-
-@keyframes blinkCursor {
-  0%, 50% {
-    border-right-color: rgba(0, 0, 0, 0.3);
-  }
-  51%, 100% {
-    border-right-color: transparent;
-  }
-}
-
-/* Welcome message special animation */
-.vfrc-system-response .vfrc-message:first-of-type {
-  animation: welcomeMessageBounce 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  transform-origin: left center !important;
-}
-
-@keyframes welcomeMessageBounce {
-  0% {
-    opacity: 0;
-    transform: translateX(-30px) scale(0.8) rotate(-5deg);
-  }
-  30% {
-    transform: translateX(10px) scale(1.1) rotate(2deg);
+    transform: translateX(20px) scale(0.95);
   }
   60% {
-    transform: translateX(-5px) scale(0.95) rotate(-1deg);
+    transform: translateX(-3px) scale(1.02);
   }
   100% {
     opacity: 1;
-    transform: translateX(0) scale(1) rotate(0deg);
+    transform: translateX(0) scale(1);
   }
 }
 
-/* List items animation in descriptions */
-.vfrc-message li,
-.vfrc-system-response span {
-  animation: listItemSlide 0.6s cubic-bezier(0.4, 0, 0.2, 1) both !important;
-  animation-delay: calc(var(--item-index, 0) * 0.1s) !important;
+/* ================= AVATAR ENHANCEMENTS ================= */
+.vfrc-avatar {
+  border-radius: 50% !important;
+  transition: all 0.3s var(--animation-smooth) !important;
+  animation: avatarFloat 3s var(--animation-smooth) infinite !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  will-change: transform !important;
 }
 
-@keyframes listItemSlide {
-  0% {
-    opacity: 0;
-    transform: translateX(-20px);
+@keyframes avatarFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
   }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
+  50% {
+    transform: translateY(-4px) scale(1.02);
   }
 }
 
-/* Footer watermark */
-.vfrc-footer--watermark {
-  color: rgba(0, 0, 0, 0.5) !important;
-  font-size: 12px !important;
+.vfrc-avatar:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+  animation-duration: 1.5s !important;
 }
 
-.vfrc-footer--watermark a {
-  color: #000000 !important;
-}
-
-/* Scrollbar styling */
+/* ================= SCROLLBAR STYLING ================= */
 ::-webkit-scrollbar {
-  width: 6px !important;
+  width: 8px !important;
 }
 
 ::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 4px !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.3) !important;
-  border-radius: 3px !important;
+  background: var(--primary-gradient) !important;
+  border-radius: 4px !important;
+  transition: all 0.3s var(--animation-smooth) !important;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5) !important;
+  background: var(--accent-gradient) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Mobile responsiveness */
+/* ================= RESPONSIVE DESIGN ================= */
 @media (max-width: 768px) {
-  .vfrc-widget--chat {
-    border-radius: 0 !important;
-    margin: 0 !important;
-  }
-  
-  .vfrc-header {
-    border-radius: 0 !important;
-  }
-  
   .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
   .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
-    width: 80px !important;
-    height: 80px !important;
-    min-width: 80px !important;
-    min-height: 80px !important;
-    max-width: 80px !important;
-    max-height: 80px !important;
+    width: 90px !important;
+    height: 90px !important;
+    min-width: 90px !important;
+    min-height: 90px !important;
+    max-width: 90px !important;
+    max-height: 90px !important;
+    bottom: 20px !important;
+    right: 20px !important;
   }
   
   .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
   .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
-    width: 74px !important;
-    height: 74px !important;
-    min-width: 74px !important;
-    min-height: 74px !important;
-    max-width: 74px !important;
-    max-height: 74px !important;
+    width: 82px !important;
+    height: 82px !important;
+    min-width: 82px !important;
+    min-height: 82px !important;
+    max-width: 82px !important;
+    max-height: 82px !important;
+  }
+  
+  #voiceflow-chat {
+    border-radius: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* ================= PERFORMANCE OPTIMIZATIONS ================= */
+* {
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Enable hardware acceleration for smooth animations */
+.vfrc-button, .vfrc-launcher, .vfrc-message, .vfrc-avatar {
+  transform: translateZ(0) !important;
+  backface-visibility: hidden !important;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ================= ACCESSIBILITY ENHANCEMENTS ================= */
+@media (prefers-contrast: high) {
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    border: 3px solid rgba(0, 0, 0, 0.8) !important;
+  }
+  
+  .vfrc-system-response .vfrc-message,
+  .vfrc-user-response .vfrc-message {
+    border: 2px solid rgba(0, 0, 0, 0.5) !important;
   }
 }
