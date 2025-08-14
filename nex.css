@@ -1076,17 +1076,51 @@ function makeProactiveMessagesClickable() {
           proactiveMessages.forEach((message) => {
             // Add click handler if not already added
             if (!message.dataset.clickHandlerAdded) {
-              message.addEventListener('click', function() {
-                // Find the launcher button to simulate click
-                const launcher = document.querySelector('.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"])');
-                if (launcher) {
-                  launcher.click();
-                } else {
-                  // Fallback: try to find any launcher button
-                  const anyLauncher = document.querySelector('.vfrc-launcher');
-                  if (anyLauncher) {
-                    anyLauncher.click();
+              message.addEventListener('click', function(e) {
+                console.log('Proactive message clicked!'); // Debug log
+                
+                // Stop event propagation to prevent conflicts
+                e.stopPropagation();
+                
+                // Try multiple launcher selectors for better compatibility
+                const launcherSelectors = [
+                  '.vfrc-button.vfrc-launcher',
+                  '.vfrc-launcher',
+                  'button.vfrc-launcher',
+                  '[class*="vfrc-launcher"]',
+                  '[class*="f6dof81"]',
+                  'button[class*="launcher"]',
+                  // More specific selectors
+                  '.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81',
+                  'button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81'
+                ];
+                
+                let launcher = null;
+                for (const selector of launcherSelectors) {
+                  launcher = document.querySelector(selector);
+                  if (launcher) {
+                    console.log('Found launcher with selector:', selector); // Debug log
+                    break;
                   }
+                }
+                
+                if (launcher) {
+                  console.log('Clicking launcher button'); // Debug log
+                  // Try different click methods for maximum compatibility
+                  launcher.click();
+                  
+                  // Fallback: dispatch click event manually
+                  const clickEvent = new MouseEvent('click', {
+                    view: window,
+                    bubbles: true,
+                    cancelable: true
+                  });
+                  launcher.dispatchEvent(clickEvent);
+                } else {
+                  console.log('No launcher button found. Available buttons:');
+                  document.querySelectorAll('button').forEach((btn, index) => {
+                    console.log(`Button ${index}:`, btn.className, btn);
+                  });
                 }
               });
               
@@ -1108,15 +1142,51 @@ function makeProactiveMessagesClickable() {
   const existingMessages = document.querySelectorAll('div._6r9xee3.o231sh1');
   existingMessages.forEach((message) => {
     if (!message.dataset.clickHandlerAdded) {
-      message.addEventListener('click', function() {
-        const launcher = document.querySelector('.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"])');
-        if (launcher) {
-          launcher.click();
-        } else {
-          const anyLauncher = document.querySelector('.vfrc-launcher');
-          if (anyLauncher) {
-            anyLauncher.click();
+      message.addEventListener('click', function(e) {
+        console.log('Existing proactive message clicked!'); // Debug log
+        
+        // Stop event propagation to prevent conflicts
+        e.stopPropagation();
+        
+        // Try multiple launcher selectors for better compatibility
+        const launcherSelectors = [
+          '.vfrc-button.vfrc-launcher',
+          '.vfrc-launcher',
+          'button.vfrc-launcher',
+          '[class*="vfrc-launcher"]',
+          '[class*="f6dof81"]',
+          'button[class*="launcher"]',
+          // More specific selectors
+          '.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81',
+          'button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81'
+        ];
+        
+        let launcher = null;
+        for (const selector of launcherSelectors) {
+          launcher = document.querySelector(selector);
+          if (launcher) {
+            console.log('Found launcher with selector:', selector); // Debug log
+            break;
           }
+        }
+        
+        if (launcher) {
+          console.log('Clicking launcher button'); // Debug log
+          // Try different click methods for maximum compatibility
+          launcher.click();
+          
+          // Fallback: dispatch click event manually
+          const clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          });
+          launcher.dispatchEvent(clickEvent);
+        } else {
+          console.log('No launcher button found. Available buttons:');
+          document.querySelectorAll('button').forEach((btn, index) => {
+            console.log(`Button ${index}:`, btn.className, btn);
+          });
         }
       });
       
