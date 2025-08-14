@@ -660,6 +660,9 @@ div._6r9xee3.o231sh1 {
   /* Smooth transitions for interactions */
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: transform, box-shadow, backdrop-filter !important;
+  
+  /* Make clickable */
+  cursor: pointer !important;
 }
 
 /* Premium hover effect for glass morphism */
@@ -1049,3 +1052,88 @@ h1, h2, h3 {
     max-height: 74px !important;
   }
 }
+
+/* ================= PROACTIVE MESSAGE CLICK FUNCTIONALITY ================= */
+</style>
+
+<script>
+// Make proactive messages clickable to open the chat widget
+function makeProactiveMessagesClickable() {
+  // Wait for proactive messages to appear in the DOM
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          // Check if this node or its descendants contain a proactive message
+          const proactiveMessages = node.querySelectorAll ? 
+            node.querySelectorAll('div._6r9xee3.o231sh1') : [];
+          
+          // Also check if the node itself is a proactive message
+          if (node.classList && node.classList.contains('_6r9xee3') && node.classList.contains('o231sh1')) {
+            proactiveMessages.push(node);
+          }
+          
+          proactiveMessages.forEach((message) => {
+            // Add click handler if not already added
+            if (!message.dataset.clickHandlerAdded) {
+              message.addEventListener('click', function() {
+                // Find the launcher button to simulate click
+                const launcher = document.querySelector('.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"])');
+                if (launcher) {
+                  launcher.click();
+                } else {
+                  // Fallback: try to find any launcher button
+                  const anyLauncher = document.querySelector('.vfrc-launcher');
+                  if (anyLauncher) {
+                    anyLauncher.click();
+                  }
+                }
+              });
+              
+              message.dataset.clickHandlerAdded = 'true';
+            }
+          });
+        }
+      });
+    });
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  
+  // Also handle any existing proactive messages
+  const existingMessages = document.querySelectorAll('div._6r9xee3.o231sh1');
+  existingMessages.forEach((message) => {
+    if (!message.dataset.clickHandlerAdded) {
+      message.addEventListener('click', function() {
+        const launcher = document.querySelector('.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"])');
+        if (launcher) {
+          launcher.click();
+        } else {
+          const anyLauncher = document.querySelector('.vfrc-launcher');
+          if (anyLauncher) {
+            anyLauncher.click();
+          }
+        }
+      });
+      
+      message.dataset.clickHandlerAdded = 'true';
+    }
+  });
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', makeProactiveMessagesClickable);
+} else {
+  makeProactiveMessagesClickable();
+}
+
+// Also initialize after a short delay to catch any dynamically loaded content
+setTimeout(makeProactiveMessagesClickable, 1000);
+</script>
+
+<style>
