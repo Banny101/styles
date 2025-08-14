@@ -1082,45 +1082,54 @@ function makeProactiveMessagesClickable() {
                 // Stop event propagation to prevent conflicts
                 e.stopPropagation();
                 
-                // Try multiple launcher selectors for better compatibility
-                const launcherSelectors = [
-                  '.vfrc-button.vfrc-launcher',
-                  '.vfrc-launcher',
-                  'button.vfrc-launcher',
-                  '[class*="vfrc-launcher"]',
-                  '[class*="f6dof81"]',
-                  'button[class*="launcher"]',
-                  // More specific selectors
-                  '.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81',
-                  'button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81'
-                ];
-                
-                let launcher = null;
-                for (const selector of launcherSelectors) {
-                  launcher = document.querySelector(selector);
-                  if (launcher) {
-                    console.log('Found launcher with selector:', selector); // Debug log
-                    break;
+                // Use official Voiceflow Web Chat API to open the widget
+                if (window.voiceflow && window.voiceflow.chat) {
+                  console.log('Opening chat widget using Voiceflow API'); // Debug log
+                  try {
+                    window.voiceflow.chat.open();
+                    console.log('Chat widget opened successfully!');
+                  } catch (error) {
+                    console.error('Error opening chat widget:', error);
                   }
-                }
-                
-                if (launcher) {
-                  console.log('Clicking launcher button'); // Debug log
-                  // Try different click methods for maximum compatibility
-                  launcher.click();
-                  
-                  // Fallback: dispatch click event manually
-                  const clickEvent = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                  });
-                  launcher.dispatchEvent(clickEvent);
                 } else {
-                  console.log('No launcher button found. Available buttons:');
-                  document.querySelectorAll('button').forEach((btn, index) => {
-                    console.log(`Button ${index}:`, btn.className, btn);
-                  });
+                  console.log('Voiceflow API not available, trying launcher button click fallback');
+                  
+                  // Fallback: Try to find and click launcher button
+                  const launcherSelectors = [
+                    '.vfrc-button.vfrc-launcher',
+                    '.vfrc-launcher',
+                    'button.vfrc-launcher',
+                    '[class*="vfrc-launcher"]',
+                    '[class*="f6dof81"]',
+                    'button[class*="launcher"]',
+                    '.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81',
+                    'button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81'
+                  ];
+                  
+                  let launcher = null;
+                  for (const selector of launcherSelectors) {
+                    launcher = document.querySelector(selector);
+                    if (launcher) {
+                      console.log('Found launcher with selector:', selector);
+                      break;
+                    }
+                  }
+                  
+                  if (launcher) {
+                    console.log('Clicking launcher button as fallback');
+                    launcher.click();
+                    
+                    // Also dispatch click event manually
+                    const clickEvent = new MouseEvent('click', {
+                      view: window,
+                      bubbles: true,
+                      cancelable: true
+                    });
+                    launcher.dispatchEvent(clickEvent);
+                  } else {
+                    console.log('No launcher button found either. Widget may not be loaded yet.');
+                    console.log('Available Voiceflow objects:', window.voiceflow);
+                  }
                 }
               });
               
@@ -1148,45 +1157,54 @@ function makeProactiveMessagesClickable() {
         // Stop event propagation to prevent conflicts
         e.stopPropagation();
         
-        // Try multiple launcher selectors for better compatibility
-        const launcherSelectors = [
-          '.vfrc-button.vfrc-launcher',
-          '.vfrc-launcher',
-          'button.vfrc-launcher',
-          '[class*="vfrc-launcher"]',
-          '[class*="f6dof81"]',
-          'button[class*="launcher"]',
-          // More specific selectors
-          '.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81',
-          'button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81'
-        ];
-        
-        let launcher = null;
-        for (const selector of launcherSelectors) {
-          launcher = document.querySelector(selector);
-          if (launcher) {
-            console.log('Found launcher with selector:', selector); // Debug log
-            break;
+        // Use official Voiceflow Web Chat API to open the widget
+        if (window.voiceflow && window.voiceflow.chat) {
+          console.log('Opening chat widget using Voiceflow API'); // Debug log
+          try {
+            window.voiceflow.chat.open();
+            console.log('Chat widget opened successfully!');
+          } catch (error) {
+            console.error('Error opening chat widget:', error);
           }
-        }
-        
-        if (launcher) {
-          console.log('Clicking launcher button'); // Debug log
-          // Try different click methods for maximum compatibility
-          launcher.click();
-          
-          // Fallback: dispatch click event manually
-          const clickEvent = new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: true
-          });
-          launcher.dispatchEvent(clickEvent);
         } else {
-          console.log('No launcher button found. Available buttons:');
-          document.querySelectorAll('button').forEach((btn, index) => {
-            console.log(`Button ${index}:`, btn.className, btn);
-          });
+          console.log('Voiceflow API not available, trying launcher button click fallback');
+          
+          // Fallback: Try to find and click launcher button
+          const launcherSelectors = [
+            '.vfrc-button.vfrc-launcher',
+            '.vfrc-launcher',
+            'button.vfrc-launcher',
+            '[class*="vfrc-launcher"]',
+            '[class*="f6dof81"]',
+            'button[class*="launcher"]',
+            '.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81',
+            'button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81'
+          ];
+          
+          let launcher = null;
+          for (const selector of launcherSelectors) {
+            launcher = document.querySelector(selector);
+            if (launcher) {
+              console.log('Found launcher with selector:', selector);
+              break;
+            }
+          }
+          
+          if (launcher) {
+            console.log('Clicking launcher button as fallback');
+            launcher.click();
+            
+            // Also dispatch click event manually
+            const clickEvent = new MouseEvent('click', {
+              view: window,
+              bubbles: true,
+              cancelable: true
+            });
+            launcher.dispatchEvent(clickEvent);
+          } else {
+            console.log('No launcher button found either. Widget may not be loaded yet.');
+            console.log('Available Voiceflow objects:', window.voiceflow);
+          }
         }
       });
       
