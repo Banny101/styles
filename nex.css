@@ -1049,9 +1049,9 @@ h1, h2, h3 {
     max-height: 74px !important;
   }
   
-  /* Mobile proactive message positioning - closer to launcher */
+  /* Mobile proactive message positioning - much closer to launcher */
   ._6r9xee0 {
-    margin-bottom: 40px !important;
+    margin-bottom: 15px !important;
   }
   
   /* Smaller proactive messages on mobile */
