@@ -623,11 +623,13 @@ img[src*="banner"],
 }
 
 /* ================= PROACTIVE MESSAGE STYLING ================= */
-._6r9xee0 {
+/* Container for proactive messages positioning */
+.vfrc-chat--overlay {
   margin-bottom: 70px !important;
 }
 
-div._6r9xee3.o231sh1 {
+/* Official Voiceflow proactive message styling */
+.vfrc-prompt {
   position: relative !important;
   z-index: 0 !important;
   border-radius: 24px !important;
@@ -666,7 +668,7 @@ div._6r9xee3.o231sh1 {
 }
 
 /* Premium hover effect for glass morphism */
-div._6r9xee3.o231sh1:hover {
+.vfrc-prompt:hover {
   background: rgba(255, 255, 255, 0.18) !important;
   backdrop-filter: blur(30px) saturate(220%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(220%) !important;
@@ -681,7 +683,7 @@ div._6r9xee3.o231sh1:hover {
 }
 
 /* Sleek shimmer effect for proactive messages */
-div._6r9xee3.o231sh1::before {
+.vfrc-prompt::before {
   content: '' !important;
   position: absolute !important;
   top: 0 !important;
@@ -717,7 +719,7 @@ div._6r9xee3.o231sh1::before {
 }
 
 /* Gentle floating animation for proactive messages */
-div._6r9xee3.o231sh1 {
+.vfrc-prompt {
   animation: 
     proactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1),
     proactiveFloat 4s ease-in-out 1s infinite !important;
@@ -733,7 +735,7 @@ div._6r9xee3.o231sh1 {
 }
 
 /* Ensure text inside is visible above the background */
-div._6r9xee3.o231sh1 > * {
+.vfrc-prompt > * {
   position: relative !important;
   z-index: 1 !important;
 }
