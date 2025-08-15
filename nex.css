@@ -1423,6 +1423,67 @@ h1, h2, h3 {
   }
 }
 
+/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER ================= */
+/* Typewriter Effect for Placeholder Text Only */
+.vfrc-chat-input::placeholder,
+._1gdvh9t6::placeholder {
+  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  color: #666666 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em !important;
+  animation: typewriterPlaceholder 3s steps(25) infinite !important;
+  opacity: 1 !important;
+}
+
+/* Typewriter animation for placeholder */
+@keyframes typewriterPlaceholder {
+  0%, 90%, 100% {
+    width: 100%;
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Add subtle cursor blink effect */
+.vfrc-chat-input:not(:focus)::placeholder,
+._1gdvh9t6:not(:focus)::placeholder {
+  position: relative !important;
+}
+
+.vfrc-chat-input:not(:focus)::after,
+._1gdvh9t6:not(:focus)::after {
+  content: '|' !important;
+  color: #666666 !important;
+  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  animation: placeholderCursor 1.2s infinite step-end !important;
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  pointer-events: none !important;
+}
+
+/* Cursor blink animation */
+@keyframes placeholderCursor {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Hide cursor when focused or has content */
+.vfrc-chat-input:focus::after,
+._1gdvh9t6:focus::after,
+.vfrc-chat-input:not(:placeholder-shown)::after,
+._1gdvh9t6:not(:placeholder-shown)::after {
+  display: none !important;
+}
 
 /* ================= CLEAN ANIMATIONS ================= */
 
