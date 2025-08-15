@@ -1192,12 +1192,43 @@ div[class*="_1ayyscc"] {
 }
 
 /* ================= BANNER TEXT AND DESCRIPTION ANIMATIONS ================= */
-/* Banner title animations */
+/* Banner title animations - Robotic Typewriter */
 .vfrc-assistant-info--title,
 .vfrc-header--title,
 h1, h2, h3 {
-  animation: titleSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   position: relative !important;
+  overflow: hidden !important;
+  border-right: 3px solid #00ff88 !important;
+  white-space: nowrap !important;
+  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  font-weight: bold !important;
+  letter-spacing: 0.1em !important;
+  color: #00ff88 !important;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 255, 136, 0.1) 50%, transparent 100%) !important;
+  background-size: 200% 100% !important;
+  animation: 
+    roboticTypewriter 1.2s steps(20) forwards,
+    blinkingCursor 1.5s infinite step-end,
+    titleGlow 2s ease-in-out infinite alternate,
+    roboticScan 3s ease-in-out infinite 2s !important;
+  text-shadow: 
+    0 0 10px rgba(0, 255, 136, 0.5),
+    0 0 20px rgba(0, 255, 136, 0.3),
+    0 0 30px rgba(0, 255, 136, 0.1) !important;
+}
+
+/* Add robotic glitch effect */
+.vfrc-assistant-info--title::before {
+  content: attr(title) !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  color: #ff0040 !important;
+  opacity: 0 !important;
+  animation: roboticGlitch 0.3s ease-in-out 1.5s !important;
+  z-index: -1 !important;
 }
 
 @keyframes titleSlideIn {
@@ -1214,8 +1245,45 @@ h1, h2, h3 {
   }
 }
 
-/* Banner description animations */
-.vfrc-assistant-info--description,
+/* Banner description animations - Robotic Typewriter */
+.vfrc-assistant-info--description {
+  position: relative !important;
+  overflow: hidden !important;
+  border-right: 2px solid #0099ff !important;
+  white-space: nowrap !important;
+  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.05em !important;
+  color: #0099ff !important;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 153, 255, 0.08) 50%, transparent 100%) !important;
+  background-size: 200% 100% !important;
+  animation: 
+    roboticTypewriterDesc 3s steps(45) 1.5s forwards,
+    blinkingCursorBlue 1.8s infinite step-end 1.5s,
+    descriptionGlow 3s ease-in-out infinite alternate 2s,
+    roboticScanBlue 4s ease-in-out infinite 3s !important;
+  text-shadow: 
+    0 0 8px rgba(0, 153, 255, 0.4),
+    0 0 16px rgba(0, 153, 255, 0.2),
+    0 0 24px rgba(0, 153, 255, 0.1) !important;
+  opacity: 0 !important;
+}
+
+/* Add robotic glitch effect for description */
+.vfrc-assistant-info--description::before {
+  content: attr(title) !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  color: #ff4000 !important;
+  opacity: 0 !important;
+  animation: roboticGlitch 0.2s ease-in-out 3s !important;
+  z-index: -1 !important;
+}
+
+/* Other system response paragraphs */
 .vfrc-system-response p,
 .vfrc-message p {
   animation: textFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both !important;
@@ -1233,31 +1301,139 @@ h1, h2, h3 {
   }
 }
 
-/* Typing animation effect for longer descriptions */
-.vfrc-assistant-info--description {
-  overflow: hidden !important;
-  border-right: 2px solid transparent !important;
-  animation: 
-    textFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both,
-    typewriter 2s steps(40) 1s both,
-    blinkCursor 1s infinite 3s !important;
-}
+/* ================= ROBOTIC TYPEWRITER ANIMATIONS ================= */
 
-@keyframes typewriter {
+/* Robotic Typewriter Animation for Title */
+@keyframes roboticTypewriter {
   0% {
     width: 0;
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
   }
   100% {
     width: 100%;
+    opacity: 1;
   }
 }
 
-@keyframes blinkCursor {
+/* Robotic Typewriter Animation for Description (longer) */
+@keyframes roboticTypewriterDesc {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    width: 100%;
+    opacity: 1;
+  }
+}
+
+/* Blinking Cursor Animation - Green */
+@keyframes blinkingCursor {
   0%, 50% {
-    border-right-color: rgba(0, 0, 0, 0.3);
+    border-right-color: #00ff88;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
   }
   51%, 100% {
     border-right-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* Blinking Cursor Animation - Blue */
+@keyframes blinkingCursorBlue {
+  0%, 50% {
+    border-right-color: #0099ff;
+    box-shadow: 0 0 8px rgba(0, 153, 255, 0.8);
+  }
+  51%, 100% {
+    border-right-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/* Title Glow Animation */
+@keyframes titleGlow {
+  0% {
+    text-shadow: 
+      0 0 10px rgba(0, 255, 136, 0.5),
+      0 0 20px rgba(0, 255, 136, 0.3),
+      0 0 30px rgba(0, 255, 136, 0.1);
+  }
+  100% {
+    text-shadow: 
+      0 0 15px rgba(0, 255, 136, 0.8),
+      0 0 25px rgba(0, 255, 136, 0.5),
+      0 0 35px rgba(0, 255, 136, 0.3);
+  }
+}
+
+/* Description Glow Animation */
+@keyframes descriptionGlow {
+  0% {
+    text-shadow: 
+      0 0 8px rgba(0, 153, 255, 0.4),
+      0 0 16px rgba(0, 153, 255, 0.2),
+      0 0 24px rgba(0, 153, 255, 0.1);
+  }
+  100% {
+    text-shadow: 
+      0 0 12px rgba(0, 153, 255, 0.6),
+      0 0 20px rgba(0, 153, 255, 0.4),
+      0 0 28px rgba(0, 153, 255, 0.2);
+  }
+}
+
+/* Robotic Scanning Animation - Green */
+@keyframes roboticScan {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Robotic Scanning Animation - Blue */
+@keyframes roboticScanBlue {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Robotic Glitch Effect */
+@keyframes roboticGlitch {
+  0%, 90%, 100% {
+    opacity: 0;
+    transform: translateX(0) scale(1);
+  }
+  10% {
+    opacity: 0.8;
+    transform: translateX(-2px) scale(0.98);
+  }
+  20% {
+    opacity: 0.6;
+    transform: translateX(2px) scale(1.02);
+  }
+  30% {
+    opacity: 0.9;
+    transform: translateX(-1px) scale(0.99);
+  }
+  40% {
+    opacity: 0.4;
+    transform: translateX(1px) scale(1.01);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateX(-3px) scale(0.97);
   }
 }
 
