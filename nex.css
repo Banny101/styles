@@ -802,8 +802,15 @@ div._6r9xee3.o231sh1 > * {
 }
 
 /* ================= PREMIUM TYPING INDICATOR ================= */
-/* Ultra-Premium Glass Morphism Typing Indicator */
-.vfrc-system-response--indicator {
+/* Ultra-Premium Glass Morphism Typing Indicator - MAXIMUM SPECIFICITY */
+body .vfrc-typing-indicator,
+body .vfrc-system-response .vfrc-typing-indicator,
+body div[class*="indicator"],
+body div[class*="typing"],
+body div[class*="loading"],
+body .vfrc-chat .vfrc-typing-indicator,
+#voiceflow-chat .vfrc-typing-indicator,
+#voiceflow-chat .vfrc-system-response .vfrc-typing-indicator {
   position: relative !important;
   background: 
     linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%),
@@ -856,7 +863,7 @@ div._6r9xee3.o231sh1 > * {
 }
 
 /* Premium shimmer effect for typing indicator */
-.vfrc-system-response--indicator::before {
+.vfrc-typing-indicator::before {
   content: '' !important;
   position: absolute !important;
   top: 0 !important;
@@ -896,7 +903,7 @@ div._6r9xee3.o231sh1 > * {
 }
 
 /* Custom premium typing dots animation */
-.vfrc-system-response--indicator::after {
+.vfrc-typing-indicator::after {
   content: '' !important;
   position: absolute !important;
   top: 50% !important;
@@ -938,10 +945,57 @@ div._6r9xee3.o231sh1 > * {
   }
 }
 
-/* Hide default typing indicator content */
-.vfrc-system-response--indicator > * {
-  opacity: 0 !important;
+/* Target the actual typing dots within the indicator */
+.vfrc-typing-indicator span,
+.vfrc-typing-indicator > span,
+.vfrc-system-response .vfrc-typing-indicator span,
+div[class*="indicator"] span,
+div[class*="typing"] span,
+div[class*="loading"] span,
+.vfrc-chat .vfrc-typing-indicator span {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  margin: 0 2px !important;
+  opacity: 1 !important;
   pointer-events: none !important;
+  animation: typingDots 1.4s infinite ease-in-out !important;
+  will-change: opacity, transform !important;
+}
+
+/* Different animation delays for the three dots */
+.vfrc-typing-indicator span:nth-child(1) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  animation-delay: 0s !important;
+}
+
+.vfrc-typing-indicator span:nth-child(2) {
+  background: linear-gradient(135deg, #764ba2 0%, #9333ea 100%) !important;
+  animation-delay: 0.2s !important;
+}
+
+.vfrc-typing-indicator span:nth-child(3) {
+  background: linear-gradient(135deg, #9333ea 0%, #667eea 100%) !important;
+  animation-delay: 0.4s !important;
+}
+
+@keyframes typingDots {
+  0%, 60%, 100% {
+    transform: scale(1) translateY(0);
+    opacity: 0.6;
+  }
+  30% {
+    transform: scale(1.2) translateY(-8px);
+    opacity: 1;
+  }
+}
+
+/* Style the typing indicator container with class hash selectors */
+._1ayyscc1,
+div[class*="_1ayyscc"] {
+  position: relative !important;
+  margin: 8px 0 !important;
 }
 
 /* ================= BEAUTIFUL MESSAGE BUBBLES ================= */
