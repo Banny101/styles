@@ -1478,6 +1478,251 @@ h1, h2, h3 {
   }
 }
 
+/* ================= CYBERPUNK CHAT INPUT ================= */
+/* Ultra-Cool Terminal Style Chat Input */
+.vfrc-chat-input,
+textarea.vfrc-chat-input,
+._1gdvh9t6 {
+  position: relative !important;
+  background: 
+    /* Dark terminal background with subtle grid pattern */
+    radial-gradient(circle at 25% 75%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 75% 25%, rgba(0, 153, 255, 0.06) 0%, transparent 50%),
+    linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 15, 25, 0.98) 50%, rgba(0, 0, 0, 0.95) 100%) !important;
+  border: 2px solid transparent !important;
+  border-image: linear-gradient(135deg, 
+    rgba(0, 255, 136, 0.6) 0%, 
+    rgba(0, 153, 255, 0.4) 25%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(0, 153, 255, 0.4) 75%, 
+    rgba(0, 255, 136, 0.6) 100%) 1 !important;
+  border-radius: 15px !important;
+  padding: 15px 20px !important;
+  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #00ff88 !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.5 !important;
+  resize: none !important;
+  outline: none !important;
+  backdrop-filter: blur(25px) saturate(150%) contrast(110%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(150%) contrast(110%) !important;
+  box-shadow: 
+    /* Outer cyberpunk glow */
+    0 0 30px rgba(0, 255, 136, 0.1),
+    0 0 60px rgba(0, 153, 255, 0.05),
+    /* Main depth */
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    /* Inner terminal glow */
+    inset 0 1px 0 rgba(0, 255, 136, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(0, 255, 136, 0.02) !important;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  animation: terminalIdle 4s ease-in-out infinite !important;
+  will-change: border-image, box-shadow, transform !important;
+  overflow: hidden !important;
+}
+
+/* Scanning border animation effect */
+.vfrc-chat-input::before,
+._1gdvh9t6::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 136, 0.8) 20%,
+    rgba(0, 153, 255, 0.6) 40%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(0, 153, 255, 0.6) 60%,
+    rgba(0, 255, 136, 0.8) 80%,
+    transparent 100%
+  ) !important;
+  background-size: 300% 100% !important;
+  border-radius: 15px !important;
+  opacity: 0 !important;
+  animation: scanningBorder 3s linear infinite !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+
+/* Terminal cursor effect */
+.vfrc-chat-input::after,
+._1gdvh9t6::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 50% !important;
+  right: 15px !important;
+  width: 2px !important;
+  height: 16px !important;
+  background: #00ff88 !important;
+  transform: translateY(-50%) !important;
+  animation: terminalCursor 1.2s infinite step-end !important;
+  opacity: 0 !important;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.8) !important;
+  z-index: 2 !important;
+}
+
+/* Focus state - MAXIMUM CYBERPUNK */
+.vfrc-chat-input:focus,
+._1gdvh9t6:focus {
+  border-image: linear-gradient(135deg, 
+    rgba(0, 255, 136, 1) 0%, 
+    rgba(0, 153, 255, 0.8) 25%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    rgba(0, 153, 255, 0.8) 75%, 
+    rgba(0, 255, 136, 1) 100%) 1 !important;
+  box-shadow: 
+    /* Intense cyberpunk glow */
+    0 0 50px rgba(0, 255, 136, 0.3),
+    0 0 100px rgba(0, 153, 255, 0.15),
+    0 0 150px rgba(0, 255, 136, 0.05),
+    /* Enhanced depth */
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 6px 20px rgba(0, 0, 0, 0.3),
+    /* Bright inner glow */
+    inset 0 2px 0 rgba(0, 255, 136, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.4),
+    inset 0 0 30px rgba(0, 255, 136, 0.08) !important;
+  transform: scale(1.02) translateY(-2px) !important;
+  animation: terminalActive 2s ease-in-out infinite, scanPulse 1.5s ease-in-out infinite !important;
+}
+
+/* Activate scanning border on focus */
+.vfrc-chat-input:focus::before,
+._1gdvh9t6:focus::before {
+  opacity: 1 !important;
+  animation: scanningBorder 2s linear infinite !important;
+}
+
+/* Show terminal cursor on focus */
+.vfrc-chat-input:focus::after,
+._1gdvh9t6:focus::after {
+  opacity: 1 !important;
+}
+
+/* Placeholder styling */
+.vfrc-chat-input::placeholder,
+._1gdvh9t6::placeholder {
+  color: rgba(0, 255, 136, 0.4) !important;
+  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  font-style: italic !important;
+  letter-spacing: 0.02em !important;
+  animation: placeholderGlow 3s ease-in-out infinite alternate !important;
+}
+
+/* ================= CYBERPUNK INPUT ANIMATIONS ================= */
+
+/* Terminal idle animation */
+@keyframes terminalIdle {
+  0%, 100% {
+    box-shadow: 
+      0 0 30px rgba(0, 255, 136, 0.1),
+      0 0 60px rgba(0, 153, 255, 0.05),
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(0, 255, 136, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+      inset 0 0 20px rgba(0, 255, 136, 0.02);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(0, 255, 136, 0.15),
+      0 0 80px rgba(0, 153, 255, 0.08),
+      0 10px 36px rgba(0, 0, 0, 0.35),
+      0 5px 18px rgba(0, 0, 0, 0.25),
+      inset 0 2px 0 rgba(0, 255, 136, 0.15),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.35),
+      inset 0 0 25px rgba(0, 255, 136, 0.04);
+  }
+}
+
+/* Scanning border animation */
+@keyframes scanningBorder {
+  0% {
+    background-position: -300% 0;
+  }
+  100% {
+    background-position: 300% 0;
+  }
+}
+
+/* Terminal cursor blink */
+@keyframes terminalCursor {
+  0%, 50% {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
+  }
+  51%, 100% {
+    opacity: 0;
+    box-shadow: none;
+  }
+}
+
+/* Terminal active animation */
+@keyframes terminalActive {
+  0%, 100% {
+    box-shadow: 
+      0 0 50px rgba(0, 255, 136, 0.3),
+      0 0 100px rgba(0, 153, 255, 0.15),
+      0 0 150px rgba(0, 255, 136, 0.05),
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      0 6px 20px rgba(0, 0, 0, 0.3),
+      inset 0 2px 0 rgba(0, 255, 136, 0.3),
+      inset 0 -2px 0 rgba(0, 0, 0, 0.4),
+      inset 0 0 30px rgba(0, 255, 136, 0.08);
+  }
+  50% {
+    box-shadow: 
+      0 0 70px rgba(0, 255, 136, 0.4),
+      0 0 120px rgba(0, 153, 255, 0.2),
+      0 0 180px rgba(0, 255, 136, 0.08),
+      0 15px 50px rgba(0, 0, 0, 0.45),
+      0 8px 25px rgba(0, 0, 0, 0.35),
+      inset 0 3px 0 rgba(0, 255, 136, 0.4),
+      inset 0 -3px 0 rgba(0, 0, 0, 0.45),
+      inset 0 0 40px rgba(0, 255, 136, 0.12);
+  }
+}
+
+/* Scan pulse animation */
+@keyframes scanPulse {
+  0%, 100% {
+    border-image: linear-gradient(135deg, 
+      rgba(0, 255, 136, 1) 0%, 
+      rgba(0, 153, 255, 0.8) 25%, 
+      rgba(255, 255, 255, 0.6) 50%, 
+      rgba(0, 153, 255, 0.8) 75%, 
+      rgba(0, 255, 136, 1) 100%) 1;
+  }
+  50% {
+    border-image: linear-gradient(135deg, 
+      rgba(0, 255, 136, 0.8) 0%, 
+      rgba(0, 153, 255, 1) 25%, 
+      rgba(255, 255, 255, 0.8) 50%, 
+      rgba(0, 153, 255, 1) 75%, 
+      rgba(0, 255, 136, 0.8) 100%) 1;
+  }
+}
+
+/* Placeholder glow animation */
+@keyframes placeholderGlow {
+  0% {
+    color: rgba(0, 255, 136, 0.4);
+    text-shadow: none;
+  }
+  100% {
+    color: rgba(0, 255, 136, 0.6);
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+  }
+}
+
 /* Footer watermark */
 .vfrc-footer--watermark {
   color: rgba(0, 0, 0, 0.5) !important;
