@@ -1423,8 +1423,18 @@ h1, h2, h3 {
   }
 }
 
-/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER ================= */
-/* Typewriter Effect for Placeholder Text Only */
+/* ================= PREMIUM CHAT INPUT WITH FOCUS & TYPING EFFECTS ================= */
+/* Chat Input Base Styling */
+.vfrc-chat-input,
+._1gdvh9t6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, border !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* Typewriter Effect for Placeholder Text */
 .vfrc-chat-input::placeholder,
 ._1gdvh9t6::placeholder {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
@@ -1433,6 +1443,7 @@ h1, h2, h3 {
   letter-spacing: 0.02em !important;
   animation: typewriterPlaceholder 3s steps(25) infinite !important;
   opacity: 1 !important;
+  transition: all 0.3s ease !important;
 }
 
 /* Typewriter animation for placeholder */
@@ -1446,7 +1457,159 @@ h1, h2, h3 {
   }
 }
 
-/* Add subtle cursor blink effect */
+/* ================= PREMIUM FOCUS EFFECTS ================= */
+/* Focus State - Premium Glass Morphism */
+.vfrc-chat-input:focus,
+._1gdvh9t6:focus {
+  /* Premium Glass Morphism Background */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
+  backdrop-filter: blur(15px) saturate(150%) brightness(105%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(150%) brightness(105%) !important;
+  
+  /* Premium Shadow System */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(102, 126, 234, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    0 0 0 2px rgba(102, 126, 234, 0.3) !important;
+  
+  /* Subtle scale and glow */
+  transform: scale(1.01) translateY(-1px) !important;
+  
+  /* Focus breathing animation */
+  animation: inputFocusBreathe 2s ease-in-out infinite !important;
+}
+
+/* Focus breathing animation */
+@keyframes inputFocusBreathe {
+  0%, 100% {
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(102, 126, 234, 0.15),
+      inset 0 1px 2px rgba(255, 255, 255, 0.4),
+      0 0 0 2px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 
+      0 12px 35px rgba(0, 0, 0, 0.12),
+      0 6px 18px rgba(102, 126, 234, 0.25),
+      inset 0 2px 3px rgba(255, 255, 255, 0.5),
+      0 0 0 3px rgba(102, 126, 234, 0.4),
+      0 0 20px rgba(102, 126, 234, 0.2);
+  }
+}
+
+/* Enhanced placeholder when focused */
+.vfrc-chat-input:focus::placeholder,
+._1gdvh9t6:focus::placeholder {
+  color: rgba(102, 126, 234, 0.6) !important;
+  transform: translateX(2px) !important;
+  animation: focusPlaceholderGlow 2s ease-in-out infinite !important;
+}
+
+/* Focus placeholder glow animation */
+@keyframes focusPlaceholderGlow {
+  0%, 100% {
+    opacity: 0.6;
+    text-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    opacity: 0.8;
+    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  }
+}
+
+/* ================= TYPING EFFECTS ================= */
+/* Enhanced effects when user is typing */
+.vfrc-chat-input:not(:placeholder-shown),
+._1gdvh9t6:not(:placeholder-shown) {
+  /* Enhanced glass morphism while typing */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+  backdrop-filter: blur(20px) saturate(160%) brightness(108%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(108%) !important;
+  
+  /* Enhanced shadow with typing glow */
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 5px 15px rgba(102, 126, 234, 0.2),
+    0 2px 8px rgba(147, 51, 234, 0.1),
+    inset 0 2px 3px rgba(255, 255, 255, 0.5),
+    0 0 0 2px rgba(102, 126, 234, 0.4),
+    0 0 25px rgba(102, 126, 234, 0.25) !important;
+  
+  /* Typing pulse animation */
+  animation: typingPulse 1.5s ease-in-out infinite !important;
+  
+  /* Enhanced scale while typing */
+  transform: scale(1.02) translateY(-2px) !important;
+}
+
+/* Typing pulse animation */
+@keyframes typingPulse {
+  0%, 100% {
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.1),
+      0 5px 15px rgba(102, 126, 234, 0.2),
+      0 2px 8px rgba(147, 51, 234, 0.1),
+      inset 0 2px 3px rgba(255, 255, 255, 0.5),
+      0 0 0 2px rgba(102, 126, 234, 0.4),
+      0 0 25px rgba(102, 126, 234, 0.25);
+  }
+  50% {
+    box-shadow: 
+      0 15px 40px rgba(0, 0, 0, 0.15),
+      0 8px 20px rgba(102, 126, 234, 0.3),
+      0 4px 12px rgba(147, 51, 234, 0.15),
+      inset 0 3px 5px rgba(255, 255, 255, 0.6),
+      0 0 0 3px rgba(102, 126, 234, 0.5),
+      0 0 35px rgba(102, 126, 234, 0.35);
+  }
+}
+
+/* Premium typing shimmer effect */
+.vfrc-chat-input:not(:placeholder-shown)::before,
+._1gdvh9t6:not(:placeholder-shown)::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(102, 126, 234, 0.1) 20%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(147, 51, 234, 0.1) 80%, 
+    transparent 100%
+  ) !important;
+  animation: typingShimmer 2s infinite !important;
+  border-radius: inherit !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+/* Typing shimmer animation */
+@keyframes typingShimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* Text styling while typing */
+.vfrc-chat-input:not(:placeholder-shown),
+._1gdvh9t6:not(:placeholder-shown) {
+  color: rgba(0, 0, 0, 0.9) !important;
+  font-weight: 500 !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5) !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Add subtle cursor blink effect when not focused */
 .vfrc-chat-input:not(:focus)::placeholder,
 ._1gdvh9t6:not(:focus)::placeholder {
   position: relative !important;
@@ -1456,7 +1619,7 @@ h1, h2, h3 {
 ._1gdvh9t6:not(:focus)::after {
   content: '|' !important;
   color: #666666 !important;
-  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
   animation: placeholderCursor 1.2s infinite step-end !important;
   position: absolute !important;
   right: 12px !important;
@@ -1540,7 +1703,7 @@ h1, h2, h3 {
 }
 
 /* ================= PREMIUM SEND BUTTON STYLING ================= */
-/* Send Button - Premium Glass Morphism with Subtle Background */
+/* Send Button - Ultra-Premium Glass Morphism Design */
 .vfrc-chat-input--button,
 .vfrc-button._12m8tlu3._12m8tlu4,
 button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
@@ -1557,23 +1720,25 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   border: none !important;
   cursor: pointer !important;
   
-  /* Subtle Glass Morphism Background */
-  background: rgba(0, 0, 0, 0.05) !important;
-  backdrop-filter: blur(15px) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(15px) saturate(120%) !important;
+  /* Premium Glass Morphism Background */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.10) 100%) !important;
+  backdrop-filter: blur(25px) saturate(180%) brightness(110%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) brightness(110%) !important;
   
   /* Premium Shadow System */
   box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.06),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2),
-    0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 4px 16px rgba(102, 126, 234, 0.15),
+    inset 0 2px 3px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 3px rgba(255, 255, 255, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.25) !important;
   
   /* Smooth Transitions */
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: transform, box-shadow, background !important;
   
-  /* Subtle breathing animation */
-  animation: sendButtonBreathe 3s ease-in-out infinite !important;
+  /* Premium breathing animation */
+  animation: sendButtonPremiumBreathe 3.5s ease-in-out infinite !important;
   
   /* Functional positioning */
   position: relative !important;
@@ -1583,53 +1748,60 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   overflow: hidden !important;
 }
 
-/* Breathing animation for send button */
-@keyframes sendButtonBreathe {
+/* Premium breathing animation for send button */
+@keyframes sendButtonPremiumBreathe {
   0%, 100% {
     transform: scale(1) translateY(0px);
     box-shadow: 
-      0 4px 15px rgba(0, 0, 0, 0.06),
-      inset 0 1px 1px rgba(255, 255, 255, 0.2),
-      0 0 0 1px rgba(0, 0, 0, 0.08);
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 4px 16px rgba(102, 126, 234, 0.15),
+      inset 0 2px 3px rgba(255, 255, 255, 0.6),
+      inset 0 -2px 3px rgba(255, 255, 255, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.25);
   }
   50% {
-    transform: scale(1.02) translateY(-1px);
+    transform: scale(1.03) translateY(-2px);
     box-shadow: 
-      0 6px 20px rgba(0, 0, 0, 0.08),
-      inset 0 1px 1px rgba(255, 255, 255, 0.25),
-      0 0 0 1px rgba(0, 0, 0, 0.1),
-      0 0 15px rgba(102, 126, 234, 0.1);
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      0 6px 20px rgba(102, 126, 234, 0.25),
+      inset 0 3px 5px rgba(255, 255, 255, 0.7),
+      inset 0 -3px 5px rgba(255, 255, 255, 0.3),
+      0 0 0 2px rgba(255, 255, 255, 0.35),
+      0 0 25px rgba(102, 126, 234, 0.2);
   }
 }
 
-/* Premium Hover Effect */
+/* Ultra-Premium Hover Effect */
 .vfrc-chat-input--button:hover,
 .vfrc-button._12m8tlu3._12m8tlu4:hover,
 button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover,
 button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover {
   /* Enhanced Glass Effect */
-  background: rgba(0, 0, 0, 0.08) !important;
-  backdrop-filter: blur(20px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
+  backdrop-filter: blur(35px) saturate(220%) brightness(120%) !important;
+  -webkit-backdrop-filter: blur(35px) saturate(220%) brightness(120%) !important;
   
   /* Enhanced Shadow */
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3),
-    0 0 0 1px rgba(0, 0, 0, 0.12),
-    0 0 20px rgba(102, 126, 234, 0.15) !important;
+    0 15px 50px rgba(0, 0, 0, 0.18),
+    0 8px 25px rgba(102, 126, 234, 0.25),
+    0 4px 15px rgba(147, 51, 234, 0.15),
+    inset 0 3px 5px rgba(255, 255, 255, 0.8),
+    inset 0 -3px 5px rgba(255, 255, 255, 0.4),
+    0 0 0 2px rgba(255, 255, 255, 0.4),
+    0 0 40px rgba(102, 126, 234, 0.3) !important;
     
-  transform: scale(1.08) translateY(-2px) !important;
-  animation: sendButtonHoverPulse 0.8s ease-in-out infinite !important;
+  transform: scale(1.1) translateY(-3px) !important;
+  animation: sendButtonHoverPulse 1s ease-in-out infinite !important;
 }
 
-/* Hover pulse animation */
+/* Enhanced hover pulse animation */
 @keyframes sendButtonHoverPulse {
   0%, 100% {
-    transform: scale(1.08) translateY(-2px);
+    transform: scale(1.1) translateY(-3px);
   }
   50% {
-    transform: scale(1.12) translateY(-3px);
+    transform: scale(1.15) translateY(-5px);
   }
 }
 
@@ -1640,9 +1812,10 @@ button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):focus,
 button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):focus {
   outline: none !important;
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3),
-    0 0 0 2px rgba(102, 126, 234, 0.4) !important;
+    0 15px 50px rgba(0, 0, 0, 0.18),
+    0 8px 25px rgba(102, 126, 234, 0.25),
+    inset 0 3px 5px rgba(255, 255, 255, 0.8),
+    0 0 0 3px rgba(102, 126, 234, 0.5) !important;
 }
 
 /* Active State */
@@ -1651,30 +1824,64 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
 button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):active,
 button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):active {
   transform: scale(0.95) !important;
-  background: rgba(0, 0, 0, 0.03) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
   animation: none !important;
 }
 
-/* Send Button SVG Icon Styling */
+/* Premium Send Button SVG Icon Styling */
 .vfrc-chat-input--button svg,
 .vfrc-button._12m8tlu3._12m8tlu4 svg,
 button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
 button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
   width: 20px !important;
   height: 20px !important;
-  color: rgba(0, 0, 0, 0.6) !important;
-  transition: all 0.3s ease !important;
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.3)) !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 8px rgba(102, 126, 234, 0.3)) !important;
+  animation: svgFloat 2.5s ease-in-out infinite !important;
 }
 
-/* SVG Hover Effect */
+/* Floating animation for SVG */
+@keyframes svgFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-1px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-1px) rotate(-1deg);
+  }
+}
+
+/* Enhanced SVG Hover Effect */
 .vfrc-chat-input--button:hover svg,
 .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
 button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
 button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
-  color: rgba(0, 0, 0, 0.8) !important;
-  transform: scale(1.15) rotate(5deg) !important;
-  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.5)) !important;
+  color: rgba(0, 0, 0, 0.9) !important;
+  transform: scale(1.2) rotate(10deg) translateY(-2px) !important;
+  filter: 
+    drop-shadow(0 4px 8px rgba(255, 255, 255, 0.8)) 
+    drop-shadow(0 0 15px rgba(102, 126, 234, 0.5))
+    drop-shadow(0 0 25px rgba(147, 51, 234, 0.3)) !important;
+  animation: svgHoverSpin 0.6s ease-in-out infinite !important;
+}
+
+/* SVG hover spin animation */
+@keyframes svgHoverSpin {
+  0% {
+    transform: scale(1.2) rotate(10deg) translateY(-2px);
+  }
+  50% {
+    transform: scale(1.25) rotate(15deg) translateY(-4px);
+  }
+  100% {
+    transform: scale(1.2) rotate(10deg) translateY(-2px);
+  }
 }
 
 /* Disabled State */
@@ -1685,7 +1892,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   opacity: 0.4 !important;
   cursor: not-allowed !important;
   transform: none !important;
-  background: rgba(0, 0, 0, 0.02) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
   animation: none !important;
 }
 
