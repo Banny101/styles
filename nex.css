@@ -1540,10 +1540,11 @@ h1, h2, h3 {
 }
 
 /* ================= PREMIUM SEND BUTTON STYLING ================= */
-/* Send Button - Premium Glass Morphism Design */
+/* Send Button - Premium Glass Morphism with Subtle Background */
+.vfrc-chat-input--button,
 .vfrc-button._12m8tlu3._12m8tlu4,
-button[class*="_12m8tlu3"],
-button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) {
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
   width: 40px !important;
   height: 40px !important;
   min-width: 40px !important;
@@ -1556,20 +1557,23 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) {
   border: none !important;
   cursor: pointer !important;
   
-  /* Premium Glass Morphism Background */
-  background: rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(20px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  /* Subtle Glass Morphism Background */
+  background: rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(15px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(120%) !important;
   
   /* Premium Shadow System */
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.08),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+    0 4px 15px rgba(0, 0, 0, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.08) !important;
   
   /* Smooth Transitions */
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: transform, box-shadow, background !important;
+  
+  /* Subtle breathing animation */
+  animation: sendButtonBreathe 3s ease-in-out infinite !important;
   
   /* Functional positioning */
   position: relative !important;
@@ -1579,85 +1583,158 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) {
   overflow: hidden !important;
 }
 
+/* Breathing animation for send button */
+@keyframes sendButtonBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.06),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2),
+      0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+  50% {
+    transform: scale(1.02) translateY(-1px);
+    box-shadow: 
+      0 6px 20px rgba(0, 0, 0, 0.08),
+      inset 0 1px 1px rgba(255, 255, 255, 0.25),
+      0 0 0 1px rgba(0, 0, 0, 0.1),
+      0 0 15px rgba(102, 126, 234, 0.1);
+  }
+}
+
 /* Premium Hover Effect */
+.vfrc-chat-input--button:hover,
 .vfrc-button._12m8tlu3._12m8tlu4:hover,
-button[class*="_12m8tlu3"]:hover,
-button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):hover {
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover {
   /* Enhanced Glass Effect */
-  background: rgba(255, 255, 255, 0.18) !important;
-  backdrop-filter: blur(25px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(20px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(140%) !important;
   
   /* Enhanced Shadow */
   box-shadow: 
-    0 12px 35px rgba(0, 0, 0, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.2),
-    0 0 25px rgba(102, 126, 234, 0.15) !important;
+    0 8px 25px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.12),
+    0 0 20px rgba(102, 126, 234, 0.15) !important;
     
-  transform: scale(1.05) translateY(-1px) !important;
+  transform: scale(1.08) translateY(-2px) !important;
+  animation: sendButtonHoverPulse 0.8s ease-in-out infinite !important;
+}
+
+/* Hover pulse animation */
+@keyframes sendButtonHoverPulse {
+  0%, 100% {
+    transform: scale(1.08) translateY(-2px);
+  }
+  50% {
+    transform: scale(1.12) translateY(-3px);
+  }
 }
 
 /* Focus State */
+.vfrc-chat-input--button:focus,
 .vfrc-button._12m8tlu3._12m8tlu4:focus,
-button[class*="_12m8tlu3"]:focus,
-button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):focus {
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):focus,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):focus {
   outline: none !important;
   box-shadow: 
-    0 12px 35px rgba(0, 0, 0, 0.12),
-    inset 0 1px 1px rgba(255, 255, 255, 0.4),
-    0 0 0 2px rgba(102, 126, 234, 0.3) !important;
+    0 8px 25px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 0 2px rgba(102, 126, 234, 0.4) !important;
 }
 
 /* Active State */
+.vfrc-chat-input--button:active,
 .vfrc-button._12m8tlu3._12m8tlu4:active,
-button[class*="_12m8tlu3"]:active,
-button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):active {
-  transform: scale(0.98) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):active,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):active {
+  transform: scale(0.95) !important;
+  background: rgba(0, 0, 0, 0.03) !important;
+  animation: none !important;
 }
 
 /* Send Button SVG Icon Styling */
+.vfrc-chat-input--button svg,
 .vfrc-button._12m8tlu3._12m8tlu4 svg,
-button[class*="_12m8tlu3"] svg,
-button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) svg {
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
   width: 20px !important;
   height: 20px !important;
-  color: rgba(0, 0, 0, 0.7) !important;
+  color: rgba(0, 0, 0, 0.6) !important;
   transition: all 0.3s ease !important;
-  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5)) !important;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.3)) !important;
 }
 
 /* SVG Hover Effect */
+.vfrc-chat-input--button:hover svg,
 .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
-button[class*="_12m8tlu3"]:hover svg,
-button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):hover svg {
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
   color: rgba(0, 0, 0, 0.8) !important;
-  transform: scale(1.1) !important;
-  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.7)) !important;
+  transform: scale(1.15) rotate(5deg) !important;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.5)) !important;
 }
 
 /* Disabled State */
+.vfrc-chat-input--button:disabled,
 .vfrc-button._12m8tlu3._12m8tlu4:disabled,
-button[class*="_12m8tlu3"]:disabled,
-button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):disabled {
-  opacity: 0.5 !important;
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):disabled,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):disabled {
+  opacity: 0.4 !important;
   cursor: not-allowed !important;
   transform: none !important;
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(0, 0, 0, 0.02) !important;
+  animation: none !important;
 }
 
-/* Mobile responsiveness */
+/* ================= COMPREHENSIVE RESPONSIVE DESIGN ================= */
+
+/* Tablet Landscape - 1024px to 768px */
+@media (max-width: 1024px) {
+  .vfrc-widget--chat {
+    max-width: 420px !important;
+    max-height: 600px !important;
+  }
+  
+  /* Slightly smaller launcher for tablets */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    min-height: 100px !important;
+    max-width: 100px !important;
+    max-height: 100px !important;
+  }
+  
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+    width: 94px !important;
+    height: 94px !important;
+    min-width: 94px !important;
+    min-height: 94px !important;
+    max-width: 94px !important;
+    max-height: 94px !important;
+  }
+}
+
+/* Tablet Portrait & Mobile Landscape - 768px */
 @media (max-width: 768px) {
   .vfrc-widget--chat {
-    border-radius: 0 !important;
-    margin: 0 !important;
+    border-radius: 12px !important;
+    margin: 10px !important;
+    max-width: 380px !important;
+    max-height: 500px !important;
   }
   
   .vfrc-header {
-    border-radius: 0 !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 12px 16px !important;
   }
   
+  /* Tablet launcher sizing */
   .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
   .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
     width: 80px !important;
@@ -1678,10 +1755,11 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):disabled {
     max-height: 74px !important;
   }
   
-  /* Mobile send button sizing */
+  /* Tablet send button sizing */
+  .vfrc-chat-input--button,
   .vfrc-button._12m8tlu3._12m8tlu4,
-  button[class*="_12m8tlu3"],
-  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) {
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
     width: 36px !important;
     height: 36px !important;
     min-width: 36px !important;
@@ -1691,24 +1769,281 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):disabled {
     border-radius: 10px !important;
   }
   
+  .vfrc-chat-input--button svg,
   .vfrc-button._12m8tlu3._12m8tlu4 svg,
-  button[class*="_12m8tlu3"] svg,
-  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) svg {
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
     width: 18px !important;
     height: 18px !important;
   }
   
-  /* Mobile proactive message positioning - much closer to launcher */
-  ._6r9xee0 {
-    margin-bottom: 15px !important;
+  /* Typing indicator dots adjustment */
+  .vfrc-typing-indicator span {
+    width: 5px !important;
+    height: 5px !important;
+    margin: 0 2px !important;
   }
   
-  /* Smaller proactive messages on mobile */
-  div._6r9xee3.o231sh1 {
-    padding: 16px 20px !important;
-    margin-right: 10px !important;
-    margin-bottom: 8px !important;
+  /* Message bubbles optimization */
+  .vfrc-system-response .vfrc-message,
+  .vfrc-user-response .vfrc-message {
+    padding: 12px 16px !important;
     font-size: 14px !important;
-    max-width: 280px !important;
+    line-height: 1.5 !important;
+  }
+  
+  /* Banner/avatar images for tablet */
+  img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12 {
+    width: 100px !important;
+    height: 100px !important;
+    min-width: 100px !important;
+    min-height: 100px !important;
+    max-width: 100px !important;
+    max-height: 100px !important;
+  }
+  
+  .vfrc-system-response img:not(.vfrc-avatar):first-of-type,
+  img[src*="banner"],
+  .c-kIbiaN-eyfkxi-size-large {
+    width: 160px !important;
+    height: 120px !important;
+    max-width: 160px !important;
+    max-height: 120px !important;
+  }
+  
+  /* Tablet proactive message positioning */
+  ._6r9xee0 {
+    margin-bottom: 20px !important;
+  }
+  
+  /* Tablet proactive messages */
+  div._6r9xee3.o231sh1 {
+    padding: 14px 18px !important;
+    margin-right: 12px !important;
+    margin-bottom: 10px !important;
+    font-size: 14px !important;
+    max-width: 300px !important;
+  }
+}
+
+/* Mobile Portrait - 480px and below */
+@media (max-width: 480px) {
+  .vfrc-widget--chat {
+    border-radius: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+  }
+  
+  .vfrc-header {
+    border-radius: 0 !important;
+    padding: 10px 12px !important;
+  }
+  
+  /* Mobile launcher - compact size */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    width: 70px !important;
+    height: 70px !important;
+    min-width: 70px !important;
+    min-height: 70px !important;
+    max-width: 70px !important;
+    max-height: 70px !important;
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+  
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+    width: 64px !important;
+    height: 64px !important;
+    min-width: 64px !important;
+    min-height: 64px !important;
+    max-width: 64px !important;
+    max-height: 64px !important;
+  }
+  
+  /* Mobile send button - smallest size */
+  .vfrc-chat-input--button,
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    border-radius: 8px !important;
+  }
+  
+  .vfrc-chat-input--button svg,
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  /* Mobile input field optimization */
+  .vfrc-chat-input,
+  ._1gdvh9t6 {
+    font-size: 16px !important; /* Prevents iOS zoom */
+    padding: 12px !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Mobile typing indicator */
+  .vfrc-typing-indicator span {
+    width: 4px !important;
+    height: 4px !important;
+    margin: 0 1.5px !important;
+  }
+  
+  /* Mobile message bubbles */
+  .vfrc-system-response .vfrc-message,
+  .vfrc-user-response .vfrc-message {
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    border-radius: 16px 16px 16px 6px !important;
+  }
+  
+  .vfrc-user-response .vfrc-message {
+    border-radius: 16px 16px 6px 16px !important;
+  }
+  
+  /* Mobile banner/avatar images */
+  img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12 {
+    width: 80px !important;
+    height: 80px !important;
+    min-width: 80px !important;
+    min-height: 80px !important;
+    max-width: 80px !important;
+    max-height: 80px !important;
+  }
+  
+  .vfrc-system-response img:not(.vfrc-avatar):first-of-type,
+  img[src*="banner"],
+  .c-kIbiaN-eyfkxi-size-large {
+    width: 140px !important;
+    height: 100px !important;
+    max-width: 140px !important;
+    max-height: 100px !important;
+  }
+  
+  /* Mobile proactive message positioning - very close to launcher */
+  ._6r9xee0 {
+    margin-bottom: 10px !important;
+  }
+  
+  /* Mobile proactive messages - compact */
+  div._6r9xee3.o231sh1 {
+    padding: 12px 16px !important;
+    margin-right: 8px !important;
+    margin-bottom: 6px !important;
+    font-size: 13px !important;
+    max-width: 260px !important;
+    border-radius: 20px !important;
+  }
+  
+  /* Mobile title and description adjustments */
+  .vfrc-assistant-info--title {
+    font-size: 16px !important;
+  }
+  
+  .vfrc-assistant-info--description {
+    font-size: 13px !important;
+  }
+}
+
+/* Small Mobile - 360px and below */
+@media (max-width: 360px) {
+  /* Ultra-compact launcher for small screens */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px !important;
+    min-height: 60px !important;
+    max-width: 60px !important;
+    max-height: 60px !important;
+    bottom: 12px !important;
+    right: 12px !important;
+  }
+  
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    min-height: 54px !important;
+    max-width: 54px !important;
+    max-height: 54px !important;
+  }
+  
+  /* Ultra-compact proactive messages */
+  div._6r9xee3.o231sh1 {
+    padding: 10px 14px !important;
+    margin-right: 6px !important;
+    font-size: 12px !important;
+    max-width: 220px !important;
+  }
+}
+
+/* Performance optimizations for all mobile devices */
+@media (max-width: 768px) {
+  /* Reduce animations for better performance */
+  *, *::before, *::after {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
+  }
+  
+  /* Simplified backdrop-filter for mobile performance */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+  
+  /* Simplified proactive message effects */
+  div._6r9xee3.o231sh1 {
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+  }
+  
+  /* Simplified send button effects */
+  .vfrc-chat-input--button,
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+}
+
+/* High DPI/Retina display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Enhanced text rendering for high DPI screens */
+  .vfrc-assistant-info--title,
+  .vfrc-assistant-info--description,
+  .vfrc-message,
+  .vfrc-chat-input,
+  ._1gdvh9t6 {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+}
+
+/* Accessibility: Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
