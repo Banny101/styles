@@ -1583,18 +1583,28 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   /* Premium breathing animation */
   animation: sendButtonPremiumBreathe 3.5s ease-in-out infinite !important;
   
-  /* Functional positioning */
-  position: relative !important;
-  display: flex !important;
+  /* Maintain natural positioning - no displacement */
+  position: static !important;
+  display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   overflow: hidden !important;
+  vertical-align: middle !important;
+  
+  /* Ensure no margin/padding displacement */
+  margin: 0 !important;
+  padding: 0 !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform-origin: center center !important;
 }
 
-/* Premium breathing animation for send button */
+/* Premium breathing animation for send button - no displacement */
 @keyframes sendButtonPremiumBreathe {
   0%, 100% {
-    transform: scale(1) translateY(0px);
+    transform: scale(1);
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.12),
       0 4px 16px rgba(102, 126, 234, 0.15),
@@ -1603,7 +1613,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
       0 0 0 1px rgba(255, 255, 255, 0.25);
   }
   50% {
-    transform: scale(1.03) translateY(-2px);
+    transform: scale(1.02);
     box-shadow: 
       0 12px 40px rgba(0, 0, 0, 0.15),
       0 6px 20px rgba(102, 126, 234, 0.25),
@@ -1634,17 +1644,17 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     0 0 0 2px rgba(255, 255, 255, 0.4),
     0 0 40px rgba(102, 126, 234, 0.3) !important;
     
-  transform: scale(1.1) translateY(-3px) !important;
+  transform: scale(1.05) !important;
   animation: sendButtonHoverPulse 1s ease-in-out infinite !important;
 }
 
-/* Enhanced hover pulse animation */
+/* Enhanced hover pulse animation - minimal displacement */
 @keyframes sendButtonHoverPulse {
   0%, 100% {
-    transform: scale(1.1) translateY(-3px);
+    transform: scale(1.05);
   }
   50% {
-    transform: scale(1.15) translateY(-5px);
+    transform: scale(1.08);
   }
 }
 
@@ -1706,7 +1716,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
 button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
 button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
   color: rgba(0, 0, 0, 0.9) !important;
-  transform: scale(1.2) rotate(10deg) translateY(-2px) !important;
+  transform: scale(1.1) rotate(5deg) !important;
   filter: 
     drop-shadow(0 4px 8px rgba(255, 255, 255, 0.8)) 
     drop-shadow(0 0 15px rgba(102, 126, 234, 0.5))
@@ -1714,16 +1724,16 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   animation: svgHoverSpin 0.6s ease-in-out infinite !important;
 }
 
-/* SVG hover spin animation */
+/* SVG hover spin animation - no displacement */
 @keyframes svgHoverSpin {
   0% {
-    transform: scale(1.2) rotate(10deg) translateY(-2px);
+    transform: scale(1.1) rotate(5deg);
   }
   50% {
-    transform: scale(1.25) rotate(15deg) translateY(-4px);
+    transform: scale(1.15) rotate(8deg);
   }
   100% {
-    transform: scale(1.2) rotate(10deg) translateY(-2px);
+    transform: scale(1.1) rotate(5deg);
   }
 }
 
@@ -1827,7 +1837,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
       0 0 0 1.5px rgba(255, 255, 255, 0.35),
       0 0 30px rgba(102, 126, 234, 0.25) !important;
       
-    transform: scale(1.08) translateY(-2.5px) !important;
+    transform: scale(1.04) !important;
     animation: sendButtonHoverPulse 0.9s ease-in-out infinite !important;
   }
   
@@ -1835,7 +1845,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
   button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
   button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
-    transform: scale(1.15) rotate(8deg) translateY(-1.5px) !important;
+    transform: scale(1.08) rotate(4deg) !important;
     filter: 
       drop-shadow(0 3px 6px rgba(255, 255, 255, 0.7)) 
       drop-shadow(0 0 12px rgba(102, 126, 234, 0.45))
@@ -1937,7 +1947,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
       0 0 0 1.5px rgba(255, 255, 255, 0.3),
       0 0 25px rgba(102, 126, 234, 0.2) !important;
       
-    transform: scale(1.06) translateY(-1.5px) !important;
+    transform: scale(1.03) !important;
     animation: sendButtonHoverPulse 0.85s ease-in-out infinite !important;
   }
   
@@ -1946,7 +1956,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
   button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
     color: rgba(0, 0, 0, 0.85) !important;
-    transform: scale(1.12) rotate(7deg) translateY(-1px) !important;
+    transform: scale(1.06) rotate(3deg) !important;
     filter: 
       drop-shadow(0 2.5px 5px rgba(255, 255, 255, 0.65)) 
       drop-shadow(0 0 10px rgba(102, 126, 234, 0.4))
