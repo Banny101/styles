@@ -853,6 +853,14 @@ div._6r9xee3.o231sh1 > * {
 .vfrc-assistant-info--title,
 .vfrc-header--title,
 h1, h2, h3 {
+  /* Premium Roboto font hierarchy */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  color: #1a1a1a !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.3 !important;
+  
   animation: titleSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   position: relative !important;
 }
@@ -875,6 +883,14 @@ h1, h2, h3 {
 .vfrc-assistant-info--description,
 .vfrc-system-response p,
 .vfrc-message p {
+  /* Premium Roboto font hierarchy */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  color: #666666 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.4 !important;
+  
   animation: textFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both !important;
   position: relative !important;
 }
@@ -892,6 +908,16 @@ h1, h2, h3 {
 
 /* Typing animation effect for longer descriptions */
 .vfrc-assistant-info--description {
+  /* Premium Roboto font hierarchy - specific styling */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  color: #666666 !important;
+  letter-spacing: 0 !important;
+  line-height: 1.4 !important;
+  margin: 4px 0 0 0 !important;
+  padding: 0 !important;
+  
   overflow: hidden !important;
   border-right: 2px solid transparent !important;
   animation: 
@@ -1358,8 +1384,8 @@ textarea._1gdvh9t6:hover:not(:focus) {
   box-shadow: none !important;
 }
 
-/* ================= PREMIUM SEND BUTTON - NEX STYLE ================= */
-/* Clean Send Button Design - Matching nex.txt with Premium Fonts */
+/* ================= PREMIUM MONOCHROMATIC SEND BUTTON ================= */
+/* Sophisticated Black & White Send Button Design */
 .vfrc-button._12m8tlu3._12m8tlu4,
 button.vfrc-button._12m8tlu3._12m8tlu4,
 svg.vfrc-button._12m8tlu3._12m8tlu4,
@@ -1371,13 +1397,20 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   min-width: 40px !important;
   min-height: 40px !important;
   
-  /* Clean design like nex.txt */
-  background: transparent !important;
-  border: none !important;
+  /* Sophisticated monochromatic design */
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.08) 0%, 
+    rgba(0, 0, 0, 0.12) 100%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
   border-radius: 50% !important;
-  box-shadow: none !important;
   
-  /* Clean cursor and interactions */
+  /* Elegant shadow system */
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  
+  /* Premium cursor and interactions */
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
@@ -1385,68 +1418,114 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   padding: 0 !important;
   margin: 0 4px !important;
   
-  /* Smooth transitions */
-  transition: all 0.3s ease !important;
-  will-change: transform !important;
+  /* Smooth premium transitions */
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Subtle breathing animation */
+  animation: sendButtonBreathing 4s ease-in-out infinite !important;
 }
 
-/* Clean hover effect */
+/* Premium hover effect */
 .vfrc-button._12m8tlu3._12m8tlu4:hover,
 button.vfrc-button._12m8tlu3._12m8tlu4:hover,
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:hover,
 #vfrc-send-message:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-  transform: scale(1.05) !important;
-  box-shadow: none !important;
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.15) 0%, 
+    rgba(0, 0, 0, 0.22) 100%) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+  
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1) !important;
+  
+  transform: scale(1.05) translateY(-1px) !important;
 }
 
-/* Clean focus state */
+/* Sophisticated focus state */
 .vfrc-button._12m8tlu3._12m8tlu4:focus,
 button.vfrc-button._12m8tlu3._12m8tlu4:focus,
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:focus,
 #vfrc-send-message:focus {
   outline: none !important;
-  background: rgba(0, 0, 0, 0.08) !important;
-  transform: scale(1.08) !important;
-  box-shadow: none !important;
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.18) 0%, 
+    rgba(0, 0, 0, 0.25) 100%) !important;
+  border: 2px solid rgba(0, 0, 0, 0.3) !important;
+  
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.2),
+    0 0 0 3px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+  
+  transform: scale(1.08) translateY(-2px) !important;
 }
 
-/* Clean active/click state */
+/* Premium active/press state */
 .vfrc-button._12m8tlu3._12m8tlu4:active,
 button.vfrc-button._12m8tlu3._12m8tlu4:active,
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:active,
 #vfrc-send-message:active {
-  transform: scale(0.95) !important;
-  background: rgba(0, 0, 0, 0.1) !important;
-  box-shadow: none !important;
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.25) 0%, 
+    rgba(0, 0, 0, 0.35) 100%) !important;
+  border-color: rgba(0, 0, 0, 0.4) !important;
+  
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(0, 0, 0, 0.15),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1) !important;
+  
+  transform: scale(0.98) translateY(1px) !important;
 }
 
-/* SVG arrow styling with premium design */
+/* Premium monochromatic SVG arrow styling */
 .vfrc-button._12m8tlu3._12m8tlu4 svg,
 .vfrc-button._12m8tlu3._12m8tlu4 path,
 svg.vfrc-button._12m8tlu3._12m8tlu4 path,
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5 svg,
-#vfrc-send-message svg {
-  color: #666666 !important;
-  fill: #666666 !important;
+#vfrc-send-message svg,
+#vfrc-send-message path {
+  color: rgba(0, 0, 0, 0.8) !important;
+  fill: rgba(0, 0, 0, 0.8) !important;
   width: 20px !important;
   height: 20px !important;
   
-  transition: all 0.3s ease !important;
-  will-change: color, fill, transform !important;
+  /* Premium icon styling */
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.3)) !important;
+  
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: color, fill, transform, filter !important;
 }
 
 /* Enhanced SVG on hover */
 .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
 .vfrc-button._12m8tlu3._12m8tlu4:hover path,
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:hover svg,
-#vfrc-send-message:hover svg {
-  color: #333333 !important;
-  fill: #333333 !important;
-  transform: scale(1.1) !important;
+#vfrc-send-message:hover svg,
+#vfrc-send-message:hover path {
+  color: rgba(0, 0, 0, 0.95) !important;
+  fill: rgba(0, 0, 0, 0.95) !important;
+  filter: drop-shadow(0 2px 3px rgba(255, 255, 255, 0.4)) !important;
+  transform: scale(1.1) translateY(-0.5px) !important;
 }
 
-/* Clean disabled state */
+/* Enhanced SVG on focus */
+.vfrc-button._12m8tlu3._12m8tlu4:focus svg,
+.vfrc-button._12m8tlu3._12m8tlu4:focus path,
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:focus svg,
+#vfrc-send-message:focus svg,
+#vfrc-send-message:focus path {
+  color: rgba(0, 0, 0, 1) !important;
+  fill: rgba(0, 0, 0, 1) !important;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.5)) !important;
+  transform: scale(1.15) translateY(-1px) !important;
+}
+
+/* Sophisticated disabled state */
 .vfrc-button._12m8tlu3._12m8tlu4:disabled,
 button.vfrc-button._12m8tlu3._12m8tlu4:disabled,
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:disabled,
@@ -1454,16 +1533,46 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   opacity: 0.4 !important;
   cursor: not-allowed !important;
   transform: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  animation: none !important;
+  
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.03) 0%, 
+    rgba(0, 0, 0, 0.05) 100%) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
 
 .vfrc-button._12m8tlu3._12m8tlu4:disabled svg,
 .vfrc-button._12m8tlu3._12m8tlu4:disabled path,
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:disabled svg,
-#vfrc-send-message:disabled svg {
-  color: #cccccc !important;
-  fill: #cccccc !important;
+#vfrc-send-message:disabled svg,
+#vfrc-send-message:disabled path {
+  color: rgba(0, 0, 0, 0.3) !important;
+  fill: rgba(0, 0, 0, 0.3) !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Premium breathing animation */
+@keyframes sendButtonBreathing {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    transform: scale(1.02) translateY(-0.5px);
+    box-shadow: 
+      0 3px 12px rgba(0, 0, 0, 0.12),
+      0 2px 4px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 0 8px rgba(0, 0, 0, 0.05);
+  }
 }
 
 /* Mobile responsiveness */
@@ -1644,6 +1753,9 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   /* Optimized message bubbles for mobile */
   .vfrc-system-response .vfrc-message,
   .vfrc-user-response .vfrc-message {
+    /* Premium Roboto mobile fonts */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+    
     padding: 12px 16px !important;
     margin: 6px 0 !important;
     border-radius: 16px 16px 16px 6px !important;
@@ -1774,6 +1886,8 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   ._1gdvh9t6::placeholder,
   textarea.vfrc-chat-input::placeholder,
   textarea._1gdvh9t6::placeholder {
+    /* Consistent monospace fonts for small screens */
+    font-family: 'SF Mono', 'Monaco', 'Roboto Mono', 'Courier New', monospace !important;
     font-size: 15px !important;
     letter-spacing: 0.04em !important;
     
