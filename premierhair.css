@@ -987,6 +987,268 @@ h1, h2, h3 {
   background: rgba(0, 0, 0, 0.5) !important;
 }
 
+/* ================= LUXURIOUS HAIR SALON TYPING INDICATOR ================= */
+/* Ultra-Premium Typing Indicator - Better than nex.txt with salon theme */
+body .vfrc-typing-indicator,
+body .vfrc-system-response .vfrc-typing-indicator,
+body div[class*="indicator"],
+body div[class*="typing"],
+body div[class*="loading"],
+body .vfrc-chat .vfrc-typing-indicator,
+#voiceflow-chat .vfrc-typing-indicator,
+#voiceflow-chat .vfrc-system-response .vfrc-typing-indicator {
+  position: relative !important;
+  
+  /* Luxurious Salon Glass Background */
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(248, 249, 250, 0.9) 40%,
+    rgba(255, 240, 245, 0.95) 100%) !important;
+  backdrop-filter: blur(25px) saturate(200%) brightness(110%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(200%) brightness(110%) !important;
+  
+  /* Premium salon border with rose gold accent */
+  border: 2px solid rgba(212, 175, 155, 0.3) !important;
+  border-radius: 24px !important;
+  padding: 18px 24px !important;
+  margin: 12px 0 !important;
+  
+  /* Ultra-luxurious shadow system */
+  box-shadow: 
+    0 15px 50px rgba(212, 175, 155, 0.15),
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(212, 175, 155, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.4),
+    0 0 30px rgba(255, 192, 203, 0.1) !important;
+  
+  overflow: hidden !important;
+  animation: luxuriousTypingBreathing 3s ease-in-out infinite !important;
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, backdrop-filter !important;
+}
+
+/* Salon-themed typing indicator hover effect */
+body .vfrc-typing-indicator:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(255, 240, 245, 0.95) 50%,
+    rgba(255, 228, 225, 0.98) 100%) !important;
+  backdrop-filter: blur(35px) saturate(250%) brightness(115%) !important;
+  -webkit-backdrop-filter: blur(35px) saturate(250%) brightness(115%) !important;
+  
+  box-shadow: 
+    0 20px 60px rgba(212, 175, 155, 0.25),
+    0 12px 35px rgba(0, 0, 0, 0.12),
+    inset 0 3px 6px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 4px rgba(212, 175, 155, 0.3),
+    0 0 0 2px rgba(255, 255, 255, 0.6),
+    0 0 40px rgba(255, 192, 203, 0.2) !important;
+    
+  transform: translateY(-3px) scale(1.02) !important;
+}
+
+/* Luxurious breathing animation for typing indicator */
+@keyframes luxuriousTypingBreathing {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 15px 50px rgba(212, 175, 155, 0.15),
+      0 8px 25px rgba(0, 0, 0, 0.08),
+      inset 0 2px 4px rgba(255, 255, 255, 0.8),
+      inset 0 -1px 2px rgba(212, 175, 155, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.4),
+      0 0 30px rgba(255, 192, 203, 0.1);
+  }
+  50% {
+    transform: scale(1.03) translateY(-2px);
+    box-shadow: 
+      0 20px 60px rgba(212, 175, 155, 0.2),
+      0 12px 35px rgba(0, 0, 0, 0.12),
+      inset 0 3px 6px rgba(255, 255, 255, 0.9),
+      inset 0 -2px 3px rgba(212, 175, 155, 0.25),
+      0 0 0 2px rgba(255, 255, 255, 0.5),
+      0 0 40px rgba(255, 192, 203, 0.15);
+  }
+}
+
+/* Ultra-premium salon shimmer effect */
+.vfrc-typing-indicator::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -150% !important;
+  width: 150% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    120deg, 
+    transparent 0%, 
+    rgba(212, 175, 155, 0.1) 10%,
+    rgba(255, 255, 255, 0.15) 25%, 
+    rgba(255, 192, 203, 0.12) 40%, 
+    rgba(255, 255, 255, 0.2) 55%,
+    rgba(212, 175, 155, 0.08) 70%,
+    rgba(255, 240, 245, 0.1) 85%,
+    transparent 100%
+  ) !important;
+  animation: luxuriousSalonShimmer 4.5s infinite !important;
+  border-radius: inherit !important;
+  z-index: 1 !important;
+}
+
+@keyframes luxuriousSalonShimmer {
+  0% {
+    left: -150%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: 150%;
+    opacity: 0;
+  }
+}
+
+/* Ultra-Premium Hair Salon Themed Typing Dots */
+.vfrc-typing-indicator span,
+.vfrc-typing-indicator > span,
+.vfrc-system-response .vfrc-typing-indicator span,
+div[class*="indicator"] span,
+div[class*="typing"] span,
+div[class*="loading"] span,
+.vfrc-chat .vfrc-typing-indicator span {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  margin: 0 4px !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  position: relative !important;
+  will-change: transform, opacity, background !important;
+  
+  /* Luxurious salon color gradient */
+  background: linear-gradient(135deg, 
+    #d4af9b 0%, 
+    #c19a7e 30%, 
+    #b8926d  60%, 
+    #a68860 100%) !important;
+  
+  /* Premium salon glow */
+  box-shadow: 
+    0 2px 8px rgba(212, 175, 155, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.6),
+    0 0 12px rgba(255, 192, 203, 0.3) !important;
+  
+  animation: luxuriousSalonBubble 1.8s infinite ease-in-out !important;
+}
+
+/* Advanced staggered animation delays for smooth salon wave effect */
+.vfrc-typing-indicator span:nth-child(1),
+.vfrc-typing-indicator span.xaffbq3 {
+  animation-delay: 0s !important;
+  background: linear-gradient(135deg, #d4af9b 0%, #e8c4a8 100%) !important;
+}
+
+.vfrc-typing-indicator span:nth-child(2),
+.vfrc-typing-indicator span.xaffbq4 {
+  animation-delay: 0.3s !important;
+  background: linear-gradient(135deg, #c19a7e 0%, #d4af9b 100%) !important;
+}
+
+.vfrc-typing-indicator span:nth-child(3),
+.vfrc-typing-indicator span.xaffbq5 {
+  animation-delay: 0.6s !important;
+  background: linear-gradient(135deg, #b8926d 0%, #c19a7e 100%) !important;
+}
+
+/* Ultra-luxurious salon bubbling animation */
+@keyframes luxuriousSalonBubble {
+  0%, 70%, 100% {
+    transform: scale(1) translateY(0) rotate(0deg);
+    opacity: 0.6;
+    box-shadow: 
+      0 2px 8px rgba(212, 175, 155, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.6),
+      0 0 12px rgba(255, 192, 203, 0.3);
+  }
+  15% {
+    transform: scale(1.1) translateY(-2px) rotate(5deg);
+    opacity: 0.8;
+    box-shadow: 
+      0 4px 12px rgba(212, 175, 155, 0.6),
+      inset 0 2px 4px rgba(255, 255, 255, 0.8),
+      0 0 16px rgba(255, 192, 203, 0.4);
+  }
+  35% {
+    transform: scale(1.4) translateY(-8px) rotate(-3deg);
+    opacity: 1;
+    box-shadow: 
+      0 6px 20px rgba(212, 175, 155, 0.8),
+      inset 0 3px 6px rgba(255, 255, 255, 0.9),
+      0 0 24px rgba(255, 192, 203, 0.6),
+      0 0 40px rgba(255, 240, 245, 0.4);
+  }
+  50% {
+    transform: scale(1.2) translateY(-4px) rotate(2deg);
+    opacity: 0.9;
+    box-shadow: 
+      0 5px 16px rgba(212, 175, 155, 0.7),
+      inset 0 2px 5px rgba(255, 255, 255, 0.85),
+      0 0 20px rgba(255, 192, 203, 0.5);
+  }
+}
+
+/* Premium salon typing indicator container */
+._1ayyscc1,
+div[class*="_1ayyscc"] {
+  position: relative !important;
+  margin: 12px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Salon-themed floating particles effect */
+.vfrc-typing-indicator::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -10px !important;
+  left: -10px !important;
+  right: -10px !important;
+  bottom: -10px !important;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(255, 192, 203, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 60% 30%, rgba(212, 175, 155, 0.08) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255, 240, 245, 0.12) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 30% 80%, rgba(255, 228, 225, 0.1) 1px, transparent 1px) !important;
+  background-size: 40px 40px, 30px 30px, 50px 50px, 35px 35px !important;
+  animation: salonFloatingParticles 8s linear infinite !important;
+  opacity: 0.6 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+@keyframes salonFloatingParticles {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-5px) rotate(180deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0px) rotate(360deg);
+    opacity: 0.6;
+  }
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .vfrc-widget--chat {
