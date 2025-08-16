@@ -1537,64 +1537,85 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   /* ================= MOBILE CHAT INPUT OPTIMIZATION ================= */
   /* Optimized chat input for mobile touch */
   .vfrc-chat-input,
-  ._1gdvh9t6 {
+  ._1gdvh9t6,
+  textarea.vfrc-chat-input,
+  textarea._1gdvh9t6 {
     padding: 10px 40px 10px 12px !important;
-    border-radius: 12px !important;
     font-size: 16px !important; /* Prevents zoom on iOS */
     min-height: 40px !important;
     
-    /* Reduced effects for mobile performance */
-    backdrop-filter: blur(10px) saturate(105%) !important;
-    -webkit-backdrop-filter: blur(10px) saturate(105%) !important;
+    /* Clean mobile design - no borders or shadows */
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
   
   /* Mobile placeholder optimization */
   .vfrc-chat-input::placeholder,
-  ._1gdvh9t6::placeholder {
+  ._1gdvh9t6::placeholder,
+  textarea.vfrc-chat-input::placeholder,
+  textarea._1gdvh9t6::placeholder {
     font-size: 16px !important; /* Prevents zoom on iOS */
-    letter-spacing: 0.02em !important;
+    letter-spacing: 0.03em !important;
     
-    /* Simplified animations for mobile performance */
-    animation: monochromaticPlaceholderGlow 5s ease-in-out infinite !important;
+    /* Premium mobile fonts */
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace !important;
+    
+    /* Simplified typewriter animation for mobile performance */
+    animation: typewriterPlaceholder 4s steps(20) infinite !important;
   }
   
   /* Mobile cursor positioning */
-  .vfrc-chat-input:not(:focus):placeholder-shown::after,
-  ._1gdvh9t6:not(:focus):placeholder-shown::after {
+  .vfrc-chat-input:not(:focus)::after,
+  ._1gdvh9t6:not(:focus)::after {
     right: 12px !important;
     font-size: 14px !important;
+    font-family: 'SF Mono', 'Monaco', 'Roboto Mono', 'Courier New', monospace !important;
   }
   
   /* ================= MOBILE SEND BUTTON OPTIMIZATION ================= */
   /* Optimized send button for mobile touch */
   .vfrc-button._12m8tlu3._12m8tlu4,
-  button.vfrc-button._12m8tlu3._12m8tlu4 {
+  button.vfrc-button._12m8tlu3._12m8tlu4,
+  button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5,
+  #vfrc-send-message {
     width: 36px !important;
     height: 36px !important;
     min-width: 36px !important;
     min-height: 36px !important;
     margin: 0 2px !important;
     
-    /* Reduced effects for mobile performance */
-    backdrop-filter: blur(10px) saturate(105%) !important;
-    -webkit-backdrop-filter: blur(10px) saturate(105%) !important;
-    
-    /* Simplified animations for mobile */
-    animation: sendButtonBreathe 4s ease-in-out infinite !important;
+    /* Clean mobile design */
+    background: transparent !important;
+    border: none !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
   
   /* Mobile send button icon sizing */
   .vfrc-button._12m8tlu3._12m8tlu4 svg,
-  .vfrc-button._12m8tlu3._12m8tlu4 path {
+  .vfrc-button._12m8tlu3._12m8tlu4 path,
+  button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5 svg,
+  #vfrc-send-message svg {
     width: 18px !important;
     height: 18px !important;
   }
   
   /* Enhanced mobile touch targets */
   .vfrc-button._12m8tlu3._12m8tlu4:hover,
-  .vfrc-button._12m8tlu3._12m8tlu4:focus {
+  .vfrc-button._12m8tlu3._12m8tlu4:focus,
+  button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:hover,
+  button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5:focus,
+  #vfrc-send-message:hover,
+  #vfrc-send-message:focus {
+    background: rgba(0, 0, 0, 0.05) !important;
     transform: scale(1.05) !important;
-    animation: none !important; /* Disable complex animations on mobile */
+    box-shadow: none !important;
   }
   
   /* ================= MOBILE BANNER OPTIMIZATION ================= */
@@ -1638,10 +1659,16 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   }
   
   /* ================= MOBILE PERFORMANCE OPTIMIZATIONS ================= */
-  /* Disable complex animations on mobile for better performance */
+  /* Optimize animations for mobile performance */
   @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
     /* Simplified breathing animations */
     .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 {
+      animation-duration: 4s !important;
+    }
+    
+    /* Simplified typewriter for mobile performance */
+    .vfrc-chat-input::placeholder,
+    ._1gdvh9t6::placeholder {
       animation-duration: 4s !important;
     }
     
@@ -1691,14 +1718,23 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   
   /* Compact send button */
   .vfrc-button._12m8tlu3._12m8tlu4,
-  button.vfrc-button._12m8tlu3._12m8tlu4 {
+  button.vfrc-button._12m8tlu3._12m8tlu4,
+  button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5,
+  #vfrc-send-message {
     width: 32px !important;
     height: 32px !important;
     min-width: 32px !important;
     min-height: 32px !important;
+    
+    /* Maintain clean design on small screens */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
   }
   
-  .vfrc-button._12m8tlu3._12m8tlu4 svg {
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15b0b5 svg,
+  #vfrc-send-message svg {
     width: 16px !important;
     height: 16px !important;
   }
@@ -1719,9 +1755,29 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2._12m8tlu0._1q15b0b0.c26d8x0._1q15
   
   /* Compact chat input */
   .vfrc-chat-input,
-  ._1gdvh9t6 {
+  ._1gdvh9t6,
+  textarea.vfrc-chat-input,
+  textarea._1gdvh9t6 {
     padding: 8px 35px 8px 10px !important;
-    border-radius: 10px !important;
     min-height: 36px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    
+    /* Maintain clean design on small screens */
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  /* Small screen placeholder optimization */
+  .vfrc-chat-input::placeholder,
+  ._1gdvh9t6::placeholder,
+  textarea.vfrc-chat-input::placeholder,
+  textarea._1gdvh9t6::placeholder {
+    font-size: 15px !important;
+    letter-spacing: 0.04em !important;
+    
+    /* Simplified animation for small screens */
+    animation: typewriterPlaceholder 5s steps(15) infinite !important;
   }
 }
