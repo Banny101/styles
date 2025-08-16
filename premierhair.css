@@ -1249,6 +1249,196 @@ div[class*="_1ayyscc"] {
   }
 }
 
+/* ================= ULTRA-LUXURIOUS SALON CHAT INPUT PLACEHOLDER ================= */
+/* Revolutionary Salon-Themed Placeholder - Superior to nex.txt */
+.vfrc-chat-input::placeholder,
+._1gdvh9t6::placeholder,
+textarea.vfrc-chat-input::placeholder,
+textarea._1gdvh9t6::placeholder {
+  /* Luxurious salon typography */
+  font-family: 'Georgia', 'Times New Roman', serif !important;
+  font-weight: 400 !important;
+  font-style: italic !important;
+  font-size: 14px !important;
+  letter-spacing: 0.03em !important;
+  
+  /* Premium rose gold color with gradient effect */
+  background: linear-gradient(135deg, 
+    #d4af9b 0%, 
+    #c19a7e 30%, 
+    #b8926d 60%, 
+    #a68860 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: #d4af9b !important; /* Fallback for non-webkit browsers */
+  
+  /* Elegant salon styling */
+  opacity: 0.85 !important;
+  text-shadow: 0 1px 3px rgba(212, 175, 155, 0.2) !important;
+  
+  /* Sophisticated animations */
+  animation: 
+    salonPlaceholderGlow 4s ease-in-out infinite,
+    salonPlaceholderFloat 3s ease-in-out infinite alternate !important;
+  
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: opacity, text-shadow, transform !important;
+}
+
+/* Enhanced salon glow animation */
+@keyframes salonPlaceholderGlow {
+  0%, 100% {
+    text-shadow: 
+      0 1px 3px rgba(212, 175, 155, 0.2),
+      0 0 8px rgba(255, 192, 203, 0.1);
+    opacity: 0.85;
+  }
+  50% {
+    text-shadow: 
+      0 2px 6px rgba(212, 175, 155, 0.4),
+      0 0 16px rgba(255, 192, 203, 0.2),
+      0 0 24px rgba(255, 240, 245, 0.15);
+    opacity: 0.95;
+  }
+}
+
+/* Elegant floating animation */
+@keyframes salonPlaceholderFloat {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  100% {
+    transform: translateY(-1px) scale(1.002);
+  }
+}
+
+/* Luxurious cursor effect for unfocused input */
+.vfrc-chat-input:not(:focus):not(:placeholder-shown)::after,
+._1gdvh9t6:not(:focus):not(:placeholder-shown)::after,
+.vfrc-chat-input:not(:focus):placeholder-shown::after,
+._1gdvh9t6:not(:focus):placeholder-shown::after {
+  content: '✨' !important;
+  position: absolute !important;
+  right: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 12px !important;
+  color: rgba(212, 175, 155, 0.6) !important;
+  animation: salonSparkle 2.5s ease-in-out infinite !important;
+  pointer-events: none !important;
+  z-index: 10 !important;
+}
+
+/* Elegant sparkle animation */
+@keyframes salonSparkle {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(-50%) scale(1) rotate(0deg);
+  }
+  25% {
+    opacity: 0.8;
+    transform: translateY(-50%) scale(1.1) rotate(90deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.2) rotate(180deg);
+  }
+  75% {
+    opacity: 0.8;
+    transform: translateY(-50%) scale(1.1) rotate(270deg);
+  }
+}
+
+/* Hide sparkle when focused or typing */
+.vfrc-chat-input:focus::after,
+._1gdvh9t6:focus::after,
+.vfrc-chat-input:not(:placeholder-shown)::after,
+._1gdvh9t6:not(:placeholder-shown)::after {
+  display: none !important;
+}
+
+/* Enhanced focus state with salon theme */
+.vfrc-chat-input:focus::placeholder,
+._1gdvh9t6:focus::placeholder {
+  background: linear-gradient(135deg, 
+    rgba(212, 175, 155, 0.4) 0%, 
+    rgba(193, 154, 126, 0.3) 50%, 
+    rgba(184, 146, 109, 0.2) 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  
+  animation: salonFocusGlow 1.5s ease-out !important;
+  transform: translateX(2px) !important;
+}
+
+/* Salon focus glow effect */
+@keyframes salonFocusGlow {
+  0% {
+    opacity: 0.85;
+    text-shadow: 0 1px 3px rgba(212, 175, 155, 0.2);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 
+      0 2px 8px rgba(212, 175, 155, 0.5),
+      0 0 20px rgba(255, 192, 203, 0.3);
+  }
+  100% {
+    opacity: 0.7;
+    text-shadow: 0 1px 4px rgba(212, 175, 155, 0.3);
+  }
+}
+
+/* Premium salon input container styling */
+.vfrc-chat-input,
+._1gdvh9t6 {
+  position: relative !important;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(255, 249, 249, 0.9) 100%) !important;
+  border: 2px solid rgba(212, 175, 155, 0.2) !important;
+  border-radius: 16px !important;
+  padding: 12px 45px 12px 16px !important;
+  
+  /* Luxurious shadow system */
+  box-shadow: 
+    0 4px 20px rgba(212, 175, 155, 0.1),
+    inset 0 1px 3px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(212, 175, 155, 0.1) !important;
+    
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: box-shadow, border-color, background !important;
+}
+
+/* Enhanced focus state for input container */
+.vfrc-chat-input:focus,
+._1gdvh9t6:focus {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(255, 245, 245, 0.95) 100%) !important;
+  border-color: rgba(212, 175, 155, 0.4) !important;
+  
+  box-shadow: 
+    0 8px 30px rgba(212, 175, 155, 0.2),
+    0 0 0 3px rgba(255, 192, 203, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 3px rgba(212, 175, 155, 0.15) !important;
+    
+  outline: none !important;
+}
+
+/* Salon hover effect for input */
+.vfrc-chat-input:hover:not(:focus),
+._1gdvh9t6:hover:not(:focus) {
+  border-color: rgba(212, 175, 155, 0.3) !important;
+  box-shadow: 
+    0 6px 25px rgba(212, 175, 155, 0.15),
+    inset 0 1px 3px rgba(255, 255, 255, 0.85),
+    inset 0 -1px 2px rgba(212, 175, 155, 0.12) !important;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .vfrc-widget--chat {
