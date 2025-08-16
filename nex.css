@@ -656,7 +656,7 @@ div._6r9xee3.o231sh1 {
   opacity: 1 !important;
   animation: proactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   transform-origin: bottom right !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 500 !important;
   padding: 22px 28px !important;
   position: relative !important;
@@ -1037,7 +1037,7 @@ div[class*="_1ayyscc"] {
   padding: 16px 20px !important;
   margin: 8px 0 !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   line-height: 1.6 !important;
   position: relative !important;
   backdrop-filter: blur(5px) !important;
@@ -1076,7 +1076,7 @@ div[class*="_1ayyscc"] {
   padding: 16px 20px !important;
   margin: 8px 0 !important;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3), 0 2px 10px rgba(255, 255, 255, 0.05) inset !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   line-height: 1.6 !important;
   position: relative !important;
   backdrop-filter: blur(5px) !important;
@@ -1177,7 +1177,7 @@ div[class*="_1ayyscc"] {
 .vfrc-header--title,
 h1, h2, h3 {
   position: relative !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 600 !important;
   font-size: 18px !important;
   color: #1a1a1a !important;
@@ -1211,7 +1211,7 @@ h1, h2, h3 {
 /* Banner description - Clean Minimalistic */
 .vfrc-assistant-info--description {
   position: relative !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 400 !important;
   font-size: 14px !important;
   color: #666666 !important;
@@ -1423,18 +1423,8 @@ h1, h2, h3 {
   }
 }
 
-/* ================= PREMIUM CHAT INPUT WITH FOCUS & TYPING EFFECTS ================= */
-/* Chat Input Base Styling */
-.vfrc-chat-input,
-._1gdvh9t6 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  will-change: transform, box-shadow, border !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-
-/* Typewriter Effect for Placeholder Text */
+/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER WITH INTER FONT ================= */
+/* Typewriter Effect for Placeholder Text Only - Using Inter Font */
 .vfrc-chat-input::placeholder,
 ._1gdvh9t6::placeholder {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
@@ -1443,7 +1433,12 @@ h1, h2, h3 {
   letter-spacing: 0.02em !important;
   animation: typewriterPlaceholder 3s steps(25) infinite !important;
   opacity: 1 !important;
-  transition: all 0.3s ease !important;
+}
+
+/* Input text with Inter font */
+.vfrc-chat-input,
+._1gdvh9t6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 /* Typewriter animation for placeholder */
@@ -1457,159 +1452,7 @@ h1, h2, h3 {
   }
 }
 
-/* ================= PREMIUM FOCUS EFFECTS ================= */
-/* Focus State - Premium Glass Morphism */
-.vfrc-chat-input:focus,
-._1gdvh9t6:focus {
-  /* Premium Glass Morphism Background */
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%) !important;
-  backdrop-filter: blur(15px) saturate(150%) brightness(105%) !important;
-  -webkit-backdrop-filter: blur(15px) saturate(150%) brightness(105%) !important;
-  
-  /* Premium Shadow System */
-  box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.08),
-    0 4px 12px rgba(102, 126, 234, 0.15),
-    inset 0 1px 2px rgba(255, 255, 255, 0.4),
-    0 0 0 2px rgba(102, 126, 234, 0.3) !important;
-  
-  /* Subtle scale and glow */
-  transform: scale(1.01) translateY(-1px) !important;
-  
-  /* Focus breathing animation */
-  animation: inputFocusBreathe 2s ease-in-out infinite !important;
-}
-
-/* Focus breathing animation */
-@keyframes inputFocusBreathe {
-  0%, 100% {
-    box-shadow: 
-      0 8px 25px rgba(0, 0, 0, 0.08),
-      0 4px 12px rgba(102, 126, 234, 0.15),
-      inset 0 1px 2px rgba(255, 255, 255, 0.4),
-      0 0 0 2px rgba(102, 126, 234, 0.3);
-  }
-  50% {
-    box-shadow: 
-      0 12px 35px rgba(0, 0, 0, 0.12),
-      0 6px 18px rgba(102, 126, 234, 0.25),
-      inset 0 2px 3px rgba(255, 255, 255, 0.5),
-      0 0 0 3px rgba(102, 126, 234, 0.4),
-      0 0 20px rgba(102, 126, 234, 0.2);
-  }
-}
-
-/* Enhanced placeholder when focused */
-.vfrc-chat-input:focus::placeholder,
-._1gdvh9t6:focus::placeholder {
-  color: rgba(102, 126, 234, 0.6) !important;
-  transform: translateX(2px) !important;
-  animation: focusPlaceholderGlow 2s ease-in-out infinite !important;
-}
-
-/* Focus placeholder glow animation */
-@keyframes focusPlaceholderGlow {
-  0%, 100% {
-    opacity: 0.6;
-    text-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
-  }
-  50% {
-    opacity: 0.8;
-    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-  }
-}
-
-/* ================= TYPING EFFECTS ================= */
-/* Enhanced effects when user is typing */
-.vfrc-chat-input:not(:placeholder-shown),
-._1gdvh9t6:not(:placeholder-shown) {
-  /* Enhanced glass morphism while typing */
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
-  backdrop-filter: blur(20px) saturate(160%) brightness(108%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(108%) !important;
-  
-  /* Enhanced shadow with typing glow */
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.1),
-    0 5px 15px rgba(102, 126, 234, 0.2),
-    0 2px 8px rgba(147, 51, 234, 0.1),
-    inset 0 2px 3px rgba(255, 255, 255, 0.5),
-    0 0 0 2px rgba(102, 126, 234, 0.4),
-    0 0 25px rgba(102, 126, 234, 0.25) !important;
-  
-  /* Typing pulse animation */
-  animation: typingPulse 1.5s ease-in-out infinite !important;
-  
-  /* Enhanced scale while typing */
-  transform: scale(1.02) translateY(-2px) !important;
-}
-
-/* Typing pulse animation */
-@keyframes typingPulse {
-  0%, 100% {
-    box-shadow: 
-      0 10px 30px rgba(0, 0, 0, 0.1),
-      0 5px 15px rgba(102, 126, 234, 0.2),
-      0 2px 8px rgba(147, 51, 234, 0.1),
-      inset 0 2px 3px rgba(255, 255, 255, 0.5),
-      0 0 0 2px rgba(102, 126, 234, 0.4),
-      0 0 25px rgba(102, 126, 234, 0.25);
-  }
-  50% {
-    box-shadow: 
-      0 15px 40px rgba(0, 0, 0, 0.15),
-      0 8px 20px rgba(102, 126, 234, 0.3),
-      0 4px 12px rgba(147, 51, 234, 0.15),
-      inset 0 3px 5px rgba(255, 255, 255, 0.6),
-      0 0 0 3px rgba(102, 126, 234, 0.5),
-      0 0 35px rgba(102, 126, 234, 0.35);
-  }
-}
-
-/* Premium typing shimmer effect */
-.vfrc-chat-input:not(:placeholder-shown)::before,
-._1gdvh9t6:not(:placeholder-shown)::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(
-    90deg, 
-    transparent 0%, 
-    rgba(102, 126, 234, 0.1) 20%, 
-    rgba(255, 255, 255, 0.2) 50%, 
-    rgba(147, 51, 234, 0.1) 80%, 
-    transparent 100%
-  ) !important;
-  animation: typingShimmer 2s infinite !important;
-  border-radius: inherit !important;
-  z-index: 1 !important;
-  pointer-events: none !important;
-}
-
-/* Typing shimmer animation */
-@keyframes typingShimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-/* Text styling while typing */
-.vfrc-chat-input:not(:placeholder-shown),
-._1gdvh9t6:not(:placeholder-shown) {
-  color: rgba(0, 0, 0, 0.9) !important;
-  font-weight: 500 !important;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5) !important;
-  position: relative !important;
-  z-index: 2 !important;
-}
-
-/* Add subtle cursor blink effect when not focused */
+/* Add subtle cursor blink effect */
 .vfrc-chat-input:not(:focus)::placeholder,
 ._1gdvh9t6:not(:focus)::placeholder {
   position: relative !important;
@@ -2097,9 +1940,17 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   /* Mobile input field optimization */
   .vfrc-chat-input,
   ._1gdvh9t6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
     font-size: 16px !important; /* Prevents iOS zoom */
     padding: 12px !important;
     border-radius: 8px !important;
+  }
+  
+  /* Mobile placeholder with Inter font */
+  .vfrc-chat-input::placeholder,
+  ._1gdvh9t6::placeholder {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: 16px !important; /* Prevents iOS zoom */
   }
   
   /* Mobile typing indicator */
