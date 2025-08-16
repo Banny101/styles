@@ -1768,6 +1768,79 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-width: 94px !important;
     max-height: 94px !important;
   }
+  
+  /* Premium Send Button for Tablet Landscape */
+  .vfrc-chat-input--button,
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 11px !important;
+    
+    /* Premium Glass Morphism */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.09) 100%) !important;
+    backdrop-filter: blur(20px) saturate(170%) brightness(108%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(170%) brightness(108%) !important;
+    
+    /* Premium Shadow System */
+    box-shadow: 
+      0 7px 28px rgba(0, 0, 0, 0.11),
+      0 3px 14px rgba(102, 126, 234, 0.13),
+      inset 0 1.5px 2.5px rgba(255, 255, 255, 0.5),
+      inset 0 -1.5px 2.5px rgba(255, 255, 255, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.22) !important;
+    
+    /* Premium breathing animation */
+    animation: sendButtonPremiumBreathe 3.2s ease-in-out infinite !important;
+  }
+  
+  .vfrc-chat-input--button svg,
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
+    width: 19px !important;
+    height: 19px !important;
+    filter: drop-shadow(0 1.5px 3px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 6px rgba(102, 126, 234, 0.25)) !important;
+    animation: svgFloat 2.3s ease-in-out infinite !important;
+  }
+  
+  /* Tablet hover effects */
+  .vfrc-chat-input--button:hover,
+  .vfrc-button._12m8tlu3._12m8tlu4:hover,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.13) 100%) !important;
+    backdrop-filter: blur(28px) saturate(200%) brightness(115%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(115%) !important;
+    
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.16),
+      0 6px 20px rgba(102, 126, 234, 0.22),
+      0 3px 12px rgba(147, 51, 234, 0.12),
+      inset 0 2.5px 4px rgba(255, 255, 255, 0.7),
+      inset 0 -2.5px 4px rgba(255, 255, 255, 0.3),
+      0 0 0 1.5px rgba(255, 255, 255, 0.35),
+      0 0 30px rgba(102, 126, 234, 0.25) !important;
+      
+    transform: scale(1.08) translateY(-2.5px) !important;
+    animation: sendButtonHoverPulse 0.9s ease-in-out infinite !important;
+  }
+  
+  .vfrc-chat-input--button:hover svg,
+  .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
+    transform: scale(1.15) rotate(8deg) translateY(-1.5px) !important;
+    filter: 
+      drop-shadow(0 3px 6px rgba(255, 255, 255, 0.7)) 
+      drop-shadow(0 0 12px rgba(102, 126, 234, 0.45))
+      drop-shadow(0 0 20px rgba(147, 51, 234, 0.25)) !important;
+  }
 }
 
 /* Tablet Portrait & Mobile Landscape - 768px */
@@ -1805,7 +1878,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-height: 74px !important;
   }
   
-  /* Tablet send button sizing */
+  /* Premium Send Button for Tablet Portrait */
   .vfrc-chat-input--button,
   .vfrc-button._12m8tlu3._12m8tlu4,
   button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
@@ -1817,6 +1890,22 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-width: 36px !important;
     max-height: 36px !important;
     border-radius: 10px !important;
+    
+    /* Premium Glass Morphism */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.09) 100%) !important;
+    backdrop-filter: blur(18px) saturate(160%) brightness(107%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%) brightness(107%) !important;
+    
+    /* Premium Shadow System */
+    box-shadow: 
+      0 6px 24px rgba(0, 0, 0, 0.1),
+      0 3px 12px rgba(102, 126, 234, 0.12),
+      inset 0 1px 2px rgba(255, 255, 255, 0.45),
+      inset 0 -1px 2px rgba(255, 255, 255, 0.15),
+      0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+    
+    /* Premium breathing animation */
+    animation: sendButtonPremiumBreathe 3s ease-in-out infinite !important;
   }
   
   .vfrc-chat-input--button svg,
@@ -1825,6 +1914,44 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
     width: 18px !important;
     height: 18px !important;
+    color: rgba(0, 0, 0, 0.65) !important;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.45)) drop-shadow(0 0 5px rgba(102, 126, 234, 0.2)) !important;
+    animation: svgFloat 2.2s ease-in-out infinite !important;
+  }
+  
+  /* Tablet Portrait hover effects */
+  .vfrc-chat-input--button:hover,
+  .vfrc-button._12m8tlu3._12m8tlu4:hover,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.21) 0%, rgba(255, 255, 255, 0.12) 100%) !important;
+    backdrop-filter: blur(25px) saturate(185%) brightness(112%) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(185%) brightness(112%) !important;
+    
+    box-shadow: 
+      0 10px 35px rgba(0, 0, 0, 0.14),
+      0 5px 18px rgba(102, 126, 234, 0.2),
+      0 2px 10px rgba(147, 51, 234, 0.1),
+      inset 0 2px 3px rgba(255, 255, 255, 0.6),
+      inset 0 -2px 3px rgba(255, 255, 255, 0.25),
+      0 0 0 1.5px rgba(255, 255, 255, 0.3),
+      0 0 25px rgba(102, 126, 234, 0.2) !important;
+      
+    transform: scale(1.06) translateY(-1.5px) !important;
+    animation: sendButtonHoverPulse 0.85s ease-in-out infinite !important;
+  }
+  
+  .vfrc-chat-input--button:hover svg,
+  .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
+    color: rgba(0, 0, 0, 0.85) !important;
+    transform: scale(1.12) rotate(7deg) translateY(-1px) !important;
+    filter: 
+      drop-shadow(0 2.5px 5px rgba(255, 255, 255, 0.65)) 
+      drop-shadow(0 0 10px rgba(102, 126, 234, 0.4))
+      drop-shadow(0 0 18px rgba(147, 51, 234, 0.2)) !important;
+    animation: svgHoverSpin 0.55s ease-in-out infinite !important;
   }
   
   /* Typing indicator dots adjustment */
@@ -1915,11 +2042,112 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-height: 64px !important;
   }
   
-  /* Mobile send button - smallest size */
+  /* Premium Mobile Send Button - 480px */
   .vfrc-chat-input--button,
   .vfrc-button._12m8tlu3._12m8tlu4,
   button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
   button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    border-radius: 9px !important;
+    
+    /* Premium Glass Morphism for Mobile */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+    backdrop-filter: blur(15px) saturate(150%) brightness(105%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(150%) brightness(105%) !important;
+    
+    /* Mobile-Optimized Shadow System */
+    box-shadow: 
+      0 5px 20px rgba(0, 0, 0, 0.09),
+      0 2px 10px rgba(102, 126, 234, 0.1),
+      inset 0 1px 2px rgba(255, 255, 255, 0.4),
+      inset 0 -1px 2px rgba(255, 255, 255, 0.1),
+      0 0 0 1px rgba(255, 255, 255, 0.18) !important;
+    
+    /* Performance-Optimized Breathing Animation */
+    animation: sendButtonPremiumBreathe 2.8s ease-in-out infinite !important;
+    
+    /* Smooth transitions */
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    will-change: transform, box-shadow, backdrop-filter !important;
+    cursor: pointer !important;
+  }
+  
+  .vfrc-chat-input--button svg,
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
+    width: 16px !important;
+    height: 16px !important;
+    color: rgba(0, 0, 0, 0.6) !important;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 4px rgba(102, 126, 234, 0.15)) !important;
+    animation: svgFloat 2s ease-in-out infinite !important;
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  }
+  
+  /* Mobile hover effects (for devices that support hover) */
+  @media (hover: hover) {
+    .vfrc-chat-input--button:hover,
+    .vfrc-button._12m8tlu3._12m8tlu4:hover,
+    button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover,
+    button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.11) 100%) !important;
+      backdrop-filter: blur(20px) saturate(170%) brightness(110%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(170%) brightness(110%) !important;
+      
+      box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.12),
+        0 4px 15px rgba(102, 126, 234, 0.18),
+        0 2px 8px rgba(147, 51, 234, 0.08),
+        inset 0 1.5px 3px rgba(255, 255, 255, 0.55),
+        inset 0 -1.5px 3px rgba(255, 255, 255, 0.2),
+        0 0 0 1.5px rgba(255, 255, 255, 0.28),
+        0 0 20px rgba(102, 126, 234, 0.15) !important;
+        
+      transform: scale(1.04) translateY(-1px) !important;
+      animation: sendButtonHoverPulse 0.8s ease-in-out infinite !important;
+    }
+    
+    .vfrc-chat-input--button:hover svg,
+    .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
+    button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
+    button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
+      color: rgba(0, 0, 0, 0.8) !important;
+      transform: scale(1.1) rotate(5deg) translateY(-0.5px) !important;
+      filter: 
+        drop-shadow(0 2px 4px rgba(255, 255, 255, 0.6)) 
+        drop-shadow(0 0 8px rgba(102, 126, 234, 0.35))
+        drop-shadow(0 0 15px rgba(147, 51, 234, 0.15)) !important;
+      animation: svgHoverSpin 0.5s ease-in-out infinite !important;
+    }
+  }
+  
+  /* Mobile focus state */
+  .vfrc-chat-input--button:focus,
+  .vfrc-button._12m8tlu3._12m8tlu4:focus,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):focus,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):focus {
+    outline: none !important;
+    box-shadow: 
+      0 8px 30px rgba(0, 0, 0, 0.12),
+      0 4px 15px rgba(102, 126, 234, 0.2),
+      inset 0 1.5px 3px rgba(255, 255, 255, 0.6),
+      0 0 0 2px rgba(102, 126, 234, 0.4) !important;
+  }
+  
+  /* Mobile active state */
+  .vfrc-chat-input--button:active,
+  .vfrc-button._12m8tlu3._12m8tlu4:active,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):active,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):active {
+    transform: scale(0.96) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    animation: none !important;
+  }
     width: 32px !important;
     height: 32px !important;
     min-width: 32px !important;
@@ -2042,6 +2270,113 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-height: 54px !important;
   }
   
+  /* Ultra-Premium Small Mobile Send Button - 360px */
+  .vfrc-chat-input--button,
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    border-radius: 8px !important;
+    
+    /* Ultra-Compact Glass Morphism */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.07) 100%) !important;
+    backdrop-filter: blur(12px) saturate(140%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(140%) brightness(104%) !important;
+    
+    /* Compact Shadow System */
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(102, 126, 234, 0.08),
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.35),
+      inset 0 -1px 1.5px rgba(255, 255, 255, 0.08),
+      0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+    
+    /* Ultra-Fast Breathing Animation */
+    animation: sendButtonPremiumBreathe 2.5s ease-in-out infinite !important;
+    
+    /* Optimized transitions */
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+    will-change: transform, box-shadow !important;
+    cursor: pointer !important;
+  }
+  
+  .vfrc-chat-input--button svg,
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
+    width: 14px !important;
+    height: 14px !important;
+    color: rgba(0, 0, 0, 0.55) !important;
+    filter: drop-shadow(0 1px 1px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 3px rgba(102, 126, 234, 0.12)) !important;
+    animation: svgFloat 1.8s ease-in-out infinite !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  }
+  
+  /* Small mobile hover effects (for devices that support hover) */
+  @media (hover: hover) {
+    .vfrc-chat-input--button:hover,
+    .vfrc-button._12m8tlu3._12m8tlu4:hover,
+    button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover,
+    button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+      backdrop-filter: blur(16px) saturate(160%) brightness(108%) !important;
+      -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(108%) !important;
+      
+      box-shadow: 
+        0 6px 24px rgba(0, 0, 0, 0.1),
+        0 3px 12px rgba(102, 126, 234, 0.15),
+        0 1px 6px rgba(147, 51, 234, 0.06),
+        inset 0 1.5px 2.5px rgba(255, 255, 255, 0.5),
+        inset 0 -1.5px 2.5px rgba(255, 255, 255, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.25),
+        0 0 12px rgba(102, 126, 234, 0.12) !important;
+        
+      transform: scale(1.03) translateY(-0.5px) !important;
+      animation: sendButtonHoverPulse 0.7s ease-in-out infinite !important;
+    }
+    
+    .vfrc-chat-input--button:hover svg,
+    .vfrc-button._12m8tlu3._12m8tlu4:hover svg,
+    button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
+    button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
+      color: rgba(0, 0, 0, 0.75) !important;
+      transform: scale(1.08) rotate(4deg) translateY(-0.5px) !important;
+      filter: 
+        drop-shadow(0 1.5px 3px rgba(255, 255, 255, 0.55)) 
+        drop-shadow(0 0 6px rgba(102, 126, 234, 0.3))
+        drop-shadow(0 0 10px rgba(147, 51, 234, 0.12)) !important;
+      animation: svgHoverSpin 0.45s ease-in-out infinite !important;
+    }
+  }
+  
+  /* Small mobile focus state */
+  .vfrc-chat-input--button:focus,
+  .vfrc-button._12m8tlu3._12m8tlu4:focus,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):focus,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):focus {
+    outline: none !important;
+    box-shadow: 
+      0 6px 24px rgba(0, 0, 0, 0.1),
+      0 3px 12px rgba(102, 126, 234, 0.18),
+      inset 0 1px 2px rgba(255, 255, 255, 0.5),
+      0 0 0 2px rgba(102, 126, 234, 0.35) !important;
+  }
+  
+  /* Small mobile active state */
+  .vfrc-chat-input--button:active,
+  .vfrc-button._12m8tlu3._12m8tlu4:active,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):active,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):active {
+    transform: scale(0.97) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%) !important;
+    animation: none !important;
+  }
+  
   /* Ultra-compact proactive messages */
   div._6r9xee3.o231sh1 {
     padding: 10px 14px !important;
@@ -2132,14 +2467,28 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   }
 }
 
+/* Universal Inter Font Application for All Mobile Devices */
+@media (max-width: 768px) {
+  .vfrc-assistant-info--title,
+  .vfrc-assistant-info--description,
+  .vfrc-message,
+  .vfrc-system-response .vfrc-message,
+  .vfrc-user-response .vfrc-message,
+  div._6r9xee3.o231sh1,
+  .vfrc-prompt {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+  }
+}
+
 /* High DPI/Retina display optimizations */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  /* Enhanced text rendering for high DPI screens */
+  /* Enhanced text rendering for high DPI screens with Inter font */
   .vfrc-assistant-info--title,
   .vfrc-assistant-info--description,
   .vfrc-message,
   .vfrc-chat-input,
   ._1gdvh9t6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
     text-rendering: optimizeLegibility !important;
