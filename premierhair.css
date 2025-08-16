@@ -1433,6 +1433,189 @@ textarea._1gdvh9t6::placeholder {
     inset 0 -1px 2px rgba(0, 0, 0, 0.05) !important;
 }
 
+/* ================= LUXURIOUS MONOCHROMATIC SEND BUTTON ================= */
+/* Ultra-Premium Send Button - World-Class Monochromatic Design */
+.vfrc-button._12m8tlu3._12m8tlu4,
+button.vfrc-button._12m8tlu3._12m8tlu4,
+svg.vfrc-button._12m8tlu3._12m8tlu4 {
+  position: relative !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  
+  /* Luxurious monochromatic glass background */
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.85) 0%, 
+    rgba(26, 26, 26, 0.9) 30%, 
+    rgba(45, 45, 45, 0.85) 70%,
+    rgba(0, 0, 0, 0.9) 100%) !important;
+  
+  /* Premium glass morphism */
+  backdrop-filter: blur(15px) saturate(110%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(110%) !important;
+  
+  /* Clean borderless design */
+  border: none !important;
+  border-radius: 50% !important;
+  
+  /* Sophisticated shadow system */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  
+  /* Elegant cursor and interactions */
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 4px !important;
+  
+  /* Smooth premium transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Sophisticated breathing animation */
+  animation: sendButtonBreathe 3.5s ease-in-out infinite !important;
+}
+
+/* Premium hover effect */
+.vfrc-button._12m8tlu3._12m8tlu4:hover,
+button.vfrc-button._12m8tlu3._12m8tlu4:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.95) 0%, 
+    rgba(40, 40, 40, 0.98) 30%, 
+    rgba(60, 60, 60, 0.95) 70%,
+    rgba(20, 20, 20, 0.98) 100%) !important;
+  
+  /* Enhanced shadow on hover */
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.4),
+    0 6px 18px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+    0 0 0 2px rgba(255, 255, 255, 0.08),
+    0 0 20px rgba(255, 255, 255, 0.05) !important;
+  
+  transform: scale(1.08) translateY(-2px) !important;
+  animation: sendButtonHoverPulse 0.8s ease-in-out infinite !important;
+}
+
+/* Sophisticated focus state */
+.vfrc-button._12m8tlu3._12m8tlu4:focus,
+button.vfrc-button._12m8tlu3._12m8tlu4:focus {
+  outline: none !important;
+  
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.35),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.5),
+    0 0 0 3px rgba(255, 255, 255, 0.1),
+    0 0 30px rgba(255, 255, 255, 0.08) !important;
+  
+  transform: scale(1.1) translateY(-3px) !important;
+}
+
+/* Premium active/click state */
+.vfrc-button._12m8tlu3._12m8tlu4:active,
+button.vfrc-button._12m8tlu3._12m8tlu4:active {
+  transform: scale(0.95) translateY(1px) !important;
+  
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.05) !important;
+  
+  background: linear-gradient(135deg, 
+    rgba(0, 0, 0, 0.95) 0%, 
+    rgba(20, 20, 20, 0.98) 50%, 
+    rgba(0, 0, 0, 0.95) 100%) !important;
+}
+
+/* SVG arrow styling */
+.vfrc-button._12m8tlu3._12m8tlu4 svg,
+.vfrc-button._12m8tlu3._12m8tlu4 path,
+svg.vfrc-button._12m8tlu3._12m8tlu4 path {
+  color: rgba(255, 255, 255, 0.9) !important;
+  fill: rgba(255, 255, 255, 0.9) !important;
+  width: 20px !important;
+  height: 20px !important;
+  
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: color, fill, transform !important;
+}
+
+/* Enhanced SVG on hover */
+.vfrc-button._12m8tlu3._12m8tlu4:hover svg,
+.vfrc-button._12m8tlu3._12m8tlu4:hover path {
+  color: rgba(255, 255, 255, 1) !important;
+  fill: rgba(255, 255, 255, 1) !important;
+  transform: translateY(-1px) scale(1.05) !important;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.1)) !important;
+}
+
+/* Sophisticated breathing animation */
+@keyframes sendButtonBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 2px rgba(255, 255, 255, 0.1),
+      inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    transform: scale(1.02) translateY(-1px);
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.35),
+      0 6px 15px rgba(0, 0, 0, 0.25),
+      inset 0 2px 3px rgba(255, 255, 255, 0.12),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 0 15px rgba(255, 255, 255, 0.03);
+  }
+}
+
+/* Premium hover pulse animation */
+@keyframes sendButtonHoverPulse {
+  0%, 100% {
+    transform: scale(1.08) translateY(-2px) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.12) translateY(-4px) rotate(1deg);
+  }
+}
+
+/* Elegant disabled state */
+.vfrc-button._12m8tlu3._12m8tlu4:disabled,
+button.vfrc-button._12m8tlu3._12m8tlu4:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  animation: none !important;
+  
+  background: linear-gradient(135deg, 
+    rgba(60, 60, 60, 0.3) 0%, 
+    rgba(80, 80, 80, 0.4) 100%) !important;
+  
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 2px rgba(255, 255, 255, 0.05) !important;
+}
+
+.vfrc-button._12m8tlu3._12m8tlu4:disabled svg,
+.vfrc-button._12m8tlu3._12m8tlu4:disabled path {
+  color: rgba(255, 255, 255, 0.3) !important;
+  fill: rgba(255, 255, 255, 0.3) !important;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .vfrc-widget--chat {
