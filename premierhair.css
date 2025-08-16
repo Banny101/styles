@@ -1661,4 +1661,217 @@ button.vfrc-button._12m8tlu3._12m8tlu4:disabled {
     max-width: 280px !important;
     border-radius: 16px !important;
   }
+  
+  /* ================= MOBILE TYPING INDICATOR OPTIMIZATION ================= */
+  /* Optimized typing indicator for mobile screens */
+  body .vfrc-typing-indicator,
+  body .vfrc-system-response .vfrc-typing-indicator,
+  #voiceflow-chat .vfrc-typing-indicator {
+    padding: 12px 18px !important;
+    margin: 8px 0 !important;
+    border-radius: 18px !important;
+    
+    /* Reduced backdrop blur for mobile performance */
+    backdrop-filter: blur(15px) saturate(110%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(110%) !important;
+  }
+  
+  /* Smaller typing dots for mobile */
+  .vfrc-typing-indicator span,
+  .vfrc-system-response .vfrc-typing-indicator span {
+    width: 6px !important;
+    height: 6px !important;
+    margin: 0 2px !important;
+  }
+  
+  /* ================= MOBILE CHAT INPUT OPTIMIZATION ================= */
+  /* Optimized chat input for mobile touch */
+  .vfrc-chat-input,
+  ._1gdvh9t6 {
+    padding: 10px 40px 10px 12px !important;
+    border-radius: 12px !important;
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    min-height: 40px !important;
+    
+    /* Reduced effects for mobile performance */
+    backdrop-filter: blur(10px) saturate(105%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(105%) !important;
+  }
+  
+  /* Mobile placeholder optimization */
+  .vfrc-chat-input::placeholder,
+  ._1gdvh9t6::placeholder {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    letter-spacing: 0.02em !important;
+    
+    /* Simplified animations for mobile performance */
+    animation: monochromaticPlaceholderGlow 5s ease-in-out infinite !important;
+  }
+  
+  /* Mobile cursor positioning */
+  .vfrc-chat-input:not(:focus):placeholder-shown::after,
+  ._1gdvh9t6:not(:focus):placeholder-shown::after {
+    right: 12px !important;
+    font-size: 14px !important;
+  }
+  
+  /* ================= MOBILE SEND BUTTON OPTIMIZATION ================= */
+  /* Optimized send button for mobile touch */
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button.vfrc-button._12m8tlu3._12m8tlu4 {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    margin: 0 2px !important;
+    
+    /* Reduced effects for mobile performance */
+    backdrop-filter: blur(10px) saturate(105%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(105%) !important;
+    
+    /* Simplified animations for mobile */
+    animation: sendButtonBreathe 4s ease-in-out infinite !important;
+  }
+  
+  /* Mobile send button icon sizing */
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  .vfrc-button._12m8tlu3._12m8tlu4 path {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  /* Enhanced mobile touch targets */
+  .vfrc-button._12m8tlu3._12m8tlu4:hover,
+  .vfrc-button._12m8tlu3._12m8tlu4:focus {
+    transform: scale(1.05) !important;
+    animation: none !important; /* Disable complex animations on mobile */
+  }
+  
+  /* ================= MOBILE BANNER OPTIMIZATION ================= */
+  /* Mobile banner image sizing */
+  .vfrc-system-response img:not(.vfrc-avatar):first-of-type,
+  img[src*="banner"] {
+    width: 150px !important;
+    height: 110px !important;
+    max-width: 150px !important;
+    max-height: 110px !important;
+    margin: 10px 0 !important;
+  }
+  
+  /* Mobile avatar sizing */
+  img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12 {
+    width: 80px !important;
+    height: 80px !important;
+    min-width: 80px !important;
+    min-height: 80px !important;
+    max-width: 80px !important;
+    max-height: 80px !important;
+    margin: 10px auto !important;
+  }
+  
+  /* ================= MOBILE MESSAGE BUBBLES ================= */
+  /* Optimized message bubbles for mobile */
+  .vfrc-system-response .vfrc-message,
+  .vfrc-user-response .vfrc-message {
+    padding: 12px 16px !important;
+    margin: 6px 0 !important;
+    border-radius: 16px 16px 16px 6px !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    
+    /* Reduced effects for mobile performance */
+    backdrop-filter: blur(3px) !important;
+  }
+  
+  .vfrc-user-response .vfrc-message {
+    border-radius: 16px 16px 6px 16px !important;
+  }
+  
+  /* ================= MOBILE PERFORMANCE OPTIMIZATIONS ================= */
+  /* Disable complex animations on mobile for better performance */
+  @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+    /* Simplified breathing animations */
+    .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 {
+      animation-duration: 4s !important;
+    }
+    
+    /* Reduced particle effects */
+    .vfrc-typing-indicator::after {
+      animation-duration: 10s !important;
+      opacity: 0.4 !important;
+    }
+  }
+  
+  /* Disable all animations for users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ================= ADDITIONAL MOBILE BREAKPOINTS ================= */
+/* Extra small mobile devices (iPhone SE, etc.) */
+@media (max-width: 480px) {
+  /* Ultra-compact launcher for small screens */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    width: 70px !important;
+    height: 70px !important;
+    min-width: 70px !important;
+    min-height: 70px !important;
+    max-width: 70px !important;
+    max-height: 70px !important;
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+  
+  /* Ultra-compact launcher images */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+    width: 64px !important;
+    height: 64px !important;
+    min-width: 64px !important;
+    min-height: 64px !important;
+    max-width: 64px !important;
+    max-height: 64px !important;
+  }
+  
+  /* Compact send button */
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button.vfrc-button._12m8tlu3._12m8tlu4 {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+  
+  .vfrc-button._12m8tlu3._12m8tlu4 svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  
+  /* Compact proactive messages */
+  div._6r9xee3.o231sh1 {
+    max-width: 240px !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    margin-right: 5px !important;
+  }
+  
+  /* Compact typing indicator */
+  body .vfrc-typing-indicator {
+    padding: 10px 14px !important;
+    border-radius: 14px !important;
+  }
+  
+  /* Compact chat input */
+  .vfrc-chat-input,
+  ._1gdvh9t6 {
+    padding: 8px 35px 8px 10px !important;
+    border-radius: 10px !important;
+    min-height: 36px !important;
+  }
 }
