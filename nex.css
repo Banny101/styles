@@ -1427,10 +1427,10 @@ h1, h2, h3 {
 /* Typewriter Effect for Placeholder Text Only */
 .vfrc-chat-input::placeholder,
 ._1gdvh9t6::placeholder {
-  font-family: 'Courier New', 'Monaco', 'Lucida Console', monospace !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   color: #666666 !important;
   font-weight: 400 !important;
-  letter-spacing: 0.05em !important;
+  letter-spacing: 0.02em !important;
   animation: typewriterPlaceholder 3s steps(25) infinite !important;
   opacity: 1 !important;
 }
@@ -1539,6 +1539,114 @@ h1, h2, h3 {
   background: rgba(0, 0, 0, 0.5) !important;
 }
 
+/* ================= PREMIUM SEND BUTTON STYLING ================= */
+/* Send Button - Premium Glass Morphism Design */
+.vfrc-button._12m8tlu3._12m8tlu4,
+button[class*="_12m8tlu3"],
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  cursor: pointer !important;
+  
+  /* Premium Glass Morphism Background */
+  background: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(20px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+  
+  /* Premium Shadow System */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+  
+  /* Smooth Transitions */
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Functional positioning */
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+/* Premium Hover Effect */
+.vfrc-button._12m8tlu3._12m8tlu4:hover,
+button[class*="_12m8tlu3"]:hover,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):hover {
+  /* Enhanced Glass Effect */
+  background: rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(25px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+  
+  /* Enhanced Shadow */
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 25px rgba(102, 126, 234, 0.15) !important;
+    
+  transform: scale(1.05) translateY(-1px) !important;
+}
+
+/* Focus State */
+.vfrc-button._12m8tlu3._12m8tlu4:focus,
+button[class*="_12m8tlu3"]:focus,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):focus {
+  outline: none !important;
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 2px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Active State */
+.vfrc-button._12m8tlu3._12m8tlu4:active,
+button[class*="_12m8tlu3"]:active,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):active {
+  transform: scale(0.98) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Send Button SVG Icon Styling */
+.vfrc-button._12m8tlu3._12m8tlu4 svg,
+button[class*="_12m8tlu3"] svg,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) svg {
+  width: 20px !important;
+  height: 20px !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+  transition: all 0.3s ease !important;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.5)) !important;
+}
+
+/* SVG Hover Effect */
+.vfrc-button._12m8tlu3._12m8tlu4:hover svg,
+button[class*="_12m8tlu3"]:hover svg,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):hover svg {
+  color: rgba(0, 0, 0, 0.8) !important;
+  transform: scale(1.1) !important;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.7)) !important;
+}
+
+/* Disabled State */
+.vfrc-button._12m8tlu3._12m8tlu4:disabled,
+button[class*="_12m8tlu3"]:disabled,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .vfrc-widget--chat {
@@ -1568,6 +1676,26 @@ h1, h2, h3 {
     min-height: 74px !important;
     max-width: 74px !important;
     max-height: 74px !important;
+  }
+  
+  /* Mobile send button sizing */
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button[class*="_12m8tlu3"],
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    border-radius: 10px !important;
+  }
+  
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button[class*="_12m8tlu3"] svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]) svg {
+    width: 18px !important;
+    height: 18px !important;
   }
   
   /* Mobile proactive message positioning - much closer to launcher */
