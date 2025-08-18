@@ -718,12 +718,32 @@ div._6r9xee3.o231sh1 > * {
   line-height: 1.6 !important;
   position: relative !important;
   backdrop-filter: blur(5px) !important;
-  animation: messageSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: none !important;
   overflow: hidden !important;
 }
 
 /* Shimmer effect removed to prevent blinking */
 .vfrc-system-response .vfrc-message::before {
+  display: none !important;
+}
+
+/* Remove blinking from specific markdown message classes */
+.vfrc-message._11kfxpg0,
+.markdown._11kfxpg1,
+.markdown._11kfxpg3,
+._11kfxpgc,
+._11kfxpgd,
+._11kfxpgb {
+  animation: none !important;
+  transition: none !important;
+}
+
+.vfrc-message._11kfxpg0::before,
+.markdown._11kfxpg1::before,
+.markdown._11kfxpg3::before,
+._11kfxpgc::before,
+._11kfxpgd::before,
+._11kfxpgb::before {
   display: none !important;
 }
 
