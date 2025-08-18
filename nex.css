@@ -678,7 +678,7 @@ div._1emja3f9:has(#voiceflow-chat) {
   align-items: flex-end !important;
 }
 
-/* Button in opened state - Close button styling */
+/* Button in opened state - Premium Black & White Close Button with Cool Effects */
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) {
   width: 48px !important;
   height: 48px !important;
@@ -686,10 +686,11 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   min-height: 48px !important;
   max-width: 48px !important;
   max-height: 48px !important;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(79, 102, 204, 0.9) 100%) !important;
+  
+  /* Premium Black & White Gradient with Tech Vibes */
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 30%, #333333 70%, #000000 100%) !important;
   border-radius: 50% !important;
   overflow: hidden !important;
-  transform: none !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -699,15 +700,70 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   position: relative !important;
   bottom: auto !important;
   right: auto !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+  
+  /* Cool Tech Effects */
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(255, 255, 255, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3) !important;
+  
+  /* Smooth premium transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Cool pulsing animation */
+  animation: techCloseButtonPulse 3s ease-in-out infinite !important;
 }
 
-/* Hover effect for close button */
+/* Tech pulsing animation */
+@keyframes techCloseButtonPulse {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 4px 16px rgba(255, 255, 255, 0.1),
+      inset 0 2px 4px rgba(255, 255, 255, 0.1),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.05) rotate(180deg);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.6),
+      0 6px 20px rgba(255, 255, 255, 0.2),
+      inset 0 3px 6px rgba(255, 255, 255, 0.15),
+      inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Premium hover effect for close button */
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover {
-  transform: scale(1.05) rotate(90deg) !important;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 1) 0%, rgba(79, 102, 204, 1) 100%) !important;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+  /* Enhanced black gradient on hover */
+  background: linear-gradient(135deg, #1a1a1a 0%, #333333 30%, #4d4d4d 70%, #1a1a1a 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  
+  /* Dramatic hover effects */
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.8),
+    0 8px 25px rgba(255, 255, 255, 0.2),
+    inset 0 4px 8px rgba(255, 255, 255, 0.2),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(255, 255, 255, 0.15) !important;
+  
+  transform: scale(1.15) rotate(360deg) !important;
+  animation: techCloseButtonHover 1s ease-in-out infinite !important;
+}
+
+/* Tech hover animation */
+@keyframes techCloseButtonHover {
+  0%, 100% {
+    transform: scale(1.15) rotate(360deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(450deg);
+  }
 }
 
 /* Additional selectors for parent container in opened state */
@@ -730,14 +786,61 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   max-height: 48px !important;
 }
 
-/* Close icon in opened state - styled to match AI theme */
+/* Close icon in opened state - Premium White with Tech Effects */
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) svg {
   width: 24px !important;
   height: 24px !important;
   transform: none !important;
   object-fit: contain !important;
   color: #ffffff !important;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+  
+  /* Premium tech icon effects */
+  filter: 
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))
+    drop-shadow(0 0 16px rgba(255, 255, 255, 0.1)) !important;
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: techIconGlow 2s ease-in-out infinite !important;
+}
+
+/* Tech icon glow animation */
+@keyframes techIconGlow {
+  0%, 100% {
+    filter: 
+      drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))
+      drop-shadow(0 0 16px rgba(255, 255, 255, 0.1));
+  }
+  50% {
+    filter: 
+      drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6))
+      drop-shadow(0 0 12px rgba(255, 255, 255, 0.5))
+      drop-shadow(0 0 24px rgba(255, 255, 255, 0.2));
+  }
+}
+
+/* Enhanced icon hover effect */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover svg {
+  color: #f0f0f0 !important;
+  transform: scale(1.2) rotate(90deg) !important;
+  filter: 
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7))
+    drop-shadow(0 0 16px rgba(255, 255, 255, 0.6))
+    drop-shadow(0 0 32px rgba(255, 255, 255, 0.3)) !important;
+  animation: techIconHoverSpin 0.5s ease-in-out infinite !important;
+}
+
+@keyframes techIconHoverSpin {
+  0% {
+    transform: scale(1.2) rotate(90deg);
+  }
+  50% {
+    transform: scale(1.3) rotate(135deg);
+  }
+  100% {
+    transform: scale(1.2) rotate(90deg);
+  }
 }
 
 /* ================= PROACTIVE MESSAGE STYLING ================= */
@@ -752,63 +855,119 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
 div._6r9xee3.o231sh1 {
   position: relative !important;
   z-index: 0 !important;
-  border-radius: 28px !important;
+  border-radius: 16px !important;
   
-  /* Ultra-Premium Glass Morphism Background */
+  /* Premium Tech Black & White Theme */
   background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%),
-    linear-gradient(45deg, rgba(102, 126, 234, 0.05) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(147, 51, 234, 0.05) 100%) !important;
-  backdrop-filter: blur(35px) saturate(250%) brightness(110%) !important;
-  -webkit-backdrop-filter: blur(35px) saturate(250%) brightness(110%) !important;
+    linear-gradient(135deg, #000000 0%, #1a1a1a 30%, #2d2d2d 70%, #000000 100%),
+    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0%, transparent 50%, rgba(255, 255, 255, 0.03) 100%) !important;
   
-  /* Premium glass border with gradient */
-  border: 3px solid transparent !important;
-  background-clip: padding-box !important;
+  /* Tech border with subtle white glow */\n  border: 2px solid rgba(255, 255, 255, 0.15) !important;
   
-  /* Ultra-enhanced shadow system for maximum depth */
+  /* Premium tech shadow system */
   box-shadow: 
-    0 25px 75px rgba(0, 0, 0, 0.12),
-    0 10px 40px rgba(102, 126, 234, 0.15),
-    inset 0 2px 3px rgba(255, 255, 255, 0.6),
-    inset 0 -2px 3px rgba(255, 255, 255, 0.2),
-    0 0 0 1px rgba(255, 255, 255, 0.25),
-    0 0 60px rgba(147, 51, 234, 0.08) !important;
+    0 20px 60px rgba(0, 0, 0, 0.8),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    0 4px 15px rgba(255, 255, 255, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 30px rgba(255, 255, 255, 0.05) !important;
   
-  color: rgba(0, 0, 0, 0.9) !important;
+  /* Premium white text for contrast */
+  color: rgba(255, 255, 255, 0.95) !important;
   opacity: 1 !important;
-  animation: proactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   transform-origin: bottom right !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 500 !important;
-  padding: 22px 28px !important;
+  padding: 20px 26px !important;
   position: relative !important;
   overflow: hidden !important;
   
   /* Smooth premium transitions */
   transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  will-change: transform, box-shadow, backdrop-filter, background !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Cool tech breathing effect */
+  animation: 
+    techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    techProactiveBreathe 4s ease-in-out 1s infinite !important;
 }
 
-/* Ultra-Premium hover effect for glass morphism */
+/* Premium Tech Hover Effect */
 div._6r9xee3.o231sh1:hover {
+  /* Enhanced tech gradient on hover */
   background: 
-    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.12) 100%),
-    linear-gradient(45deg, rgba(102, 126, 234, 0.08) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(147, 51, 234, 0.08) 100%) !important;
-  backdrop-filter: blur(45px) saturate(280%) brightness(120%) !important;
-  -webkit-backdrop-filter: blur(45px) saturate(280%) brightness(120%) !important;
+    linear-gradient(135deg, #1a1a1a 0%, #333333 30%, #4d4d4d 70%, #1a1a1a 100%),
+    linear-gradient(45deg, rgba(255, 255, 255, 0.08) 0%, transparent 50%, rgba(255, 255, 255, 0.05) 100%) !important;
   
-  /* Enhanced hover shadow with multiple color layers */
+  /* Enhanced tech border */
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
+  
+  /* Dramatic tech hover shadows */
   box-shadow: 
-    0 35px 100px rgba(0, 0, 0, 0.18),
-    0 15px 50px rgba(102, 126, 234, 0.25),
-    0 5px 25px rgba(147, 51, 234, 0.15),
-    inset 0 3px 5px rgba(255, 255, 255, 0.7),
-    inset 0 -3px 5px rgba(255, 255, 255, 0.3),
-    0 0 0 2px rgba(255, 255, 255, 0.35),
-    0 0 80px rgba(102, 126, 234, 0.2),
-    0 0 40px rgba(147, 51, 234, 0.15) !important;
+    0 25px 80px rgba(0, 0, 0, 0.9),
+    0 12px 40px rgba(0, 0, 0, 0.8),
+    0 6px 20px rgba(255, 255, 255, 0.15),
+    inset 0 3px 6px rgba(255, 255, 255, 0.15),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+    0 0 0 2px rgba(255, 255, 255, 0.12),
+    0 0 40px rgba(255, 255, 255, 0.08) !important;
     
-  transform: translateY(-4px) scale(1.02) !important;
+  /* Enhanced white text */
+  color: rgba(255, 255, 255, 1) !important;
+  transform: translateY(-6px) scale(1.03) !important;
+  animation: techProactiveHover 1.5s ease-in-out infinite !important;
+}
+
+/* Tech Proactive Message Animations */
+@keyframes techProactiveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.85) rotateX(-15deg);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.05) rotateX(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+@keyframes techProactiveBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.8),
+      0 8px 30px rgba(0, 0, 0, 0.6),
+      0 4px 15px rgba(255, 255, 255, 0.1),
+      inset 0 2px 4px rgba(255, 255, 255, 0.1),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 0 30px rgba(255, 255, 255, 0.05);
+  }
+  50% {
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 
+      0 25px 75px rgba(0, 0, 0, 0.9),
+      0 12px 40px rgba(0, 0, 0, 0.7),
+      0 6px 20px rgba(255, 255, 255, 0.15),
+      inset 0 3px 6px rgba(255, 255, 255, 0.12),
+      inset 0 -3px 6px rgba(0, 0, 0, 0.4),
+      0 0 0 2px rgba(255, 255, 255, 0.1),
+      0 0 40px rgba(255, 255, 255, 0.08);
+  }
+}
+
+@keyframes techProactiveHover {
+  0%, 100% {
+    transform: translateY(-6px) scale(1.03);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.05) rotateZ(1deg);
+  }
 }
 
 @keyframes proactiveSlideIn {
