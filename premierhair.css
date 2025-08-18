@@ -727,24 +727,53 @@ div._6r9xee3.o231sh1 > * {
   display: none !important;
 }
 
-/* Remove blinking from specific markdown message classes */
+/* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
+.vfrc-system-response,
+.vfrc-system-response *,
+.vfrc-system-response .vfrc-message,
+.vfrc-system-response .vfrc-message *,
 .vfrc-message._11kfxpg0,
+.vfrc-message._11kfxpg0 *,
 .markdown._11kfxpg1,
+.markdown._11kfxpg1 *,
 .markdown._11kfxpg3,
+.markdown._11kfxpg3 *,
 ._11kfxpgc,
+._11kfxpgc *,
 ._11kfxpgd,
-._11kfxpgb {
+._11kfxpgd *,
+._11kfxpgb,
+._11kfxpgb * {
   animation: none !important;
   transition: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
+/* Remove ALL pseudo-elements that could cause shimmer/blinking */
+.vfrc-system-response::before,
+.vfrc-system-response::after,
+.vfrc-system-response *::before,
+.vfrc-system-response *::after,
+.vfrc-system-response .vfrc-message::before,
+.vfrc-system-response .vfrc-message::after,
 .vfrc-message._11kfxpg0::before,
+.vfrc-message._11kfxpg0::after,
 .markdown._11kfxpg1::before,
+.markdown._11kfxpg1::after,
 .markdown._11kfxpg3::before,
+.markdown._11kfxpg3::after,
 ._11kfxpgc::before,
+._11kfxpgc::after,
 ._11kfxpgd::before,
-._11kfxpgb::before {
+._11kfxpgd::after,
+._11kfxpgb::before,
+._11kfxpgb::after {
   display: none !important;
+  content: none !important;
+  animation: none !important;
+  transition: none !important;
 }
 
 @keyframes messageShimmer {
