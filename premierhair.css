@@ -1322,12 +1322,12 @@ div[class*="_1ayyscc"] {
 ._1gdvh9t6::placeholder,
 textarea.vfrc-chat-input::placeholder,
 textarea._1gdvh9t6::placeholder {
-  /* Premium monospace typography with elegant fallbacks */
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', 'Lucida Console', monospace !important;
+  /* Premium Roboto typography */
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Helvetica Neue', Arial, sans-serif !important;
   color: #666666 !important;
   font-weight: 400 !important;
   font-size: 14px !important;
-  letter-spacing: 0.05em !important;
+  letter-spacing: 0.02em !important;
   animation: typewriterPlaceholder 3s steps(25) infinite !important;
   opacity: 1 !important;
   transition: all 0.3s ease !important;
@@ -1354,7 +1354,7 @@ textarea._1gdvh9t6::placeholder {
 ._1gdvh9t6:not(:focus)::after {
   content: '|' !important;
   color: #666666 !important;
-  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', 'Lucida Console', monospace !important;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Helvetica Neue', Arial, sans-serif !important;
   animation: placeholderCursor 1.2s infinite step-end !important;
   position: absolute !important;
   right: 12px !important;
@@ -1642,10 +1642,10 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   textarea.vfrc-chat-input::placeholder,
   textarea._1gdvh9t6::placeholder {
     font-size: 16px !important; /* Prevents zoom on iOS */
-    letter-spacing: 0.03em !important;
+    letter-spacing: 0.02em !important;
     
-    /* Premium mobile fonts */
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace !important;
+    /* Premium Roboto mobile fonts */
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Helvetica Neue', Arial, sans-serif !important;
     
     /* Simplified typewriter animation for mobile performance */
     animation: typewriterPlaceholder 4s steps(20) infinite !important;
@@ -1656,7 +1656,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   ._1gdvh9t6:not(:focus)::after {
     right: 12px !important;
     font-size: 14px !important;
-    font-family: 'SF Mono', 'Monaco', 'Roboto Mono', 'Courier New', monospace !important;
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Helvetica Neue', Arial, sans-serif !important;
   }
   
   /* Mobile send button */
@@ -1841,10 +1841,10 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   ._1gdvh9t6::placeholder,
   textarea.vfrc-chat-input::placeholder,
   textarea._1gdvh9t6::placeholder {
-    /* Consistent monospace fonts for small screens */
-    font-family: 'SF Mono', 'Monaco', 'Roboto Mono', 'Courier New', monospace !important;
+    /* Consistent Roboto fonts for small screens */
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Helvetica Neue', Arial, sans-serif !important;
     font-size: 15px !important;
-    letter-spacing: 0.04em !important;
+    letter-spacing: 0.02em !important;
     
     /* Simplified animation for small screens */
     animation: typewriterPlaceholder 5s steps(15) infinite !important;
