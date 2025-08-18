@@ -1439,7 +1439,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   max-height: 40px !important;
   border-radius: 12px !important;
   padding: 0 !important;
-  margin: 0 !important;
+  margin: 0 4px !important;
   border: none !important;
   cursor: pointer !important;
   
@@ -1706,6 +1706,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-width: 36px !important;
     max-height: 36px !important;
     border-radius: 10px !important;
+    margin: 0 2px !important;
   }
   
   .vfrc-chat-input--button svg,
@@ -1829,6 +1830,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-width: 32px !important;
     max-height: 32px !important;
     border-radius: 8px !important;
+    margin: 0 1px !important;
   }
   
   .vfrc-chat-input--button svg,
