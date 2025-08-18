@@ -722,17 +722,9 @@ div._6r9xee3.o231sh1 > * {
   overflow: hidden !important;
 }
 
-/* Subtle shimmer effect on system messages */
+/* Shimmer effect removed to prevent blinking */
 .vfrc-system-response .vfrc-message::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
-  animation: messageShimmer 2s infinite !important;
-  animation-delay: 0.5s !important;
+  display: none !important;
 }
 
 @keyframes messageShimmer {
