@@ -713,12 +713,12 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: transform, box-shadow, background !important;
   
-  /* Cool pulsing animation */
-  animation: techCloseButtonPulse 3s ease-in-out infinite !important;
+  /* Subtle breathing animation */
+  animation: techCloseButtonSubtle 4s ease-in-out infinite !important;
 }
 
-/* Tech pulsing animation */
-@keyframes techCloseButtonPulse {
+/* Subtle breathing animation - minimal movement */
+@keyframes techCloseButtonSubtle {
   0%, 100% {
     transform: scale(1) rotate(0deg);
     box-shadow: 
@@ -728,13 +728,13 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
       inset 0 -2px 4px rgba(0, 0, 0, 0.3);
   }
   50% {
-    transform: scale(1.05) rotate(180deg);
+    transform: scale(1.02) rotate(0deg);
     box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.6),
-      0 6px 20px rgba(255, 255, 255, 0.2),
-      inset 0 3px 6px rgba(255, 255, 255, 0.15),
-      inset 0 -3px 6px rgba(0, 0, 0, 0.4),
-      0 0 30px rgba(255, 255, 255, 0.1);
+      0 10px 36px rgba(0, 0, 0, 0.55),
+      0 5px 18px rgba(255, 255, 255, 0.15),
+      inset 0 2px 5px rgba(255, 255, 255, 0.12),
+      inset 0 -2px 5px rgba(0, 0, 0, 0.35),
+      0 0 20px rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -752,17 +752,17 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
     inset 0 -4px 8px rgba(0, 0, 0, 0.5),
     0 0 40px rgba(255, 255, 255, 0.15) !important;
   
-  transform: scale(1.15) rotate(360deg) !important;
-  animation: techCloseButtonHover 1s ease-in-out infinite !important;
+  transform: scale(1.08) rotate(0deg) !important;
+  animation: techCloseButtonHoverSubtle 2s ease-in-out infinite !important;
 }
 
-/* Tech hover animation */
-@keyframes techCloseButtonHover {
+/* Subtle hover animation */
+@keyframes techCloseButtonHoverSubtle {
   0%, 100% {
-    transform: scale(1.15) rotate(360deg);
+    transform: scale(1.08) rotate(0deg);
   }
   50% {
-    transform: scale(1.2) rotate(450deg);
+    transform: scale(1.1) rotate(0deg);
   }
 }
 
@@ -801,11 +801,11 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
     drop-shadow(0 0 16px rgba(255, 255, 255, 0.1)) !important;
   
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  animation: techIconGlow 2s ease-in-out infinite !important;
+  animation: techIconGlowSubtle 3s ease-in-out infinite !important;
 }
 
-/* Tech icon glow animation */
-@keyframes techIconGlow {
+/* Subtle icon glow animation */
+@keyframes techIconGlowSubtle {
   0%, 100% {
     filter: 
       drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
@@ -814,21 +814,21 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   }
   50% {
     filter: 
-      drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6))
-      drop-shadow(0 0 12px rgba(255, 255, 255, 0.5))
-      drop-shadow(0 0 24px rgba(255, 255, 255, 0.2));
+      drop-shadow(0 2px 5px rgba(0, 0, 0, 0.55))
+      drop-shadow(0 0 10px rgba(255, 255, 255, 0.4))
+      drop-shadow(0 0 18px rgba(255, 255, 255, 0.15));
   }
 }
 
 /* Enhanced icon hover effect */
 button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover svg {
   color: #f0f0f0 !important;
-  transform: scale(1.2) rotate(90deg) !important;
+  transform: scale(1.1) rotate(0deg) !important;
   filter: 
-    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7))
-    drop-shadow(0 0 16px rgba(255, 255, 255, 0.6))
-    drop-shadow(0 0 32px rgba(255, 255, 255, 0.3)) !important;
-  animation: techIconHoverSpin 0.5s ease-in-out infinite !important;
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 0 24px rgba(255, 255, 255, 0.2)) !important;
+  animation: none !important;
 }
 
 @keyframes techIconHoverSpin {
