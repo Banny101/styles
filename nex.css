@@ -672,9 +672,13 @@ img[src*="banner"],
 
 /* ================= PROACTIVE MESSAGE STYLING ================= */
 ._6r9xee0 {
-  margin-bottom: 70px !important;
+  margin-bottom: 140px !important; /* Increased for multiple messages */
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important; /* Space between multiple proactive messages */
 }
 
+/* Individual proactive message styling */
 div._6r9xee3.o231sh1 {
   position: relative !important;
   z-index: 0 !important;
@@ -1051,6 +1055,12 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-height: 74px !important;
   }
   
+  /* Mobile proactive message spacing adjustment */
+  ._6r9xee0 {
+    margin-bottom: 100px !important; /* Reduced for mobile */
+    gap: 8px !important; /* Smaller gap for mobile */
+  }
+
   /* Mobile send button */
   .vfrc-chat-input--button,
   .vfrc-button._12m8tlu3._12m8tlu4,
@@ -1140,6 +1150,12 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-height: 64px !important;
   }
   
+  /* Extra small mobile proactive message spacing */
+  ._6r9xee0 {
+    margin-bottom: 85px !important; /* Further reduced for extra small screens */
+    gap: 6px !important; /* Even smaller gap */
+  }
+
   /* Mobile send button - smallest size */
   .vfrc-chat-input--button,
   .vfrc-button._12m8tlu3._12m8tlu4,
