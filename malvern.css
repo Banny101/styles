@@ -268,24 +268,118 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   overflow: visible !important;
 }
 
+/* ================= COMPREHENSIVE LIST STYLING ================= */
+/* Proper styling for bullets and numbered lists in all message types */
+
+/* Base list styling - covers both HTML and markdown-generated lists */
+.vfrc-system-response ul,
+.vfrc-system-response ol,
+.vfrc-message ul,
+.vfrc-message ol,
+.markdown ul,
+.markdown ol,
+._11kfxpg1 ul,
+._11kfxpg1 ol,
+._11kfxpg3 ul,
+._11kfxpg3 ol,
+div[class*="message"] ul,
+div[class*="message"] ol,
+div[class*="markdown"] ul,
+div[class*="markdown"] ol {
+  display: block !important;
+  margin: 15px 0 !important;
+  padding-left: 25px !important;
+  list-style-position: outside !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Unordered lists - bullet points */
+.vfrc-system-response ul,
+.vfrc-message ul,
+.markdown ul,
+._11kfxpg1 ul,
+._11kfxpg3 ul,
+div[class*="message"] ul,
+div[class*="markdown"] ul {
+  list-style-type: disc !important;
+}
+
+/* Ordered lists - numbers */
+.vfrc-system-response ol,
+.vfrc-message ol,
+.markdown ol,
+._11kfxpg1 ol,
+._11kfxpg3 ol,
+div[class*="message"] ol,
+div[class*="markdown"] ol {
+  list-style-type: decimal !important;
+}
+
+/* List items */
+.vfrc-system-response li,
+.vfrc-message li,
+.markdown li,
+._11kfxpg1 li,
+._11kfxpg3 li,
+div[class*="message"] li,
+div[class*="markdown"] li {
+  display: list-item !important;
+  margin: 8px 0 !important;
+  padding-left: 5px !important;
+  line-height: 1.6 !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  list-style-type: inherit !important;
+}
+
+/* Ensure list markers are visible */
+.vfrc-system-response li::marker,
+.vfrc-message li::marker,
+.markdown li::marker,
+._11kfxpg1 li::marker,
+._11kfxpg3 li::marker,
+div[class*="message"] li::marker,
+div[class*="markdown"] li::marker {
+  color: rgba(0, 0, 0, 0.7) !important;
+  font-size: 1em !important;
+}
+
+/* Nested lists */
+.vfrc-system-response ul ul,
+.vfrc-message ul ul,
+.markdown ul ul,
+._11kfxpg1 ul ul,
+._11kfxpg3 ul ul {
+  list-style-type: circle !important;
+  margin: 5px 0 !important;
+  padding-left: 20px !important;
+}
+
+.vfrc-system-response ul ul ul,
+.vfrc-message ul ul ul,
+.markdown ul ul ul,
+._11kfxpg1 ul ul ul,
+._11kfxpg3 ul ul ul {
+  list-style-type: square !important;
+}
 
 /* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
+/* BUT preserve list functionality */
 .vfrc-system-response,
-.vfrc-system-response *,
+.vfrc-system-response *:not(ul):not(ol):not(li):not(li::marker),
 .vfrc-system-response .vfrc-message,
-.vfrc-system-response .vfrc-message *,
-.vfrc-message._11kfxpg0,
-.vfrc-message._11kfxpg0 *,
-.markdown._11kfxpg1,
-.markdown._11kfxpg1 *,
-.markdown._11kfxpg3,
-.markdown._11kfxpg3 *,
-._11kfxpgc,
-._11kfxpgc *,
-._11kfxpgd,
-._11kfxpgd *,
-._11kfxpgb,
-._11kfxpgb * {
+.vfrc-system-response .vfrc-message *:not(ul):not(ol):not(li):not(li::marker),
+.vfrc-message._11kfxpg0:not(ul):not(ol):not(li),
+.vfrc-message._11kfxpg0 *:not(ul):not(ol):not(li):not(li::marker),
+.markdown._11kfxpg1:not(ul):not(ol):not(li),
+.markdown._11kfxpg1 *:not(ul):not(ol):not(li):not(li::marker),
+.markdown._11kfxpg3:not(ul):not(ol):not(li),
+.markdown._11kfxpg3 *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgc:not(ul):not(ol):not(li),
+._11kfxpgc *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgd:not(ul):not(ol):not(li),
+._11kfxpgd *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgb:not(ul):not(ol):not(li),
+._11kfxpgb *:not(ul):not(ol):not(li):not(li::marker) {
   animation: none !important;
   transition: none !important;
   transform: none !important;
@@ -293,11 +387,11 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   visibility: visible !important;
 }
 
-/* Remove ALL pseudo-elements that could cause shimmer/blinking */
+/* Remove pseudo-elements that could cause shimmer/blinking - BUT preserve list markers */
 .vfrc-system-response::before,
 .vfrc-system-response::after,
-.vfrc-system-response *::before,
-.vfrc-system-response *::after,
+.vfrc-system-response *:not(li)::before,
+.vfrc-system-response *:not(li)::after,
 .vfrc-system-response .vfrc-message::before,
 .vfrc-system-response .vfrc-message::after,
 .vfrc-message._11kfxpg0::before,
@@ -1446,4 +1540,68 @@ div._6r9xee3.o231sh1::before {
 div._6r9xee3.o231sh1 > * {
   position: relative !important;
   z-index: 2 !important;
+}
+
+/* ================= FALLBACK BULLET STYLING WITH CSS COUNTERS ================= */
+/* Enhanced fallback for when native list styling fails in Voiceflow */
+
+/* Target paragraphs that contain dash bullets */
+.vfrc-system-response p,
+.vfrc-message p,
+.markdown p {
+  position: relative;
+}
+
+/* Style paragraphs that start with "- " as bullet points */
+.vfrc-system-response p[data-bullet],
+.vfrc-message p[data-bullet],
+.markdown p[data-bullet] {
+  padding-left: 20px !important;
+  margin: 8px 0 !important;
+  text-indent: 0 !important;
+}
+
+.vfrc-system-response p[data-bullet]::before,
+.vfrc-message p[data-bullet]::before,
+.markdown p[data-bullet]::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 8px !important;
+  color: #004188 !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  line-height: inherit !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Alternative approach: Use text-based bullet replacement */
+.vfrc-system-response p:contains("- "),
+.vfrc-message p:contains("- "),
+.markdown p:contains("- ") {
+  padding-left: 18px !important;
+  margin: 6px 0 !important;
+  position: relative !important;
+}
+
+/* CSS for manual bullet insertion if needed */
+.bullet-point {
+  padding-left: 18px !important;
+  margin: 6px 0 !important;
+  position: relative !important;
+}
+
+.bullet-point::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 6px !important;
+  color: #004188 !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline !important;
 }
