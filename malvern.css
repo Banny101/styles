@@ -263,7 +263,6 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   color: rgba(0, 0, 0, 0.85) !important;
   font-size: 13px !important;
   line-height: 1.5 !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   
   /* NO ANIMATIONS to prevent blinking */
   animation: none !important;
@@ -338,7 +337,6 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   color: rgba(255, 255, 255, 0.95) !important;
   font-size: 13px !important;
   line-height: 1.5 !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   
   /* Smooth entrance animation */
   animation: messageSlideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -889,7 +887,6 @@ div._6r9xee3.o231sh1 {
   opacity: 1 !important;
   animation: techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   transform-origin: bottom right !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 500 !important;
   padding: 18px 24px !important;
   position: relative !important;
@@ -1003,10 +1000,9 @@ div._6r9xee3.o231sh1:hover {
 
 /* ================= ASSISTANT TITLE & DESCRIPTION - CLEAN MINIMALISTIC ================= */
 
-/* Banner title - Clean Minimalistic with Inter Font */
+/* Banner title - Clean Minimalistic */
 .vfrc-assistant-info--title {
   position: relative !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 500 !important;
   font-size: 16px !important;
   color: #1a1a1a !important;
@@ -1034,10 +1030,9 @@ div._6r9xee3.o231sh1:hover {
   }
 }
 
-/* Banner description - Clean Minimalistic with Inter Font */
+/* Banner description - Clean Minimalistic */
 .vfrc-assistant-info--description {
   position: relative !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 400 !important;
   font-size: 12px !important;
   color: #666666 !important;
@@ -1065,27 +1060,25 @@ div._6r9xee3.o231sh1:hover {
   }
 }
 
-/* ================= CHAT INPUT AREA - DEFAULT VOICEFLOW STYLING WITH INTER FONT ================= */
-/* Chat input with Inter font - using default Voiceflow styling for perfect button alignment */
+/* ================= CHAT INPUT AREA - DEFAULT VOICEFLOW STYLING ================= */
+/* Chat input using default Voiceflow styling for perfect button alignment */
 .vfrc-chat-input,
 ._1gdvh9t6,
 textarea.vfrc-chat-input,
 textarea._1gdvh9t6 {
   /* Use default Voiceflow styling - no custom background/border/shadow */
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   color: rgba(0, 0, 0, 0.85) !important;
   font-size: 12px !important;
   font-weight: 400 !important;
   line-height: 1.4 !important;
 }
 
-/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER WITH INTER FONT ================= */
-/* Typewriter Effect for Placeholder Text Only - Using Inter Font */
+/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER ================= */
+/* Typewriter Effect for Placeholder Text Only */
 .vfrc-chat-input::placeholder,
 ._1gdvh9t6::placeholder,
 textarea.vfrc-chat-input::placeholder,
 textarea._1gdvh9t6::placeholder {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   color: #666666 !important;
   font-weight: 400 !important;
   font-size: 12px !important;
@@ -1332,29 +1325,18 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   /* Mobile input field optimization */
   .vfrc-chat-input,
   ._1gdvh9t6 {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
     font-size: 16px !important; /* Prevents iOS zoom */
     padding: 12px !important;
     border-radius: 8px !important;
   }
   
-  /* Mobile placeholder with Inter font */
+  /* Mobile placeholder */
   .vfrc-chat-input::placeholder,
   ._1gdvh9t6::placeholder {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
     font-size: 16px !important; /* Prevents iOS zoom */
   }
   
-  /* Universal Inter Font Application for All Mobile Devices */
-  .vfrc-assistant-info--title,
-  .vfrc-assistant-info--description,
-  .vfrc-message,
-  .vfrc-system-response .vfrc-message,
-  .vfrc-user-response .vfrc-message,
-  div._6r9xee3.o231sh1,
-  .vfrc-prompt {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-  }
+  /* Mobile elements use default fonts */
 }
 
 /* Mobile Portrait - 480px and below */
@@ -1425,40 +1407,12 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   }
 }
 
-/* ================= COMPREHENSIVE INTER FONT APPLICATION ================= */
-/* Apply Inter font to ALL elements including proactive messages */
-* {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-}
+/* ================= DEFAULT FONT APPLICATION ================= */
+/* Use default browser fonts for all elements */
 
-/* Specific Inter font application for all text elements */
-.vfrc-assistant-info--title,
-.vfrc-assistant-info--description,
-.vfrc-message,
-.vfrc-system-response .vfrc-message,
-.vfrc-user-response .vfrc-message,
-div._6r9xee3.o231sh1,
-.vfrc-prompt,
-.vfrc-header--title,
-.vfrc-header--subtitle,
-.vfrc-footer--watermark,
-.vfrc-typing-indicator,
-h1, h2, h3, h4, h5, h6,
-p, span, div, a, button,
-input, textarea,
-._6r9xee0,
-._6r9xee3,
-.o231sh1 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-}
+/* All elements use default browser fonts */
 
-/* Ensure proactive messages specifically use Inter */
-div._6r9xee3.o231sh1,
-div._6r9xee3.o231sh1 *,
-._6r9xee0,
-._6r9xee0 * {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-}
+/* Proactive messages use default fonts */
 
 /* Accessibility: Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
