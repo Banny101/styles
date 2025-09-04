@@ -787,17 +787,26 @@ div._6r9xee3.o231sh1 > * {
   list-style-position: outside !important;
 }
 
-/* COMPREHENSIVE ANTI-BLINKING RULES - Smart exclusion for list elements */
-.vfrc-system-response *:not(ul):not(ol):not(li):not(li::marker),
-.vfrc-system-response .vfrc-message *:not(ul):not(ol):not(li):not(li::marker),
-.vfrc-message._11kfxpg0 *:not(ul):not(ol):not(li):not(li::marker),
-.markdown._11kfxpg1 *:not(ul):not(ol):not(li):not(li::marker),
-.markdown._11kfxpg3 *:not(ul):not(ol):not(li):not(li::marker),
-._11kfxpgc *:not(ul):not(ol):not(li):not(li::marker),
-._11kfxpgd *:not(ul):not(ol):not(li):not(li::marker),
-._11kfxpgb *:not(ul):not(ol):not(li):not(li::marker) {
+/* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
+.vfrc-system-response,
+.vfrc-system-response *,
+.vfrc-system-response .vfrc-message,
+.vfrc-system-response .vfrc-message *,
+.vfrc-message._11kfxpg0,
+.vfrc-message._11kfxpg0 *,
+.markdown._11kfxpg1,
+.markdown._11kfxpg1 *,
+.markdown._11kfxpg3,
+.markdown._11kfxpg3 *,
+._11kfxpgc,
+._11kfxpgc *,
+._11kfxpgd,
+._11kfxpgd *,
+._11kfxpgb,
+._11kfxpgb * {
   animation: none !important;
   transition: none !important;
+  transform: none !important;
   opacity: 1 !important;
   visibility: visible !important;
 }
@@ -814,23 +823,25 @@ div._6r9xee3.o231sh1 > * {
   overflow: visible !important;
 }
 
-/* Remove problematic pseudo-elements while preserving list markers */
-.vfrc-system-response *:not(ul):not(ol):not(li)::before,
-.vfrc-system-response *:not(ul):not(ol):not(li)::after,
-.vfrc-system-response .vfrc-message *:not(ul):not(ol):not(li)::before,
-.vfrc-system-response .vfrc-message *:not(ul):not(ol):not(li)::after,
-.vfrc-message._11kfxpg0 *:not(ul):not(ol):not(li)::before,
-.vfrc-message._11kfxpg0 *:not(ul):not(ol):not(li)::after,
-.markdown._11kfxpg1 *:not(ul):not(ol):not(li)::before,
-.markdown._11kfxpg1 *:not(ul):not(ol):not(li)::after,
-.markdown._11kfxpg3 *:not(ul):not(ol):not(li)::before,
-.markdown._11kfxpg3 *:not(ul):not(ol):not(li)::after,
-._11kfxpgc *:not(ul):not(ol):not(li)::before,
-._11kfxpgc *:not(ul):not(ol):not(li)::after,
-._11kfxpgd *:not(ul):not(ol):not(li)::before,
-._11kfxpgd *:not(ul):not(ol):not(li)::after,
-._11kfxpgb *:not(ul):not(ol):not(li)::before,
-._11kfxpgb *:not(ul):not(ol):not(li)::after {
+/* Remove ALL pseudo-elements that could cause shimmer/blinking */
+.vfrc-system-response::before,
+.vfrc-system-response::after,
+.vfrc-system-response *::before,
+.vfrc-system-response *::after,
+.vfrc-system-response .vfrc-message::before,
+.vfrc-system-response .vfrc-message::after,
+.vfrc-message._11kfxpg0::before,
+.vfrc-message._11kfxpg0::after,
+.markdown._11kfxpg1::before,
+.markdown._11kfxpg1::after,
+.markdown._11kfxpg3::before,
+.markdown._11kfxpg3::after,
+._11kfxpgc::before,
+._11kfxpgc::after,
+._11kfxpgd::before,
+._11kfxpgd::after,
+._11kfxpgb::before,
+._11kfxpgb::after {
   display: none !important;
   content: none !important;
   animation: none !important;
