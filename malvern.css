@@ -265,7 +265,57 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   /* NO ANIMATIONS to prevent blinking */
   animation: none !important;
   transform-origin: bottom left !important;
-  overflow: hidden !important;
+  overflow: visible !important;
+}
+
+/* ================= LIST STYLING FOR AGENT MESSAGES ================= */
+/* Bullet points and numbered lists in system messages */
+.vfrc-system-response .vfrc-message ul,
+.vfrc-system-response .vfrc-message ol,
+.vfrc-message ul,
+.vfrc-message ol,
+.markdown ul,
+.markdown ol {
+  display: block !important;
+  margin: 12px 0 !important;
+  padding-left: 20px !important;
+  list-style-position: outside !important;
+}
+
+.vfrc-system-response .vfrc-message ul,
+.vfrc-message ul,
+.markdown ul {
+  list-style-type: disc !important;
+}
+
+.vfrc-system-response .vfrc-message ol,
+.vfrc-message ol,
+.markdown ol {
+  list-style-type: decimal !important;
+}
+
+.vfrc-system-response .vfrc-message li,
+.vfrc-message li,
+.markdown li {
+  display: list-item !important;
+  margin: 6px 0 !important;
+  padding-left: 4px !important;
+  line-height: 1.5 !important;
+  color: inherit !important;
+}
+
+/* Nested lists */
+.vfrc-system-response .vfrc-message ul ul,
+.vfrc-message ul ul,
+.markdown ul ul {
+  list-style-type: circle !important;
+  margin: 4px 0 !important;
+}
+
+.vfrc-system-response .vfrc-message ul ul ul,
+.vfrc-message ul ul ul,
+.markdown ul ul ul {
+  list-style-type: square !important;
 }
 
 /* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
