@@ -261,8 +261,6 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   padding: 16px 20px !important;
   margin: 12px 0 !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
   
   /* NO ANIMATIONS to prevent blinking */
   animation: none !important;
@@ -335,8 +333,6 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   padding: 16px 20px !important;
   margin: 12px 0 !important;
   color: rgba(255, 255, 255, 0.95) !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
   
   /* Smooth entrance animation */
   animation: messageSlideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -887,7 +883,6 @@ div._6r9xee3.o231sh1 {
   opacity: 1 !important;
   animation: techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   transform-origin: bottom right !important;
-  font-weight: 500 !important;
   padding: 18px 24px !important;
   position: relative !important;
   overflow: hidden !important;
@@ -1003,11 +998,7 @@ div._6r9xee3.o231sh1:hover {
 /* Banner title - Clean Minimalistic */
 .vfrc-assistant-info--title {
   position: relative !important;
-  font-weight: 500 !important;
-  font-size: 16px !important;
   color: #1a1a1a !important;
-  letter-spacing: -0.01em !important;
-  line-height: 1.3 !important;
   margin: 0 !important;
   padding: 0 !important;
   animation: titleFadeIn 0.6s ease-out both !important;
@@ -1033,11 +1024,7 @@ div._6r9xee3.o231sh1:hover {
 /* Banner description - Clean Minimalistic */
 .vfrc-assistant-info--description {
   position: relative !important;
-  font-weight: 400 !important;
-  font-size: 12px !important;
   color: #666666 !important;
-  letter-spacing: 0 !important;
-  line-height: 1.4 !important;
   margin: 4px 0 0 0 !important;
   padding: 0 !important;
   animation: descriptionFadeIn 0.6s ease-out 0.2s both !important;
@@ -1068,9 +1055,6 @@ textarea.vfrc-chat-input,
 textarea._1gdvh9t6 {
   /* Use default Voiceflow styling - no custom background/border/shadow */
   color: rgba(0, 0, 0, 0.85) !important;
-  font-size: 12px !important;
-  font-weight: 400 !important;
-  line-height: 1.4 !important;
 }
 
 /* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER ================= */
@@ -1080,9 +1064,6 @@ textarea._1gdvh9t6 {
 textarea.vfrc-chat-input::placeholder,
 textarea._1gdvh9t6::placeholder {
   color: #666666 !important;
-  font-weight: 400 !important;
-  font-size: 12px !important;
-  letter-spacing: 0.01em !important;
   animation: typewriterPlaceholder 3s steps(25) infinite !important;
   opacity: 1 !important;
 }
@@ -1325,16 +1306,11 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   /* Mobile input field optimization */
   .vfrc-chat-input,
   ._1gdvh9t6 {
-    font-size: 16px !important; /* Prevents iOS zoom */
     padding: 12px !important;
     border-radius: 8px !important;
   }
   
-  /* Mobile placeholder */
-  .vfrc-chat-input::placeholder,
-  ._1gdvh9t6::placeholder {
-    font-size: 16px !important; /* Prevents iOS zoom */
-  }
+  /* Mobile placeholder uses default font size */
   
   /* Mobile elements use default fonts */
 }
