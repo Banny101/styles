@@ -261,33 +261,124 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   padding: 16px 20px !important;
   margin: 12px 0 !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  font-size: 15px !important;
-  line-height: 1.6 !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   
   /* NO ANIMATIONS to prevent blinking */
   animation: none !important;
   transform-origin: bottom left !important;
-  overflow: hidden !important;
+  overflow: visible !important;
+}
+
+/* ================= COMPREHENSIVE LIST STYLING ================= */
+/* Proper styling for bullets and numbered lists in all message types */
+
+/* Base list styling - covers both HTML and markdown-generated lists */
+.vfrc-system-response ul,
+.vfrc-system-response ol,
+.vfrc-message ul,
+.vfrc-message ol,
+.markdown ul,
+.markdown ol,
+._11kfxpg1 ul,
+._11kfxpg1 ol,
+._11kfxpg3 ul,
+._11kfxpg3 ol,
+div[class*="message"] ul,
+div[class*="message"] ol,
+div[class*="markdown"] ul,
+div[class*="markdown"] ol {
+  display: block !important;
+  margin: 15px 0 !important;
+  padding-left: 25px !important;
+  list-style-position: outside !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Unordered lists - bullet points */
+.vfrc-system-response ul,
+.vfrc-message ul,
+.markdown ul,
+._11kfxpg1 ul,
+._11kfxpg3 ul,
+div[class*="message"] ul,
+div[class*="markdown"] ul {
+  list-style-type: disc !important;
+}
+
+/* Ordered lists - numbers */
+.vfrc-system-response ol,
+.vfrc-message ol,
+.markdown ol,
+._11kfxpg1 ol,
+._11kfxpg3 ol,
+div[class*="message"] ol,
+div[class*="markdown"] ol {
+  list-style-type: decimal !important;
+}
+
+/* List items */
+.vfrc-system-response li,
+.vfrc-message li,
+.markdown li,
+._11kfxpg1 li,
+._11kfxpg3 li,
+div[class*="message"] li,
+div[class*="markdown"] li {
+  display: list-item !important;
+  margin: 8px 0 !important;
+  padding-left: 5px !important;
+  line-height: 1.6 !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  list-style-type: inherit !important;
+}
+
+/* Ensure list markers are visible */
+.vfrc-system-response li::marker,
+.vfrc-message li::marker,
+.markdown li::marker,
+._11kfxpg1 li::marker,
+._11kfxpg3 li::marker,
+div[class*="message"] li::marker,
+div[class*="markdown"] li::marker {
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Nested lists */
+.vfrc-system-response ul ul,
+.vfrc-message ul ul,
+.markdown ul ul,
+._11kfxpg1 ul ul,
+._11kfxpg3 ul ul {
+  list-style-type: circle !important;
+  margin: 5px 0 !important;
+  padding-left: 20px !important;
+}
+
+.vfrc-system-response ul ul ul,
+.vfrc-message ul ul ul,
+.markdown ul ul ul,
+._11kfxpg1 ul ul ul,
+._11kfxpg3 ul ul ul {
+  list-style-type: square !important;
 }
 
 /* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
+/* BUT preserve list functionality */
 .vfrc-system-response,
-.vfrc-system-response *,
+.vfrc-system-response *:not(ul):not(ol):not(li):not(li::marker),
 .vfrc-system-response .vfrc-message,
-.vfrc-system-response .vfrc-message *,
-.vfrc-message._11kfxpg0,
-.vfrc-message._11kfxpg0 *,
-.markdown._11kfxpg1,
-.markdown._11kfxpg1 *,
-.markdown._11kfxpg3,
-.markdown._11kfxpg3 *,
-._11kfxpgc,
-._11kfxpgc *,
-._11kfxpgd,
-._11kfxpgd *,
-._11kfxpgb,
-._11kfxpgb * {
+.vfrc-system-response .vfrc-message *:not(ul):not(ol):not(li):not(li::marker),
+.vfrc-message._11kfxpg0:not(ul):not(ol):not(li),
+.vfrc-message._11kfxpg0 *:not(ul):not(ol):not(li):not(li::marker),
+.markdown._11kfxpg1:not(ul):not(ol):not(li),
+.markdown._11kfxpg1 *:not(ul):not(ol):not(li):not(li::marker),
+.markdown._11kfxpg3:not(ul):not(ol):not(li),
+.markdown._11kfxpg3 *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgc:not(ul):not(ol):not(li),
+._11kfxpgc *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgd:not(ul):not(ol):not(li),
+._11kfxpgd *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgb:not(ul):not(ol):not(li),
+._11kfxpgb *:not(ul):not(ol):not(li):not(li::marker) {
   animation: none !important;
   transition: none !important;
   transform: none !important;
@@ -295,11 +386,11 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   visibility: visible !important;
 }
 
-/* Remove ALL pseudo-elements that could cause shimmer/blinking */
+/* Remove pseudo-elements that could cause shimmer/blinking - BUT preserve list markers */
 .vfrc-system-response::before,
 .vfrc-system-response::after,
-.vfrc-system-response *::before,
-.vfrc-system-response *::after,
+.vfrc-system-response *:not(li)::before,
+.vfrc-system-response *:not(li)::after,
 .vfrc-system-response .vfrc-message::before,
 .vfrc-system-response .vfrc-message::after,
 .vfrc-message._11kfxpg0::before,
@@ -336,9 +427,6 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   padding: 16px 20px !important;
   margin: 12px 0 !important;
   color: rgba(255, 255, 255, 0.95) !important;
-  font-size: 15px !important;
-  line-height: 1.6 !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   
   /* Smooth entrance animation */
   animation: messageSlideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -831,18 +919,6 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   animation: none !important;
 }
 
-@keyframes techIconHoverSpin {
-  0% {
-    transform: scale(1.2) rotate(90deg);
-  }
-  50% {
-    transform: scale(1.3) rotate(135deg);
-  }
-  100% {
-    transform: scale(1.2) rotate(90deg);
-  }
-}
-
 /* ================= PROACTIVE MESSAGE STYLING ================= */
 ._6r9xee0 {
   margin-bottom: 90px !important; /* Closer to launcher for better UX */
@@ -887,8 +963,6 @@ div._6r9xee3.o231sh1 {
   opacity: 1 !important;
   animation: techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
   transform-origin: bottom right !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-  font-weight: 500 !important;
   padding: 18px 24px !important;
   position: relative !important;
   overflow: hidden !important;
@@ -985,31 +1059,12 @@ div._6r9xee3.o231sh1:hover {
   }
 }
 
-@keyframes proactiveSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateY(25px) scale(0.9) rotate(-2deg);
-  }
-  60% {
-    transform: translateY(-3px) scale(1.02) rotate(1deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
-  }
-}
-
 /* ================= ASSISTANT TITLE & DESCRIPTION - CLEAN MINIMALISTIC ================= */
 
-/* Banner title - Clean Minimalistic with Inter Font */
+/* Banner title - Clean Minimalistic */
 .vfrc-assistant-info--title {
   position: relative !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-  font-weight: 500 !important;
-  font-size: 18px !important;
   color: #1a1a1a !important;
-  letter-spacing: -0.02em !important;
-  line-height: 1.3 !important;
   margin: 0 !important;
   padding: 0 !important;
   animation: titleFadeIn 0.6s ease-out both !important;
@@ -1032,15 +1087,10 @@ div._6r9xee3.o231sh1:hover {
   }
 }
 
-/* Banner description - Clean Minimalistic with Inter Font */
+/* Banner description - Clean Minimalistic */
 .vfrc-assistant-info--description {
   position: relative !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
   color: #666666 !important;
-  letter-spacing: 0 !important;
-  line-height: 1.4 !important;
   margin: 4px 0 0 0 !important;
   padding: 0 !important;
   animation: descriptionFadeIn 0.6s ease-out 0.2s both !important;
@@ -1063,31 +1113,23 @@ div._6r9xee3.o231sh1:hover {
   }
 }
 
-/* ================= CHAT INPUT AREA - DEFAULT VOICEFLOW STYLING WITH INTER FONT ================= */
-/* Chat input with Inter font - using default Voiceflow styling for perfect button alignment */
+/* ================= CHAT INPUT AREA - DEFAULT VOICEFLOW STYLING ================= */
+/* Chat input using default Voiceflow styling for perfect button alignment */
 .vfrc-chat-input,
 ._1gdvh9t6,
 textarea.vfrc-chat-input,
 textarea._1gdvh9t6 {
   /* Use default Voiceflow styling - no custom background/border/shadow */
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  font-size: 14px !important;
-  font-weight: 400 !important;
-  line-height: 1.4 !important;
 }
 
-/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER WITH INTER FONT ================= */
-/* Typewriter Effect for Placeholder Text Only - Using Inter Font */
+/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER ================= */
+/* Typewriter Effect for Placeholder Text Only */
 .vfrc-chat-input::placeholder,
 ._1gdvh9t6::placeholder,
 textarea.vfrc-chat-input::placeholder,
 textarea._1gdvh9t6::placeholder {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   color: #666666 !important;
-  font-weight: 400 !important;
-  font-size: 14px !important;
-  letter-spacing: 0.02em !important;
   animation: typewriterPlaceholder 3s steps(25) infinite !important;
   opacity: 1 !important;
 }
@@ -1330,28 +1372,8 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   /* Mobile input field optimization */
   .vfrc-chat-input,
   ._1gdvh9t6 {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-    font-size: 16px !important; /* Prevents iOS zoom */
     padding: 12px !important;
     border-radius: 8px !important;
-  }
-  
-  /* Mobile placeholder with Inter font */
-  .vfrc-chat-input::placeholder,
-  ._1gdvh9t6::placeholder {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
-    font-size: 16px !important; /* Prevents iOS zoom */
-  }
-  
-  /* Universal Inter Font Application for All Mobile Devices */
-  .vfrc-assistant-info--title,
-  .vfrc-assistant-info--description,
-  .vfrc-message,
-  .vfrc-system-response .vfrc-message,
-  .vfrc-user-response .vfrc-message,
-  div._6r9xee3.o231sh1,
-  .vfrc-prompt {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   }
 }
 
@@ -1423,12 +1445,62 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   }
 }
 
-/* ================= DEFAULT FONT APPLICATION ================= */
-/* Use default browser fonts for all elements */
+/* Accessibility: Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 
-/* All elements use default browser fonts */
+/* ================= SUBTLE COLORFUL EFFECTS FOR PROACTIVE MESSAGES ================= */
+/* Subtle colorful shimmer effect to add life and prevent dullness */
+div._6r9xee3.o231sh1::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    120deg, 
+    transparent 0%, 
+    rgba(102, 126, 234, 0.08) 20%,
+    rgba(255, 255, 255, 0.15) 40%, 
+    rgba(147, 51, 234, 0.06) 60%, 
+    rgba(79, 172, 254, 0.08) 80%,
+    transparent 100%
+  ) !important;
+  animation: subtleColorfulShimmer 6s infinite !important;
+  border-radius: inherit !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
 
-/* Proactive messages use default fonts */
+@keyframes subtleColorfulShimmer {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Ensure text stays above shimmer */
+div._6r9xee3.o231sh1 > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
 
 /* ================= FALLBACK BULLET STYLING WITH CSS COUNTERS ================= */
 /* Enhanced fallback for when native list styling fails in Voiceflow */
@@ -1487,61 +1559,4 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   visibility: visible !important;
   opacity: 1 !important;
   display: inline !important;
-}
-
-/* Accessibility: Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* ================= SUBTLE COLORFUL EFFECTS FOR PROACTIVE MESSAGES ================= */
-/* Subtle colorful shimmer effect to add life and prevent dullness */
-div._6r9xee3.o231sh1::before {
-  content: "" !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(
-    120deg, 
-    transparent 0%, 
-    rgba(102, 126, 234, 0.08) 20%,
-    rgba(255, 255, 255, 0.15) 40%, 
-    rgba(147, 51, 234, 0.06) 60%, 
-    rgba(79, 172, 254, 0.08) 80%,
-    transparent 100%
-  ) !important;
-  animation: subtleColorfulShimmer 6s infinite !important;
-  border-radius: inherit !important;
-  z-index: 1 !important;
-  pointer-events: none !important;
-}
-
-@keyframes subtleColorfulShimmer {
-  0% {
-    left: -100%;
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.6;
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-  }
-}
-
-/* Ensure text stays above shimmer */
-div._6r9xee3.o231sh1 > * {
-  position: relative !important;
-  z-index: 2 !important;
 }
