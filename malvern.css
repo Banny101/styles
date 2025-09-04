@@ -261,8 +261,8 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   padding: 16px 20px !important;
   margin: 12px 0 !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  font-size: 15px !important;
-  line-height: 1.6 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   
   /* NO ANIMATIONS to prevent blinking */
@@ -336,8 +336,8 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   padding: 16px 20px !important;
   margin: 12px 0 !important;
   color: rgba(255, 255, 255, 0.95) !important;
-  font-size: 15px !important;
-  line-height: 1.6 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   
   /* Smooth entrance animation */
@@ -369,8 +369,8 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   }
 }
 
-/* ================= ULTRA-PREMIUM AI COMPANY TYPING INDICATOR ================= */
-/* Ultra-Premium Typing Indicator - Perfect for AI Agent Building Company */
+/* ================= MALVERN PREMIUM TYPING INDICATOR ================= */
+/* Premium Malvern-themed Typing Indicator with Sophisticated Glass Design */
 body .vfrc-typing-indicator,
 body .vfrc-system-response .vfrc-typing-indicator,
 body div[class*="indicator"],
@@ -381,135 +381,137 @@ body .vfrc-chat .vfrc-typing-indicator,
 #voiceflow-chat .vfrc-system-response .vfrc-typing-indicator {
   position: relative !important;
   
-  /* Ultra-Premium AI Glass Morphism Background */
+  /* Malvern Premium Glass Morphism Background */
   background: 
     linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.18) 0%, 
-      rgba(248, 250, 252, 0.15) 40%,
-      rgba(240, 245, 251, 0.18) 100%),
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(250, 251, 253, 0.90) 40%,
+      rgba(245, 247, 250, 0.95) 100%),
     linear-gradient(45deg, 
-      rgba(102, 126, 234, 0.08) 0%, 
-      rgba(147, 51, 234, 0.05) 50%, 
-      rgba(79, 172, 254, 0.08) 100%) !important;
-  backdrop-filter: blur(30px) saturate(200%) brightness(110%) !important;
-  -webkit-backdrop-filter: blur(30px) saturate(200%) brightness(110%) !important;
+      rgba(45, 85, 135, 0.05) 0%, 
+      rgba(28, 65, 105, 0.03) 50%, 
+      rgba(35, 75, 120, 0.05) 100%) !important;
+  backdrop-filter: blur(20px) saturate(150%) brightness(105%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(105%) !important;
   
-  /* AI-themed borderless design */
-  border: none !important;
-  border-radius: 24px !important;
-  padding: 18px 24px !important;
-  margin: 12px 0 !important;
+  /* Malvern sophisticated border design */
+  border: 1px solid rgba(45, 85, 135, 0.12) !important;
+  border-radius: 18px !important;
+  padding: 14px 20px !important;
+  margin: 10px 0 !important;
   
-  /* Ultra-luxurious AI company shadow system */
+  /* Malvern premium shadow system */
   box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.08),
-    0 8px 30px rgba(102, 126, 234, 0.12),
-    0 4px 15px rgba(147, 51, 234, 0.08),
-    inset 0 2px 4px rgba(255, 255, 255, 0.9),
-    inset 0 -1px 2px rgba(102, 126, 234, 0.05),
-    0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 0 40px rgba(79, 172, 254, 0.06) !important;
+    0 12px 40px rgba(0, 0, 0, 0.06),
+    0 6px 20px rgba(45, 85, 135, 0.08),
+    0 3px 12px rgba(28, 65, 105, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 1px rgba(45, 85, 135, 0.03),
+    0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 0 25px rgba(45, 85, 135, 0.04) !important;
   
   overflow: hidden !important;
-  animation: aiCompanyBreathing 3.5s ease-in-out infinite !important;
-  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  animation: malvernTypingBreathe 3.5s ease-in-out infinite !important;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: transform, box-shadow, backdrop-filter !important;
 }
 
-/* AI company themed typing indicator hover effect */
+/* Malvern typing indicator hover effect */
 body .vfrc-typing-indicator:hover {
   background: 
     linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.25) 0%, 
-      rgba(248, 250, 252, 0.20) 50%,
-      rgba(240, 245, 251, 0.25) 100%),
+      rgba(255, 255, 255, 0.98) 0%, 
+      rgba(250, 251, 253, 0.95) 50%,
+      rgba(245, 247, 250, 0.98) 100%),
     linear-gradient(45deg, 
-      rgba(102, 126, 234, 0.12) 0%, 
-      rgba(147, 51, 234, 0.08) 50%, 
-      rgba(79, 172, 254, 0.12) 100%) !important;
-  backdrop-filter: blur(40px) saturate(280%) brightness(120%) !important;
-  -webkit-backdrop-filter: blur(40px) saturate(280%) brightness(120%) !important;
+      rgba(45, 85, 135, 0.08) 0%, 
+      rgba(28, 65, 105, 0.05) 50%, 
+      rgba(35, 75, 120, 0.08) 100%) !important;
+  backdrop-filter: blur(25px) saturate(160%) brightness(108%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(160%) brightness(108%) !important;
+  
+  border: 1px solid rgba(45, 85, 135, 0.20) !important;
   
   box-shadow: 
-    0 25px 80px rgba(0, 0, 0, 0.12),
-    0 12px 40px rgba(102, 126, 234, 0.20),
-    0 6px 25px rgba(147, 51, 234, 0.15),
-    inset 0 3px 6px rgba(255, 255, 255, 0.9),
-    inset 0 -2px 4px rgba(102, 126, 234, 0.08),
-    0 0 0 2px rgba(255, 255, 255, 0.6),
-    0 0 50px rgba(79, 172, 254, 0.15) !important;
+    0 16px 50px rgba(0, 0, 0, 0.08),
+    0 8px 25px rgba(45, 85, 135, 0.12),
+    0 4px 15px rgba(28, 65, 105, 0.08),
+    inset 0 2px 3px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 2px rgba(45, 85, 135, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 0 30px rgba(45, 85, 135, 0.08) !important;
     
-  transform: translateY(-3px) scale(1.02) !important;
+  transform: translateY(-2px) scale(1.01) !important;
 }
 
-/* AI company breathing animation for typing indicator */
-@keyframes aiCompanyBreathing {
+/* Malvern breathing animation for typing indicator */
+@keyframes malvernTypingBreathe {
   0%, 100% {
     transform: scale(1) translateY(0px);
     box-shadow: 
-      0 20px 60px rgba(0, 0, 0, 0.08),
-      0 8px 30px rgba(102, 126, 234, 0.12),
-      0 4px 15px rgba(147, 51, 234, 0.08),
-      inset 0 2px 4px rgba(255, 255, 255, 0.9),
-      inset 0 -1px 2px rgba(102, 126, 234, 0.05),
-      0 0 0 1px rgba(255, 255, 255, 0.6),
-      0 0 40px rgba(79, 172, 254, 0.06);
+      0 12px 40px rgba(0, 0, 0, 0.06),
+      0 6px 20px rgba(45, 85, 135, 0.08),
+      0 3px 12px rgba(28, 65, 105, 0.05),
+      inset 0 1px 2px rgba(255, 255, 255, 0.8),
+      inset 0 -1px 1px rgba(45, 85, 135, 0.03),
+      0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 0 25px rgba(45, 85, 135, 0.04);
   }
   50% {
-    transform: scale(1.03) translateY(-2px);
+    transform: scale(1.02) translateY(-1px);
     box-shadow: 
-      0 25px 75px rgba(0, 0, 0, 0.12),
-      0 12px 40px rgba(102, 126, 234, 0.18),
-      0 6px 20px rgba(147, 51, 234, 0.12),
-      inset 0 3px 6px rgba(255, 255, 255, 0.95),
-      inset 0 -2px 4px rgba(102, 126, 234, 0.08),
-      0 0 0 2px rgba(255, 255, 255, 0.7),
-      0 0 50px rgba(79, 172, 254, 0.10);
+      0 16px 50px rgba(0, 0, 0, 0.08),
+      0 8px 25px rgba(45, 85, 135, 0.12),
+      0 4px 15px rgba(28, 65, 105, 0.08),
+      inset 0 2px 3px rgba(255, 255, 255, 0.85),
+      inset 0 -2px 2px rgba(45, 85, 135, 0.05),
+      0 0 0 1px rgba(255, 255, 255, 0.6),
+      0 0 30px rgba(45, 85, 135, 0.06);
   }
 }
 
-/* AI company premium shimmer effect */
+/* Malvern premium shimmer effect */
 .vfrc-typing-indicator::before {
   content: '' !important;
   position: absolute !important;
   top: 0 !important;
-  left: -150% !important;
-  width: 150% !important;
+  left: -100% !important;
+  width: 100% !important;
   height: 100% !important;
   background: linear-gradient(
-    120deg, 
+    110deg, 
     transparent 0%, 
-    rgba(102, 126, 234, 0.08) 10%,
-    rgba(255, 255, 255, 0.15) 25%, 
-    rgba(79, 172, 254, 0.12) 40%, 
-    rgba(255, 255, 255, 0.2) 55%,
-    rgba(147, 51, 234, 0.08) 70%,
-    rgba(240, 245, 251, 0.1) 85%,
+    rgba(45, 85, 135, 0.06) 15%,
+    rgba(255, 255, 255, 0.12) 35%, 
+    rgba(28, 65, 105, 0.08) 50%, 
+    rgba(255, 255, 255, 0.15) 65%,
+    rgba(35, 75, 120, 0.06) 80%,
+    rgba(250, 251, 253, 0.08) 90%,
     transparent 100%
   ) !important;
-  animation: aiCompanyShimmer 4s infinite !important;
+  animation: malvernShimmer 4.5s infinite !important;
   border-radius: inherit !important;
   z-index: 1 !important;
 }
 
-@keyframes aiCompanyShimmer {
+@keyframes malvernShimmer {
   0% {
-    left: -150%;
+    left: -100%;
     opacity: 0;
   }
-  15% {
-    opacity: 1;
+  20% {
+    opacity: 0.7;
   }
-  85% {
-    opacity: 1;
+  80% {
+    opacity: 0.7;
   }
   100% {
-    left: 150%;
+    left: 100%;
     opacity: 0;
   }
 }
 
-/* Ultra-Premium AI Company Themed Typing Dots */
+/* Premium Malvern Themed Typing Dots */
 .vfrc-typing-indicator span,
 .vfrc-typing-indicator > span,
 .vfrc-system-response .vfrc-typing-indicator span,
@@ -518,130 +520,130 @@ div[class*="typing"] span,
 div[class*="loading"] span,
 .vfrc-chat .vfrc-typing-indicator span {
   display: inline-block !important;
-  width: 10px !important;
-  height: 10px !important;
+  width: 8px !important;
+  height: 8px !important;
   border-radius: 50% !important;
-  margin: 0 4px !important;
+  margin: 0 3px !important;
   opacity: 1 !important;
   pointer-events: none !important;
   position: relative !important;
   will-change: transform, opacity, background !important;
   
-  /* AI company color gradient - tech blues and purples */
+  /* Malvern sophisticated color gradient - professional blues */
   background: linear-gradient(135deg, 
-    #667eea 0%, 
-    #764ba2 30%, 
-    #667eea 60%, 
-    #4facfe 100%) !important;
+    #2d5587 0%, 
+    #1c4169 30%, 
+    #234b78 60%, 
+    #2a5284 100%) !important;
   
-  /* Premium AI glow */
+  /* Malvern premium glow */
   box-shadow: 
-    0 3px 12px rgba(102, 126, 234, 0.4),
-    inset 0 1px 3px rgba(255, 255, 255, 0.6),
-    0 0 15px rgba(79, 172, 254, 0.3) !important;
+    0 2px 8px rgba(45, 85, 135, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    0 0 12px rgba(45, 85, 135, 0.2) !important;
   
-  animation: aiCompanyBubble 2s infinite ease-in-out !important;
+  animation: malvernBubble 2.2s infinite ease-in-out !important;
 }
 
-/* Advanced staggered animation delays for smooth AI wave effect */
+/* Advanced staggered animation delays for smooth Malvern wave effect */
 .vfrc-typing-indicator span:nth-child(1),
 .vfrc-typing-indicator span.xaffbq3 {
   animation-delay: 0s !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background: linear-gradient(135deg, #2d5587 0%, #1c4169 100%) !important;
 }
 
 .vfrc-typing-indicator span:nth-child(2),
 .vfrc-typing-indicator span.xaffbq4 {
-  animation-delay: 0.3s !important;
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+  animation-delay: 0.35s !important;
+  background: linear-gradient(135deg, #1c4169 0%, #234b78 100%) !important;
 }
 
 .vfrc-typing-indicator span:nth-child(3),
 .vfrc-typing-indicator span.xaffbq5 {
-  animation-delay: 0.6s !important;
-  background: linear-gradient(135deg, #4facfe 0%, #667eea 100%) !important;
+  animation-delay: 0.7s !important;
+  background: linear-gradient(135deg, #234b78 0%, #2a5284 100%) !important;
 }
 
-/* Ultra-luxurious AI company bubbling animation */
-@keyframes aiCompanyBubble {
+/* Sophisticated Malvern bubbling animation */
+@keyframes malvernBubble {
   0%, 70%, 100% {
     transform: scale(1) translateY(0) rotate(0deg);
-    opacity: 0.7;
+    opacity: 0.8;
     box-shadow: 
-      0 3px 12px rgba(102, 126, 234, 0.4),
-      inset 0 1px 3px rgba(255, 255, 255, 0.6),
-      0 0 15px rgba(79, 172, 254, 0.3);
+      0 2px 8px rgba(45, 85, 135, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.5),
+      0 0 12px rgba(45, 85, 135, 0.2);
   }
-  15% {
-    transform: scale(1.2) translateY(-3px) rotate(5deg);
+  20% {
+    transform: scale(1.15) translateY(-2px) rotate(3deg);
     opacity: 0.9;
     box-shadow: 
-      0 5px 16px rgba(102, 126, 234, 0.6),
-      inset 0 2px 5px rgba(255, 255, 255, 0.8),
-      0 0 20px rgba(79, 172, 254, 0.5);
+      0 4px 12px rgba(45, 85, 135, 0.4),
+      inset 0 1px 3px rgba(255, 255, 255, 0.6),
+      0 0 16px rgba(45, 85, 135, 0.3);
   }
-  35% {
-    transform: scale(1.6) translateY(-12px) rotate(-3deg);
+  40% {
+    transform: scale(1.4) translateY(-8px) rotate(-2deg);
     opacity: 1;
     box-shadow: 
-      0 8px 25px rgba(102, 126, 234, 0.8),
-      inset 0 3px 8px rgba(255, 255, 255, 0.9),
-      0 0 30px rgba(79, 172, 254, 0.7),
-      0 0 50px rgba(147, 51, 234, 0.4);
+      0 6px 20px rgba(45, 85, 135, 0.5),
+      inset 0 2px 4px rgba(255, 255, 255, 0.7),
+      0 0 20px rgba(45, 85, 135, 0.4),
+      0 0 30px rgba(28, 65, 105, 0.2);
   }
-  50% {
-    transform: scale(1.3) translateY(-6px) rotate(2deg);
+  55% {
+    transform: scale(1.2) translateY(-4px) rotate(1deg);
     opacity: 0.9;
     box-shadow: 
-      0 6px 20px rgba(102, 126, 234, 0.7),
-      inset 0 2px 6px rgba(255, 255, 255, 0.85),
-      0 0 25px rgba(79, 172, 254, 0.6);
+      0 4px 16px rgba(45, 85, 135, 0.4),
+      inset 0 1px 3px rgba(255, 255, 255, 0.6),
+      0 0 18px rgba(45, 85, 135, 0.3);
   }
 }
 
-/* Premium AI company typing indicator container */
+/* Premium Malvern typing indicator container */
 ._1ayyscc1,
 div[class*="_1ayyscc"] {
   position: relative !important;
-  margin: 12px 0 !important;
+  margin: 10px 0 !important;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
 }
 
-/* AI-themed floating particles effect */
+/* Malvern-themed floating particles effect */
 .vfrc-typing-indicator::after {
   content: '' !important;
   position: absolute !important;
-  top: -10px !important;
-  left: -10px !important;
-  right: -10px !important;
-  bottom: -10px !important;
+  top: -8px !important;
+  left: -8px !important;
+  right: -8px !important;
+  bottom: -8px !important;
   background-image: 
-    radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.1) 2px, transparent 2px),
-    radial-gradient(circle at 60% 30%, rgba(79, 172, 254, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 30% 80%, rgba(240, 245, 251, 0.1) 1px, transparent 1px) !important;
-  background-size: 40px 40px, 30px 30px, 50px 50px, 35px 35px !important;
-  animation: aiFloatingParticles 8s linear infinite !important;
-  opacity: 0.6 !important;
+    radial-gradient(circle at 25% 25%, rgba(45, 85, 135, 0.08) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 65% 35%, rgba(28, 65, 105, 0.06) 1px, transparent 1px),
+    radial-gradient(circle at 75% 65%, rgba(35, 75, 120, 0.09) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 35% 75%, rgba(250, 251, 253, 0.08) 1px, transparent 1px) !important;
+  background-size: 35px 35px, 25px 25px, 45px 45px, 30px 30px !important;
+  animation: malvernFloatingParticles 7s linear infinite !important;
+  opacity: 0.5 !important;
   pointer-events: none !important;
   z-index: 0 !important;
 }
 
-@keyframes aiFloatingParticles {
+@keyframes malvernFloatingParticles {
   0% {
     transform: translateY(0px) rotate(0deg);
-    opacity: 0.6;
+    opacity: 0.5;
   }
   50% {
-    transform: translateY(-5px) rotate(180deg);
-    opacity: 0.8;
+    transform: translateY(-3px) rotate(180deg);
+    opacity: 0.7;
   }
   100% {
     transform: translateY(0px) rotate(360deg);
-    opacity: 0.6;
+    opacity: 0.5;
   }
 }
 
@@ -1006,9 +1008,9 @@ div._6r9xee3.o231sh1:hover {
   position: relative !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 500 !important;
-  font-size: 18px !important;
+  font-size: 16px !important;
   color: #1a1a1a !important;
-  letter-spacing: -0.02em !important;
+  letter-spacing: -0.01em !important;
   line-height: 1.3 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -1037,7 +1039,7 @@ div._6r9xee3.o231sh1:hover {
   position: relative !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   font-weight: 400 !important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   color: #666666 !important;
   letter-spacing: 0 !important;
   line-height: 1.4 !important;
@@ -1072,7 +1074,7 @@ textarea._1gdvh9t6 {
   /* Use default Voiceflow styling - no custom background/border/shadow */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   color: rgba(0, 0, 0, 0.85) !important;
-  font-size: 14px !important;
+  font-size: 12px !important;
   font-weight: 400 !important;
   line-height: 1.4 !important;
 }
@@ -1086,8 +1088,8 @@ textarea._1gdvh9t6::placeholder {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
   color: #666666 !important;
   font-weight: 400 !important;
-  font-size: 14px !important;
-  letter-spacing: 0.02em !important;
+  font-size: 12px !important;
+  letter-spacing: 0.01em !important;
   animation: typewriterPlaceholder 3s steps(25) infinite !important;
   opacity: 1 !important;
 }
