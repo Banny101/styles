@@ -268,91 +268,149 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   overflow: visible !important;
 }
 
-/* ================= LIST STYLING FOR AGENT MESSAGES ================= */
-/* Bullet points and numbered lists in system messages */
-.vfrc-system-response .vfrc-message ul,
-.vfrc-system-response .vfrc-message ol,
+/* ================= AGGRESSIVE BULLET POINT FORCING ================= */
+/* Force bullets with extremely specific selectors and fallbacks */
+
+/* Reset any existing list overrides */
+.vfrc-system-response *,
+.vfrc-message *,
+.markdown *,
+._11kfxpg1 *,
+._11kfxpg3 * {
+  list-style: inherit !important;
+}
+
+/* Primary bullet styling - cast a wide net */
+.vfrc-system-response ul,
+.vfrc-system-response ol,
 .vfrc-message ul,
 .vfrc-message ol,
 .markdown ul,
-.markdown ol {
+.markdown ol,
+._11kfxpg1 ul,
+._11kfxpg1 ol,
+._11kfxpg3 ul,
+._11kfxpg3 ol,
+div[class*="message"] ul,
+div[class*="message"] ol,
+div[class*="markdown"] ul,
+div[class*="markdown"] ol {
   display: block !important;
   margin: 12px 0 !important;
-  padding-left: 20px !important;
+  padding-left: 25px !important;
   list-style-position: outside !important;
-  color: rgba(0, 0, 0, 0.85) !important;
-}
-
-.vfrc-system-response .vfrc-message ul,
-.vfrc-message ul,
-.markdown ul {
   list-style-type: disc !important;
-  list-style-color: rgba(0, 0, 0, 0.7) !important;
+  color: #333 !important;
 }
 
-.vfrc-system-response .vfrc-message ol,
+/* Force ordered lists */
+.vfrc-system-response ol,
 .vfrc-message ol,
-.markdown ol {
+.markdown ol,
+._11kfxpg1 ol,
+._11kfxpg3 ol,
+div[class*="message"] ol,
+div[class*="markdown"] ol {
   list-style-type: decimal !important;
-  list-style-color: rgba(0, 0, 0, 0.7) !important;
 }
 
-.vfrc-system-response .vfrc-message li,
+/* Force list items to display properly */
+.vfrc-system-response li,
 .vfrc-message li,
-.markdown li {
+.markdown li,
+._11kfxpg1 li,
+._11kfxpg3 li,
+div[class*="message"] li,
+div[class*="markdown"] li {
   display: list-item !important;
-  margin: 6px 0 !important;
-  padding-left: 4px !important;
-  line-height: 1.5 !important;
+  margin: 8px 0 !important;
+  padding-left: 8px !important;
+  line-height: 1.6 !important;
   color: rgba(0, 0, 0, 0.85) !important;
-}
-
-/* Explicit marker styling */
-.vfrc-system-response .vfrc-message li::marker,
-.vfrc-message li::marker,
-.markdown li::marker {
-  color: rgba(0, 0, 0, 0.7) !important;
-  content: disc !important;
-}
-
-.vfrc-system-response .vfrc-message ol li::marker,
-.vfrc-message ol li::marker,
-.markdown ol li::marker {
-  color: rgba(0, 0, 0, 0.7) !important;
-}
-
-/* Nested lists */
-.vfrc-system-response .vfrc-message ul ul,
-.vfrc-message ul ul,
-.markdown ul ul {
-  list-style-type: circle !important;
-  list-style-color: rgba(0, 0, 0, 0.6) !important;
-  margin: 4px 0 !important;
-}
-
-.vfrc-system-response .vfrc-message ul ul ul,
-.vfrc-message ul ul ul,
-.markdown ul ul ul {
-  list-style-type: square !important;
-  list-style-color: rgba(0, 0, 0, 0.6) !important;
-}
-
-/* Alternative approach using CSS pseudo-elements if markers still don't show */
-.vfrc-system-response .vfrc-message li:not(ol li),
-.vfrc-message li:not(ol li),
-.markdown li:not(ol li) {
+  list-style-type: inherit !important;
   position: relative !important;
 }
 
-.vfrc-system-response .vfrc-message li:not(ol li)::before,
-.vfrc-message li:not(ol li)::before,
-.markdown li:not(ol li)::before {
-  content: "•" !important;
-  color: rgba(0, 0, 0, 0.7) !important;
+/* NUCLEAR OPTION: Force bullets with pseudo-elements for ALL list items */
+.vfrc-system-response ul li,
+.vfrc-message ul li,
+.markdown ul li,
+._11kfxpg1 ul li,
+._11kfxpg3 ul li,
+div[class*="message"] ul li,
+div[class*="markdown"] ul li {
+  position: relative !important;
+  padding-left: 12px !important;
+}
+
+.vfrc-system-response ul li::before,
+.vfrc-message ul li::before,
+.markdown ul li::before,
+._11kfxpg1 ul li::before,
+._11kfxpg3 ul li::before,
+div[class*="message"] ul li::before,
+div[class*="markdown"] ul li::before {
+  content: "• " !important;
+  color: #333 !important;
   font-weight: bold !important;
   position: absolute !important;
-  left: -16px !important;
+  left: -20px !important;
   top: 0 !important;
+  font-size: 16px !important;
+  line-height: inherit !important;
+}
+
+/* NUCLEAR OPTION: Force numbers for ordered lists */
+.vfrc-system-response ol,
+.vfrc-message ol,
+.markdown ol,
+._11kfxpg1 ol,
+._11kfxpg3 ol,
+div[class*="message"] ol,
+div[class*="markdown"] ol {
+  counter-reset: list-counter !important;
+}
+
+.vfrc-system-response ol li,
+.vfrc-message ol li,
+.markdown ol li,
+._11kfxpg1 ol li,
+._11kfxpg3 ol li,
+div[class*="message"] ol li,
+div[class*="markdown"] ol li {
+  counter-increment: list-counter !important;
+  position: relative !important;
+  padding-left: 12px !important;
+}
+
+.vfrc-system-response ol li::before,
+.vfrc-message ol li::before,
+.markdown ol li::before,
+._11kfxpg1 ol li::before,
+._11kfxpg3 ol li::before,
+div[class*="message"] ol li::before,
+div[class*="markdown"] ol li::before {
+  content: counter(list-counter) ". " !important;
+  color: #333 !important;
+  font-weight: bold !important;
+  position: absolute !important;
+  left: -25px !important;
+  top: 0 !important;
+  font-size: 16px !important;
+  line-height: inherit !important;
+}
+
+/* Ensure paragraphs in lists don't interfere */
+.vfrc-system-response li p,
+.vfrc-message li p,
+.markdown li p,
+._11kfxpg1 li p,
+._11kfxpg3 li p,
+div[class*="message"] li p,
+div[class*="markdown"] li p {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline !important;
 }
 
 /* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
