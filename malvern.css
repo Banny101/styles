@@ -280,18 +280,21 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   margin: 12px 0 !important;
   padding-left: 20px !important;
   list-style-position: outside !important;
+  color: rgba(0, 0, 0, 0.85) !important;
 }
 
 .vfrc-system-response .vfrc-message ul,
 .vfrc-message ul,
 .markdown ul {
   list-style-type: disc !important;
+  list-style-color: rgba(0, 0, 0, 0.7) !important;
 }
 
 .vfrc-system-response .vfrc-message ol,
 .vfrc-message ol,
 .markdown ol {
   list-style-type: decimal !important;
+  list-style-color: rgba(0, 0, 0, 0.7) !important;
 }
 
 .vfrc-system-response .vfrc-message li,
@@ -301,7 +304,21 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   margin: 6px 0 !important;
   padding-left: 4px !important;
   line-height: 1.5 !important;
-  color: inherit !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Explicit marker styling */
+.vfrc-system-response .vfrc-message li::marker,
+.vfrc-message li::marker,
+.markdown li::marker {
+  color: rgba(0, 0, 0, 0.7) !important;
+  content: disc !important;
+}
+
+.vfrc-system-response .vfrc-message ol li::marker,
+.vfrc-message ol li::marker,
+.markdown ol li::marker {
+  color: rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Nested lists */
@@ -309,6 +326,7 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
 .vfrc-message ul ul,
 .markdown ul ul {
   list-style-type: circle !important;
+  list-style-color: rgba(0, 0, 0, 0.6) !important;
   margin: 4px 0 !important;
 }
 
@@ -316,6 +334,25 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
 .vfrc-message ul ul ul,
 .markdown ul ul ul {
   list-style-type: square !important;
+  list-style-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Alternative approach using CSS pseudo-elements if markers still don't show */
+.vfrc-system-response .vfrc-message li:not(ol li),
+.vfrc-message li:not(ol li),
+.markdown li:not(ol li) {
+  position: relative !important;
+}
+
+.vfrc-system-response .vfrc-message li:not(ol li)::before,
+.vfrc-message li:not(ol li)::before,
+.markdown li:not(ol li)::before {
+  content: "•" !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+  font-weight: bold !important;
+  position: absolute !important;
+  left: -16px !important;
+  top: 0 !important;
 }
 
 /* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
