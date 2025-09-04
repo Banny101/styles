@@ -1423,39 +1423,70 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   }
 }
 
-/* ================= COMPREHENSIVE INTER FONT APPLICATION ================= */
-/* Apply Inter font to ALL elements including proactive messages */
-* {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+/* ================= DEFAULT FONT APPLICATION ================= */
+/* Use default browser fonts for all elements */
+
+/* All elements use default browser fonts */
+
+/* Proactive messages use default fonts */
+
+/* ================= FALLBACK BULLET STYLING WITH CSS COUNTERS ================= */
+/* Enhanced fallback for when native list styling fails in Voiceflow */
+
+/* Target paragraphs that contain dash bullets */
+.vfrc-system-response p,
+.vfrc-message p,
+.markdown p {
+  position: relative;
 }
 
-/* Specific Inter font application for all text elements */
-.vfrc-assistant-info--title,
-.vfrc-assistant-info--description,
-.vfrc-message,
-.vfrc-system-response .vfrc-message,
-.vfrc-user-response .vfrc-message,
-div._6r9xee3.o231sh1,
-.vfrc-prompt,
-.vfrc-header--title,
-.vfrc-header--subtitle,
-.vfrc-footer--watermark,
-.vfrc-typing-indicator,
-h1, h2, h3, h4, h5, h6,
-p, span, div, a, button,
-input, textarea,
-._6r9xee0,
-._6r9xee3,
-.o231sh1 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+/* Style paragraphs that start with "- " as bullet points */
+.vfrc-system-response p[data-bullet],
+.vfrc-message p[data-bullet],
+.markdown p[data-bullet] {
+  padding-left: 20px !important;
+  margin: 8px 0 !important;
+  text-indent: 0 !important;
 }
 
-/* Ensure proactive messages specifically use Inter */
-div._6r9xee3.o231sh1,
-div._6r9xee3.o231sh1 *,
-._6r9xee0,
-._6r9xee0 * {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+.vfrc-system-response p[data-bullet]::before,
+.vfrc-message p[data-bullet]::before,
+.markdown p[data-bullet]::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 8px !important;
+  color: #004188 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Alternative approach: Use text-based bullet replacement */
+.vfrc-system-response p:contains("- "),
+.vfrc-message p:contains("- "),
+.markdown p:contains("- ") {
+  padding-left: 18px !important;
+  margin: 6px 0 !important;
+  position: relative !important;
+}
+
+/* CSS for manual bullet insertion if needed */
+.bullet-point {
+  padding-left: 18px !important;
+  margin: 6px 0 !important;
+  position: relative !important;
+}
+
+.bullet-point::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 6px !important;
+  color: #004188 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline !important;
 }
 
 /* Accessibility: Reduced motion support */
