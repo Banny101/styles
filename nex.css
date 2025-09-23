@@ -642,10 +642,9 @@ div[class*="loading"] span,
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 
-  /* Typewriter animation with cursor */
+  /* Just phrase rotation and effects - no typewriter conflict */
   animation:
-    premiumTypewriter 800ms steps(8) infinite,
-    phraseRotation 1500ms infinite,
+    phraseRotation 800ms infinite,
     techShimmerFlow 600ms ease-in-out infinite,
     spiralMorph 1200ms ease-in-out infinite !important;
 
