@@ -597,17 +597,14 @@ body .vfrc-typing-indicator:hover {
   }
 }
 
-/* Convert all bubbles to text with staggered animations */
+/* Super simple approach - just first span with working JavaScript content rotation */
 .vfrc-typing-indicator span {
   width: auto !important;
   height: auto !important;
   background: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
-  margin: 0 !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
+  margin: 0 2px !important;
 
   display: inline-block !important;
   color: rgba(30, 30, 30, 0.9) !important;
@@ -621,84 +618,17 @@ body .vfrc-typing-indicator:hover {
     0 0 8px rgba(102, 126, 234, 0.3),
     0 0 15px rgba(79, 172, 254, 0.2) !important;
 
-  animation:
-    snakeUndulation 800ms ease-in-out infinite,
-    phraseAppear 2000ms infinite !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
 }
 
-/* Individual phrase content */
-.vfrc-typing-indicator span:nth-child(1)::after,
-.vfrc-typing-indicator span.xaffbq3::after {
-  content: 'On it...' !important;
+/* Hide spans 2 and 3, show only first span */
+.vfrc-typing-indicator span:nth-child(n+2) {
+  display: none !important;
 }
 
-.vfrc-typing-indicator span:nth-child(2)::after,
-.vfrc-typing-indicator span.xaffbq4::after {
-  content: 'Got it...' !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3)::after,
-.vfrc-typing-indicator span.xaffbq5::after {
-  content: 'Working...' !important;
-}
-
-/* Add pseudo elements for remaining phrases */
-.vfrc-typing-indicator::before {
-  content: 'One sec...' !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
-  display: inline-block !important;
-  color: rgba(30, 30, 30, 0.9) !important;
-  font-family: inherit !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  text-shadow: inherit !important;
-  animation:
-    snakeUndulation 800ms ease-in-out infinite,
-    phraseAppear 2000ms infinite !important;
-  animation-delay: 1500ms !important;
-  opacity: 0 !important;
-}
-
-.vfrc-typing-indicator::after {
-  content: 'Hmm...' !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
-  display: inline-block !important;
-  color: rgba(30, 30, 30, 0.9) !important;
-  font-family: inherit !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  text-shadow: inherit !important;
-  animation:
-    snakeUndulation 800ms ease-in-out infinite,
-    phraseAppear 2000ms infinite !important;
-  animation-delay: 1800ms !important;
-  opacity: 0 !important;
-}
-
-/* Staggered delays for spans */
-.vfrc-typing-indicator span:nth-child(1) {
-  animation-delay: 0ms !important;
-}
-
-.vfrc-typing-indicator span:nth-child(2) {
-  animation-delay: 400ms !important;
-  opacity: 0 !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3) {
-  animation-delay: 800ms !important;
-  opacity: 0 !important;
-}
-
-/* Phrase appear/fade animation */
-@keyframes phraseAppear {
-  0%, 80% { opacity: 0; }
-  20%, 60% { opacity: 1; }
-  100% { opacity: 0; }
+/* First span content - will be updated by JavaScript */
+.vfrc-typing-indicator span:first-child {
+  position: relative !important;
 }
 
 
@@ -1670,41 +1600,23 @@ div._6r9xee3.o231sh1 > * {
   display: inline !important;
 }
 
-/* ================= JAVASCRIPT FOR SNAKE-LIKE ROTATING TEXT ================= */
-/* Add this script tag to your HTML or include in your JavaScript */
+/* ================= SIMPLE JAVASCRIPT FOR PHRASE ROTATION ================= */
+/* Copy and paste this into your browser console to test, or add to your HTML */
 /*
-<script>
-(function() {
-    const phrases = ['On it...', 'Got it...', 'Working...', 'One sec...', 'Hmm...'];
-    let currentIndex = 0;
 
-    function updateSnakeText() {
-        const indicators = document.querySelectorAll('.vfrc-typing-indicator');
-        indicators.forEach(indicator => {
-            const firstSpan = indicator.querySelector('span:first-child');
-            if (firstSpan) {
-                // Update the text content directly
-                firstSpan.textContent = phrases[currentIndex];
-            }
-        });
-        currentIndex = (currentIndex + 1) % phrases.length;
-    }
+// Paste this in browser console:
+const phrases = ['On it...', 'Got it...', 'Working...', 'One sec...', 'Hmm...'];
+let currentIndex = 0;
 
-    // Start the rotation - every 400ms for visibility
-    setInterval(updateSnakeText, 400);
-
-    // Also update when new typing indicators appear
-    const observer = new MutationObserver(() => {
-        setTimeout(updateSnakeText, 100); // Small delay to ensure DOM is ready
+function rotatePhrase() {
+    const spans = document.querySelectorAll('.vfrc-typing-indicator span:first-child');
+    spans.forEach(span => {
+        span.textContent = phrases[currentIndex];
     });
+    currentIndex = (currentIndex + 1) % phrases.length;
+}
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+setInterval(rotatePhrase, 500);
+rotatePhrase(); // Initial call
 
-    // Initial update with delay
-    setTimeout(updateSnakeText, 100);
-})();
-</script>
 */
