@@ -605,65 +605,67 @@ div[class*="indicator"] span,
 div[class*="typing"] span,
 div[class*="loading"] span,
 .vfrc-chat .vfrc-typing-indicator span {
-  display: none !important; /* Hide original bubbles */
-}
+  /* Replace bubbles with text */
+  width: auto !important;
+  height: auto !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
 
-/* Premium text typing indicator - JavaScript powered */
-.vfrc-typing-indicator {
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  position: relative !important;
-}
-
-/* Text element inserted by JavaScript */
-.vfrc-typing-indicator .rotating-text {
+  /* Show text instead */
   display: inline-block !important;
   color: rgba(30, 30, 30, 0.9) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   font-size: 16px !important;
   font-weight: 500 !important;
   line-height: 1.5 !important;
-  pointer-events: none !important;
-  position: relative !important;
-  z-index: 3 !important;
 
-  /* Premium tech text effects with shimmer */
+  /* Premium tech text effects */
   text-shadow:
     0 1px 3px rgba(255, 255, 255, 0.8),
     0 0 8px rgba(102, 126, 234, 0.3),
     0 0 15px rgba(79, 172, 254, 0.2) !important;
 
-  /* Advanced shimmer background for text */
-  background: linear-gradient(
-    120deg,
-    rgba(30, 30, 30, 0.9) 0%,
-    rgba(102, 126, 234, 0.9) 25%,
-    rgba(30, 30, 30, 0.9) 35%,
-    rgba(147, 51, 234, 0.9) 65%,
-    rgba(30, 30, 30, 0.9) 75%,
-    rgba(79, 172, 254, 0.9) 100%
-  ) !important;
-  background-size: 400% 100% !important;
-  background-clip: text !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-
-  /* Spiral and shimmer effects */
-  animation:
-    techShimmerFlow 600ms ease-in-out infinite,
-    spiralMorph 1200ms ease-in-out infinite !important;
-
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  will-change: opacity, transform !important;
+  /* Spiral effects */
+  animation: spiralMorph 1200ms ease-in-out infinite !important;
 }
 
-/* JavaScript code to inject rotating text */
-.vfrc-typing-indicator::before {
-  content: '' !important;
-  display: none !important;
+/* Add content to the spans using CSS only */
+.vfrc-typing-indicator span:nth-child(1),
+.vfrc-typing-indicator span:first-child {
+  animation-delay: 0s !important;
 }
 
-/* Hide the ::after pseudo element */
-.vfrc-typing-indicator::after {
-  display: none !important;
+.vfrc-typing-indicator span:nth-child(2) {
+  animation-delay: 0.3s !important;
+}
+
+.vfrc-typing-indicator span:nth-child(3) {
+  animation-delay: 0.6s !important;
+}
+
+/* Use CSS content for different spans */
+.vfrc-typing-indicator span:nth-child(1)::after,
+.vfrc-typing-indicator span:first-child::after {
+  content: 'On it...' !important;
+  display: inline-block !important;
+}
+
+.vfrc-typing-indicator span:nth-child(2)::after {
+  content: 'Got it...' !important;
+  display: inline-block !important;
+}
+
+.vfrc-typing-indicator span:nth-child(3)::after {
+  content: 'Working...' !important;
+  display: inline-block !important;
+}
+
+/* Clean up typing indicator container */
+.vfrc-typing-indicator {
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  position: relative !important;
 }
 
 /* Premium AI company typing indicator container */
