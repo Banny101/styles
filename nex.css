@@ -597,38 +597,75 @@ body .vfrc-typing-indicator:hover {
   }
 }
 
-/* Super simple approach - just first span with working JavaScript content rotation */
-.vfrc-typing-indicator span {
+/* KEEP the original bubbles but style them differently */
+.vfrc-typing-indicator span,
+.vfrc-typing-indicator > span,
+.vfrc-system-response .vfrc-typing-indicator span,
+div[class*="indicator"] span,
+div[class*="typing"] span,
+div[class*="loading"] span,
+.vfrc-chat .vfrc-typing-indicator span {
+  /* Keep original bubble behavior but change appearance */
   width: auto !important;
   height: auto !important;
+  min-width: auto !important;
+  min-height: auto !important;
+
+  /* Remove bubble styling */
   background: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
-  margin: 0 2px !important;
 
-  display: inline-block !important;
+  /* Add text styling */
   color: rgba(30, 30, 30, 0.9) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 0 !important; /* Hide original content */
+
+  /* Add our content */
+  position: relative !important;
+  margin: 0 4px !important;
+}
+
+/* Add text content to each bubble */
+.vfrc-typing-indicator span:nth-child(1)::after,
+.vfrc-typing-indicator span.xaffbq3::after {
+  content: 'On it...' !important;
   font-size: 16px !important;
   font-weight: 500 !important;
-  line-height: 1.5 !important;
-
+  color: rgba(30, 30, 30, 0.9) !important;
   text-shadow:
     0 1px 3px rgba(255, 255, 255, 0.8),
     0 0 8px rgba(102, 126, 234, 0.3),
     0 0 15px rgba(79, 172, 254, 0.2) !important;
-
   animation: snakeUndulation 800ms ease-in-out infinite !important;
 }
 
-/* Hide spans 2 and 3, show only first span */
-.vfrc-typing-indicator span:nth-child(n+2) {
-  display: none !important;
+.vfrc-typing-indicator span:nth-child(2)::after,
+.vfrc-typing-indicator span.xaffbq4::after {
+  content: 'Got it...' !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: rgba(30, 30, 30, 0.9) !important;
+  text-shadow:
+    0 1px 3px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(102, 126, 234, 0.3),
+    0 0 15px rgba(79, 172, 254, 0.2) !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
+  animation-delay: 0.2s !important;
 }
 
-/* First span content - will be updated by JavaScript */
-.vfrc-typing-indicator span:first-child {
-  position: relative !important;
+.vfrc-typing-indicator span:nth-child(3)::after,
+.vfrc-typing-indicator span.xaffbq5::after {
+  content: 'Working...' !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: rgba(30, 30, 30, 0.9) !important;
+  text-shadow:
+    0 1px 3px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(102, 126, 234, 0.3),
+    0 0 15px rgba(79, 172, 254, 0.2) !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
+  animation-delay: 0.4s !important;
 }
 
 
