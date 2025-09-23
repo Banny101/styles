@@ -597,75 +597,52 @@ body .vfrc-typing-indicator:hover {
   }
 }
 
-/* KEEP the original bubbles but style them differently */
-.vfrc-typing-indicator span,
-.vfrc-typing-indicator > span,
-.vfrc-system-response .vfrc-typing-indicator span,
-div[class*="indicator"] span,
-div[class*="typing"] span,
-div[class*="loading"] span,
-.vfrc-chat .vfrc-typing-indicator span {
-  /* Keep original bubble behavior but change appearance */
-  width: auto !important;
-  height: auto !important;
-  min-width: auto !important;
-  min-height: auto !important;
-
-  /* Remove bubble styling */
+/* Target the actual path structure and use broad selectors */
+.vfrc-chat-dialog span,
+.s9t60i5 span,
+div[class*="vfrc-chat"] span {
+  /* Remove bubble styling if present */
   background: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
 
-  /* Add text styling */
+  /* Make sure we can see our content */
+  font-size: 16px !important;
   color: rgba(30, 30, 30, 0.9) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  font-size: 0 !important; /* Hide original content */
+  font-weight: 500 !important;
 
-  /* Add our content */
+  /* Add premium effects */
+  text-shadow:
+    0 1px 3px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(102, 126, 234, 0.3),
+    0 0 15px rgba(79, 172, 254, 0.2) !important;
+
+  /* Add the snake undulation */
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
+}
+
+/* Target typing indicator spans more broadly */
+div[class*="vfrc-chat"] span:nth-child(2),
+div[class*="vfrc-chat"] span:nth-child(3) {
+  display: none !important;
+}
+
+/* Replace text content with JavaScript since CSS content isn't working */
+div[class*="vfrc-chat"] span:first-child {
   position: relative !important;
-  margin: 0 4px !important;
 }
 
-/* Let's go back to the original bubbles and just make them undulate */
-.vfrc-typing-indicator span:nth-child(1)::after,
-.vfrc-typing-indicator span.xaffbq3::after {
-  content: 'On it...' !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  color: rgba(30, 30, 30, 0.9) !important;
-  text-shadow:
-    0 1px 3px rgba(255, 255, 255, 0.8),
-    0 0 8px rgba(102, 126, 234, 0.3),
-    0 0 15px rgba(79, 172, 254, 0.2) !important;
-  animation: snakeUndulation 800ms ease-in-out infinite !important;
-}
-
-.vfrc-typing-indicator span:nth-child(2)::after,
-.vfrc-typing-indicator span.xaffbq4::after {
-  content: 'Got it...' !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  color: rgba(30, 30, 30, 0.9) !important;
-  text-shadow:
-    0 1px 3px rgba(255, 255, 255, 0.8),
-    0 0 8px rgba(102, 126, 234, 0.3),
-    0 0 15px rgba(79, 172, 254, 0.2) !important;
-  animation: snakeUndulation 800ms ease-in-out infinite !important;
-  animation-delay: 0.2s !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3)::after,
-.vfrc-typing-indicator span.xaffbq5::after {
-  content: 'Working...' !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  color: rgba(30, 30, 30, 0.9) !important;
-  text-shadow:
-    0 1px 3px rgba(255, 255, 255, 0.8),
-    0 0 8px rgba(102, 126, 234, 0.3),
-    0 0 15px rgba(79, 172, 254, 0.2) !important;
-  animation: snakeUndulation 800ms ease-in-out infinite !important;
-  animation-delay: 0.4s !important;
+/* Text rotation animation */
+@keyframes textRotation {
+  0%, 19% { content: 'On it...'; }
+  20%, 39% { content: 'Got it...'; }
+  40%, 59% { content: 'Working...'; }
+  60%, 79% { content: 'One sec...'; }
+  80%, 99% { content: 'Hmm...'; }
+  100% { content: 'On it...'; }
 }
 
 
@@ -1637,23 +1614,36 @@ div._6r9xee3.o231sh1 > * {
   display: inline !important;
 }
 
-/* ================= SIMPLE JAVASCRIPT FOR PHRASE ROTATION ================= */
-/* Copy and paste this into your browser console to test, or add to your HTML */
+/* ================= WORKING JAVASCRIPT FOR EXACT PATH ================= */
+/* Copy and paste this into your browser console: */
 /*
 
-// Paste this in browser console:
 const phrases = ['On it...', 'Got it...', 'Working...', 'One sec...', 'Hmm...'];
 let currentIndex = 0;
 
-function rotatePhrase() {
-    const spans = document.querySelectorAll('.vfrc-typing-indicator span:first-child');
-    spans.forEach(span => {
-        span.textContent = phrases[currentIndex];
+function updateText() {
+    // Use multiple selectors to catch the typing indicator
+    const selectors = [
+        '.vfrc-chat-dialog span',
+        '.s9t60i5 span',
+        'div[class*="vfrc-chat"] span',
+        '.vfrc-typing-indicator span'
+    ];
+
+    selectors.forEach(selector => {
+        const spans = document.querySelectorAll(selector);
+        spans.forEach(span => {
+            if (span && span.textContent !== phrases[currentIndex]) {
+                span.textContent = phrases[currentIndex];
+            }
+        });
     });
+
     currentIndex = (currentIndex + 1) % phrases.length;
 }
 
-setInterval(rotatePhrase, 500);
-rotatePhrase(); // Initial call
+// Run it
+setInterval(updateText, 600);
+updateText();
 
 */
