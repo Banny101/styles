@@ -608,18 +608,22 @@ div[class*="loading"] span,
   display: none !important; /* Hide original bubbles */
 }
 
-/* Premium text typing indicator */
-.vfrc-typing-indicator::after {
-  content: 'On it...' !important;
+/* Premium text typing indicator - JavaScript powered */
+.vfrc-typing-indicator {
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   position: relative !important;
-  z-index: 3 !important;
+}
+
+/* Text element inserted by JavaScript */
+.vfrc-typing-indicator .rotating-text {
   display: inline-block !important;
   color: rgba(30, 30, 30, 0.9) !important;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   font-size: 16px !important;
   font-weight: 500 !important;
   line-height: 1.5 !important;
   pointer-events: none !important;
+  position: relative !important;
+  z-index: 3 !important;
 
   /* Premium tech text effects with shimmer */
   text-shadow:
@@ -642,14 +646,24 @@ div[class*="loading"] span,
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 
-  /* Just phrase rotation and effects - no typewriter conflict */
+  /* Spiral and shimmer effects */
   animation:
-    phraseRotation 800ms infinite,
     techShimmerFlow 600ms ease-in-out infinite,
     spiralMorph 1200ms ease-in-out infinite !important;
 
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  will-change: content, opacity, transform !important;
+  will-change: opacity, transform !important;
+}
+
+/* JavaScript code to inject rotating text */
+.vfrc-typing-indicator::before {
+  content: '' !important;
+  display: none !important;
+}
+
+/* Hide the ::after pseudo element */
+.vfrc-typing-indicator::after {
+  display: none !important;
 }
 
 /* Premium AI company typing indicator container */
@@ -1610,3 +1624,44 @@ div._6r9xee3.o231sh1 > * {
   opacity: 1 !important;
   display: inline !important;
 }
+
+/* ================= JAVASCRIPT FOR ROTATING TEXT ================= */
+/* Add this script tag to your HTML or include in your JavaScript */
+/*
+<script>
+(function() {
+    const phrases = ['On it...', 'Got it...', 'Working...', 'One sec...', 'Hmm...'];
+    let currentIndex = 0;
+
+    function updateTypingText() {
+        const indicators = document.querySelectorAll('.vfrc-typing-indicator');
+        indicators.forEach(indicator => {
+            let textElement = indicator.querySelector('.rotating-text');
+            if (!textElement) {
+                textElement = document.createElement('span');
+                textElement.className = 'rotating-text';
+                indicator.appendChild(textElement);
+            }
+            textElement.textContent = phrases[currentIndex];
+        });
+        currentIndex = (currentIndex + 1) % phrases.length;
+    }
+
+    // Start the rotation
+    setInterval(updateTypingText, 200); // Change phrase every 200ms - super fast!
+
+    // Also update when new typing indicators appear
+    const observer = new MutationObserver(() => {
+        updateTypingText();
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Initial update
+    updateTypingText();
+})();
+</script>
+*/
