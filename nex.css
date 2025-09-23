@@ -644,9 +644,10 @@ div[class*="loading"] span,
 
   /* Typewriter animation with cursor */
   animation:
-    premiumTypewriter 4s steps(8) infinite,
-    phraseRotation 12s infinite,
-    techShimmerFlow 3s ease-in-out infinite !important;
+    premiumTypewriter 2s steps(8) infinite,
+    phraseRotation 5s infinite,
+    techShimmerFlow 1.5s ease-in-out infinite,
+    spiralMorph 3s ease-in-out infinite !important;
 
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: content, opacity, transform !important;
@@ -672,13 +673,13 @@ div[class*="_1ayyscc"] {
   95%, 100% { content: 'On it...'; }
 }
 
-/* Phrase Rotation Animation */
+/* Phrase Rotation Animation - Fast Cycle */
 @keyframes phraseRotation {
-  0%, 16.66% { content: 'On it...'; }
-  20%, 36.66% { content: 'Got it...'; }
-  40%, 56.66% { content: 'Working...'; }
-  60%, 76.66% { content: 'One sec...'; }
-  80%, 96.66% { content: 'Hmm...'; }
+  0%, 19% { content: 'On it...'; }
+  20%, 39% { content: 'Got it...'; }
+  40%, 59% { content: 'Working...'; }
+  60%, 79% { content: 'One sec...'; }
+  80%, 99% { content: 'Hmm...'; }
   100% { content: 'On it...'; }
 }
 
@@ -713,6 +714,30 @@ div[class*="_1ayyscc"] {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+/* Spiral Morph Animation - Super Cool Effect */
+@keyframes spiralMorph {
+  0% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+    letter-spacing: 0px;
+  }
+  25% {
+    transform: translateY(-2px) rotate(5deg) scale(1.05);
+    letter-spacing: 1px;
+  }
+  50% {
+    transform: translateY(-4px) rotate(-3deg) scale(1.1);
+    letter-spacing: 2px;
+  }
+  75% {
+    transform: translateY(-2px) rotate(8deg) scale(1.05);
+    letter-spacing: 1px;
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+    letter-spacing: 0px;
   }
 }
 
