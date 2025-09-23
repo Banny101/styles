@@ -597,23 +597,16 @@ body .vfrc-typing-indicator:hover {
   }
 }
 
-/* Ultra-Premium Text-Based Typing Indicator */
-.vfrc-typing-indicator span,
-.vfrc-typing-indicator > span,
-.vfrc-system-response .vfrc-typing-indicator span,
-div[class*="indicator"] span,
-div[class*="typing"] span,
-div[class*="loading"] span,
-.vfrc-chat .vfrc-typing-indicator span {
-  /* Replace bubbles with text */
+/* Convert bubbles to text - each span shows different content */
+.vfrc-typing-indicator span:nth-child(1),
+.vfrc-typing-indicator span.xaffbq3 {
   width: auto !important;
   height: auto !important;
   background: none !important;
   box-shadow: none !important;
   border-radius: 0 !important;
-  margin: 0 !important;
+  margin: 0 2px !important;
 
-  /* Show text instead */
   display: inline-block !important;
   color: rgba(30, 30, 30, 0.9) !important;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
@@ -621,34 +614,24 @@ div[class*="loading"] span,
   font-weight: 500 !important;
   line-height: 1.5 !important;
 
-  /* Premium tech text effects */
   text-shadow:
     0 1px 3px rgba(255, 255, 255, 0.8),
     0 0 8px rgba(102, 126, 234, 0.3),
     0 0 15px rgba(79, 172, 254, 0.2) !important;
 
-  /* Spiral effects */
-  animation: spiralMorph 1200ms ease-in-out infinite !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
 }
 
-/* Use only first span and make it work properly */
+.vfrc-typing-indicator span:nth-child(1)::after,
+.vfrc-typing-indicator span.xaffbq3::after {
+  content: 'On it...' !important;
+}
+
+/* Hide other spans for now to test */
 .vfrc-typing-indicator span:nth-child(n+2) {
   display: none !important;
 }
 
-/* Make the first span show rotating content with snake motion */
-.vfrc-typing-indicator span:first-child {
-  position: relative !important;
-  display: inline-block !important;
-  width: auto !important;
-  height: auto !important;
-  animation: snakeUndulation 800ms ease-in-out infinite !important;
-}
-
-.vfrc-typing-indicator span:first-child::after {
-  content: attr(data-phrase) !important;
-  display: inline-block !important;
-}
 
 /* Clean up typing indicator container */
 .vfrc-typing-indicator {
