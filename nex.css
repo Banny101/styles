@@ -626,8 +626,9 @@ div[class*="loading"] span,
   margin: 0 4px !important;
 }
 
-/* Show only ONE phrase at a time with proper rotation */
-.vfrc-typing-indicator span::after {
+/* Let's go back to the original bubbles and just make them undulate */
+.vfrc-typing-indicator span:nth-child(1)::after,
+.vfrc-typing-indicator span.xaffbq3::after {
   content: 'On it...' !important;
   font-size: 16px !important;
   font-weight: 500 !important;
@@ -636,27 +637,35 @@ div[class*="loading"] span,
     0 1px 3px rgba(255, 255, 255, 0.8),
     0 0 8px rgba(102, 126, 234, 0.3),
     0 0 15px rgba(79, 172, 254, 0.2) !important;
-
-  /* Snake undulation + content rotation */
-  animation:
-    snakeUndulation 800ms ease-in-out infinite,
-    rotateText 2500ms infinite steps(1) !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
 }
 
-/* Hide spans 2 and 3 to avoid multiple texts */
-.vfrc-typing-indicator span:nth-child(2),
-.vfrc-typing-indicator span:nth-child(3) {
-  display: none !important;
+.vfrc-typing-indicator span:nth-child(2)::after,
+.vfrc-typing-indicator span.xaffbq4::after {
+  content: 'Got it...' !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: rgba(30, 30, 30, 0.9) !important;
+  text-shadow:
+    0 1px 3px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(102, 126, 234, 0.3),
+    0 0 15px rgba(79, 172, 254, 0.2) !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
+  animation-delay: 0.2s !important;
 }
 
-/* Text rotation animation */
-@keyframes rotateText {
-  0%, 19% { content: 'On it...'; }
-  20%, 39% { content: 'Got it...'; }
-  40%, 59% { content: 'Working...'; }
-  60%, 79% { content: 'One sec...'; }
-  80%, 99% { content: 'Hmm...'; }
-  100% { content: 'On it...'; }
+.vfrc-typing-indicator span:nth-child(3)::after,
+.vfrc-typing-indicator span.xaffbq5::after {
+  content: 'Working...' !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: rgba(30, 30, 30, 0.9) !important;
+  text-shadow:
+    0 1px 3px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(102, 126, 234, 0.3),
+    0 0 15px rgba(79, 172, 254, 0.2) !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
+  animation-delay: 0.4s !important;
 }
 
 
