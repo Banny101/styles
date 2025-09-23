@@ -631,35 +631,28 @@ div[class*="loading"] span,
   animation: spiralMorph 1200ms ease-in-out infinite !important;
 }
 
-/* Add content to the spans using CSS only */
-.vfrc-typing-indicator span:nth-child(1),
-.vfrc-typing-indicator span:first-child {
-  animation-delay: 0s !important;
+/* Hide all spans first */
+.vfrc-typing-indicator span:nth-child(n+2) {
+  display: none !important;
 }
 
-.vfrc-typing-indicator span:nth-child(2) {
-  animation-delay: 0.3s !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3) {
-  animation-delay: 0.6s !important;
-}
-
-/* Use CSS content for different spans */
-.vfrc-typing-indicator span:nth-child(1)::after,
+/* Show only the first span and make it rotate through content */
 .vfrc-typing-indicator span:first-child::after {
   content: 'On it...' !important;
   display: inline-block !important;
+  animation:
+    spiralMorph 1200ms ease-in-out infinite,
+    rotateContent 1500ms infinite steps(1) !important;
 }
 
-.vfrc-typing-indicator span:nth-child(2)::after {
-  content: 'Got it...' !important;
-  display: inline-block !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3)::after {
-  content: 'Working...' !important;
-  display: inline-block !important;
+/* Rotating content animation */
+@keyframes rotateContent {
+  0%, 19% { content: 'On it...'; }
+  20%, 39% { content: 'Got it...'; }
+  40%, 59% { content: 'Working...'; }
+  60%, 79% { content: 'One sec...'; }
+  80%, 99% { content: 'Hmm...'; }
+  100% { content: 'On it...'; }
 }
 
 /* Clean up typing indicator container */
