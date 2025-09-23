@@ -644,10 +644,10 @@ div[class*="loading"] span,
 
   /* Typewriter animation with cursor */
   animation:
-    premiumTypewriter 2s steps(8) infinite,
-    phraseRotation 5s infinite,
-    techShimmerFlow 1.5s ease-in-out infinite,
-    spiralMorph 3s ease-in-out infinite !important;
+    premiumTypewriter 800ms steps(8) infinite,
+    phraseRotation 1500ms infinite,
+    techShimmerFlow 600ms ease-in-out infinite,
+    spiralMorph 1200ms ease-in-out infinite !important;
 
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
   will-change: content, opacity, transform !important;
@@ -673,13 +673,13 @@ div[class*="_1ayyscc"] {
   95%, 100% { content: 'On it...'; }
 }
 
-/* Phrase Rotation Animation - Fast Cycle */
+/* Phrase Rotation Animation - Ultra Fast Bubble-Style */
 @keyframes phraseRotation {
-  0%, 19% { content: 'On it...'; }
-  20%, 39% { content: 'Got it...'; }
-  40%, 59% { content: 'Working...'; }
-  60%, 79% { content: 'One sec...'; }
-  80%, 99% { content: 'Hmm...'; }
+  0%, 18% { content: 'On it...'; }
+  20%, 38% { content: 'Got it...'; }
+  40%, 58% { content: 'Working...'; }
+  60%, 78% { content: 'One sec...'; }
+  80%, 98% { content: 'Hmm...'; }
   100% { content: 'On it...'; }
 }
 
@@ -717,22 +717,26 @@ div[class*="_1ayyscc"] {
   }
 }
 
-/* Spiral Morph Animation - Super Cool Effect */
+/* Spiral Morph Animation - Bubble-Style Intense Movement */
 @keyframes spiralMorph {
   0% {
     transform: translateY(0px) rotate(0deg) scale(1);
     letter-spacing: 0px;
   }
-  25% {
-    transform: translateY(-2px) rotate(5deg) scale(1.05);
-    letter-spacing: 1px;
-  }
-  50% {
-    transform: translateY(-4px) rotate(-3deg) scale(1.1);
+  20% {
+    transform: translateY(-6px) rotate(15deg) scale(1.15);
     letter-spacing: 2px;
   }
-  75% {
-    transform: translateY(-2px) rotate(8deg) scale(1.05);
+  40% {
+    transform: translateY(-3px) rotate(-12deg) scale(0.9);
+    letter-spacing: -1px;
+  }
+  60% {
+    transform: translateY(-8px) rotate(20deg) scale(1.2);
+    letter-spacing: 3px;
+  }
+  80% {
+    transform: translateY(-2px) rotate(-8deg) scale(0.95);
     letter-spacing: 1px;
   }
   100% {
