@@ -597,7 +597,7 @@ body .vfrc-typing-indicator:hover {
   }
 }
 
-/* Ultra-Premium AI Company Themed Typing Dots */
+/* Ultra-Premium Text-Based Typing Indicator */
 .vfrc-typing-indicator span,
 .vfrc-typing-indicator > span,
 .vfrc-system-response .vfrc-typing-indicator span,
@@ -605,86 +605,51 @@ div[class*="indicator"] span,
 div[class*="typing"] span,
 div[class*="loading"] span,
 .vfrc-chat .vfrc-typing-indicator span {
-  display: inline-block !important;
-  width: 10px !important;
-  height: 10px !important;
-  border-radius: 50% !important;
-  margin: 0 4px !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
+  display: none !important; /* Hide original bubbles */
+}
+
+/* Premium text typing indicator */
+.vfrc-typing-indicator::after {
+  content: 'On it...' !important;
   position: relative !important;
-  will-change: transform, opacity, background !important;
-  
-  /* AI company color gradient - tech blues and purples */
-  background: linear-gradient(135deg, 
-    #667eea 0%, 
-    #764ba2 30%, 
-    #667eea 60%, 
-    #4facfe 100%) !important;
-  
-  /* Premium AI glow */
-  box-shadow: 
-    0 3px 12px rgba(102, 126, 234, 0.4),
-    inset 0 1px 3px rgba(255, 255, 255, 0.6),
-    0 0 15px rgba(79, 172, 254, 0.3) !important;
-  
-  animation: aiCompanyBubble 2s infinite ease-in-out !important;
-}
+  z-index: 3 !important;
+  display: inline-block !important;
+  color: rgba(30, 30, 30, 0.9) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  pointer-events: none !important;
 
-/* Advanced staggered animation delays for smooth AI wave effect */
-.vfrc-typing-indicator span:nth-child(1),
-.vfrc-typing-indicator span.xaffbq3 {
-  animation-delay: 0s !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-}
+  /* Premium tech text effects with shimmer */
+  text-shadow:
+    0 1px 3px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(102, 126, 234, 0.3),
+    0 0 15px rgba(79, 172, 254, 0.2) !important;
 
-.vfrc-typing-indicator span:nth-child(2),
-.vfrc-typing-indicator span.xaffbq4 {
-  animation-delay: 0.3s !important;
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
-}
+  /* Advanced shimmer background for text */
+  background: linear-gradient(
+    120deg,
+    rgba(30, 30, 30, 0.9) 0%,
+    rgba(102, 126, 234, 0.9) 25%,
+    rgba(30, 30, 30, 0.9) 35%,
+    rgba(147, 51, 234, 0.9) 65%,
+    rgba(30, 30, 30, 0.9) 75%,
+    rgba(79, 172, 254, 0.9) 100%
+  ) !important;
+  background-size: 400% 100% !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 
-.vfrc-typing-indicator span:nth-child(3),
-.vfrc-typing-indicator span.xaffbq5 {
-  animation-delay: 0.6s !important;
-  background: linear-gradient(135deg, #4facfe 0%, #667eea 100%) !important;
-}
+  /* Typewriter animation with cursor */
+  animation:
+    premiumTypewriter 4s steps(8) infinite,
+    phraseRotation 12s infinite,
+    techShimmerFlow 3s ease-in-out infinite !important;
 
-/* Ultra-luxurious AI company bubbling animation */
-@keyframes aiCompanyBubble {
-  0%, 70%, 100% {
-    transform: scale(1) translateY(0) rotate(0deg);
-    opacity: 0.7;
-    box-shadow: 
-      0 3px 12px rgba(102, 126, 234, 0.4),
-      inset 0 1px 3px rgba(255, 255, 255, 0.6),
-      0 0 15px rgba(79, 172, 254, 0.3);
-  }
-  15% {
-    transform: scale(1.2) translateY(-3px) rotate(5deg);
-    opacity: 0.9;
-    box-shadow: 
-      0 5px 16px rgba(102, 126, 234, 0.6),
-      inset 0 2px 5px rgba(255, 255, 255, 0.8),
-      0 0 20px rgba(79, 172, 254, 0.5);
-  }
-  35% {
-    transform: scale(1.6) translateY(-12px) rotate(-3deg);
-    opacity: 1;
-    box-shadow: 
-      0 8px 25px rgba(102, 126, 234, 0.8),
-      inset 0 3px 8px rgba(255, 255, 255, 0.9),
-      0 0 30px rgba(79, 172, 254, 0.7),
-      0 0 50px rgba(147, 51, 234, 0.4);
-  }
-  50% {
-    transform: scale(1.3) translateY(-6px) rotate(2deg);
-    opacity: 0.9;
-    box-shadow: 
-      0 6px 20px rgba(102, 126, 234, 0.7),
-      inset 0 2px 6px rgba(255, 255, 255, 0.85),
-      0 0 25px rgba(79, 172, 254, 0.6);
-  }
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: content, opacity, transform !important;
 }
 
 /* Premium AI company typing indicator container */
@@ -698,22 +663,79 @@ div[class*="_1ayyscc"] {
   padding: 0 !important;
 }
 
-/* AI-themed floating particles effect */
-.vfrc-typing-indicator::after {
+/* Premium Typewriter Animation */
+@keyframes premiumTypewriter {
+  0%, 20% { content: 'O'; }
+  25%, 45% { content: 'On'; }
+  50%, 70% { content: 'On '; }
+  75%, 90% { content: 'On i'; }
+  95%, 100% { content: 'On it...'; }
+}
+
+/* Phrase Rotation Animation */
+@keyframes phraseRotation {
+  0%, 16.66% { content: 'On it...'; }
+  20%, 36.66% { content: 'Got it...'; }
+  40%, 56.66% { content: 'Working...'; }
+  60%, 76.66% { content: 'One sec...'; }
+  80%, 96.66% { content: 'Hmm...'; }
+  100% { content: 'On it...'; }
+}
+
+/* Cursor blink effect */
+.vfrc-typing-indicator::before {
+  content: '' !important;
+  position: absolute !important;
+  right: -8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 2px !important;
+  height: 18px !important;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%) !important;
+  border-radius: 1px !important;
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.5) !important;
+  animation: premiumCursorBlink 1.2s infinite !important;
+  z-index: 4 !important;
+}
+
+@keyframes premiumCursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Tech shimmer flow animation for text */
+@keyframes techShimmerFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* AI-themed floating particles effect - moved to background */
+.vfrc-typing-indicator {
+  position: relative !important;
+}
+
+.vfrc-typing-indicator div::after {
   content: '' !important;
   position: absolute !important;
   top: -10px !important;
   left: -10px !important;
   right: -10px !important;
   bottom: -10px !important;
-  background-image: 
+  background-image:
     radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.1) 2px, transparent 2px),
     radial-gradient(circle at 60% 30%, rgba(79, 172, 254, 0.08) 1px, transparent 1px),
     radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.12) 1.5px, transparent 1.5px),
     radial-gradient(circle at 30% 80%, rgba(240, 245, 251, 0.1) 1px, transparent 1px) !important;
   background-size: 40px 40px, 30px 30px, 50px 50px, 35px 35px !important;
   animation: aiFloatingParticles 8s linear infinite !important;
-  opacity: 0.6 !important;
+  opacity: 0.4 !important;
   pointer-events: none !important;
   z-index: 0 !important;
 }
@@ -721,15 +743,15 @@ div[class*="_1ayyscc"] {
 @keyframes aiFloatingParticles {
   0% {
     transform: translateY(0px) rotate(0deg);
-    opacity: 0.6;
+    opacity: 0.4;
   }
   50% {
     transform: translateY(-5px) rotate(180deg);
-    opacity: 0.8;
+    opacity: 0.6;
   }
   100% {
     transform: translateY(0px) rotate(360deg);
-    opacity: 0.6;
+    opacity: 0.4;
   }
 }
 
