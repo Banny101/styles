@@ -631,94 +631,23 @@ div[class*="loading"] span,
   animation: spiralMorph 1200ms ease-in-out infinite !important;
 }
 
-/* Position all spans on top of each other */
-.vfrc-typing-indicator span {
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
+/* Use only first span and make it work properly */
+.vfrc-typing-indicator span:nth-child(n+2) {
+  display: none !important;
 }
 
-/* Set static content for each span */
-.vfrc-typing-indicator span:nth-child(1)::after {
-  content: 'On it...' !important;
-}
-
-.vfrc-typing-indicator span:nth-child(2)::after {
-  content: 'Got it...' !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3)::after {
-  content: 'Working...' !important;
-}
-
-/* Create more spans with CSS if available */
-.vfrc-typing-indicator::before {
-  content: 'One sec...' !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
+/* Make the first span show rotating content with snake motion */
+.vfrc-typing-indicator span:first-child {
+  position: relative !important;
   display: inline-block !important;
-  color: inherit !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  line-height: inherit !important;
-  text-shadow: inherit !important;
-  animation:
-    spiralMorph 1200ms ease-in-out infinite,
-    fadeInOut 1500ms infinite !important;
-  animation-delay: 1200ms !important;
-  opacity: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  animation: snakeUndulation 800ms ease-in-out infinite !important;
 }
 
-.vfrc-typing-indicator::after {
-  content: 'Hmm...' !important;
-  position: absolute !important;
-  left: 0 !important;
-  top: 0 !important;
+.vfrc-typing-indicator span:first-child::after {
+  content: attr(data-phrase) !important;
   display: inline-block !important;
-  color: inherit !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  line-height: inherit !important;
-  text-shadow: inherit !important;
-  animation:
-    spiralMorph 1200ms ease-in-out infinite,
-    fadeInOut 1500ms infinite !important;
-  animation-delay: 1500ms !important;
-  opacity: 0 !important;
-}
-
-/* Add fade animation delays to spans */
-.vfrc-typing-indicator span:nth-child(1) {
-  animation:
-    spiralMorph 1200ms ease-in-out infinite,
-    fadeInOut 1500ms infinite !important;
-  animation-delay: 0ms !important;
-}
-
-.vfrc-typing-indicator span:nth-child(2) {
-  animation:
-    spiralMorph 1200ms ease-in-out infinite,
-    fadeInOut 1500ms infinite !important;
-  animation-delay: 300ms !important;
-  opacity: 0 !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3) {
-  animation:
-    spiralMorph 1200ms ease-in-out infinite,
-    fadeInOut 1500ms infinite !important;
-  animation-delay: 600ms !important;
-  opacity: 0 !important;
-}
-
-/* Fade in/out animation */
-@keyframes fadeInOut {
-  0%, 80% { opacity: 0; }
-  20%, 60% { opacity: 1; }
-  100% { opacity: 0; }
 }
 
 /* Clean up typing indicator container */
@@ -791,27 +720,34 @@ div[class*="_1ayyscc"] {
   }
 }
 
-/* Spiral Morph Animation - Subtle Movement */
-@keyframes spiralMorph {
+/* Snake-like Lateral Undulation Animation */
+@keyframes snakeUndulation {
   0% {
-    transform: translateY(0px) rotate(0deg) scale(1);
-    letter-spacing: 0px;
+    transform: translateX(0px) translateY(0px) skew(0deg);
+  }
+  12.5% {
+    transform: translateX(2px) translateY(-1px) skew(2deg);
   }
   25% {
-    transform: translateY(-2px) rotate(3deg) scale(1.02);
-    letter-spacing: 0.5px;
+    transform: translateX(4px) translateY(-2px) skew(4deg);
+  }
+  37.5% {
+    transform: translateX(2px) translateY(-1px) skew(2deg);
   }
   50% {
-    transform: translateY(-3px) rotate(-2deg) scale(1.03);
-    letter-spacing: 1px;
+    transform: translateX(0px) translateY(0px) skew(0deg);
+  }
+  62.5% {
+    transform: translateX(-2px) translateY(-1px) skew(-2deg);
   }
   75% {
-    transform: translateY(-2px) rotate(4deg) scale(1.02);
-    letter-spacing: 0.5px;
+    transform: translateX(-4px) translateY(-2px) skew(-4deg);
+  }
+  87.5% {
+    transform: translateX(-2px) translateY(-1px) skew(-2deg);
   }
   100% {
-    transform: translateY(0px) rotate(0deg) scale(1);
-    letter-spacing: 0px;
+    transform: translateX(0px) translateY(0px) skew(0deg);
   }
 }
 
@@ -1682,7 +1618,7 @@ div._6r9xee3.o231sh1 > * {
   display: inline !important;
 }
 
-/* ================= JAVASCRIPT FOR ROTATING TEXT ================= */
+/* ================= JAVASCRIPT FOR SNAKE-LIKE ROTATING TEXT ================= */
 /* Add this script tag to your HTML or include in your JavaScript */
 /*
 <script>
@@ -1690,26 +1626,24 @@ div._6r9xee3.o231sh1 > * {
     const phrases = ['On it...', 'Got it...', 'Working...', 'One sec...', 'Hmm...'];
     let currentIndex = 0;
 
-    function updateTypingText() {
+    function updateSnakeText() {
         const indicators = document.querySelectorAll('.vfrc-typing-indicator');
         indicators.forEach(indicator => {
-            let textElement = indicator.querySelector('.rotating-text');
-            if (!textElement) {
-                textElement = document.createElement('span');
-                textElement.className = 'rotating-text';
-                indicator.appendChild(textElement);
+            const firstSpan = indicator.querySelector('span:first-child');
+            if (firstSpan) {
+                // Update the text content directly
+                firstSpan.textContent = phrases[currentIndex];
             }
-            textElement.textContent = phrases[currentIndex];
         });
         currentIndex = (currentIndex + 1) % phrases.length;
     }
 
-    // Start the rotation
-    setInterval(updateTypingText, 200); // Change phrase every 200ms - super fast!
+    // Start the rotation - every 400ms for visibility
+    setInterval(updateSnakeText, 400);
 
     // Also update when new typing indicators appear
     const observer = new MutationObserver(() => {
-        updateTypingText();
+        setTimeout(updateSnakeText, 100); // Small delay to ensure DOM is ready
     });
 
     observer.observe(document.body, {
@@ -1717,8 +1651,8 @@ div._6r9xee3.o231sh1 > * {
         subtree: true
     });
 
-    // Initial update
-    updateTypingText();
+    // Initial update with delay
+    setTimeout(updateSnakeText, 100);
 })();
 </script>
 */
