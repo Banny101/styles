@@ -1,0 +1,1607 @@
+/* ================= RESET ALL BUTTON CONTAINERS FIRST ================= */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5,
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5,
+.vfrc-launcher,
+.f6dof81,
+.f6dof87.f6dof89,
+.f6dof86.f6dof88,
+div.f6dof87.f6dof89,
+div.f6dof8m.f6dof8o.f6dof8r.f6dof8f,
+div.f6dof87.f6dof89 {
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* ================= MAIN CONTAINER STYLING (APPLIES TO BOTH STATES) ================= */
+._1emja3f9 {
+  position: fixed !important;
+  z-index: 9999 !important;
+}
+
+/* CLOSED STATE - specific positioning */
+._1emja3f9:has(img[alt="open chat"]),
+._1emja3f9:not(:has(#voiceflow-chat)) {
+  bottom: 20px !important;
+  right: 20px !important;
+}
+
+/* OPENED STATE - specific positioning */
+._1emja3f9:has(#voiceflow-chat) {
+  bottom: 0 !important;
+  right: 0 !important;
+}
+
+/* ================= CLOSED STATE STYLING (PREMIUM LAUNCHER) ================= */
+/* Parent containers in closed state - PREMIUM GLASS MORPHISM */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+  width: 120px !important;
+  height: 120px !important;
+  min-width: 120px !important;
+  min-height: 120px !important;
+  max-width: 120px !important;
+  max-height: 120px !important;
+  
+  /* Premium Glass Morphism Design */
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 50% !important;
+  
+  /* Advanced Shadow System */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  
+  /* Smooth Transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, backdrop-filter !important;
+  
+  /* Premium Breathing Animation */
+  animation: launcherPremiumBreathing 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite !important;
+}
+
+/* Premium hover effect for closed state button */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]):hover,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h):hover {
+  /* Enhanced glass effect on hover */
+  background: rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(30px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
+  
+  /* Dramatic shadow enhancement */
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 40px rgba(102, 126, 234, 0.3) !important;
+  
+  /* Smooth scale transform */
+  transform: scale(1.08) translateY(-4px) !important;
+  
+  /* Premium hover bounce */
+  animation: launcherPremiumHoverBounce 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite !important;
+}
+
+/* ================= KEYFRAME ANIMATIONS ================= */
+/* Premium Breathing Animation for Launcher */
+@keyframes launcherPremiumBreathing {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    transform: scale(1.03) translateY(-3px);
+    box-shadow: 
+      0 14px 45px rgba(0, 0, 0, 0.14),
+      0 0 20px rgba(102, 126, 234, 0.15),
+      inset 0 1px 1px rgba(255, 255, 255, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Premium Hover Bounce Animation */
+@keyframes launcherPremiumHoverBounce {
+  0%, 100% {
+    transform: scale(1.08) translateY(-4px) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.12) translateY(-8px) rotate(3deg);
+  }
+}
+
+/* ================= CLOSED STATE IMAGE STYLING ================= */
+/* Closed state image - PREMIUM ANIMATED */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+  width: 114px !important;
+  height: 114px !important;
+  min-width: 114px !important;
+  min-height: 114px !important;
+  max-width: 114px !important;
+  max-height: 114px !important;
+  
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  
+  /* Enhanced styling */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(102, 126, 234, 0.1) !important;
+  
+  /* Smooth transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, filter !important;
+  
+  /* Premium pulse animation instead of rotation */
+  animation: imagePremiumPulse 4s ease-in-out infinite !important;
+}
+
+/* Image hover effect */
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:hover img.f6dof8u.f6dof8w.f6dof8h,
+.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:hover img[alt="open chat"] {
+  transform: scale(1.05) !important;
+  filter: brightness(1.1) saturate(1.2) !important;
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* Premium Pulse Animation for Images */
+@keyframes imagePremiumPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1) saturate(1);
+  }
+  50% {
+    transform: scale(1.02);
+    filter: brightness(1.05) saturate(1.1);
+  }
+}
+
+/* ================= AVATAR STYLING WITH SOPHISTICATED ANIMATIONS ================= */
+/* Perfect Avatar Sizing and Enhancement */
+img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12 {
+  width: 120px !important;
+  height: 120px !important;
+  min-width: 120px !important;
+  min-height: 120px !important;
+  max-width: 120px !important;
+  max-height: 120px !important;
+  
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  
+  /* Enhanced visual effects */
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 0 20px rgba(102, 126, 234, 0.1) !important;
+  border: 3px solid rgba(255, 255, 255, 0.3) !important;
+  
+  /* Smooth transitions for all states */
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, filter !important;
+  
+  /* Complex Multi-Stage Animation */
+  animation: avatarBounceFloat 6s ease-in-out infinite !important;
+}
+
+/* Avatar hover effect */
+img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
+  transform: scale(1.08) translateY(-5px) !important;
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.25),
+    0 0 35px rgba(102, 126, 234, 0.2) !important;
+  filter: brightness(1.1) saturate(1.2) !important;
+  border: 3px solid rgba(102, 126, 234, 0.4) !important;
+}
+
+/* Complex Avatar Animation - Bouncing with Floating */
+@keyframes avatarBounceFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1) rotate(0deg);
+    box-shadow: 
+      0 8px 25px rgba(0, 0, 0, 0.15),
+      0 0 20px rgba(102, 126, 234, 0.1);
+  }
+  25% {
+    transform: translateY(-8px) scale(1.03) rotate(2deg);
+    box-shadow: 
+      0 12px 35px rgba(0, 0, 0, 0.2),
+      0 0 25px rgba(102, 126, 234, 0.15);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.05) rotate(0deg);
+    box-shadow: 
+      0 16px 45px rgba(0, 0, 0, 0.25),
+      0 0 30px rgba(102, 126, 234, 0.2);
+  }
+  75% {
+    transform: translateY(-8px) scale(1.03) rotate(-2deg);
+    box-shadow: 
+      0 12px 35px rgba(0, 0, 0, 0.2),
+      0 0 25px rgba(102, 126, 234, 0.15);
+  }
+}
+
+/* ================= SOPHISTICATED MESSAGE BUBBLES ================= */
+/* System Response Messages with Premium Glass Morphism */
+.vfrc-system-response .vfrc-message {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%) !important;
+  backdrop-filter: blur(15px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(150%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 18px 18px 18px 6px !important;
+  
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.08),
+    0 0 15px rgba(102, 126, 234, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+  
+  padding: 16px 20px !important;
+  margin: 12px 0 !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  
+  /* NO ANIMATIONS to prevent blinking */
+  animation: none !important;
+  transform-origin: bottom left !important;
+  overflow: visible !important;
+}
+
+/* ================= COMPREHENSIVE LIST STYLING ================= */
+/* Proper styling for bullets and numbered lists in all message types */
+
+/* Base list styling - covers both HTML and markdown-generated lists */
+.vfrc-system-response ul,
+.vfrc-system-response ol,
+.vfrc-message ul,
+.vfrc-message ol,
+.markdown ul,
+.markdown ol,
+._11kfxpg1 ul,
+._11kfxpg1 ol,
+._11kfxpg3 ul,
+._11kfxpg3 ol,
+div[class*="message"] ul,
+div[class*="message"] ol,
+div[class*="markdown"] ul,
+div[class*="markdown"] ol {
+  display: block !important;
+  margin: 15px 0 !important;
+  padding-left: 25px !important;
+  list-style-position: outside !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Unordered lists - bullet points */
+.vfrc-system-response ul,
+.vfrc-message ul,
+.markdown ul,
+._11kfxpg1 ul,
+._11kfxpg3 ul,
+div[class*="message"] ul,
+div[class*="markdown"] ul {
+  list-style-type: disc !important;
+}
+
+/* Ordered lists - numbers */
+.vfrc-system-response ol,
+.vfrc-message ol,
+.markdown ol,
+._11kfxpg1 ol,
+._11kfxpg3 ol,
+div[class*="message"] ol,
+div[class*="markdown"] ol {
+  list-style-type: decimal !important;
+}
+
+/* List items */
+.vfrc-system-response li,
+.vfrc-message li,
+.markdown li,
+._11kfxpg1 li,
+._11kfxpg3 li,
+div[class*="message"] li,
+div[class*="markdown"] li {
+  display: list-item !important;
+  margin: 8px 0 !important;
+  padding-left: 5px !important;
+  line-height: 1.6 !important;
+  color: rgba(0, 0, 0, 0.85) !important;
+  list-style-type: inherit !important;
+}
+
+/* Ensure list markers are visible */
+.vfrc-system-response li::marker,
+.vfrc-message li::marker,
+.markdown li::marker,
+._11kfxpg1 li::marker,
+._11kfxpg3 li::marker,
+div[class*="message"] li::marker,
+div[class*="markdown"] li::marker {
+  color: rgba(0, 0, 0, 0.7) !important;
+  font-size: 1em !important;
+}
+
+/* Nested lists */
+.vfrc-system-response ul ul,
+.vfrc-message ul ul,
+.markdown ul ul,
+._11kfxpg1 ul ul,
+._11kfxpg3 ul ul {
+  list-style-type: circle !important;
+  margin: 5px 0 !important;
+  padding-left: 20px !important;
+}
+
+.vfrc-system-response ul ul ul,
+.vfrc-message ul ul ul,
+.markdown ul ul ul,
+._11kfxpg1 ul ul ul,
+._11kfxpg3 ul ul ul {
+  list-style-type: square !important;
+}
+
+/* COMPREHENSIVE ANTI-BLINKING RULES - Remove all animations that cause blinking */
+/* BUT preserve list functionality */
+.vfrc-system-response,
+.vfrc-system-response *:not(ul):not(ol):not(li):not(li::marker),
+.vfrc-system-response .vfrc-message,
+.vfrc-system-response .vfrc-message *:not(ul):not(ol):not(li):not(li::marker),
+.vfrc-message._11kfxpg0:not(ul):not(ol):not(li),
+.vfrc-message._11kfxpg0 *:not(ul):not(ol):not(li):not(li::marker),
+.markdown._11kfxpg1:not(ul):not(ol):not(li),
+.markdown._11kfxpg1 *:not(ul):not(ol):not(li):not(li::marker),
+.markdown._11kfxpg3:not(ul):not(ol):not(li),
+.markdown._11kfxpg3 *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgc:not(ul):not(ol):not(li),
+._11kfxpgc *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgd:not(ul):not(ol):not(li),
+._11kfxpgd *:not(ul):not(ol):not(li):not(li::marker),
+._11kfxpgb:not(ul):not(ol):not(li),
+._11kfxpgb *:not(ul):not(ol):not(li):not(li::marker) {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Remove pseudo-elements that could cause shimmer/blinking - BUT preserve list markers */
+.vfrc-system-response::before,
+.vfrc-system-response::after,
+.vfrc-system-response *:not(li)::before,
+.vfrc-system-response *:not(li)::after,
+.vfrc-system-response .vfrc-message::before,
+.vfrc-system-response .vfrc-message::after,
+.vfrc-message._11kfxpg0::before,
+.vfrc-message._11kfxpg0::after,
+.markdown._11kfxpg1::before,
+.markdown._11kfxpg1::after,
+.markdown._11kfxpg3::before,
+.markdown._11kfxpg3::after,
+._11kfxpgc::before,
+._11kfxpgc::after,
+._11kfxpgd::before,
+._11kfxpgd::after,
+._11kfxpgb::before,
+._11kfxpgb::after {
+  display: none !important;
+  content: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* User Response Messages */
+.vfrc-user-response .vfrc-message {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(79, 102, 204, 0.9) 100%) !important;
+  backdrop-filter: blur(15px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(150%) !important;
+  border: 1px solid rgba(102, 126, 234, 0.3) !important;
+  border-radius: 18px 18px 6px 18px !important;
+  
+  box-shadow: 
+    0 4px 20px rgba(102, 126, 234, 0.15),
+    0 0 15px rgba(102, 126, 234, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  
+  padding: 16px 20px !important;
+  margin: 12px 0 !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  
+  /* Smooth entrance animation */
+  animation: messageSlideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: bottom right !important;
+}
+
+/* Message Animation - Slide in from left */
+@keyframes messageSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Message Animation - Slide in from right */
+@keyframes messageSlideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ================= MALVERN PREMIUM TYPING INDICATOR ================= */
+/* Premium Malvern-themed Typing Indicator with Sophisticated Glass Design */
+body .vfrc-typing-indicator,
+body .vfrc-system-response .vfrc-typing-indicator,
+body div[class*="indicator"],
+body div[class*="typing"],
+body div[class*="loading"],
+body .vfrc-chat .vfrc-typing-indicator,
+#voiceflow-chat .vfrc-typing-indicator,
+#voiceflow-chat .vfrc-system-response .vfrc-typing-indicator {
+  position: relative !important;
+  
+  /* Malvern Premium Glass Morphism Background */
+  background: 
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(250, 251, 253, 0.90) 40%,
+      rgba(245, 247, 250, 0.95) 100%),
+    linear-gradient(45deg, 
+      rgba(45, 85, 135, 0.05) 0%, 
+      rgba(28, 65, 105, 0.03) 50%, 
+      rgba(35, 75, 120, 0.05) 100%) !important;
+  backdrop-filter: blur(20px) saturate(150%) brightness(105%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(105%) !important;
+  
+  /* Malvern sophisticated border design */
+  border: 1px solid rgba(45, 85, 135, 0.12) !important;
+  border-radius: 18px !important;
+  padding: 14px 20px !important;
+  margin: 10px 0 !important;
+  
+  /* Malvern premium shadow system */
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.06),
+    0 6px 20px rgba(45, 85, 135, 0.08),
+    0 3px 12px rgba(28, 65, 105, 0.05),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 1px rgba(45, 85, 135, 0.03),
+    0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 0 25px rgba(45, 85, 135, 0.04) !important;
+  
+  overflow: hidden !important;
+  animation: malvernTypingBreathe 3.5s ease-in-out infinite !important;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, backdrop-filter !important;
+}
+
+/* Malvern typing indicator hover effect */
+body .vfrc-typing-indicator:hover {
+  background: 
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.98) 0%, 
+      rgba(250, 251, 253, 0.95) 50%,
+      rgba(245, 247, 250, 0.98) 100%),
+    linear-gradient(45deg, 
+      rgba(45, 85, 135, 0.08) 0%, 
+      rgba(28, 65, 105, 0.05) 50%, 
+      rgba(35, 75, 120, 0.08) 100%) !important;
+  backdrop-filter: blur(25px) saturate(160%) brightness(108%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(160%) brightness(108%) !important;
+  
+  border: 1px solid rgba(45, 85, 135, 0.20) !important;
+  
+  box-shadow: 
+    0 16px 50px rgba(0, 0, 0, 0.08),
+    0 8px 25px rgba(45, 85, 135, 0.12),
+    0 4px 15px rgba(28, 65, 105, 0.08),
+    inset 0 2px 3px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 2px rgba(45, 85, 135, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 0 30px rgba(45, 85, 135, 0.08) !important;
+    
+  transform: translateY(-2px) scale(1.01) !important;
+}
+
+/* Malvern breathing animation for typing indicator */
+@keyframes malvernTypingBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.06),
+      0 6px 20px rgba(45, 85, 135, 0.08),
+      0 3px 12px rgba(28, 65, 105, 0.05),
+      inset 0 1px 2px rgba(255, 255, 255, 0.8),
+      inset 0 -1px 1px rgba(45, 85, 135, 0.03),
+      0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 0 25px rgba(45, 85, 135, 0.04);
+  }
+  50% {
+    transform: scale(1.02) translateY(-1px);
+    box-shadow: 
+      0 16px 50px rgba(0, 0, 0, 0.08),
+      0 8px 25px rgba(45, 85, 135, 0.12),
+      0 4px 15px rgba(28, 65, 105, 0.08),
+      inset 0 2px 3px rgba(255, 255, 255, 0.85),
+      inset 0 -2px 2px rgba(45, 85, 135, 0.05),
+      0 0 0 1px rgba(255, 255, 255, 0.6),
+      0 0 30px rgba(45, 85, 135, 0.06);
+  }
+}
+
+/* Malvern premium shimmer effect */
+.vfrc-typing-indicator::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    110deg, 
+    transparent 0%, 
+    rgba(45, 85, 135, 0.06) 15%,
+    rgba(255, 255, 255, 0.12) 35%, 
+    rgba(28, 65, 105, 0.08) 50%, 
+    rgba(255, 255, 255, 0.15) 65%,
+    rgba(35, 75, 120, 0.06) 80%,
+    rgba(250, 251, 253, 0.08) 90%,
+    transparent 100%
+  ) !important;
+  animation: malvernShimmer 4.5s infinite !important;
+  border-radius: inherit !important;
+  z-index: 1 !important;
+}
+
+@keyframes malvernShimmer {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Premium Malvern Themed Typing Dots */
+.vfrc-typing-indicator span,
+.vfrc-typing-indicator > span,
+.vfrc-system-response .vfrc-typing-indicator span,
+div[class*="indicator"] span,
+div[class*="typing"] span,
+div[class*="loading"] span,
+.vfrc-chat .vfrc-typing-indicator span {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  margin: 0 3px !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  position: relative !important;
+  will-change: transform, opacity, background !important;
+  
+  /* Malvern sophisticated color gradient - professional blues */
+  background: linear-gradient(135deg, 
+    #2d5587 0%, 
+    #1c4169 30%, 
+    #234b78 60%, 
+    #2a5284 100%) !important;
+  
+  /* Malvern premium glow */
+  box-shadow: 
+    0 2px 8px rgba(45, 85, 135, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    0 0 12px rgba(45, 85, 135, 0.2) !important;
+  
+  animation: malvernBubble 2.2s infinite ease-in-out !important;
+}
+
+/* Advanced staggered animation delays for smooth Malvern wave effect */
+.vfrc-typing-indicator span:nth-child(1),
+.vfrc-typing-indicator span.xaffbq3 {
+  animation-delay: 0s !important;
+  background: linear-gradient(135deg, #2d5587 0%, #1c4169 100%) !important;
+}
+
+.vfrc-typing-indicator span:nth-child(2),
+.vfrc-typing-indicator span.xaffbq4 {
+  animation-delay: 0.35s !important;
+  background: linear-gradient(135deg, #1c4169 0%, #234b78 100%) !important;
+}
+
+.vfrc-typing-indicator span:nth-child(3),
+.vfrc-typing-indicator span.xaffbq5 {
+  animation-delay: 0.7s !important;
+  background: linear-gradient(135deg, #234b78 0%, #2a5284 100%) !important;
+}
+
+/* Sophisticated Malvern bubbling animation */
+@keyframes malvernBubble {
+  0%, 70%, 100% {
+    transform: scale(1) translateY(0) rotate(0deg);
+    opacity: 0.8;
+    box-shadow: 
+      0 2px 8px rgba(45, 85, 135, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.5),
+      0 0 12px rgba(45, 85, 135, 0.2);
+  }
+  20% {
+    transform: scale(1.15) translateY(-2px) rotate(3deg);
+    opacity: 0.9;
+    box-shadow: 
+      0 4px 12px rgba(45, 85, 135, 0.4),
+      inset 0 1px 3px rgba(255, 255, 255, 0.6),
+      0 0 16px rgba(45, 85, 135, 0.3);
+  }
+  40% {
+    transform: scale(1.4) translateY(-8px) rotate(-2deg);
+    opacity: 1;
+    box-shadow: 
+      0 6px 20px rgba(45, 85, 135, 0.5),
+      inset 0 2px 4px rgba(255, 255, 255, 0.7),
+      0 0 20px rgba(45, 85, 135, 0.4),
+      0 0 30px rgba(28, 65, 105, 0.2);
+  }
+  55% {
+    transform: scale(1.2) translateY(-4px) rotate(1deg);
+    opacity: 0.9;
+    box-shadow: 
+      0 4px 16px rgba(45, 85, 135, 0.4),
+      inset 0 1px 3px rgba(255, 255, 255, 0.6),
+      0 0 18px rgba(45, 85, 135, 0.3);
+  }
+}
+
+/* Premium Malvern typing indicator container */
+._1ayyscc1,
+div[class*="_1ayyscc"] {
+  position: relative !important;
+  margin: 10px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Malvern-themed floating particles effect */
+.vfrc-typing-indicator::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -8px !important;
+  left: -8px !important;
+  right: -8px !important;
+  bottom: -8px !important;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(45, 85, 135, 0.08) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 65% 35%, rgba(28, 65, 105, 0.06) 1px, transparent 1px),
+    radial-gradient(circle at 75% 65%, rgba(35, 75, 120, 0.09) 1.2px, transparent 1.2px),
+    radial-gradient(circle at 35% 75%, rgba(250, 251, 253, 0.08) 1px, transparent 1px) !important;
+  background-size: 35px 35px, 25px 25px, 45px 45px, 30px 30px !important;
+  animation: malvernFloatingParticles 7s linear infinite !important;
+  opacity: 0.5 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+@keyframes malvernFloatingParticles {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-3px) rotate(180deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0px) rotate(360deg);
+    opacity: 0.5;
+  }
+}
+
+/* Banner/agent image styling - keep big for banner images */
+.vfrc-system-response img:not(.vfrc-avatar):first-of-type,
+img[src*="banner"],
+.c-kIbiaN-eyfkxi-size-large {
+  width: 180px !important;
+  height: 140px !important;
+  max-width: 180px !important;
+  max-height: 140px !important;
+  object-fit: cover !important;
+  border-radius: 16px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+  margin: 15px 0 !important;
+  display: block !important;
+  animation: bannerImageFloat 4s ease-in-out infinite !important;
+}
+
+@keyframes bannerImageFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+}
+
+/* ================= OPENED STATE STYLING ================= */
+/* Main container in opened state */
+div._1emja3f9:has(#voiceflow-chat) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+}
+
+/* Button in opened state - Premium Black & White Close Button with Cool Effects */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+  
+  /* Premium Black & White Gradient with Tech Vibes */
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 30%, #333333 70%, #000000 100%) !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 15px !important;
+  margin-right: 15px !important;
+  margin-bottom: 15px !important;
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  
+  /* Cool Tech Effects */
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(255, 255, 255, 0.1),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.3) !important;
+  
+  /* Smooth premium transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Subtle breathing animation */
+  animation: techCloseButtonSubtle 4s ease-in-out infinite !important;
+}
+
+/* Subtle breathing animation - minimal movement */
+@keyframes techCloseButtonSubtle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      0 4px 16px rgba(255, 255, 255, 0.1),
+      inset 0 2px 4px rgba(255, 255, 255, 0.1),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.02) rotate(0deg);
+    box-shadow: 
+      0 10px 36px rgba(0, 0, 0, 0.55),
+      0 5px 18px rgba(255, 255, 255, 0.15),
+      inset 0 2px 5px rgba(255, 255, 255, 0.12),
+      inset 0 -2px 5px rgba(0, 0, 0, 0.35),
+      0 0 20px rgba(255, 255, 255, 0.08);
+  }
+}
+
+/* Premium hover effect for close button */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover {
+  /* Enhanced black gradient on hover */
+  background: linear-gradient(135deg, #1a1a1a 0%, #333333 30%, #4d4d4d 70%, #1a1a1a 100%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  
+  /* Dramatic hover effects */
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.8),
+    0 8px 25px rgba(255, 255, 255, 0.2),
+    inset 0 4px 8px rgba(255, 255, 255, 0.2),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(255, 255, 255, 0.15) !important;
+  
+  transform: scale(1.08) rotate(0deg) !important;
+  animation: techCloseButtonHoverSubtle 2s ease-in-out infinite !important;
+}
+
+/* Subtle hover animation */
+@keyframes techCloseButtonHoverSubtle {
+  0%, 100% {
+    transform: scale(1.08) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(0deg);
+  }
+}
+
+/* Additional selectors for parent container in opened state */
+div.f6dof80:has(svg[viewBox="0 0 32 32"]) {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+}
+
+/* Container for svg in opened state */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) div.f6dof87.f6dof89 {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  max-width: 48px !important;
+  max-height: 48px !important;
+}
+
+/* Close icon in opened state - Premium White with Tech Effects */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]) svg {
+  width: 24px !important;
+  height: 24px !important;
+  transform: none !important;
+  object-fit: contain !important;
+  color: #ffffff !important;
+  
+  /* Premium tech icon effects */
+  filter: 
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))
+    drop-shadow(0 0 16px rgba(255, 255, 255, 0.1)) !important;
+  
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: techIconGlowSubtle 3s ease-in-out infinite !important;
+}
+
+/* Subtle icon glow animation */
+@keyframes techIconGlowSubtle {
+  0%, 100% {
+    filter: 
+      drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 0 8px rgba(255, 255, 255, 0.3))
+      drop-shadow(0 0 16px rgba(255, 255, 255, 0.1));
+  }
+  50% {
+    filter: 
+      drop-shadow(0 2px 5px rgba(0, 0, 0, 0.55))
+      drop-shadow(0 0 10px rgba(255, 255, 255, 0.4))
+      drop-shadow(0 0 18px rgba(255, 255, 255, 0.15));
+  }
+}
+
+/* Enhanced icon hover effect */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(svg[viewBox="0 0 32 32"]):hover svg {
+  color: #f0f0f0 !important;
+  transform: scale(1.1) rotate(0deg) !important;
+  filter: 
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.5))
+    drop-shadow(0 0 24px rgba(255, 255, 255, 0.2)) !important;
+  animation: none !important;
+}
+
+@keyframes techIconHoverSpin {
+  0% {
+    transform: scale(1.2) rotate(90deg);
+  }
+  50% {
+    transform: scale(1.3) rotate(135deg);
+  }
+  100% {
+    transform: scale(1.2) rotate(90deg);
+  }
+}
+
+/* ================= PROACTIVE MESSAGE STYLING ================= */
+._6r9xee0 {
+  margin-bottom: 90px !important; /* Closer to launcher for better UX */
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important; /* Tighter spacing between messages */
+}
+
+/* Individual proactive message styling */
+div._6r9xee3.o231sh1 {
+  position: relative !important;
+  z-index: 0 !important;
+  border-radius: 20px !important;
+  
+  /* Premium White/Light Theme with Subtle Tech Colors */
+  background: 
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(248, 250, 252, 0.98) 30%, 
+      rgba(240, 245, 251, 0.95) 70%, 
+      rgba(255, 255, 255, 0.98) 100%),
+    linear-gradient(45deg, 
+      rgba(102, 126, 234, 0.03) 0%, 
+      transparent 50%, 
+      rgba(147, 51, 234, 0.02) 100%) !important;
+  
+  /* Subtle colorful border with tech glow */
+  border: 1px solid rgba(102, 126, 234, 0.15) !important;
+  
+  /* Premium light shadow system with subtle color */
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.08),
+    0 6px 20px rgba(102, 126, 234, 0.05),
+    0 3px 12px rgba(147, 51, 234, 0.03),
+    inset 0 1px 3px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(102, 126, 234, 0.02),
+    0 0 0 1px rgba(255, 255, 255, 0.6),
+    0 0 25px rgba(102, 126, 234, 0.04) !important;
+  
+  /* Dark text for readability on white background */
+  color: rgba(30, 30, 30, 0.95) !important;
+  opacity: 1 !important;
+  animation: techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: bottom right !important;
+  padding: 18px 24px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  
+  /* Smooth premium transitions */
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Subtle breathing effect */
+  animation: 
+    techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    subtleProactiveBreathe 5s ease-in-out 1s infinite !important;
+}
+
+/* Premium Light Hover Effect with Subtle Colors */
+div._6r9xee3.o231sh1:hover {
+  /* Enhanced light gradient with subtle colors */
+  background: 
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 1) 0%, 
+      rgba(248, 250, 252, 1) 30%, 
+      rgba(240, 245, 251, 1) 70%, 
+      rgba(255, 255, 255, 1) 100%),
+    linear-gradient(45deg, 
+      rgba(102, 126, 234, 0.06) 0%, 
+      transparent 50%, 
+      rgba(147, 51, 234, 0.04) 100%) !important;
+  
+  /* Enhanced colorful border */
+  border: 1px solid rgba(102, 126, 234, 0.25) !important;
+  
+  /* Enhanced light shadows with color accents */
+  box-shadow: 
+    0 16px 50px rgba(0, 0, 0, 0.12),
+    0 8px 25px rgba(102, 126, 234, 0.08),
+    0 4px 15px rgba(147, 51, 234, 0.05),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 3px rgba(102, 126, 234, 0.03),
+    0 0 0 1px rgba(255, 255, 255, 0.8),
+    0 0 30px rgba(102, 126, 234, 0.08) !important;
+    
+  /* Darker text on hover for better contrast */
+  color: rgba(20, 20, 20, 1) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  animation: subtleProactiveHover 2s ease-in-out infinite !important;
+}
+
+/* Tech Proactive Message Animations */
+@keyframes techProactiveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.85) rotateX(-15deg);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.05) rotateX(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+@keyframes subtleProactiveBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.08),
+      0 6px 20px rgba(102, 126, 234, 0.05),
+      0 3px 12px rgba(147, 51, 234, 0.03),
+      inset 0 1px 3px rgba(255, 255, 255, 0.8),
+      inset 0 -1px 2px rgba(102, 126, 234, 0.02),
+      0 0 0 1px rgba(255, 255, 255, 0.6),
+      0 0 25px rgba(102, 126, 234, 0.04);
+  }
+  50% {
+    transform: scale(1.01) translateY(-1px);
+    box-shadow: 
+      0 15px 50px rgba(0, 0, 0, 0.1),
+      0 8px 25px rgba(102, 126, 234, 0.06),
+      0 4px 15px rgba(147, 51, 234, 0.04),
+      inset 0 2px 4px rgba(255, 255, 255, 0.85),
+      inset 0 -2px 3px rgba(102, 126, 234, 0.03),
+      0 0 0 1px rgba(255, 255, 255, 0.7),
+      0 0 30px rgba(102, 126, 234, 0.06);
+  }
+}
+
+@keyframes subtleProactiveHover {
+  0%, 100% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.025) rotateZ(0.5deg);
+  }
+}
+
+@keyframes proactiveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.9) rotate(-2deg);
+  }
+  60% {
+    transform: translateY(-3px) scale(1.02) rotate(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+/* ================= ASSISTANT TITLE & DESCRIPTION - CLEAN MINIMALISTIC ================= */
+
+/* Banner title - Clean Minimalistic */
+.vfrc-assistant-info--title {
+  position: relative !important;
+  color: #1a1a1a !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  animation: titleFadeIn 0.6s ease-out both !important;
+  transition: color 0.2s ease !important;
+}
+
+/* Simple hover effect */
+.vfrc-assistant-info--title:hover {
+  color: #0066cc !important;
+}
+
+@keyframes titleFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Banner description - Clean Minimalistic */
+.vfrc-assistant-info--description {
+  position: relative !important;
+  color: #666666 !important;
+  margin: 4px 0 0 0 !important;
+  padding: 0 !important;
+  animation: descriptionFadeIn 0.6s ease-out 0.2s both !important;
+  transition: color 0.2s ease !important;
+}
+
+/* Simple hover effect */
+.vfrc-assistant-info--description:hover {
+  color: #333333 !important;
+}
+
+@keyframes descriptionFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= CHAT INPUT AREA - DEFAULT VOICEFLOW STYLING ================= */
+/* Chat input using default Voiceflow styling for perfect button alignment */
+.vfrc-chat-input,
+._1gdvh9t6,
+textarea.vfrc-chat-input,
+textarea._1gdvh9t6 {
+  /* Use default Voiceflow styling - no custom background/border/shadow */
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* ================= MINIMALISTIC TYPEWRITER PLACEHOLDER ================= */
+/* Typewriter Effect for Placeholder Text Only */
+.vfrc-chat-input::placeholder,
+._1gdvh9t6::placeholder,
+textarea.vfrc-chat-input::placeholder,
+textarea._1gdvh9t6::placeholder {
+  color: #666666 !important;
+  animation: typewriterPlaceholder 3s steps(25) infinite !important;
+  opacity: 1 !important;
+}
+
+/* Typewriter animation for placeholder */
+@keyframes typewriterPlaceholder {
+  0%, 90%, 100% {
+    width: 100%;
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ================= PREMIUM SEND BUTTON STYLING ================= */
+/* Send Button - Ultra-Premium Glass Morphism Design */
+.vfrc-chat-input--button,
+.vfrc-button._12m8tlu3._12m8tlu4,
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  border-radius: 12px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  cursor: pointer !important;
+  
+  /* Premium Glass Morphism Background */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.10) 100%) !important;
+  backdrop-filter: blur(25px) saturate(180%) brightness(110%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(180%) brightness(110%) !important;
+  
+  /* Premium Shadow System */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 4px 16px rgba(102, 126, 234, 0.15),
+    inset 0 2px 3px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 3px rgba(255, 255, 255, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.25) !important;
+  
+  /* Smooth Transitions */
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Premium breathing animation */
+  animation: sendButtonPremiumBreathe 3.5s ease-in-out infinite !important;
+  
+  /* Functional positioning */
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+/* Premium breathing animation for send button */
+@keyframes sendButtonPremiumBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      0 4px 16px rgba(102, 126, 234, 0.15),
+      inset 0 2px 3px rgba(255, 255, 255, 0.6),
+      inset 0 -2px 3px rgba(255, 255, 255, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.25);
+  }
+  50% {
+    transform: scale(1.03) translateY(-2px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.15),
+      0 6px 20px rgba(102, 126, 234, 0.25),
+      inset 0 3px 5px rgba(255, 255, 255, 0.7),
+      inset 0 -3px 5px rgba(255, 255, 255, 0.3),
+      0 0 0 2px rgba(255, 255, 255, 0.35),
+      0 0 25px rgba(102, 126, 234, 0.2);
+  }
+}
+
+/* Ultra-Premium Hover Effect */
+.vfrc-chat-input--button:hover,
+.vfrc-button._12m8tlu3._12m8tlu4:hover,
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover {
+  /* Enhanced Glass Effect */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
+  backdrop-filter: blur(35px) saturate(220%) brightness(120%) !important;
+  -webkit-backdrop-filter: blur(35px) saturate(220%) brightness(120%) !important;
+  
+  /* Enhanced Shadow */
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.18),
+    0 8px 25px rgba(102, 126, 234, 0.25),
+    0 4px 15px rgba(147, 51, 234, 0.15),
+    inset 0 3px 5px rgba(255, 255, 255, 0.8),
+    inset 0 -3px 5px rgba(255, 255, 255, 0.4),
+    0 0 0 2px rgba(255, 255, 255, 0.4),
+    0 0 40px rgba(102, 126, 234, 0.3) !important;
+    
+  transform: scale(1.1) translateY(-3px) !important;
+  animation: sendButtonHoverPulse 1s ease-in-out infinite !important;
+}
+
+/* Enhanced hover pulse animation */
+@keyframes sendButtonHoverPulse {
+  0%, 100% {
+    transform: scale(1.1) translateY(-3px);
+  }
+  50% {
+    transform: scale(1.15) translateY(-5px);
+  }
+}
+
+/* Premium Send Button SVG Icon Styling */
+.vfrc-chat-input--button svg,
+.vfrc-button._12m8tlu3._12m8tlu4 svg,
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
+  width: 20px !important;
+  height: 20px !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 8px rgba(102, 126, 234, 0.3)) !important;
+  animation: svgFloat 2.5s ease-in-out infinite !important;
+}
+
+/* Floating animation for SVG */
+@keyframes svgFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-1px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-2px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-1px) rotate(-1deg);
+  }
+}
+
+/* Enhanced SVG Hover Effect */
+.vfrc-chat-input--button:hover svg,
+.vfrc-button._12m8tlu3._12m8tlu4:hover svg,
+button[class*="_12m8tlu3"]:not([class*="header"]):not([title]):hover svg,
+button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]):hover svg {
+  color: rgba(0, 0, 0, 0.9) !important;
+  transform: scale(1.2) rotate(10deg) translateY(-2px) !important;
+  filter: 
+    drop-shadow(0 4px 8px rgba(255, 255, 255, 0.8)) 
+    drop-shadow(0 0 15px rgba(102, 126, 234, 0.5))
+    drop-shadow(0 0 25px rgba(147, 51, 234, 0.3)) !important;
+  animation: svgHoverSpin 0.6s ease-in-out infinite !important;
+}
+
+/* SVG hover spin animation */
+@keyframes svgHoverSpin {
+  0% {
+    transform: scale(1.2) rotate(10deg) translateY(-2px);
+  }
+  50% {
+    transform: scale(1.25) rotate(15deg) translateY(-4px);
+  }
+  100% {
+    transform: scale(1.2) rotate(10deg) translateY(-2px);
+  }
+}
+
+/* ================= COMPREHENSIVE RESPONSIVE DESIGN ================= */
+
+/* Tablet Portrait & Mobile Landscape - 768px */
+@media (max-width: 768px) {
+  .vfrc-widget--chat {
+    border-radius: 12px !important;
+    margin: 10px !important;
+    max-width: 380px !important;
+    max-height: 500px !important;
+  }
+  
+  .vfrc-header {
+    border-radius: 12px 12px 0 0 !important;
+    padding: 12px 16px !important;
+  }
+  
+  /* Tablet launcher sizing */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    width: 80px !important;
+    height: 80px !important;
+    min-width: 80px !important;
+    min-height: 80px !important;
+    max-width: 80px !important;
+    max-height: 80px !important;
+  }
+  
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+    width: 74px !important;
+    height: 74px !important;
+    min-width: 74px !important;
+    min-height: 74px !important;
+    max-width: 74px !important;
+    max-height: 74px !important;
+  }
+  
+  /* Mobile proactive message spacing adjustment */
+  ._6r9xee0 {
+    margin-bottom: 70px !important; /* Much closer to launcher on mobile */
+    gap: 6px !important; /* Smaller gap for mobile */
+  }
+
+  /* Mobile send button */
+  .vfrc-chat-input--button,
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    max-width: 36px !important;
+    max-height: 36px !important;
+    border-radius: 10px !important;
+  }
+  
+  .vfrc-chat-input--button svg,
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  /* Mobile input field optimization */
+  .vfrc-chat-input,
+  ._1gdvh9t6 {
+    padding: 12px !important;
+    border-radius: 8px !important;
+  }
+  
+  /* Mobile placeholder uses default font size */
+  
+  /* Mobile elements use default fonts */
+}
+
+/* Mobile Portrait - 480px and below */
+@media (max-width: 480px) {
+  .vfrc-widget--chat {
+    border-radius: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+  }
+  
+  .vfrc-header {
+    border-radius: 0 !important;
+    padding: 10px 12px !important;
+  }
+  
+  /* Mobile launcher - compact size */
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(img[alt="open chat"]),
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5:has(.f6dof8u.f6dof8w.f6dof8h) {
+    width: 70px !important;
+    height: 70px !important;
+    min-width: 70px !important;
+    min-height: 70px !important;
+    max-width: 70px !important;
+    max-height: 70px !important;
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+  
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img.f6dof8u.f6dof8w.f6dof8h,
+  .vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c26d8x0._1q15b0b5 img[alt="open chat"] {
+    width: 64px !important;
+    height: 64px !important;
+    min-width: 64px !important;
+    min-height: 64px !important;
+    max-width: 64px !important;
+    max-height: 64px !important;
+  }
+  
+  /* Extra small mobile proactive message spacing */
+  ._6r9xee0 {
+    margin-bottom: 60px !important; /* Very close to launcher on small screens */
+    gap: 4px !important; /* Tight spacing */
+  }
+
+  /* Mobile send button - smallest size */
+  .vfrc-chat-input--button,
+  .vfrc-button._12m8tlu3._12m8tlu4,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]),
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    border-radius: 8px !important;
+  }
+  
+  .vfrc-chat-input--button svg,
+  .vfrc-button._12m8tlu3._12m8tlu4 svg,
+  button[class*="_12m8tlu3"]:not([class*="header"]):not([title]) svg,
+  button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]):not([title]) svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+/* ================= DEFAULT FONT APPLICATION ================= */
+/* Use default browser fonts for all elements */
+
+/* All elements use default browser fonts */
+
+/* Proactive messages use default fonts */
+
+/* Accessibility: Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ================= SUBTLE COLORFUL EFFECTS FOR PROACTIVE MESSAGES ================= */
+/* Subtle colorful shimmer effect to add life and prevent dullness */
+div._6r9xee3.o231sh1::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    120deg, 
+    transparent 0%, 
+    rgba(102, 126, 234, 0.08) 20%,
+    rgba(255, 255, 255, 0.15) 40%, 
+    rgba(147, 51, 234, 0.06) 60%, 
+    rgba(79, 172, 254, 0.08) 80%,
+    transparent 100%
+  ) !important;
+  animation: subtleColorfulShimmer 6s infinite !important;
+  border-radius: inherit !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+@keyframes subtleColorfulShimmer {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Ensure text stays above shimmer */
+div._6r9xee3.o231sh1 > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* ================= FALLBACK BULLET STYLING WITH CSS COUNTERS ================= */
+/* Enhanced fallback for when native list styling fails in Voiceflow */
+
+/* Target paragraphs that contain dash bullets */
+.vfrc-system-response p,
+.vfrc-message p,
+.markdown p {
+  position: relative;
+}
+
+/* Style paragraphs that start with "- " as bullet points */
+.vfrc-system-response p[data-bullet],
+.vfrc-message p[data-bullet],
+.markdown p[data-bullet] {
+  padding-left: 20px !important;
+  margin: 8px 0 !important;
+  text-indent: 0 !important;
+}
+
+.vfrc-system-response p[data-bullet]::before,
+.vfrc-message p[data-bullet]::before,
+.markdown p[data-bullet]::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 8px !important;
+  color: #004188 !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  line-height: inherit !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Alternative approach: Use text-based bullet replacement */
+.vfrc-system-response p:contains("- "),
+.vfrc-message p:contains("- "),
+.markdown p:contains("- ") {
+  padding-left: 18px !important;
+  margin: 6px 0 !important;
+  position: relative !important;
+}
+
+/* CSS for manual bullet insertion if needed */
+.bullet-point {
+  padding-left: 18px !important;
+  margin: 6px 0 !important;
+  position: relative !important;
+}
+
+.bullet-point::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 6px !important;
+  color: #004188 !important;
+  font-weight: bold !important;
+  font-size: 14px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: inline !important;
+}
