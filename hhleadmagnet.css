@@ -1373,19 +1373,43 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   font-size: 16px !important;
 }
 
-/* Reset button in header - keep original positioning */
+/* Reset button in header - transparent with black icon */
 .vfrc-header .vfrc-header--button,
 .vfrc-header .jyiueia button {
-  background: rgba(64, 194, 194, 0.1) !important;
-  border: 1px solid rgba(64, 194, 194, 0.3) !important;
+  background: transparent !important;
+  border: none !important;
   border-radius: 8px !important;
-  padding: 8px !important;
-  color: #40C2C2 !important;
+  padding: 6px !important;
+  color: #000000 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
 }
 
 .vfrc-header .vfrc-header--button:hover,
 .vfrc-header .jyiueia button:hover {
-  background: rgba(64, 194, 194, 0.15) !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Change button title and add reset chat text */
+.vfrc-header .vfrc-header--button[title="Coach J Lowe"] {
+  title: "Reset Chat" !important;
+}
+
+.vfrc-header .vfrc-header--button::after,
+.vfrc-header .jyiueia button::after {
+  content: "Reset Chat" !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: #000000 !important;
+}
+
+/* Reset icon - black sleek styling */
+.vfrc-header .vfrc-header--button .vfrc-icon svg,
+.vfrc-header .jyiueia button .vfrc-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: #000000 !important;
 }
 
 /* Chat body/conversation area - clean white */
