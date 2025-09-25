@@ -1349,56 +1349,7 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   border-radius: 12px !important;
 }
 
-/* Show header with clean white styling */
-.vfrc-header {
-  background: #ffffff !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
-  padding: 12px 16px !important;
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-}
-
-/* Hide the assistant info completely */
-.vfrc-header .vfrc-assistant-info,
-.vfrc-header .jyiuei5,
-.vfrc-header .fptyqm0,
-.vfrc-assistant-info--title {
-  display: none !important;
-}
-
-/* Reset button in header - icon only, centered */
-.vfrc-header .vfrc-header--button,
-.vfrc-header .jyiueia button {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 8px !important;
-  color: #000000 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin: 0 auto !important;
-}
-
-.vfrc-header .vfrc-header--button:hover,
-.vfrc-header .jyiueia button:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Reset icon - black sleek styling with reset title */
-.vfrc-header .vfrc-header--button .vfrc-icon svg,
-.vfrc-header .jyiueia button .vfrc-icon svg {
-  width: 18px !important;
-  height: 18px !important;
-  color: #000000 !important;
-}
-
-/* Change title to Reset Chat for tooltip */
-.vfrc-header .vfrc-header--button,
-.vfrc-header .jyiueia button {
-  title: "Reset Chat" !important;
-}
+/* Keep original header styling - let Voiceflow handle it */
 
 /* Chat body/conversation area - clean white */
 .vfrc-chat--dialog,
