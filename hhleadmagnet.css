@@ -1336,47 +1336,54 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   }
 }
 
-/* ================= TRANSPARENT WIDGET FOR SEAMLESS FRAMER INTEGRATION ================= */
+/* ================= CLEAN WHITE WIDGET FOR FRAMER INTEGRATION ================= */
 
-/* Main chat widget container - fully transparent to blend with mint background */
+/* Main chat widget container - clean white background */
 .vfrc-widget,
 .vfrc-chat,
 .vfrc-chat--overlay,
 #voiceflow-chat {
-  background: transparent !important;
-  border: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: none !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 12px !important;
 }
 
-/* Chat header - minimal styling, let it blend naturally */
+/* Hide the header completely like other site */
 .vfrc-header {
-  background: transparent !important;
-  border-bottom: 1px solid rgba(64, 194, 194, 0.15) !important;
+  display: none !important;
 }
 
-/* Chat body/conversation area - transparent */
+/* Chat body/conversation area - clean white */
 .vfrc-chat--dialog,
 .vfrc-conversation {
-  background: transparent !important;
+  background: #ffffff !important;
 }
 
-/* Chat footer/input area - transparent */
+/* Chat footer/input area - clean white */
 .vf-footer,
 .vfrc-footer {
-  background: transparent !important;
-  border-top: 1px solid rgba(64, 194, 194, 0.15) !important;
+  background: #ffffff !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Chat input field - keep functional, minimal styling */
+/* Chat input container - clean styling */
+.vfrc-input-container,
+._1gdvh9t1 {
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 8px !important;
+}
+
+/* Chat input field - clean functional styling */
 .vfrc-input,
 .vfrc-chat-input,
 ._1gdvh9t6,
 textarea.vfrc-chat-input,
 textarea._1gdvh9t6 {
-  /* Let default Voiceflow styling handle functionality */
-  border: 1px solid rgba(64, 194, 194, 0.20) !important;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(0, 0, 0, 0.85) !important;
 }
 
 .vfrc-input:focus,
@@ -1384,68 +1391,78 @@ textarea._1gdvh9t6 {
 ._1gdvh9t6:focus,
 textarea.vfrc-chat-input:focus,
 textarea._1gdvh9t6:focus {
-  border: 1px solid rgba(64, 194, 194, 0.40) !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.vfrc-input-container:focus-within,
+._1gdvh9t1:focus-within {
+  border: 2px solid rgba(64, 194, 194, 0.40) !important;
   box-shadow: 0 0 0 2px rgba(64, 194, 194, 0.10) !important;
 }
 
-/* Assistant info area - transparent */
-.vfrc-assistant-info {
-  background: transparent !important;
+/* Reset button styling - centered with text like other site */
+.vfrc-header--button,
+button.vfrc-button.vfrc-header--button {
+  position: absolute !important;
+  top: 15px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: rgba(64, 194, 194, 0.1) !important;
+  border: 1px solid rgba(64, 194, 194, 0.3) !important;
+  border-radius: 20px !important;
+  padding: 8px 16px !important;
+  color: #2d5a5a !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  z-index: 1000 !important;
 }
 
-/* Keep wellness teal accent for text elements */
-.vfrc-assistant-info--title {
+.vfrc-header--button:hover {
+  background: rgba(64, 194, 194, 0.15) !important;
+  border: 1px solid rgba(64, 194, 194, 0.4) !important;
+}
+
+/* Add "Reset Chat" text after the icon */
+.vfrc-header--button::after {
+  content: "Reset Chat" !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
   color: #2d5a5a !important;
 }
 
-.vfrc-assistant-info--description {
-  color: #4a7070 !important;
+/* Reset icon styling */
+.vfrc-header--button .vfrc-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: #40C2C2 !important;
 }
 
-/* Avatar - minimal wellness accent */
-.vfrc-avatar {
-  border: 2px solid rgba(64, 194, 194, 0.25) !important;
-}
-
-/* Buttons - keep wellness teal for interactions */
-.vfrc-button {
-  border: 1px solid rgba(64, 194, 194, 0.30) !important;
-}
-
-.vfrc-button:not(.vfrc-launcher):hover {
-  border: 1px solid rgba(64, 194, 194, 0.50) !important;
-  box-shadow: 0 2px 8px rgba(64, 194, 194, 0.15) !important;
-}
-
-/* Minimal scrollbar */
+/* Clean scrollbar */
 .vfrc-chat::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 .vfrc-chat::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f5f5f5;
 }
 
 .vfrc-chat::-webkit-scrollbar-thumb {
-  background: rgba(64, 194, 194, 0.30);
-  border-radius: 2px;
+  background: rgba(64, 194, 194, 0.40);
+  border-radius: 3px;
 }
 
 .vfrc-chat::-webkit-scrollbar-thumb:hover {
-  background: rgba(64, 194, 194, 0.50);
+  background: rgba(64, 194, 194, 0.60);
 }
 
-/* Timestamp styling - subtle wellness teal */
+/* Timestamp styling */
 .vfrc-timestamp {
-  color: rgba(64, 194, 194, 0.60) !important;
-}
-
-/* All other elements transparent */
-.vfrc-chat--spacer,
-.vfrc-image--background,
-.vfrc-chat--session-time,
-.vfrc-chat--status {
-  background: transparent !important;
+  color: rgba(0, 0, 0, 0.5) !important;
 }
 
 /* ================= DEFAULT FONT APPLICATION ================= */
