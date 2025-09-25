@@ -1359,31 +1359,26 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   align-items: center !important;
 }
 
-/* Show the assistant info but style it cleanly */
+/* Hide the assistant info completely */
 .vfrc-header .vfrc-assistant-info,
-.vfrc-header .jyiuei5 {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
+.vfrc-header .jyiuei5,
 .vfrc-header .fptyqm0,
 .vfrc-assistant-info--title {
-  color: #2d5a5a !important;
-  font-weight: 600 !important;
-  font-size: 16px !important;
+  display: none !important;
 }
 
-/* Reset button in header - transparent with black icon */
+/* Reset button in header - icon only, centered */
 .vfrc-header .vfrc-header--button,
 .vfrc-header .jyiueia button {
   background: transparent !important;
   border: none !important;
   border-radius: 8px !important;
-  padding: 6px !important;
+  padding: 8px !important;
   color: #000000 !important;
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
 }
 
 .vfrc-header .vfrc-header--button:hover,
@@ -1391,25 +1386,18 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   background: rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Change button title and add reset chat text */
-.vfrc-header .vfrc-header--button[title="Coach J Lowe"] {
-  title: "Reset Chat" !important;
-}
-
-.vfrc-header .vfrc-header--button::after,
-.vfrc-header .jyiueia button::after {
-  content: "Reset Chat" !important;
-  font-size: 12px !important;
-  font-weight: 400 !important;
-  color: #000000 !important;
-}
-
-/* Reset icon - black sleek styling */
+/* Reset icon - black sleek styling with reset title */
 .vfrc-header .vfrc-header--button .vfrc-icon svg,
 .vfrc-header .jyiueia button .vfrc-icon svg {
-  width: 16px !important;
-  height: 16px !important;
+  width: 18px !important;
+  height: 18px !important;
   color: #000000 !important;
+}
+
+/* Change title to Reset Chat for tooltip */
+.vfrc-header .vfrc-header--button,
+.vfrc-header .jyiueia button {
+  title: "Reset Chat" !important;
 }
 
 /* Chat body/conversation area - clean white */
