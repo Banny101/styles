@@ -16,23 +16,26 @@ div.f6dof87.f6dof89 {
   max-height: none !important;
 }
 
-/* ================= MAIN CONTAINER STYLING (APPLIES TO BOTH STATES) ================= */
+/* ================= MAIN CONTAINER STYLING FOR EMBEDDED FRAMER MODE ================= */
 ._1emja3f9 {
-  position: fixed !important;
-  z-index: 9999 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  /* Remove fixed positioning for embedded context */
 }
 
-/* CLOSED STATE - specific positioning */
+/* CLOSED STATE - embedded positioning */
 ._1emja3f9:has(img[alt="open chat"]),
 ._1emja3f9:not(:has(#voiceflow-chat)) {
-  bottom: 20px !important;
-  right: 20px !important;
+  bottom: auto !important;
+  right: auto !important;
+  position: relative !important;
 }
 
-/* OPENED STATE - specific positioning */
+/* OPENED STATE - embedded positioning */
 ._1emja3f9:has(#voiceflow-chat) {
-  bottom: 0 !important;
-  right: 0 !important;
+  bottom: auto !important;
+  right: auto !important;
+  position: relative !important;
 }
 
 /* ================= CLOSED STATE STYLING (PREMIUM LAUNCHER) ================= */
@@ -46,29 +49,34 @@ div.f6dof87.f6dof89 {
   max-width: 120px !important;
   max-height: 120px !important;
   
-  /* Premium Glass Morphism Design */
-  background: rgba(255, 255, 255, 0.15) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  /* Enhanced Glass Morphism for Mint Background (#e6f0f0) */
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(240, 250, 250, 0.25) 30%,
+    rgba(230, 240, 240, 0.20) 70%,
+    rgba(255, 255, 255, 0.30) 100%) !important;
+  backdrop-filter: blur(25px) saturate(160%) brightness(105%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(160%) brightness(105%) !important;
+  border: 2px solid rgba(64, 194, 194, 0.25) !important;
   border-radius: 50% !important;
   
-  /* Advanced Shadow System */
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 1px rgba(255, 255, 255, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  /* Advanced Shadow System Optimized for Mint Background */
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.08),
+    0 6px 25px rgba(64, 194, 194, 0.15),
+    0 3px 15px rgba(48, 175, 175, 0.10),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -1px 3px rgba(64, 194, 194, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.4) !important;
   
   overflow: hidden !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 0 !important;
-  margin: 0 !important;
+  margin: 20px auto !important; /* Center in embedded context */
   box-sizing: border-box !important;
-  position: fixed !important;
-  bottom: 20px !important;
-  right: 20px !important;
+  position: relative !important;
   
   /* Smooth Transitions */
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
