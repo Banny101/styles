@@ -1349,22 +1349,43 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   border-radius: 12px !important;
 }
 
-/* Keep header but hide the title text, show only reset button */
+/* Show header with clean white styling */
 .vfrc-header {
   background: #ffffff !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
   padding: 12px 16px !important;
   display: flex !important;
-  justify-content: center !important;
+  justify-content: space-between !important;
   align-items: center !important;
-  position: relative !important;
 }
 
-/* Hide the assistant info (title and description) */
+/* Show the assistant info but style it cleanly */
 .vfrc-header .vfrc-assistant-info,
-.vfrc-header .jyiuei5,
-.vfrc-header .fptyqm0 {
-  display: none !important;
+.vfrc-header .jyiuei5 {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.vfrc-header .fptyqm0,
+.vfrc-assistant-info--title {
+  color: #2d5a5a !important;
+  font-weight: 600 !important;
+  font-size: 16px !important;
+}
+
+/* Reset button in header - keep original positioning */
+.vfrc-header .vfrc-header--button,
+.vfrc-header .jyiueia button {
+  background: rgba(64, 194, 194, 0.1) !important;
+  border: 1px solid rgba(64, 194, 194, 0.3) !important;
+  border-radius: 8px !important;
+  padding: 8px !important;
+  color: #40C2C2 !important;
+}
+
+.vfrc-header .vfrc-header--button:hover,
+.vfrc-header .jyiueia button:hover {
+  background: rgba(64, 194, 194, 0.15) !important;
 }
 
 /* Chat body/conversation area - clean white */
@@ -1375,9 +1396,43 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
 
 /* Chat footer/input area - clean white */
 .vf-footer,
-.vfrc-footer {
+.vfrc-footer,
+._1vj16242 {
   background: #ffffff !important;
   border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Start new chat button styling */
+#vfrc-start-chat,
+.vfrc-footer button[id="vfrc-start-chat"] {
+  background: rgba(64, 194, 194, 0.1) !important;
+  border: 1px solid rgba(64, 194, 194, 0.3) !important;
+  border-radius: 8px !important;
+  color: #2d5a5a !important;
+  padding: 8px 16px !important;
+}
+
+#vfrc-start-chat:hover,
+.vfrc-footer button[id="vfrc-start-chat"]:hover {
+  background: rgba(64, 194, 194, 0.15) !important;
+  border: 1px solid rgba(64, 194, 194, 0.4) !important;
+}
+
+/* Footer section backgrounds */
+._5x612k0,
+._1vj16245,
+.jsli361 {
+  background: #ffffff !important;
+}
+
+/* Powered by NFI link styling */
+.jsli365 {
+  color: rgba(0, 0, 0, 0.6) !important;
+  text-decoration: none !important;
+}
+
+.jsli365:hover {
+  color: #40C2C2 !important;
 }
 
 /* Chat input container - no borders or colors */
@@ -1415,44 +1470,18 @@ textarea._1gdvh9t6:focus {
   box-shadow: none !important;
 }
 
-/* Reset button styling - centered with text like other site */
-.vfrc-header--button,
-button.vfrc-button.vfrc-header--button {
-  position: absolute !important;
-  top: 15px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
+/* Clean scroll down button styling */
+.oq48l93,
+._1cosygz0 {
   background: rgba(64, 194, 194, 0.1) !important;
   border: 1px solid rgba(64, 194, 194, 0.3) !important;
-  border-radius: 20px !important;
-  padding: 8px 16px !important;
-  color: #2d5a5a !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  z-index: 1000 !important;
-}
-
-.vfrc-header--button:hover {
-  background: rgba(64, 194, 194, 0.15) !important;
-  border: 1px solid rgba(64, 194, 194, 0.4) !important;
-}
-
-/* Add "Reset Chat" text after the icon */
-.vfrc-header--button::after {
-  content: "Reset Chat" !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: #2d5a5a !important;
-}
-
-/* Reset icon styling */
-.vfrc-header--button .vfrc-icon svg {
-  width: 16px !important;
-  height: 16px !important;
+  border-radius: 8px !important;
   color: #40C2C2 !important;
+}
+
+.oq48l93:hover,
+._1cosygz0:hover {
+  background: rgba(64, 194, 194, 0.15) !important;
 }
 
 /* Clean scrollbar */
