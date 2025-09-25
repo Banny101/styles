@@ -1349,8 +1349,21 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   border-radius: 12px !important;
 }
 
-/* Hide the header completely like other site */
+/* Keep header but hide the title text, show only reset button */
 .vfrc-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  position: relative !important;
+}
+
+/* Hide the assistant info (title and description) */
+.vfrc-header .vfrc-assistant-info,
+.vfrc-header .jyiuei5,
+.vfrc-header .fptyqm0 {
   display: none !important;
 }
 
@@ -1367,11 +1380,11 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Chat input container - clean styling */
+/* Chat input container - no borders or colors */
 .vfrc-input-container,
 ._1gdvh9t1 {
   background: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border: none !important;
   border-radius: 8px !important;
 }
 
@@ -1398,8 +1411,8 @@ textarea._1gdvh9t6:focus {
 
 .vfrc-input-container:focus-within,
 ._1gdvh9t1:focus-within {
-  border: 2px solid rgba(64, 194, 194, 0.40) !important;
-  box-shadow: 0 0 0 2px rgba(64, 194, 194, 0.10) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Reset button styling - centered with text like other site */
