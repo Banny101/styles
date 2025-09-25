@@ -1336,61 +1336,47 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   }
 }
 
-/* ================= WIDGET COMPONENTS BLENDED WITH FRAMER BACKGROUND ================= */
+/* ================= TRANSPARENT WIDGET FOR SEAMLESS FRAMER INTEGRATION ================= */
 
-/* Main chat widget container - blend with mint background */
+/* Main chat widget container - fully transparent to blend with mint background */
 .vfrc-widget,
 .vfrc-chat,
 .vfrc-chat--overlay,
 #voiceflow-chat {
-  background: linear-gradient(135deg,
-    rgba(230, 240, 240, 0.85) 0%,
-    rgba(240, 248, 248, 0.80) 30%,
-    rgba(235, 245, 245, 0.85) 70%,
-    rgba(230, 240, 240, 0.90) 100%) !important;
-  border: 1px solid rgba(64, 194, 194, 0.15) !important;
-  backdrop-filter: blur(8px) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+  background: transparent !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
 }
 
-/* Chat header - seamless mint integration */
+/* Chat header - minimal styling, let it blend naturally */
 .vfrc-header {
-  background: linear-gradient(135deg,
-    rgba(230, 240, 240, 0.95) 0%,
-    rgba(235, 245, 245, 0.90) 50%,
-    rgba(240, 248, 248, 0.95) 100%) !important;
-  border-bottom: 1px solid rgba(64, 194, 194, 0.20) !important;
-  backdrop-filter: blur(10px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(10px) saturate(130%) !important;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(64, 194, 194, 0.15) !important;
 }
 
-/* Chat body/conversation area - subtle mint background */
+/* Chat body/conversation area - transparent */
 .vfrc-chat--dialog,
 .vfrc-conversation {
-  background: rgba(230, 240, 240, 0.4) !important; /* Very subtle mint tint */
+  background: transparent !important;
 }
 
-/* Chat footer/input area - blend with mint background */
+/* Chat footer/input area - transparent */
 .vf-footer,
 .vfrc-footer {
-  background: linear-gradient(135deg,
-    rgba(230, 240, 240, 0.95) 0%,
-    rgba(235, 245, 245, 0.90) 50%,
-    rgba(240, 248, 248, 0.95) 100%) !important;
-  border-top: 1px solid rgba(64, 194, 194, 0.20) !important;
-  backdrop-filter: blur(10px) saturate(130%) !important;
-  -webkit-backdrop-filter: blur(10px) saturate(130%) !important;
+  background: transparent !important;
+  border-top: 1px solid rgba(64, 194, 194, 0.15) !important;
 }
 
-/* Chat input field - mint-tinted with wellness accent */
+/* Chat input field - keep functional, minimal styling */
 .vfrc-input,
 .vfrc-chat-input,
 ._1gdvh9t6,
 textarea.vfrc-chat-input,
 textarea._1gdvh9t6 {
-  background: rgba(240, 248, 248, 0.9) !important;
-  border: 1px solid rgba(64, 194, 194, 0.25) !important;
-  color: rgba(0, 0, 0, 0.85) !important;
+  /* Let default Voiceflow styling handle functionality */
+  border: 1px solid rgba(64, 194, 194, 0.20) !important;
 }
 
 .vfrc-input:focus,
@@ -1398,114 +1384,68 @@ textarea._1gdvh9t6 {
 ._1gdvh9t6:focus,
 textarea.vfrc-chat-input:focus,
 textarea._1gdvh9t6:focus {
-  background: rgba(245, 252, 252, 0.95) !important;
   border: 1px solid rgba(64, 194, 194, 0.40) !important;
-  box-shadow: 0 0 0 3px rgba(64, 194, 194, 0.15) !important;
+  box-shadow: 0 0 0 2px rgba(64, 194, 194, 0.10) !important;
 }
 
-/* Assistant info area - seamless blend */
+/* Assistant info area - transparent */
 .vfrc-assistant-info {
   background: transparent !important;
 }
 
+/* Keep wellness teal accent for text elements */
 .vfrc-assistant-info--title {
-  color: #2d5a5a !important; /* Darker mint tone for contrast */
-}
-
-.vfrc-assistant-info--description {
-  color: #4a7070 !important; /* Medium mint tone */
-}
-
-/* Avatar styling for mint theme */
-.vfrc-avatar {
-  border: 2px solid rgba(64, 194, 194, 0.25) !important;
-  box-shadow: 0 4px 15px rgba(64, 194, 194, 0.20) !important;
-}
-
-/* Button styling - wellness teal on mint background */
-.vfrc-button {
-  background: linear-gradient(135deg,
-    rgba(64, 194, 194, 0.90) 0%,
-    rgba(56, 185, 185, 0.85) 50%,
-    rgba(48, 175, 175, 0.90) 100%) !important;
-  border: 1px solid rgba(64, 194, 194, 0.40) !important;
-  color: rgba(255, 255, 255, 0.95) !important;
-}
-
-.vfrc-button:hover {
-  background: linear-gradient(135deg,
-    rgba(64, 194, 194, 1) 0%,
-    rgba(56, 185, 185, 0.95) 50%,
-    rgba(48, 175, 175, 1) 100%) !important;
-  box-shadow: 0 6px 20px rgba(64, 194, 194, 0.25) !important;
-}
-
-/* Watermark/branding - blend with mint theme */
-.vfrc-footer--watermark {
-  color: rgba(64, 194, 194, 0.65) !important;
-  background: transparent !important;
-}
-
-/* Cards and interactive elements - mint themed */
-.vfrc-card--content,
-.vfrc-card--header {
-  background: rgba(240, 248, 248, 0.85) !important;
-  border: 1px solid rgba(64, 194, 194, 0.20) !important;
-}
-
-.vfrc-card--description {
-  color: rgba(0, 0, 0, 0.80) !important;
-}
-
-/* Carousel buttons - wellness themed */
-.vfrc-carousel--button {
-  background: rgba(64, 194, 194, 0.15) !important;
-  border: 1px solid rgba(64, 194, 194, 0.30) !important;
   color: #2d5a5a !important;
 }
 
-.vfrc-carousel--button:hover {
-  background: rgba(64, 194, 194, 0.25) !important;
+.vfrc-assistant-info--description {
+  color: #4a7070 !important;
 }
 
-/* Scrollbar styling for mint theme */
+/* Avatar - minimal wellness accent */
+.vfrc-avatar {
+  border: 2px solid rgba(64, 194, 194, 0.25) !important;
+}
+
+/* Buttons - keep wellness teal for interactions */
+.vfrc-button {
+  border: 1px solid rgba(64, 194, 194, 0.30) !important;
+}
+
+.vfrc-button:not(.vfrc-launcher):hover {
+  border: 1px solid rgba(64, 194, 194, 0.50) !important;
+  box-shadow: 0 2px 8px rgba(64, 194, 194, 0.15) !important;
+}
+
+/* Minimal scrollbar */
 .vfrc-chat::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .vfrc-chat::-webkit-scrollbar-track {
-  background: rgba(230, 240, 240, 0.5);
+  background: transparent;
 }
 
 .vfrc-chat::-webkit-scrollbar-thumb {
-  background: rgba(64, 194, 194, 0.50);
-  border-radius: 3px;
+  background: rgba(64, 194, 194, 0.30);
+  border-radius: 2px;
 }
 
 .vfrc-chat::-webkit-scrollbar-thumb:hover {
-  background: rgba(64, 194, 194, 0.70);
+  background: rgba(64, 194, 194, 0.50);
 }
 
-/* Session time and status indicators */
+/* Timestamp styling - subtle wellness teal */
+.vfrc-timestamp {
+  color: rgba(64, 194, 194, 0.60) !important;
+}
+
+/* All other elements transparent */
+.vfrc-chat--spacer,
+.vfrc-image--background,
 .vfrc-chat--session-time,
 .vfrc-chat--status {
-  color: rgba(64, 194, 194, 0.70) !important;
-  background: rgba(230, 240, 240, 0.60) !important;
-}
-
-/* Timestamp styling */
-.vfrc-timestamp {
-  color: rgba(64, 194, 194, 0.65) !important;
-}
-
-/* Chat spacer elements */
-.vfrc-chat--spacer {
   background: transparent !important;
-}
-
-/* Image backgrounds for mint theme */
-.vfrc-image--background {
-  background: rgba(230, 240, 240, 0.30) !important;
 }
 
 /* ================= DEFAULT FONT APPLICATION ================= */
