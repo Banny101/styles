@@ -995,7 +995,7 @@ img[src*="banner"],
     rgba(248, 248, 248, 0.95) 100%) !important;
 }
 
-/* Minimal Dot Pattern Overlay */
+/* Visible Dot Pattern Overlay */
 .vfrc-chat::before {
   content: "" !important;
   position: absolute !important;
@@ -1004,12 +1004,14 @@ img[src*="banner"],
   right: 0 !important;
   bottom: 0 !important;
   background-image:
-    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-    radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.01) 1px, transparent 1px) !important;
-  background-size: 30px 30px, 50px 50px !important;
+    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.08) 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px) !important;
+  background-size: 40px 40px, 60px 60px, 20px 20px, 20px 20px !important;
   pointer-events: none !important;
   z-index: 0 !important;
-  opacity: 0.4 !important;
+  opacity: 0.6 !important;
 }
 
 /* Alternative: Custom Background Image Support */
