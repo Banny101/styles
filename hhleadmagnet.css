@@ -16,26 +16,23 @@ div.f6dof87.f6dof89 {
   max-height: none !important;
 }
 
-/* ================= MAIN CONTAINER STYLING FOR EMBEDDED FRAMER MODE ================= */
+/* ================= MAIN CONTAINER STYLING (APPLIES TO BOTH STATES) ================= */
 ._1emja3f9 {
-  position: relative !important;
-  z-index: 1 !important;
-  /* Remove fixed positioning for embedded context */
+  position: fixed !important;
+  z-index: 9999 !important;
 }
 
-/* CLOSED STATE - embedded positioning */
+/* CLOSED STATE - specific positioning */
 ._1emja3f9:has(img[alt="open chat"]),
 ._1emja3f9:not(:has(#voiceflow-chat)) {
-  bottom: auto !important;
-  right: auto !important;
-  position: relative !important;
+  bottom: 20px !important;
+  right: 20px !important;
 }
 
-/* OPENED STATE - embedded positioning */
+/* OPENED STATE - specific positioning */
 ._1emja3f9:has(#voiceflow-chat) {
-  bottom: auto !important;
-  right: auto !important;
-  position: relative !important;
+  bottom: 0 !important;
+  right: 0 !important;
 }
 
 /* ================= CLOSED STATE STYLING (PREMIUM LAUNCHER) ================= */
@@ -49,34 +46,29 @@ div.f6dof87.f6dof89 {
   max-width: 120px !important;
   max-height: 120px !important;
   
-  /* Enhanced Glass Morphism for Mint Background (#e6f0f0) */
-  background: linear-gradient(135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(240, 250, 250, 0.25) 30%,
-    rgba(230, 240, 240, 0.20) 70%,
-    rgba(255, 255, 255, 0.30) 100%) !important;
-  backdrop-filter: blur(25px) saturate(160%) brightness(105%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(160%) brightness(105%) !important;
-  border: 2px solid rgba(64, 194, 194, 0.25) !important;
+  /* Premium Glass Morphism Design */
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 50% !important;
   
-  /* Advanced Shadow System Optimized for Mint Background */
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.08),
-    0 6px 25px rgba(64, 194, 194, 0.15),
-    0 3px 15px rgba(48, 175, 175, 0.10),
-    inset 0 2px 4px rgba(255, 255, 255, 0.6),
-    inset 0 -1px 3px rgba(64, 194, 194, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+  /* Advanced Shadow System */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   
   overflow: hidden !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 0 !important;
-  margin: 20px auto !important; /* Center in embedded context */
+  margin: 0 !important;
   box-sizing: border-box !important;
-  position: relative !important;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
   
   /* Smooth Transitions */
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
@@ -951,8 +943,159 @@ button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b2.vfrc-launcher.f6dof81._1q15b0b0.c
   }
 }
 
-/* ================= EMBEDDED MODE - NO PROACTIVE MESSAGES ================= */
-/* Proactive messages don't exist in embedded mode - widget is always visible */
+/* ================= PROACTIVE MESSAGE STYLING ================= */
+._6r9xee0 {
+  margin-bottom: 90px !important; /* Closer to launcher for better UX */
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important; /* Tighter spacing between messages */
+}
+
+/* Individual proactive message styling */
+div._6r9xee3.o231sh1 {
+  position: relative !important;
+  z-index: 0 !important;
+  border-radius: 20px !important;
+  
+  /* Premium White/Light Theme with Subtle Tech Colors */
+  background: 
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.95) 0%, 
+      rgba(248, 250, 252, 0.98) 30%, 
+      rgba(240, 245, 251, 0.95) 70%, 
+      rgba(255, 255, 255, 0.98) 100%),
+    linear-gradient(45deg, 
+      rgba(102, 126, 234, 0.03) 0%, 
+      transparent 50%, 
+      rgba(147, 51, 234, 0.02) 100%) !important;
+  
+  /* Subtle colorful border with tech glow */
+  border: 1px solid rgba(102, 126, 234, 0.15) !important;
+  
+  /* Premium light shadow system with subtle color */
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.08),
+    0 6px 20px rgba(102, 126, 234, 0.05),
+    0 3px 12px rgba(147, 51, 234, 0.03),
+    inset 0 1px 3px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(102, 126, 234, 0.02),
+    0 0 0 1px rgba(255, 255, 255, 0.6),
+    0 0 25px rgba(102, 126, 234, 0.04) !important;
+  
+  /* Dark text for readability on white background */
+  color: rgba(30, 30, 30, 0.95) !important;
+  opacity: 1 !important;
+  animation: techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: bottom right !important;
+  padding: 18px 24px !important;
+  position: relative !important;
+  overflow: hidden !important;
+  
+  /* Smooth premium transitions */
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+  will-change: transform, box-shadow, background !important;
+  
+  /* Subtle breathing effect */
+  animation: 
+    techProactiveSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+    subtleProactiveBreathe 5s ease-in-out 1s infinite !important;
+}
+
+/* Premium Light Hover Effect with Subtle Colors */
+div._6r9xee3.o231sh1:hover {
+  /* Enhanced light gradient with subtle colors */
+  background: 
+    linear-gradient(135deg, 
+      rgba(255, 255, 255, 1) 0%, 
+      rgba(248, 250, 252, 1) 30%, 
+      rgba(240, 245, 251, 1) 70%, 
+      rgba(255, 255, 255, 1) 100%),
+    linear-gradient(45deg, 
+      rgba(102, 126, 234, 0.06) 0%, 
+      transparent 50%, 
+      rgba(147, 51, 234, 0.04) 100%) !important;
+  
+  /* Enhanced colorful border */
+  border: 1px solid rgba(102, 126, 234, 0.25) !important;
+  
+  /* Enhanced light shadows with color accents */
+  box-shadow: 
+    0 16px 50px rgba(0, 0, 0, 0.12),
+    0 8px 25px rgba(102, 126, 234, 0.08),
+    0 4px 15px rgba(147, 51, 234, 0.05),
+    inset 0 2px 4px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 3px rgba(102, 126, 234, 0.03),
+    0 0 0 1px rgba(255, 255, 255, 0.8),
+    0 0 30px rgba(102, 126, 234, 0.08) !important;
+    
+  /* Darker text on hover for better contrast */
+  color: rgba(20, 20, 20, 1) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  animation: subtleProactiveHover 2s ease-in-out infinite !important;
+}
+
+/* Tech Proactive Message Animations */
+@keyframes techProactiveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.85) rotateX(-15deg);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.05) rotateX(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+@keyframes subtleProactiveBreathe {
+  0%, 100% {
+    transform: scale(1) translateY(0px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.08),
+      0 6px 20px rgba(102, 126, 234, 0.05),
+      0 3px 12px rgba(147, 51, 234, 0.03),
+      inset 0 1px 3px rgba(255, 255, 255, 0.8),
+      inset 0 -1px 2px rgba(102, 126, 234, 0.02),
+      0 0 0 1px rgba(255, 255, 255, 0.6),
+      0 0 25px rgba(102, 126, 234, 0.04);
+  }
+  50% {
+    transform: scale(1.01) translateY(-1px);
+    box-shadow: 
+      0 15px 50px rgba(0, 0, 0, 0.1),
+      0 8px 25px rgba(102, 126, 234, 0.06),
+      0 4px 15px rgba(147, 51, 234, 0.04),
+      inset 0 2px 4px rgba(255, 255, 255, 0.85),
+      inset 0 -2px 3px rgba(102, 126, 234, 0.03),
+      0 0 0 1px rgba(255, 255, 255, 0.7),
+      0 0 30px rgba(102, 126, 234, 0.06);
+  }
+}
+
+@keyframes subtleProactiveHover {
+  0%, 100% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.025) rotateZ(0.5deg);
+  }
+}
+
+@keyframes proactiveSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.9) rotate(-2deg);
+  }
+  60% {
+    transform: translateY(-3px) scale(1.02) rotate(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
 
 /* ================= ASSISTANT TITLE & DESCRIPTION - CLEAN MINIMALISTIC ================= */
 
@@ -1236,7 +1379,11 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-height: 74px !important;
   }
   
-  /* No proactive messages in embedded mode */
+  /* Mobile proactive message spacing adjustment */
+  ._6r9xee0 {
+    margin-bottom: 70px !important; /* Much closer to launcher on mobile */
+    gap: 6px !important; /* Smaller gap for mobile */
+  }
 
   /* Mobile send button */
   .vfrc-chat-input--button,
@@ -1311,7 +1458,11 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
     max-height: 64px !important;
   }
   
-  /* No proactive messages in embedded mode */
+  /* Extra small mobile proactive message spacing */
+  ._6r9xee0 {
+    margin-bottom: 60px !important; /* Very close to launcher on small screens */
+    gap: 4px !important; /* Tight spacing */
+  }
 
   /* Mobile send button - smallest size */
   .vfrc-chat-input--button,
@@ -1336,142 +1487,12 @@ button[class*="vfrc-button"]:has(svg[viewBox="0 0 24 24"]):not([class*="header"]
   }
 }
 
-/* ================= CLEAN WHITE WIDGET FOR FRAMER INTEGRATION ================= */
-
-/* Main chat widget container - clean white background */
-.vfrc-widget,
-.vfrc-chat,
-.vfrc-chat--overlay,
-#voiceflow-chat {
-  background: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
-  border-radius: 12px !important;
-}
-
-/* Keep original header styling - let Voiceflow handle it */
-
-/* Chat body/conversation area - clean white */
-.vfrc-chat--dialog,
-.vfrc-conversation {
-  background: #ffffff !important;
-}
-
-/* Chat footer/input area - clean white */
-.vf-footer,
-.vfrc-footer,
-._1vj16242 {
-  background: #ffffff !important;
-  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
-}
-
-/* Start new chat button styling */
-#vfrc-start-chat,
-.vfrc-footer button[id="vfrc-start-chat"] {
-  background: rgba(64, 194, 194, 0.1) !important;
-  border: 1px solid rgba(64, 194, 194, 0.3) !important;
-  border-radius: 8px !important;
-  color: #2d5a5a !important;
-  padding: 8px 16px !important;
-}
-
-#vfrc-start-chat:hover,
-.vfrc-footer button[id="vfrc-start-chat"]:hover {
-  background: rgba(64, 194, 194, 0.15) !important;
-  border: 1px solid rgba(64, 194, 194, 0.4) !important;
-}
-
-/* Footer section backgrounds */
-._5x612k0,
-._1vj16245,
-.jsli361 {
-  background: #ffffff !important;
-}
-
-/* Powered by NFI link styling */
-.jsli365 {
-  color: rgba(0, 0, 0, 0.6) !important;
-  text-decoration: none !important;
-}
-
-.jsli365:hover {
-  color: #40C2C2 !important;
-}
-
-/* Chat input container - no borders or colors */
-.vfrc-input-container,
-._1gdvh9t1 {
-  background: #ffffff !important;
-  border: none !important;
-  border-radius: 8px !important;
-}
-
-/* Chat input field - clean functional styling */
-.vfrc-input,
-.vfrc-chat-input,
-._1gdvh9t6,
-textarea.vfrc-chat-input,
-textarea._1gdvh9t6 {
-  background: transparent !important;
-  border: none !important;
-  color: rgba(0, 0, 0, 0.85) !important;
-}
-
-.vfrc-input:focus,
-.vfrc-chat-input:focus,
-._1gdvh9t6:focus,
-textarea.vfrc-chat-input:focus,
-textarea._1gdvh9t6:focus {
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-.vfrc-input-container:focus-within,
-._1gdvh9t1:focus-within {
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Clean scroll down button styling */
-.oq48l93,
-._1cosygz0 {
-  background: rgba(64, 194, 194, 0.1) !important;
-  border: 1px solid rgba(64, 194, 194, 0.3) !important;
-  border-radius: 8px !important;
-  color: #40C2C2 !important;
-}
-
-.oq48l93:hover,
-._1cosygz0:hover {
-  background: rgba(64, 194, 194, 0.15) !important;
-}
-
-/* Clean scrollbar */
-.vfrc-chat::-webkit-scrollbar {
-  width: 6px;
-}
-
-.vfrc-chat::-webkit-scrollbar-track {
-  background: #f5f5f5;
-}
-
-.vfrc-chat::-webkit-scrollbar-thumb {
-  background: rgba(64, 194, 194, 0.40);
-  border-radius: 3px;
-}
-
-.vfrc-chat::-webkit-scrollbar-thumb:hover {
-  background: rgba(64, 194, 194, 0.60);
-}
-
-/* Timestamp styling */
-.vfrc-timestamp {
-  color: rgba(0, 0, 0, 0.5) !important;
-}
-
 /* ================= DEFAULT FONT APPLICATION ================= */
 /* Use default browser fonts for all elements */
+
+/* All elements use default browser fonts */
+
+/* Proactive messages use default fonts */
 
 /* Accessibility: Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
@@ -1483,8 +1504,52 @@ textarea._1gdvh9t6:focus {
   }
 }
 
-/* ================= EMBEDDED MODE OPTIMIZATIONS ================= */
-/* No shimmer effects needed - proactive messages don't exist in embedded mode */
+/* ================= SUBTLE COLORFUL EFFECTS FOR PROACTIVE MESSAGES ================= */
+/* Subtle colorful shimmer effect to add life and prevent dullness */
+div._6r9xee3.o231sh1::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(
+    120deg, 
+    transparent 0%, 
+    rgba(102, 126, 234, 0.08) 20%,
+    rgba(255, 255, 255, 0.15) 40%, 
+    rgba(147, 51, 234, 0.06) 60%, 
+    rgba(79, 172, 254, 0.08) 80%,
+    transparent 100%
+  ) !important;
+  animation: subtleColorfulShimmer 6s infinite !important;
+  border-radius: inherit !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+@keyframes subtleColorfulShimmer {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Ensure text stays above shimmer */
+div._6r9xee3.o231sh1 > * {
+  position: relative !important;
+  z-index: 2 !important;
+}
 
 /* ================= FALLBACK BULLET STYLING WITH CSS COUNTERS ================= */
 /* Enhanced fallback for when native list styling fails in Voiceflow */
