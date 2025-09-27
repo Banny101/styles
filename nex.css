@@ -85,13 +85,13 @@ div.f6dof87.f6dof89 {
   background: rgba(255, 255, 255, 0.25) !important;
   backdrop-filter: blur(30px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
-  
-  /* Dramatic shadow enhancement */
-  box-shadow: 
+
+  /* Dramatic monochromatic shadow enhancement */
+  box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.2),
     inset 0 1px 1px rgba(255, 255, 255, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.2),
-    0 0 40px rgba(102, 126, 234, 0.3) !important;
+    0 0 40px rgba(0, 0, 0, 0.3) !important;
   
   /* Smooth scale transform */
   transform: scale(1.08) translateY(-4px) !important;
@@ -112,9 +112,9 @@ div.f6dof87.f6dof89 {
   }
   50% {
     transform: scale(1.03) translateY(-3px);
-    box-shadow: 
+    box-shadow:
       0 14px 45px rgba(0, 0, 0, 0.14),
-      0 0 20px rgba(102, 126, 234, 0.15),
+      0 0 20px rgba(0, 0, 0, 0.15),
       inset 0 1px 1px rgba(255, 255, 255, 0.4),
       0 0 0 1px rgba(255, 255, 255, 0.15);
   }
@@ -209,38 +209,38 @@ img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12 {
 /* Avatar hover effect */
 img[src*="istock-1480510752.jpg"].vfrc-avatar.g931q10.g931q12:hover {
   transform: scale(1.08) translateY(-5px) !important;
-  box-shadow: 
+  box-shadow:
     0 15px 40px rgba(0, 0, 0, 0.25),
-    0 0 35px rgba(102, 126, 234, 0.2) !important;
+    0 0 35px rgba(0, 0, 0, 0.2) !important;
   filter: brightness(1.1) saturate(1.2) !important;
-  border: 3px solid rgba(102, 126, 234, 0.4) !important;
+  border: 3px solid rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Complex Avatar Animation - Bouncing with Floating */
 @keyframes avatarBounceFloat {
   0%, 100% {
     transform: translateY(0px) scale(1) rotate(0deg);
-    box-shadow: 
+    box-shadow:
       0 8px 25px rgba(0, 0, 0, 0.15),
-      0 0 20px rgba(102, 126, 234, 0.1);
+      0 0 20px rgba(0, 0, 0, 0.1);
   }
   25% {
     transform: translateY(-8px) scale(1.03) rotate(2deg);
-    box-shadow: 
+    box-shadow:
       0 12px 35px rgba(0, 0, 0, 0.2),
-      0 0 25px rgba(102, 126, 234, 0.15);
+      0 0 25px rgba(0, 0, 0, 0.15);
   }
   50% {
     transform: translateY(-12px) scale(1.05) rotate(0deg);
-    box-shadow: 
+    box-shadow:
       0 16px 45px rgba(0, 0, 0, 0.25),
-      0 0 30px rgba(102, 126, 234, 0.2);
+      0 0 30px rgba(0, 0, 0, 0.2);
   }
   75% {
     transform: translateY(-8px) scale(1.03) rotate(-2deg);
-    box-shadow: 
+    box-shadow:
       0 12px 35px rgba(0, 0, 0, 0.2),
-      0 0 25px rgba(102, 126, 234, 0.15);
+      0 0 25px rgba(0, 0, 0, 0.15);
   }
 }
 
@@ -413,15 +413,15 @@ div[class*="markdown"] li::marker {
 
 /* User Response Messages */
 .vfrc-user-response .vfrc-message {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(79, 102, 204, 0.9) 100%) !important;
-  backdrop-filter: blur(15px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(15px) saturate(150%) !important;
-  border: 1px solid rgba(102, 126, 234, 0.3) !important;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(40, 40, 40, 0.9) 100%) !important;
+  backdrop-filter: blur(15px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(120%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 18px 18px 6px 18px !important;
-  
-  box-shadow: 
-    0 4px 20px rgba(102, 126, 234, 0.15),
-    0 0 15px rgba(102, 126, 234, 0.1),
+
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.15),
+    0 0 15px rgba(0, 0, 0, 0.1),
     inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
   
   padding: 16px 20px !important;
@@ -613,27 +613,27 @@ div[class*="loading"] span,
   position: relative !important;
   overflow: visible !important;
 
-  /* ULTRA-PREMIUM GLASS MORPHISM BUBBLES */
+  /* ULTRA-PREMIUM MONOCHROMATIC GLASS BUBBLES */
   background: linear-gradient(135deg,
-    rgba(102, 126, 234, 0.9) 0%,
-    rgba(147, 51, 234, 0.8) 30%,
-    rgba(79, 172, 254, 0.9) 60%,
-    rgba(102, 126, 234, 0.95) 100%) !important;
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(40, 40, 40, 0.8) 30%,
+    rgba(60, 60, 60, 0.9) 60%,
+    rgba(0, 0, 0, 0.95) 100%) !important;
 
   /* PREMIUM GLASS EFFECTS */
   backdrop-filter: blur(20px) saturate(180%) brightness(110%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(110%) !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
 
-  /* ULTRA-LUXURIOUS SHADOW SYSTEM */
+  /* ULTRA-LUXURIOUS MONOCHROMATIC SHADOW SYSTEM */
   box-shadow:
-    0 8px 32px rgba(102, 126, 234, 0.4),
-    0 4px 16px rgba(147, 51, 234, 0.3),
-    0 2px 8px rgba(79, 172, 254, 0.2),
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.2),
     inset 0 2px 4px rgba(255, 255, 255, 0.6),
     inset 0 -1px 2px rgba(0, 0, 0, 0.1),
-    0 0 20px rgba(102, 126, 234, 0.3),
-    0 0 40px rgba(147, 51, 234, 0.2) !important;
+    0 0 20px rgba(0, 0, 0, 0.3),
+    0 0 40px rgba(0, 0, 0, 0.2) !important;
 
   /* PREMIUM ANIMATIONS */
   animation: ultraPremiumBubble 1.8s ease-in-out infinite !important;
@@ -834,7 +834,7 @@ div[class*="_1ayyscc"] {
   height: 18px !important;
   background: linear-gradient(180deg, #667eea 0%, #764ba2 100%) !important;
   border-radius: 1px !important;
-  box-shadow: 0 0 8px rgba(102, 126, 234, 0.5) !important;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5) !important;
   animation: premiumCursorBlink 1.2s infinite !important;
   z-index: 4 !important;
 }
@@ -954,7 +954,74 @@ img[src*="banner"],
 
 /* Header icon replacement removed - restoring original SVG icons */
 
-/* Background modifications removed - keeping clean chat area */
+/* ================= CLEAN WIDGET CONTAINER EDGES (INSPIRED BY CZECH EXAMPLE) ================= */
+/* Clean Widget Container Border - Black & White Theme */
+.s9t60i0,
+#voiceflow-chat,
+.vfrc-widget--chat {
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 20px !important;
+
+  /* Subtle monochromatic shadow */
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.08),
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1) !important;
+
+  /* Clean backdrop effect */
+  backdrop-filter: blur(10px) saturate(110%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(110%) !important;
+}
+
+/* Enhanced border on hover */
+.s9t60i0:hover,
+#voiceflow-chat:hover,
+.vfrc-widget--chat:hover {
+  border: 2px solid rgba(0, 0, 0, 0.15) !important;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.12),
+    0 6px 20px rgba(0, 0, 0, 0.06),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ================= SLEEK SIMPLE BACKGROUND SYSTEM ================= */
+/* Subtle Geometric Pattern Background */
+.vfrc-chat,
+.s9t60i1,
+.vfrc-chat__dialog {
+  position: relative !important;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(248, 248, 248, 0.95) 100%) !important;
+}
+
+/* Minimal Dot Pattern Overlay */
+.vfrc-chat::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.01) 1px, transparent 1px) !important;
+  background-size: 30px 30px, 50px 50px !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  opacity: 0.4 !important;
+}
+
+/* Alternative: Custom Background Image Support */
+/* Uncomment and add your image:
+.vfrc-chat {
+  background-image: url("YOUR_BACKGROUND_IMAGE_URL") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+*/
 
 /* ================= OPENED STATE STYLING ================= */
 /* Main container in opened state */
