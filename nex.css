@@ -995,7 +995,7 @@ img[src*="banner"],
     rgba(248, 248, 248, 0.95) 100%) !important;
 }
 
-/* Visible Dot Pattern Overlay */
+/* Cool Visible Background Pattern */
 .vfrc-chat::before {
   content: "" !important;
   position: absolute !important;
@@ -1004,14 +1004,26 @@ img[src*="banner"],
   right: 0 !important;
   bottom: 0 !important;
   background-image:
-    radial-gradient(circle at 25% 25%, rgba(0, 0, 0, 0.08) 2px, transparent 2px),
-    radial-gradient(circle at 75% 75%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px) !important;
-  background-size: 40px 40px, 60px 60px, 20px 20px, 20px 20px !important;
+    radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.12) 2px, transparent 2px),
+    radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(0, 0, 0, 0.03) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 25%, transparent 25%) !important;
+  background-size: 35px 35px, 50px 50px, 30px 30px, 30px 30px !important;
+  background-position: 0 0, 17.5px 17.5px, 0 0, 15px 15px !important;
   pointer-events: none !important;
   z-index: 0 !important;
-  opacity: 0.6 !important;
+  opacity: 1 !important;
+  animation: backgroundShift 20s ease-in-out infinite !important;
+}
+
+/* Subtle background animation */
+@keyframes backgroundShift {
+  0%, 100% {
+    background-position: 0 0, 17.5px 17.5px, 0 0, 15px 15px;
+  }
+  50% {
+    background-position: 10px 10px, 27.5px 27.5px, 10px 10px, 25px 25px;
+  }
 }
 
 /* Alternative: Custom Background Image Support */
