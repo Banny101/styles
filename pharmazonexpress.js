@@ -531,4 +531,616 @@ export const MultiSelectExtension = {
       }
     };
   },
+};
+
+export const BMICalculatorExtension = {
+  name: "BMICalculator",
+  type: "response",
+  match: ({ trace }) =>
+    trace.type === "ext_bmiCalculator" ||
+    trace.payload?.name === "ext_bmiCalculator",
+  render: ({ trace, element }) => {
+    // Configuration with defaults
+    const config = {
+      color: trace.payload?.color || "#51c3be",
+      title: trace.payload?.title || "BMI Calculator",
+      bmiThreshold: parseFloat(trace.payload?.bmiThreshold) || 27,
+      submitText: trace.payload?.submitText || "Calculate BMI",
+      cancelText: trace.payload?.cancelText || "Cancel",
+      darkMode: trace.payload?.darkMode || false,
+      successMessage: trace.payload?.successMessage || "Checking eligibility...",
+      ineligibleMessage: trace.payload?.ineligibleMessage || "You are not eligible with this height and weight",
+      eligibleMessage: trace.payload?.eligibleMessage || "You are eligible!",
+      metricHeightLabel: trace.payload?.metricHeightLabel || "Height (cm)",
+      metricWeightLabel: trace.payload?.metricWeightLabel || "Weight (kg)",
+      imperialHeightLabel: trace.payload?.imperialHeightLabel || "Height",
+      imperialWeightLabel: trace.payload?.imperialWeightLabel || "Weight",
+      switchToImperialText: trace.payload?.switchToImperialText || "Switch to Feet/Inches - Stones/Pounds",
+      switchToMetricText: trace.payload?.switchToMetricText || "Switch to Centimeters/Kilograms"
+    };
+
+    // Color utilities
+    const hexToRgba = (hex, alpha = 1) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    const adjustBrightness = (hex, percent) => {
+      let r = parseInt(hex.slice(1, 3), 16);
+      let g = parseInt(hex.slice(3, 5), 16);
+      let b = parseInt(hex.slice(5, 7), 16);
+
+      r = Math.max(0, Math.min(255, r + percent));
+      g = Math.max(0, Math.min(255, g + percent));
+      b = Math.max(0, Math.min(255, b + percent));
+
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    };
+
+    // Color scheme
+    const colors = {
+      primary: config.color,
+      primaryHover: adjustBrightness(config.color, config.darkMode ? 20 : -15),
+      background: config.darkMode ? '#1E293B' : '#FFFFFF',
+      surface: config.darkMode ? '#334155' : '#FFFFFF',
+      text: config.darkMode ? '#F1F5F9' : '#303235',
+      textSecondary: config.darkMode ? '#94A3B8' : '#72727a',
+      border: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.08)',
+      hoverBg: config.darkMode ? '#475569' : 'rgba(0, 0, 0, 0.04)',
+      error: '#FF4444',
+      success: '#10B981'
+    };
+
+    const bmiContainer = document.createElement("form");
+    bmiContainer.className = "_1ddzqsn7";
+
+    // State
+    let currentUnit = "metric"; // "metric" or "imperial"
+    let isSubmitted = false;
+
+    bmiContainer.innerHTML = `
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+        ._1ddzqsn7 {
+          display: block;
+        }
+
+        .bmi-calculator-container {
+          font-family: 'Inter', sans-serif;
+          width: 100%;
+          max-width: 450px;
+          margin: 0 auto;
+        }
+
+        .bmi-title {
+          font-size: 18px;
+          color: ${colors.text};
+          margin-bottom: 20px;
+          font-weight: 600;
+          text-align: center;
+        }
+
+        .unit-system {
+          margin-bottom: 20px;
+        }
+
+        .unit-switch-btn {
+          width: 100%;
+          padding: 10px;
+          background: ${hexToRgba(config.color, 0.1)};
+          border: 1px solid ${hexToRgba(config.color, 0.3)};
+          border-radius: 8px;
+          color: ${config.color};
+          font-family: 'Inter', sans-serif;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .unit-switch-btn:hover {
+          background: ${hexToRgba(config.color, 0.15)};
+          border-color: ${config.color};
+        }
+
+        .input-group {
+          margin-bottom: 16px;
+        }
+
+        .input-label {
+          display: block;
+          font-size: 14px;
+          font-weight: 500;
+          color: ${colors.text};
+          margin-bottom: 8px;
+        }
+
+        .input-field {
+          width: 100%;
+          padding: 12px;
+          font-size: 14px;
+          font-family: 'Inter', sans-serif;
+          color: ${colors.text};
+          background: ${colors.surface};
+          border: 1px solid ${colors.border};
+          border-radius: 8px;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+        }
+
+        .input-field:focus {
+          outline: none;
+          border-color: ${config.color};
+          box-shadow: 0 0 0 3px ${hexToRgba(config.color, 0.1)};
+        }
+
+        .input-field.error {
+          border-color: ${colors.error};
+        }
+
+        .imperial-group {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+        }
+
+        .imperial-input-wrapper {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .imperial-sublabel {
+          font-size: 12px;
+          color: ${colors.textSecondary};
+          margin-bottom: 4px;
+        }
+
+        .error-message {
+          color: ${colors.error};
+          font-size: 13px;
+          margin: 8px 0;
+          padding: 10px;
+          background: ${hexToRgba(colors.error, 0.1)};
+          border-radius: 6px;
+          text-align: center;
+          display: none;
+          animation: slideIn 0.3s ease;
+        }
+
+        .bmi-result {
+          margin: 16px 0;
+          padding: 16px;
+          border-radius: 8px;
+          text-align: center;
+          display: none;
+          animation: slideIn 0.3s ease;
+        }
+
+        .bmi-result.eligible {
+          background: ${hexToRgba(colors.success, 0.1)};
+          border: 1px solid ${hexToRgba(colors.success, 0.3)};
+          color: ${colors.success};
+        }
+
+        .bmi-result.ineligible {
+          background: ${hexToRgba(colors.error, 0.1)};
+          border: 1px solid ${hexToRgba(colors.error, 0.3)};
+          color: ${colors.error};
+        }
+
+        .bmi-value {
+          font-size: 24px;
+          font-weight: 600;
+          margin-bottom: 8px;
+        }
+
+        .bmi-message {
+          font-size: 14px;
+          font-weight: 500;
+        }
+
+        .button-group {
+          display: grid;
+          gap: 8px;
+        }
+
+        .submit-button, .cancel-button {
+          width: 100%;
+          padding: 12px;
+          border: none;
+          border-radius: 8px;
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .submit-button {
+          background: ${colors.primary};
+          color: white;
+          box-shadow: 0 2px 5px ${hexToRgba(colors.primary, 0.3)};
+        }
+
+        .submit-button:not(:disabled):hover {
+          background: ${colors.primaryHover};
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px ${hexToRgba(colors.primary, 0.4)};
+        }
+
+        .submit-button:not(:disabled):active {
+          transform: translateY(0);
+        }
+
+        .submit-button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          box-shadow: none;
+        }
+
+        .cancel-button {
+          background: transparent;
+          color: ${colors.textSecondary};
+          border: 1px solid ${hexToRgba(colors.textSecondary, 0.2)};
+        }
+
+        .cancel-button:hover {
+          background: ${hexToRgba(colors.textSecondary, 0.1)};
+        }
+
+        .success-state {
+          display: none;
+          text-align: center;
+          padding: 20px;
+          animation: fadeIn 0.5s ease;
+        }
+
+        .success-icon {
+          display: block;
+          width: 48px;
+          height: 48px;
+          margin: 0 auto 16px;
+          background: ${colors.primary};
+          border-radius: 50%;
+          position: relative;
+          animation: scaleIn 0.4s cubic-bezier(0.18, 1.25, 0.6, 1.25) forwards;
+        }
+
+        .success-icon:after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 20px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 0 3px 3px;
+          transform: translate(-50%, -60%) rotate(-45deg);
+        }
+
+        .success-text {
+          font-size: 16px;
+          font-weight: 600;
+          color: ${colors.text};
+          margin-bottom: 8px;
+        }
+
+        .success-details {
+          font-size: 14px;
+          color: ${colors.textSecondary};
+        }
+
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+          from { transform: scale(0.5); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          75% { transform: translateX(4px); }
+        }
+
+        .shake {
+          animation: shake 0.3s ease;
+        }
+      </style>
+
+      <div class="bmi-calculator-container">
+        <div class="bmi-title">${config.title}</div>
+
+        <div class="unit-system">
+          <button type="button" class="unit-switch-btn">${config.switchToImperialText}</button>
+        </div>
+
+        <!-- Metric Inputs -->
+        <div class="metric-inputs">
+          <div class="input-group">
+            <label class="input-label">${config.metricHeightLabel}</label>
+            <input type="text" class="input-field" id="height-cm" placeholder="e.g., 175 or 175.5" inputmode="decimal">
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">${config.metricWeightLabel}</label>
+            <input type="text" class="input-field" id="weight-kg" placeholder="e.g., 70 or 70.5" inputmode="decimal">
+          </div>
+        </div>
+
+        <!-- Imperial Inputs -->
+        <div class="imperial-inputs" style="display: none;">
+          <div class="input-group">
+            <label class="input-label">${config.imperialHeightLabel}</label>
+            <div class="imperial-group">
+              <div class="imperial-input-wrapper">
+                <span class="imperial-sublabel">Feet</span>
+                <input type="text" class="input-field" id="height-ft" placeholder="e.g., 5" inputmode="numeric">
+              </div>
+              <div class="imperial-input-wrapper">
+                <span class="imperial-sublabel">Inches</span>
+                <input type="text" class="input-field" id="height-in" placeholder="e.g., 9" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label">${config.imperialWeightLabel}</label>
+            <div class="imperial-group">
+              <div class="imperial-input-wrapper">
+                <span class="imperial-sublabel">Stones</span>
+                <input type="text" class="input-field" id="weight-st" placeholder="e.g., 11" inputmode="numeric">
+              </div>
+              <div class="imperial-input-wrapper">
+                <span class="imperial-sublabel">Pounds</span>
+                <input type="text" class="input-field" id="weight-lb" placeholder="e.g., 2" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="error-message"></div>
+        <div class="bmi-result"></div>
+
+        <div class="button-group form-buttons">
+          <button type="submit" class="submit-button">${config.submitText}</button>
+          <button type="button" class="cancel-button">${config.cancelText}</button>
+        </div>
+
+        <div class="success-state">
+          <div class="success-icon"></div>
+          <div class="success-text">${config.successMessage}</div>
+          <div class="success-details"></div>
+        </div>
+      </div>
+    `;
+
+    // DOM references
+    const unitSwitchBtn = bmiContainer.querySelector(".unit-switch-btn");
+    const metricInputs = bmiContainer.querySelector(".metric-inputs");
+    const imperialInputs = bmiContainer.querySelector(".imperial-inputs");
+    const errorMessage = bmiContainer.querySelector(".error-message");
+    const bmiResult = bmiContainer.querySelector(".bmi-result");
+    const submitButton = bmiContainer.querySelector(".submit-button");
+    const cancelButton = bmiContainer.querySelector(".cancel-button");
+    const formButtons = bmiContainer.querySelector(".form-buttons");
+    const successState = bmiContainer.querySelector(".success-state");
+    const successDetails = bmiContainer.querySelector(".success-details");
+
+    // Input fields
+    const heightCm = bmiContainer.querySelector("#height-cm");
+    const weightKg = bmiContainer.querySelector("#weight-kg");
+    const heightFt = bmiContainer.querySelector("#height-ft");
+    const heightIn = bmiContainer.querySelector("#height-in");
+    const weightSt = bmiContainer.querySelector("#weight-st");
+    const weightLb = bmiContainer.querySelector("#weight-lb");
+
+    // Validate numeric input (allow numbers and decimal point)
+    const validateNumericInput = (input) => {
+      input.value = input.value.replace(/[^0-9.]/g, '');
+      // Prevent multiple decimal points
+      const parts = input.value.split('.');
+      if (parts.length > 2) {
+        input.value = parts[0] + '.' + parts.slice(1).join('');
+      }
+    };
+
+    // Add input validation to all fields
+    [heightCm, weightKg, heightFt, heightIn, weightSt, weightLb].forEach(input => {
+      input.addEventListener('input', () => validateNumericInput(input));
+    });
+
+    // Unit switching
+    unitSwitchBtn.addEventListener("click", () => {
+      if (currentUnit === "metric") {
+        currentUnit = "imperial";
+        metricInputs.style.display = "none";
+        imperialInputs.style.display = "block";
+        unitSwitchBtn.textContent = config.switchToMetricText;
+      } else {
+        currentUnit = "metric";
+        metricInputs.style.display = "block";
+        imperialInputs.style.display = "none";
+        unitSwitchBtn.textContent = config.switchToImperialText;
+      }
+      errorMessage.style.display = "none";
+      bmiResult.style.display = "none";
+    });
+
+    // Calculate BMI
+    const calculateBMI = () => {
+      let heightInMeters, weightInKg;
+
+      if (currentUnit === "metric") {
+        const height = parseFloat(heightCm.value);
+        const weight = parseFloat(weightKg.value);
+
+        if (!height || !weight || height <= 0 || weight <= 0) {
+          showError("Please enter valid height and weight values");
+          return null;
+        }
+
+        heightInMeters = height / 100; // cm to meters
+        weightInKg = weight;
+      } else {
+        const feet = parseFloat(heightFt.value) || 0;
+        const inches = parseFloat(heightIn.value) || 0;
+        const stones = parseFloat(weightSt.value) || 0;
+        const pounds = parseFloat(weightLb.value) || 0;
+
+        if ((feet === 0 && inches === 0) || (stones === 0 && pounds === 0)) {
+          showError("Please enter valid height and weight values");
+          return null;
+        }
+
+        // Convert to metric
+        const totalInches = (feet * 12) + inches;
+        heightInMeters = totalInches * 0.0254; // inches to meters
+
+        const totalPounds = (stones * 14) + pounds;
+        weightInKg = totalPounds * 0.453592; // pounds to kg
+      }
+
+      const bmi = weightInKg / (heightInMeters * heightInMeters);
+      return bmi;
+    };
+
+    // Show error
+    const showError = (message) => {
+      errorMessage.textContent = message;
+      errorMessage.style.display = "block";
+      bmiContainer.querySelector('.bmi-calculator-container').classList.add('shake');
+      setTimeout(() => {
+        bmiContainer.querySelector('.bmi-calculator-container').classList.remove('shake');
+      }, 300);
+    };
+
+    // Show BMI result
+    const showBMIResult = (bmi, eligible) => {
+      bmiResult.innerHTML = `
+        <div class="bmi-value">BMI: ${bmi.toFixed(1)}</div>
+        <div class="bmi-message">${eligible ? config.eligibleMessage : config.ineligibleMessage}</div>
+      `;
+      bmiResult.className = `bmi-result ${eligible ? 'eligible' : 'ineligible'}`;
+      bmiResult.style.display = "block";
+      errorMessage.style.display = "none";
+    };
+
+    // Disable form
+    const disableForm = () => {
+      [heightCm, weightKg, heightFt, heightIn, weightSt, weightLb].forEach(input => {
+        input.disabled = true;
+        input.style.opacity = "0.6";
+      });
+      unitSwitchBtn.disabled = true;
+      unitSwitchBtn.style.opacity = "0.6";
+      submitButton.disabled = true;
+      submitButton.style.opacity = "0.5";
+      cancelButton.disabled = true;
+      cancelButton.style.opacity = "0.5";
+    };
+
+    // Show success
+    const showSuccess = (data) => {
+      formButtons.style.display = "none";
+      bmiResult.style.display = "none";
+      successDetails.textContent = `BMI: ${data.bmi.toFixed(1)} | ${data.eligible ? 'Eligible' : 'Not Eligible'}`;
+      successState.style.display = "block";
+    };
+
+    // Form submission
+    bmiContainer.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (isSubmitted) return;
+
+      const bmi = calculateBMI();
+      if (bmi === null) return;
+
+      const eligible = bmi > config.bmiThreshold;
+
+      showBMIResult(bmi, eligible);
+
+      // Prepare data to send
+      let heightData, weightData;
+
+      if (currentUnit === "metric") {
+        heightData = {
+          value: parseFloat(heightCm.value),
+          unit: "cm",
+          formatted: `${heightCm.value} cm`
+        };
+        weightData = {
+          value: parseFloat(weightKg.value),
+          unit: "kg",
+          formatted: `${weightKg.value} kg`
+        };
+      } else {
+        const feet = parseFloat(heightFt.value) || 0;
+        const inches = parseFloat(heightIn.value) || 0;
+        const stones = parseFloat(weightSt.value) || 0;
+        const pounds = parseFloat(weightLb.value) || 0;
+
+        heightData = {
+          feet: feet,
+          inches: inches,
+          unit: "ft/in",
+          formatted: `${feet}' ${inches}"`
+        };
+        weightData = {
+          stones: stones,
+          pounds: pounds,
+          unit: "st/lb",
+          formatted: `${stones} st ${pounds} lb`
+        };
+      }
+
+      const payload = {
+        bmi: parseFloat(bmi.toFixed(1)),
+        eligible: eligible,
+        unit: currentUnit,
+        height: heightData,
+        weight: weightData,
+        threshold: config.bmiThreshold
+      };
+
+      isSubmitted = true;
+      disableForm();
+      showSuccess(payload);
+
+      setTimeout(() => {
+        window.voiceflow.chat.interact({
+          type: "complete",
+          payload: payload
+        });
+      }, 1500);
+    });
+
+    // Cancel button
+    cancelButton.addEventListener("click", () => {
+      if (isSubmitted) return;
+
+      disableForm();
+
+      window.voiceflow.chat.interact({
+        type: "cancel",
+        payload: { cancelled: true }
+      });
+    });
+
+    element.innerHTML = '';
+    element.appendChild(bmiContainer);
+
+    return () => {};
+  }
 }
