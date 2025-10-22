@@ -458,17 +458,21 @@ div[class*="markdown"] li::marker {
   }
 }
 
-/* ================= ULTRA-SIMPLE HORIZONTAL TYPING INDICATOR ================= */
-/* Minimal, Clean Typing Indicator - Horizontal Layout */
-body .vfrc-typing-indicator,
-body .vfrc-system-response .vfrc-typing-indicator,
-body div[class*="indicator"],
-body div[class*="typing"],
-body div[class*="loading"],
-body .vfrc-chat .vfrc-typing-indicator,
-#voiceflow-chat .vfrc-typing-indicator,
-#voiceflow-chat .vfrc-system-response .vfrc-typing-indicator {
-  /* Basic styling only */
+/* ================= SIMPLE HORIZONTAL TYPING INDICATOR ================= */
+/* Target the correct typing indicator structure */
+
+/* Container */
+.vfrc-typing-indicator--container-inner._1ayyscc1 {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 8px 0 !important;
+  display: block !important;
+}
+
+/* Parent span with dots - HORIZONTAL */
+span.vfrc-typing-indicator.xaffbq1 {
   background: #f5f5f5 !important;
   border: 1px solid #e0e0e0 !important;
   border-radius: 12px !important;
@@ -480,76 +484,47 @@ body .vfrc-chat .vfrc-typing-indicator,
   flex-direction: row !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  gap: 2px !important;
-  width: auto !important;
-  height: auto !important;
+  gap: 4px !important;
 
-  /* Remove all special effects */
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  box-shadow: none !important;
+  /* No animations */
   animation: none !important;
   transform: none !important;
-  transition: none !important;
-  overflow: visible !important;
 }
 
-/* No hover effects */
-body .vfrc-typing-indicator:hover {
-  background: #f5f5f5 !important;
-}
-
-/* Remove all pseudo-elements */
-.vfrc-typing-indicator::before,
-.vfrc-typing-indicator::after {
-  content: none !important;
+/* Remove pseudo-elements */
+span.vfrc-typing-indicator.xaffbq1::before,
+span.vfrc-typing-indicator.xaffbq1::after {
   display: none !important;
 }
 
-/* Minimal Typing Dots - Just Fade In/Out - HORIZONTAL */
-.vfrc-typing-indicator span,
-.vfrc-typing-indicator > span,
-.vfrc-system-response .vfrc-typing-indicator span,
-div[class*="indicator"] span,
-div[class*="typing"] span,
-div[class*="loading"] span,
-.vfrc-chat .vfrc-typing-indicator span {
-  /* FORCE INLINE HORIZONTAL */
+/* The actual dots - HORIZONTAL */
+span.xaffbq2 {
   display: inline-block !important;
-  float: none !important;
-  position: relative !important;
-
   width: 7px !important;
   height: 7px !important;
   border-radius: 50% !important;
-  margin: 0 2px !important;
+  margin: 0 !important;
   background: #888888 !important;
-
-  /* Remove any vertical stacking */
   vertical-align: middle !important;
-  flex-shrink: 0 !important;
 
-  /* Only simple fade animation */
+  /* Simple fade animation */
   animation: simpleFade 1.2s infinite ease-in-out !important;
 }
 
-/* Simple staggered delays */
-.vfrc-typing-indicator span:nth-child(1),
-.vfrc-typing-indicator span.xaffbq3 {
+/* Staggered delays */
+span.xaffbq2.xaffbq3 {
   animation-delay: 0s !important;
 }
 
-.vfrc-typing-indicator span:nth-child(2),
-.vfrc-typing-indicator span.xaffbq4 {
+span.xaffbq2.xaffbq4 {
   animation-delay: 0.15s !important;
 }
 
-.vfrc-typing-indicator span:nth-child(3),
-.vfrc-typing-indicator span.xaffbq5 {
+span.xaffbq2.xaffbq5 {
   animation-delay: 0.3s !important;
 }
 
-/* Simple fade only - no movement */
+/* Simple fade animation */
 @keyframes simpleFade {
   0%, 100% {
     opacity: 0.3;
@@ -559,27 +534,9 @@ div[class*="loading"] span,
   }
 }
 
-/* Clean container - FORCE HORIZONTAL */
-._1ayyscc1,
-div[class*="_1ayyscc"] {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 8px 0 !important;
-
-  /* Force horizontal container */
-  display: block !important;
-  width: 100% !important;
-}
-
-/* ================= COMPACT TEAL ACTION BUTTONS ================= */
-/* Voiceflow Action Buttons - Compact Teal Design with Broad Selectors */
-button.vfrc-button,
-button[class*="vfrc-button"],
-.vfrc-button,
-button._1q15b0b1,
-button[class*="_1q15b0b1"] {
+/* ================= COMPACT TEAL ACTION BUTTONS (ONLY) ================= */
+/* ONLY target action buttons - not launcher, not send button */
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1 {
   /* Compact sizing */
   border-radius: 8px !important;
   padding: 8px 16px !important;
@@ -607,63 +564,35 @@ button[class*="_1q15b0b1"] {
   text-decoration: none !important;
   display: inline-block !important;
   margin: 4px 4px 4px 0 !important;
-
-  /* Make sure visible */
-  visibility: visible !important;
-  opacity: 1 !important;
 }
 
 /* Hover effect - brighter teal */
-button.vfrc-button:hover,
-button[class*="vfrc-button"]:hover,
-.vfrc-button:hover,
-button._1q15b0b1:hover,
-button[class*="_1q15b0b1"]:hover {
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1:hover {
   background: linear-gradient(135deg, #5fd4cf 0%, #4bbbb6 100%) !important;
   box-shadow: 0 4px 10px rgba(81, 195, 190, 0.35) !important;
   transform: translateY(-1px) !important;
 }
 
 /* Active/pressed state - darker teal */
-button.vfrc-button:active,
-button[class*="vfrc-button"]:active,
-.vfrc-button:active,
-button._1q15b0b1:active,
-button[class*="_1q15b0b1"]:active {
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1:active {
   background: linear-gradient(135deg, #3da9a5 0%, #2e8a86 100%) !important;
   box-shadow: 0 1px 3px rgba(81, 195, 190, 0.2) !important;
   transform: translateY(0px) !important;
 }
 
 /* Focus state */
-button.vfrc-button:focus,
-button[class*="vfrc-button"]:focus,
-.vfrc-button:focus,
-button._1q15b0b1:focus,
-button[class*="_1q15b0b1"]:focus {
+button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1:focus {
   outline: 2px solid #51c3be !important;
   outline-offset: 2px !important;
 }
 
 /* Compact button container with minimal spacing */
 .vfrc-system-response--action,
-div.o231sh1.vfrc-system-response--action,
-div[class*="system-response"],
-div[class*="action"] {
+div.o231sh1.vfrc-system-response--action {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 4px !important;
   margin: 8px 0 !important;
-}
-
-/* Exclude launcher and send buttons from teal styling */
-button.vfrc-launcher,
-button[class*="launcher"],
-button[class*="_12m8tlu"],
-button:has(svg[viewBox="0 0 24 24"]),
-button:has(img[alt="open chat"]) {
-  background: none !important;
-  /* Let original styling apply */
 }
 
 /* Banner/agent image styling - keep big for banner images */
