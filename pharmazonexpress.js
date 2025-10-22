@@ -1029,7 +1029,7 @@ export const BMICalculatorExtension = {
     // Show BMI result
     const showBMIResult = (bmi, eligible) => {
       bmiResult.innerHTML = `
-        <div class="bmi-value">BMI: ${bmi.toFixed(1)}</div>
+        <div class="bmi-value">BMI: ${bmi.toFixed(2)}</div>
         <div class="bmi-message">${eligible ? config.eligibleMessage : config.ineligibleMessage}</div>
       `;
       bmiResult.className = `bmi-result ${eligible ? 'eligible' : 'ineligible'}`;
@@ -1055,7 +1055,7 @@ export const BMICalculatorExtension = {
     const showSuccess = (data) => {
       formButtons.style.display = "none";
       bmiResult.style.display = "none";
-      successDetails.textContent = `BMI: ${data.bmi.toFixed(1)} | ${data.eligible ? 'Eligible' : 'Not Eligible'}`;
+      successDetails.textContent = `BMI: ${data.bmi.toFixed(2)} | ${data.eligible ? 'Eligible' : 'Not Eligible'}`;
       successState.style.display = "block";
     };
 
@@ -1106,7 +1106,7 @@ export const BMICalculatorExtension = {
       }
 
       const payload = {
-        bmi: parseFloat(bmi.toFixed(1)),
+        bmi: parseFloat(bmi.toFixed(2)),
         eligible: eligible,
         unit: currentUnit,
         height: heightData,
