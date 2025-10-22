@@ -569,13 +569,19 @@ span.xaffbq2.xaffbq5 {
   outline-offset: 2px !important;
 }
 
-/* Compact button container with minimal spacing */
-.vfrc-system-response--action,
-div.o231sh1.vfrc-system-response--action {
+/* Parent container - should wrap horizontally */
+.vfrc-system-response--actions.g3dqfd6 {
   display: flex !important;
   flex-wrap: wrap !important;
-  gap: 0px !important;
+  gap: 2px !important;
   margin: 8px 0 !important;
+}
+
+/* Individual button wrapper divs - remove all spacing */
+div.o231sh1.vfrc-system-response--action {
+  display: inline-block !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Banner/agent image styling - keep big for banner images */
