@@ -1106,7 +1106,7 @@ export const BMICalculatorExtension = {
       }
 
       const payload = {
-        bmi: parseFloat(bmi.toFixed(2)),
+        bmi: Math.round(bmi * 100) / 100,
         eligible: eligible,
         unit: currentUnit,
         height: heightData,
