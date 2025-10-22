@@ -870,12 +870,12 @@ export const BMICalculatorExtension = {
         <div class="metric-inputs">
           <div class="input-group">
             <label class="input-label">${config.metricHeightLabel}</label>
-            <input type="text" class="input-field" id="height-cm" placeholder="e.g., 175 or 175.5" inputmode="decimal">
+            <input type="text" class="input-field" id="height-cm" placeholder="0" inputmode="decimal">
           </div>
 
           <div class="input-group">
             <label class="input-label">${config.metricWeightLabel}</label>
-            <input type="text" class="input-field" id="weight-kg" placeholder="e.g., 70 or 70.5" inputmode="decimal">
+            <input type="text" class="input-field" id="weight-kg" placeholder="0" inputmode="decimal">
           </div>
         </div>
 
@@ -886,11 +886,11 @@ export const BMICalculatorExtension = {
             <div class="imperial-group">
               <div class="imperial-input-wrapper">
                 <span class="imperial-sublabel">Feet</span>
-                <input type="text" class="input-field" id="height-ft" placeholder="e.g., 5" inputmode="numeric">
+                <input type="text" class="input-field" id="height-ft" placeholder="0" inputmode="numeric">
               </div>
               <div class="imperial-input-wrapper">
                 <span class="imperial-sublabel">Inches</span>
-                <input type="text" class="input-field" id="height-in" placeholder="e.g., 9" inputmode="decimal">
+                <input type="text" class="input-field" id="height-in" placeholder="0" inputmode="decimal">
               </div>
             </div>
           </div>
@@ -900,11 +900,11 @@ export const BMICalculatorExtension = {
             <div class="imperial-group">
               <div class="imperial-input-wrapper">
                 <span class="imperial-sublabel">Stones</span>
-                <input type="text" class="input-field" id="weight-st" placeholder="e.g., 11" inputmode="numeric">
+                <input type="text" class="input-field" id="weight-st" placeholder="0" inputmode="numeric">
               </div>
               <div class="imperial-input-wrapper">
                 <span class="imperial-sublabel">Pounds</span>
-                <input type="text" class="input-field" id="weight-lb" placeholder="e.g., 2" inputmode="decimal">
+                <input type="text" class="input-field" id="weight-lb" placeholder="0" inputmode="decimal">
               </div>
             </div>
           </div>
