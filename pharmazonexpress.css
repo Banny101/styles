@@ -534,10 +534,10 @@ span.xaffbq2.xaffbq5 {
   }
 }
 
-/* ================= TEAL ACTION BUTTONS (Example CSS Style) ================= */
-/* ONLY target action buttons - using example CSS shape/style with teal color */
+/* ================= TEAL ACTION BUTTONS (Simplified) ================= */
+/* ONLY target action buttons - teal color with curved corners */
 ._1q15b0b1 {
-  /* Example CSS styling */
+  /* Basic styling */
   font-size: 14px !important;
   color: #FFF !important;
   background-color: #51c3be !important;
@@ -545,7 +545,10 @@ span.xaffbq2.xaffbq5 {
   transition: background-color 0.3s ease, color 0.3s ease !important;
   height: 40px !important;
   font-weight: 400 !important;
-  border-radius: 30px 0px 30px 0px !important;
+
+  /* Slightly curved corners on all 4 sides */
+  border-radius: 8px !important;
+
   padding-top: 2px !important;
   padding: 0px 22px 0px 22px !important;
   text-align: left !important;
@@ -567,21 +570,6 @@ span.xaffbq2.xaffbq5 {
 ._1q15b0b1:focus {
   outline: 2px solid #51c3be !important;
   outline-offset: 2px !important;
-}
-
-/* Parent container - should wrap horizontally */
-.vfrc-system-response--actions.g3dqfd6 {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 2px !important;
-  margin: 8px 0 !important;
-}
-
-/* Individual button wrapper divs - remove all spacing */
-div.o231sh1.vfrc-system-response--action {
-  display: inline-block !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
 /* Banner/agent image styling - keep big for banner images */
