@@ -458,8 +458,8 @@ div[class*="markdown"] li::marker {
   }
 }
 
-/* ================= ULTRA-SIMPLE TYPING INDICATOR (NO WEIRD BEHAVIOR) ================= */
-/* Minimal, Clean Typing Indicator */
+/* ================= ULTRA-SIMPLE HORIZONTAL TYPING INDICATOR ================= */
+/* Minimal, Clean Typing Indicator - Horizontal Layout */
 body .vfrc-typing-indicator,
 body .vfrc-system-response .vfrc-typing-indicator,
 body div[class*="indicator"],
@@ -474,7 +474,15 @@ body .vfrc-chat .vfrc-typing-indicator,
   border-radius: 12px !important;
   padding: 10px 16px !important;
   margin: 8px 0 !important;
-  display: inline-block !important;
+
+  /* FORCE HORIZONTAL LAYOUT */
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 2px !important;
+  width: auto !important;
+  height: auto !important;
 
   /* Remove all special effects */
   backdrop-filter: none !important;
@@ -498,7 +506,7 @@ body .vfrc-typing-indicator:hover {
   display: none !important;
 }
 
-/* Minimal Typing Dots - Just Fade In/Out */
+/* Minimal Typing Dots - Just Fade In/Out - HORIZONTAL */
 .vfrc-typing-indicator span,
 .vfrc-typing-indicator > span,
 .vfrc-system-response .vfrc-typing-indicator span,
@@ -506,12 +514,20 @@ div[class*="indicator"] span,
 div[class*="typing"] span,
 div[class*="loading"] span,
 .vfrc-chat .vfrc-typing-indicator span {
+  /* FORCE INLINE HORIZONTAL */
   display: inline-block !important;
+  float: none !important;
+  position: relative !important;
+
   width: 7px !important;
   height: 7px !important;
   border-radius: 50% !important;
   margin: 0 2px !important;
   background: #888888 !important;
+
+  /* Remove any vertical stacking */
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
 
   /* Only simple fade animation */
   animation: simpleFade 1.2s infinite ease-in-out !important;
@@ -543,7 +559,7 @@ div[class*="loading"] span,
   }
 }
 
-/* Clean container */
+/* Clean container - FORCE HORIZONTAL */
 ._1ayyscc1,
 div[class*="_1ayyscc"] {
   background: transparent !important;
@@ -551,14 +567,19 @@ div[class*="_1ayyscc"] {
   box-shadow: none !important;
   padding: 0 !important;
   margin: 8px 0 !important;
+
+  /* Force horizontal container */
+  display: block !important;
+  width: 100% !important;
 }
 
 /* ================= COMPACT TEAL ACTION BUTTONS ================= */
-/* Voiceflow Action Buttons - Compact Teal Design */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1,
-.vfrc-system-response--action button.vfrc-button,
-.o231sh1 button.vfrc-button,
-div.o231sh1.vfrc-system-response--action button {
+/* Voiceflow Action Buttons - Compact Teal Design with Broad Selectors */
+button.vfrc-button,
+button[class*="vfrc-button"],
+.vfrc-button,
+button._1q15b0b1,
+button[class*="_1q15b0b1"] {
   /* Compact sizing */
   border-radius: 8px !important;
   padding: 8px 16px !important;
@@ -586,44 +607,63 @@ div.o231sh1.vfrc-system-response--action button {
   text-decoration: none !important;
   display: inline-block !important;
   margin: 4px 4px 4px 0 !important;
+
+  /* Make sure visible */
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* Hover effect - brighter teal */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1:hover,
-.vfrc-system-response--action button.vfrc-button:hover,
-.o231sh1 button.vfrc-button:hover,
-div.o231sh1.vfrc-system-response--action button:hover {
+button.vfrc-button:hover,
+button[class*="vfrc-button"]:hover,
+.vfrc-button:hover,
+button._1q15b0b1:hover,
+button[class*="_1q15b0b1"]:hover {
   background: linear-gradient(135deg, #5fd4cf 0%, #4bbbb6 100%) !important;
   box-shadow: 0 4px 10px rgba(81, 195, 190, 0.35) !important;
   transform: translateY(-1px) !important;
 }
 
 /* Active/pressed state - darker teal */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1:active,
-.vfrc-system-response--action button.vfrc-button:active,
-.o231sh1 button.vfrc-button:active,
-div.o231sh1.vfrc-system-response--action button:active {
+button.vfrc-button:active,
+button[class*="vfrc-button"]:active,
+.vfrc-button:active,
+button._1q15b0b1:active,
+button[class*="_1q15b0b1"]:active {
   background: linear-gradient(135deg, #3da9a5 0%, #2e8a86 100%) !important;
   box-shadow: 0 1px 3px rgba(81, 195, 190, 0.2) !important;
   transform: translateY(0px) !important;
 }
 
 /* Focus state */
-button.vfrc-button._1q15b0b0.c26d8x0._1q15b0b1:focus,
-.vfrc-system-response--action button.vfrc-button:focus,
-.o231sh1 button.vfrc-button:focus,
-div.o231sh1.vfrc-system-response--action button:focus {
+button.vfrc-button:focus,
+button[class*="vfrc-button"]:focus,
+.vfrc-button:focus,
+button._1q15b0b1:focus,
+button[class*="_1q15b0b1"]:focus {
   outline: 2px solid #51c3be !important;
   outline-offset: 2px !important;
 }
 
 /* Compact button container with minimal spacing */
 .vfrc-system-response--action,
-div.o231sh1.vfrc-system-response--action {
+div.o231sh1.vfrc-system-response--action,
+div[class*="system-response"],
+div[class*="action"] {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 4px !important;
   margin: 8px 0 !important;
+}
+
+/* Exclude launcher and send buttons from teal styling */
+button.vfrc-launcher,
+button[class*="launcher"],
+button[class*="_12m8tlu"],
+button:has(svg[viewBox="0 0 24 24"]),
+button:has(img[alt="open chat"]) {
+  background: none !important;
+  /* Let original styling apply */
 }
 
 /* Banner/agent image styling - keep big for banner images */
