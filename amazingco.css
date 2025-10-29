@@ -458,239 +458,68 @@ div[class*="markdown"] li::marker {
   }
 }
 
-/* ================= MALVERN PREMIUM TYPING INDICATOR ================= */
-/* Premium Malvern-themed Typing Indicator with Sophisticated Glass Design */
-body .vfrc-typing-indicator,
-body .vfrc-system-response .vfrc-typing-indicator,
-body div[class*="indicator"],
-body div[class*="typing"],
-body div[class*="loading"],
-body .vfrc-chat .vfrc-typing-indicator,
-#voiceflow-chat .vfrc-typing-indicator,
-#voiceflow-chat .vfrc-system-response .vfrc-typing-indicator {
-  position: relative !important;
-  
-  /* Malvern Premium Glass Morphism Background */
-  background: 
-    linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.95) 0%, 
-      rgba(250, 251, 253, 0.90) 40%,
-      rgba(245, 247, 250, 0.95) 100%),
-    linear-gradient(45deg, 
-      rgba(45, 85, 135, 0.05) 0%, 
-      rgba(28, 65, 105, 0.03) 50%, 
-      rgba(35, 75, 120, 0.05) 100%) !important;
-  backdrop-filter: blur(20px) saturate(150%) brightness(105%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(105%) !important;
-  
-  /* Malvern sophisticated border design */
-  border: 1px solid rgba(45, 85, 135, 0.12) !important;
-  border-radius: 18px !important;
-  padding: 14px 20px !important;
-  margin: 10px 0 !important;
-  
-  /* Malvern premium shadow system */
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.06),
-    0 6px 20px rgba(45, 85, 135, 0.08),
-    0 3px 12px rgba(28, 65, 105, 0.05),
-    inset 0 1px 2px rgba(255, 255, 255, 0.8),
-    inset 0 -1px 1px rgba(45, 85, 135, 0.03),
-    0 0 0 1px rgba(255, 255, 255, 0.5),
-    0 0 25px rgba(45, 85, 135, 0.04) !important;
-  
-  overflow: hidden !important;
-  animation: malvernTypingBreathe 3.5s ease-in-out infinite !important;
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
-  will-change: transform, box-shadow, backdrop-filter !important;
+/* ================= SIMPLE HORIZONTAL TYPING INDICATOR ================= */
+/* Parent span with dots - HORIZONTAL */
+span.vfrc-typing-indicator.xaffbq1 {
+  background: transparent !important;
+  border: none !important;
+
+  /* FORCE HORIZONTAL LAYOUT */
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 4px !important;
+
+  animation: none !important;
+  transform: none !important;
 }
 
-/* Malvern typing indicator hover effect */
-body .vfrc-typing-indicator:hover {
-  background: 
-    linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.98) 0%, 
-      rgba(250, 251, 253, 0.95) 50%,
-      rgba(245, 247, 250, 0.98) 100%),
-    linear-gradient(45deg, 
-      rgba(45, 85, 135, 0.08) 0%, 
-      rgba(28, 65, 105, 0.05) 50%, 
-      rgba(35, 75, 120, 0.08) 100%) !important;
-  backdrop-filter: blur(25px) saturate(160%) brightness(108%) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(160%) brightness(108%) !important;
-  
-  border: 1px solid rgba(45, 85, 135, 0.20) !important;
-  
-  box-shadow: 
-    0 16px 50px rgba(0, 0, 0, 0.08),
-    0 8px 25px rgba(45, 85, 135, 0.12),
-    0 4px 15px rgba(28, 65, 105, 0.08),
-    inset 0 2px 3px rgba(255, 255, 255, 0.9),
-    inset 0 -2px 2px rgba(45, 85, 135, 0.05),
-    0 0 0 1px rgba(255, 255, 255, 0.7),
-    0 0 30px rgba(45, 85, 135, 0.08) !important;
-    
-  transform: translateY(-2px) scale(1.01) !important;
+/* Remove all pseudo-elements that could interfere */
+span.vfrc-typing-indicator.xaffbq1::before,
+span.vfrc-typing-indicator.xaffbq1::after {
+  display: none !important;
+  content: none !important;
 }
 
-/* Malvern breathing animation for typing indicator */
-@keyframes malvernTypingBreathe {
+/* Individual dots - simple gray with fade animation */
+span.xaffbq2 {
+  display: inline-block !important;
+  width: 7px !important;
+  height: 7px !important;
+  background: #888888 !important;
+  border-radius: 50% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  animation: simpleFade 1.2s infinite ease-in-out !important;
+  will-change: opacity !important;
+}
+
+/* Staggered animation delays for wave effect */
+span.xaffbq2.xaffbq3 {
+  animation-delay: 0s !important;
+}
+
+span.xaffbq2.xaffbq4 {
+  animation-delay: 0.15s !important;
+}
+
+span.xaffbq2.xaffbq5 {
+  animation-delay: 0.3s !important;
+}
+
+/* Simple fade animation */
+@keyframes simpleFade {
   0%, 100% {
-    transform: scale(1) translateY(0px);
-    box-shadow: 
-      0 12px 40px rgba(0, 0, 0, 0.06),
-      0 6px 20px rgba(45, 85, 135, 0.08),
-      0 3px 12px rgba(28, 65, 105, 0.05),
-      inset 0 1px 2px rgba(255, 255, 255, 0.8),
-      inset 0 -1px 1px rgba(45, 85, 135, 0.03),
-      0 0 0 1px rgba(255, 255, 255, 0.5),
-      0 0 25px rgba(45, 85, 135, 0.04);
+    opacity: 0.3;
   }
   50% {
-    transform: scale(1.02) translateY(-1px);
-    box-shadow: 
-      0 16px 50px rgba(0, 0, 0, 0.08),
-      0 8px 25px rgba(45, 85, 135, 0.12),
-      0 4px 15px rgba(28, 65, 105, 0.08),
-      inset 0 2px 3px rgba(255, 255, 255, 0.85),
-      inset 0 -2px 2px rgba(45, 85, 135, 0.05),
-      0 0 0 1px rgba(255, 255, 255, 0.6),
-      0 0 30px rgba(45, 85, 135, 0.06);
-  }
-}
-
-/* Malvern premium shimmer effect */
-.vfrc-typing-indicator::before {
-  content: '' !important;
-  position: absolute !important;
-  top: 0 !important;
-  left: -100% !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: linear-gradient(
-    110deg, 
-    transparent 0%, 
-    rgba(45, 85, 135, 0.06) 15%,
-    rgba(255, 255, 255, 0.12) 35%, 
-    rgba(28, 65, 105, 0.08) 50%, 
-    rgba(255, 255, 255, 0.15) 65%,
-    rgba(35, 75, 120, 0.06) 80%,
-    rgba(250, 251, 253, 0.08) 90%,
-    transparent 100%
-  ) !important;
-  animation: malvernShimmer 4.5s infinite !important;
-  border-radius: inherit !important;
-  z-index: 1 !important;
-}
-
-@keyframes malvernShimmer {
-  0% {
-    left: -100%;
-    opacity: 0;
-  }
-  20% {
-    opacity: 0.7;
-  }
-  80% {
-    opacity: 0.7;
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-  }
-}
-
-/* Premium Malvern Themed Typing Dots */
-.vfrc-typing-indicator span,
-.vfrc-typing-indicator > span,
-.vfrc-system-response .vfrc-typing-indicator span,
-div[class*="indicator"] span,
-div[class*="typing"] span,
-div[class*="loading"] span,
-.vfrc-chat .vfrc-typing-indicator span {
-  display: inline-block !important;
-  width: 8px !important;
-  height: 8px !important;
-  border-radius: 50% !important;
-  margin: 0 3px !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-  position: relative !important;
-  will-change: transform, opacity, background !important;
-  
-  /* Malvern sophisticated color gradient - professional blues */
-  background: linear-gradient(135deg, 
-    #2d5587 0%, 
-    #1c4169 30%, 
-    #234b78 60%, 
-    #2a5284 100%) !important;
-  
-  /* Malvern premium glow */
-  box-shadow: 
-    0 2px 8px rgba(45, 85, 135, 0.3),
-    inset 0 1px 2px rgba(255, 255, 255, 0.5),
-    0 0 12px rgba(45, 85, 135, 0.2) !important;
-  
-  animation: malvernBubble 2.2s infinite ease-in-out !important;
-}
-
-/* Advanced staggered animation delays for smooth Malvern wave effect */
-.vfrc-typing-indicator span:nth-child(1),
-.vfrc-typing-indicator span.xaffbq3 {
-  animation-delay: 0s !important;
-  background: linear-gradient(135deg, #2d5587 0%, #1c4169 100%) !important;
-}
-
-.vfrc-typing-indicator span:nth-child(2),
-.vfrc-typing-indicator span.xaffbq4 {
-  animation-delay: 0.35s !important;
-  background: linear-gradient(135deg, #1c4169 0%, #234b78 100%) !important;
-}
-
-.vfrc-typing-indicator span:nth-child(3),
-.vfrc-typing-indicator span.xaffbq5 {
-  animation-delay: 0.7s !important;
-  background: linear-gradient(135deg, #234b78 0%, #2a5284 100%) !important;
-}
-
-/* Sophisticated Malvern bubbling animation */
-@keyframes malvernBubble {
-  0%, 70%, 100% {
-    transform: scale(1) translateY(0) rotate(0deg);
-    opacity: 0.8;
-    box-shadow: 
-      0 2px 8px rgba(45, 85, 135, 0.3),
-      inset 0 1px 2px rgba(255, 255, 255, 0.5),
-      0 0 12px rgba(45, 85, 135, 0.2);
-  }
-  20% {
-    transform: scale(1.15) translateY(-2px) rotate(3deg);
-    opacity: 0.9;
-    box-shadow: 
-      0 4px 12px rgba(45, 85, 135, 0.4),
-      inset 0 1px 3px rgba(255, 255, 255, 0.6),
-      0 0 16px rgba(45, 85, 135, 0.3);
-  }
-  40% {
-    transform: scale(1.4) translateY(-8px) rotate(-2deg);
     opacity: 1;
-    box-shadow: 
-      0 6px 20px rgba(45, 85, 135, 0.5),
-      inset 0 2px 4px rgba(255, 255, 255, 0.7),
-      0 0 20px rgba(45, 85, 135, 0.4),
-      0 0 30px rgba(28, 65, 105, 0.2);
-  }
-  55% {
-    transform: scale(1.2) translateY(-4px) rotate(1deg);
-    opacity: 0.9;
-    box-shadow: 
-      0 4px 16px rgba(45, 85, 135, 0.4),
-      inset 0 1px 3px rgba(255, 255, 255, 0.6),
-      0 0 18px rgba(45, 85, 135, 0.3);
   }
 }
 
-/* Premium Malvern typing indicator container */
+/* Container styling - clean and minimal */
 ._1ayyscc1,
 div[class*="_1ayyscc"] {
   position: relative !important;
@@ -699,41 +528,6 @@ div[class*="_1ayyscc"] {
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
-}
-
-/* Malvern-themed floating particles effect */
-.vfrc-typing-indicator::after {
-  content: '' !important;
-  position: absolute !important;
-  top: -8px !important;
-  left: -8px !important;
-  right: -8px !important;
-  bottom: -8px !important;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(45, 85, 135, 0.08) 1.5px, transparent 1.5px),
-    radial-gradient(circle at 65% 35%, rgba(28, 65, 105, 0.06) 1px, transparent 1px),
-    radial-gradient(circle at 75% 65%, rgba(35, 75, 120, 0.09) 1.2px, transparent 1.2px),
-    radial-gradient(circle at 35% 75%, rgba(250, 251, 253, 0.08) 1px, transparent 1px) !important;
-  background-size: 35px 35px, 25px 25px, 45px 45px, 30px 30px !important;
-  animation: malvernFloatingParticles 7s linear infinite !important;
-  opacity: 0.5 !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-@keyframes malvernFloatingParticles {
-  0% {
-    transform: translateY(0px) rotate(0deg);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translateY(-3px) rotate(180deg);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(0px) rotate(360deg);
-    opacity: 0.5;
-  }
 }
 
 /* Banner/agent image styling - keep big for banner images */
